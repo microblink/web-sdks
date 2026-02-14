@@ -7,6 +7,11 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      release_name:
+        description: "Release name in format @microblink/<target>@<version>"
+        required: true
+        type: string
 
 permissions:
   id-token: write
@@ -38,8 +43,101 @@ jobs:
       - name: Install dependencies
         run: HUSKY=0 pnpm install --frozen-lockfile
 
-      - name: Build packages for publishing
+      - name: Resolve publish targets
+        id: resolve-targets
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RELEASE_NAME="${{ github.event.release.name || inputs.release_name }}"
+          echo "release_name=${RELEASE_NAME}" >> "$GITHUB_OUTPUT"
+
+          if [[ -z "$RELEASE_NAME" ]]; then
+            echo "skip_publish=true" >> "$GITHUB_OUTPUT"
+            echo "skip_reason=Release name is empty." >> "$GITHUB_OUTPUT"
+            {
+              echo "selected_packages<<EOF"
+              echo ""
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          PACKAGE_NAME="${RELEASE_NAME%@*}"
+          case "$PACKAGE_NAME" in
+            "@microblink/camera-manager")
+              PACKAGES=(
+                "@microblink/camera-manager"
+              )
+              ;;
+            "@microblink/blinkid")
+              PACKAGES=(
+                "@microblink/blinkid-core"
+                "@microblink/blinkid-ux-manager"
+                "@microblink/blinkid"
+              )
+              ;;
+            "@microblink/blinkcard")
+              PACKAGES=(
+                "@microblink/blinkcard-core"
+                "@microblink/blinkcard-ux-manager"
+                "@microblink/blinkcard"
+              )
+              ;;
+            *)
+              echo "skip_publish=true" >> "$GITHUB_OUTPUT"
+              echo "skip_reason=Release name does not contain a supported package name before the last @." >> "$GITHUB_OUTPUT"
+              {
+                echo "selected_packages<<EOF"
+                echo ""
+                echo "EOF"
+              } >> "$GITHUB_OUTPUT"
+              exit 0
+              ;;
+          esac
+
+          echo "skip_publish=false" >> "$GITHUB_OUTPUT"
+          echo "skip_reason=" >> "$GITHUB_OUTPUT"
+          {
+            echo "selected_packages<<EOF"
+            printf '%s\n' "${PACKAGES[@]}"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Build monorepo for publishing
+        if: steps.resolve-targets.outputs.skip_publish != 'true'
         run: pnpm build:publish
 
       - name: Publish packages
-        run: pnpm publish --filter "./packages/**" --no-git-checks
+        if: steps.resolve-targets.outputs.skip_publish != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          declare -a FILTER_ARGS=()
+          while IFS= read -r package; do
+            [[ -z "$package" ]] && continue
+            FILTER_ARGS+=("--filter=${package}")
+          done <<< "${{ steps.resolve-targets.outputs.selected_packages }}"
+
+          pnpm publish "${FILTER_ARGS[@]}" --no-git-checks
+
+      - name: Publish summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo "## NPM Publish Selection"
+            echo ""
+            echo "- Release name: \`${{ steps.resolve-targets.outputs.release_name }}\`"
+            echo "- Skip publish: \`${{ steps.resolve-targets.outputs.skip_publish }}\`"
+            if [[ "${{ steps.resolve-targets.outputs.skip_publish }}" == "true" ]]; then
+              echo "- Skip reason: \`${{ steps.resolve-targets.outputs.skip_reason }}\`"
+            else
+              echo "- Selected packages:"
+              while IFS= read -r package; do
+                [[ -z "$package" ]] && continue
+                echo "  - \`${package}\`"
+              done <<< "${{ steps.resolve-targets.outputs.selected_packages }}"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
