@@ -1,0 +1,45 @@
+{
+  "name": "@microblink/blinkcard-advanced-setup-example",
+  "description": "An example of advanced BlinkCard SDK setup",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "build:js-dev": "vite build --mode development",
+    "clean": "rimraf dist public .turbo types tsconfig.tsbuildinfo",
+    "dev": "vite --host",
+    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
+    "lint:eslint": "eslint ./src --max-warnings 0",
+    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
+    "preview": "vite preview",
+    "watch": "vite build --watch --mode development"
+  },
+  "type": "module",
+  "dependencies": {
+    "@microblink/blinkcard-core": "workspace:^",
+    "@microblink/blinkcard-ux-manager": "workspace:^",
+    "@microblink/camera-manager": "workspace:^",
+    "@microblink/feedback-stabilizer": "workspace:^",
+    "solid-js": "^1.9.9",
+    "yy-fps": "^2.0.1"
+  },
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/repo-utils": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "10.0.1",
+    "eslint-define-config": "^1.24.1",
+    "eslint-plugin-solid": "0.14.5",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "tsc-files": "^1.1.4",
+    "typescript": "5.8.3",
+    "vite": "^6.2.1",
+    "vite-plugin-mkcert": "^1.17.6",
+    "vite-plugin-qrcode": "^0.2.4",
+    "vite-plugin-solid": "^2.11.6",
+    "zx": "^8.8.5"
+  },
+  "license": "MIT"
+}

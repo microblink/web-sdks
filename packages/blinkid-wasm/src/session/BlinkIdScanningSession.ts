@@ -1,8 +1,8 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { EmbindObject } from "../emscripten";
+import { EmbindObject } from "@microblink/wasm-common";
 import { BlinkIdProcessResult } from "./BlinkIdProcessResult";
 import { BlinkIdScanningResult } from "./BlinkIdScanningResult";
 import { BlinkIdSessionError } from "./BlinkIdSessionError";

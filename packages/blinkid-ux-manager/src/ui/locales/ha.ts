@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ha.
+ */
 export default {
   alert_cancel_btn: "Soke",
   alert_retry_btn: "Sake gwadawa",
@@ -12,11 +15,13 @@ export default {
   document_not_recognized: "Ba a gane takarda ba",
   document_not_recognized_details:
     "A ɗauki hoton gaban takardar ƙarin bayanin.",
+  document_scanned: "An yi nasara! An ɗauki hoton takarda",
   document_too_close_to_edge: "A kawar da takardar daga dungun",
   face_photo_not_fully_visible:
     "A daidaita hoton fuska yadda za a riƙa kallon sa duka",
   flip_document: "Juya takardar",
   flip_to_back_side: "A juya bayan",
+  front_side_scanned: "An yi nasara! An ɗauki hoton gaba ta gefe",
   glare_detected:
     "A karkata ko a matsar da takarda domin a cire dau da hasken yake yi",
   help_aria_label: "Taimako",

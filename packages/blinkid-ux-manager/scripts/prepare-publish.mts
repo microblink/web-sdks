@@ -1,4 +1,4 @@
-import { getPackagePath } from "@microblink/utils";
+import { getPackagePath } from "@microblink/repo-utils";
 import { Simplify } from "type-fest";
 import { PackageJsonData, writePackage } from "write-package";
 import "zx/globals";
@@ -36,14 +36,17 @@ await fs.copy("dist", path.join(publishPath, "dist"));
 await fs.copy("types", path.join(publishPath, "types"));
 await fs.copy("README.md", path.join(publishPath, "README.md"));
 
+// These dependencies are bundled into the main types file, so we don't need to
+// include them in the dependencies.
+const bundleDependencies = ["@microblink/analytics", "@microblink/ux-common"];
+
+const microblinkDependencies = Object.keys(packageJson.dependencies).filter(
+  (key) => key.startsWith("@microblink") && !bundleDependencies.includes(key),
+);
+
 // Since monorepo dependencies resolve to the version "workspace:*", we need
 // to resolve the actual versions of the dependencies before publishing the
 // package.
-
-const microblinkDependencies = Object.keys(packageJson.dependencies).filter(
-  (key) => key.startsWith("@microblink"),
-);
-
 const mbDepsWithVersion = microblinkDependencies.reduce<
   PackageJsonData["dependencies"]
 >((acc, key) => {
@@ -68,10 +71,10 @@ await writePackage(
     access: "public",
     registry: "https://registry.npmjs.org/",
     types: "./types/index.rollup.d.ts",
-    homepage: "https://github.com/BlinkID/blinkid-web",
+    homepage: "https://github.com/microblink/web-sdks",
     repository: {
       type: "git",
-      url: "git+https://github.com/BlinkID/blinkid-web.git",
+      url: "git+https://github.com/microblink/web-sdks.git",
     },
     exports: {
       ".": {

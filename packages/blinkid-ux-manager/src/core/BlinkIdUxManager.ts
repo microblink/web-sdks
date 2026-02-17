@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import {
@@ -26,7 +26,7 @@ import {
 import { createErrorMessagePingFromUiState } from "../shared/uiEventFeedbackMapper";
 import { BlinkIdProcessingError } from "./BlinkIdProcessingError";
 import { DocumentClassFilter } from "./DocumentClassFilter";
-import { HapticFeedbackManager } from "./HapticFeedback";
+import { HapticFeedbackManager } from "@microblink/ux-common/hapticFeedback";
 import {
   BlinkIdUiState,
   BlinkIdUiStateKey,
@@ -40,7 +40,7 @@ import {
   createCameraInputInfo,
   PingCamera,
 } from "./ping-camera-utils";
-import { sleep } from "./utils";
+import { sleep } from "@microblink/ux-common/utils";
 
 /**
  * The BlinkIdUxManager class. This is the main class that manages the UX of

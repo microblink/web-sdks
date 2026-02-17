@@ -1,0 +1,6 @@
+node_modules
+dist
+public
+types
+*.local
+.env.production

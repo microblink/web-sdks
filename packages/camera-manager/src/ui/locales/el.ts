@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for el.
+ */
 export default {
   camera_error_cancel_btn: "Ακύρωση",
   camera_error_details:
@@ -12,7 +15,7 @@ export default {
   loading_cameras: "Φόρτωση καμερών σε εξέλιξη...",
   mirror_camera: "Κάμερα καθρέπτη",
   scan_document: "Σάρωση εγγράφου",
-  select_a_camera: "Επιλέξτε μια κάμερα ",
+  select_a_camera: "Επιλέξτε μια κάμερα",
   select_camera: "Επιλογή κάμερας",
   selected_camera: "Επιλεγμένη κάμερα",
   torch: "Φακός",

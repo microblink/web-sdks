@@ -1,0 +1,59 @@
+{
+  "name": "@microblink/core-common",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types dist *.tgz",
+    "lint": "tsc --emitDeclarationOnly false --noEmit",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch"
+  },
+  "type": "module",
+  "exports": {
+    "./createCustomImageData": {
+      "types": "./types/createCustomImageData.d.ts",
+      "import": "./dist/createCustomImageData.js"
+    },
+    "./createProxyWorker": {
+      "types": "./types/createProxyWorker.d.ts",
+      "import": "./dist/createProxyWorker.js"
+    },
+    "./getCrossOriginWorkerURL": {
+      "types": "./types/getCrossOriginWorkerURL.d.ts",
+      "import": "./dist/getCrossOriginWorkerURL.js"
+    },
+    "./getUserId": {
+      "types": "./types/getUserId.d.ts",
+      "import": "./dist/getUserId.js"
+    },
+    "./shouldUseLightweightBuild": {
+      "types": "./types/shouldUseLightweightBuild.d.ts",
+      "import": "./dist/shouldUseLightweightBuild.js"
+    },
+    "./deviceInfo/deviceInfo": {
+      "types": "./types/deviceInfo/deviceInfo.d.ts",
+      "import": "./dist/deviceInfo/deviceInfo.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "dependencies": {
+    "comlink": "^4.4.2",
+    "common-tags": "^1.8.2",
+    "nanoid": "^5.0.2"
+  },
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@types/common-tags": "^1.8.3",
+    "rimraf": "^6.0.1",
+    "typescript": "5.8.3",
+    "vitest": "^3.0.8"
+  },
+  "keywords": [],
+  "license": "ISC"
+}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import { BlinkIdUxManager } from "../core/BlinkIdUxManager";
@@ -80,7 +80,7 @@ const defaultFeedbackUiOptions: Required<FeedbackUiOptions> = {
  *
  * @param blinkIdUxManager - The BlinkID Ux Manager.
  * @param cameraManagerComponent - The Camera Manager Component.
- * @param options - The options for the createBlinkIdFeedbackUi function.
+ * @param feedbackUiOptions - The feedback UI options for the createBlinkIdFeedbackUi function.
  *
  * @returns The function to unmount the feedback UI.
  */

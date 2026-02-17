@@ -1,0 +1,54 @@
+{
+  "name": "@microblink/analytics",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist",
+    "docs:api": "typedoc",
+    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
+    "lint:eslint": "eslint ./src --max-warnings 0",
+    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch"
+  },
+  "type": "module",
+  "exports": {
+    "./AnalyticService": {
+      "types": "./types/AnalyticService.d.ts",
+      "import": "./dist/AnalyticService.js"
+    },
+    "./ping": {
+      "types": "./types/ping/index.d.ts",
+      "import": "./dist/ping/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "concurrently": "^9.1.2",
+    "dotenv-cli": "^8.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "10.0.1",
+    "eslint-define-config": "^1.24.1",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.20.6",
+    "typedoc": "^0.28.7",
+    "typedoc-plugin-markdown": "^4.7.0",
+    "typescript": "5.8.3",
+    "vite": "^6.2.1",
+    "vitest": "^3.0.8",
+    "zx": "^8.8.5"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "description": "Analytics"
+}

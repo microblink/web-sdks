@@ -28,6 +28,8 @@ The Camera Manager Component.
 
 `Partial`\<[`FeedbackUiOptions`](../type-aliases/FeedbackUiOptions.md)\>
 
+The feedback UI options for the createBlinkIdFeedbackUi function.
+
 ## Returns
 
 The function to unmount the feedback UI.

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 /* @refresh reload */
@@ -71,7 +71,7 @@ export const App: Component = () => {
         licenseKey: import.meta.env.VITE_LICENCE_KEY,
       });
 
-      const session = await blinkId.createBlinkIdScanningSession();
+      const session = await blinkId.createScanningSession();
       // Need to use the arrow function:
       // https://github.com/GoogleChromeLabs/comlink/issues/571#issuecomment-2048772957
       setBlinkIdSession(() => session);

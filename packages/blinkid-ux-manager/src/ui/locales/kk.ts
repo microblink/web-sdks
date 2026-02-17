@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for kk.
+ */
 export default {
   alert_cancel_btn: "Бас тарту",
   alert_retry_btn: "Қайталау",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Құжатын танылмады",
   document_not_recognized_details:
     "Қолдау көрсетілетін құжаттың алдыңғы жағын сканерлеңіз.",
+  document_scanned: "Сәтті! Құжат сканерленді",
   document_too_close_to_edge: "Құжатты шет жақтан сәл жылжытыңыз",
   face_photo_not_fully_visible: "Бет суреті толықтай көрінетін болуы тиіс",
   flip_document: "Құжатты айналдырыңыз",
   flip_to_back_side: "Артқы жаққа айналдырыңыз",
+  front_side_scanned: "Сәтті! Алдыңғы жағы сканерленді",
   glare_detected: "Шағылысуды жою үшін құжатты еңкейтіңіз немесе жылжытыңыз",
   help_aria_label: "Анықтама",
   help_modal_back_btn: "Артқа қайту",

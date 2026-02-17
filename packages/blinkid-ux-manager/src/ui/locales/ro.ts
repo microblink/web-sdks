@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ro.
+ */
 export default {
   alert_cancel_btn: "Anulați",
   alert_retry_btn: "Reîncercare",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "Încercați să scanați un alt document.",
   document_not_recognized: "Documentul nu a fost recunoscut",
   document_not_recognized_details: "Scanați fața unui document suportat.",
+  document_scanned: "Excelent! Documentul a fost scanat",
   document_too_close_to_edge: "Îndepărtați documentul de margine",
   face_photo_not_fully_visible: "Mențineți fotografia feței complet vizibilă",
   flip_document: "Întoarceți documentul",
   flip_to_back_side: "Întoarceți documentul",
+  front_side_scanned: "Excelent! Partea din față a fost scanată",
   glare_detected:
     "Înclinați sau deplasați documentul pentru a elimina reflexiile",
   help_aria_label: "Ajutor",
@@ -47,7 +52,7 @@ export default {
   scan_right_page: "Scanați pagina dreaptă",
   scan_the_back_side: "Scanați partea din spate a documentului",
   scan_the_barcode: "Scanare cod de bare",
-  scan_the_front_side: "Scanați partea din față\na unui document",
+  scan_the_front_side: "Scanați partea din față\\na unui document",
   scan_top_page: "Scanați prima pagină",
   scan_unsuccessful: "Scanare nereușită",
   scan_unsuccessful_details: "Documentul nu poate fi citit. Încercați din nou.",

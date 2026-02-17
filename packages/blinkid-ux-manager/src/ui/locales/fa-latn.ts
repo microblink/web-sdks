@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for fa-latn.
+ */
 export default {
   alert_cancel_btn: "لغو",
   alert_retry_btn: "دوباره امتحان کنید",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "سند شناسایی نشده است",
   document_not_recognized_details:
     "قسمت جلوی یک سند پشتیبانی شده را اسکن کنید.",
+  document_scanned: "با موفقیت اسکن شد! سند اسکن شد",
   document_too_close_to_edge: "سند را از لبه حرکت دهید",
   face_photo_not_fully_visible: "عکس چهره را کاملاً قابل مشاهده نگه دارید",
   flip_document: "سند را ورق بزنید",
   flip_to_back_side: "به سمت عقب برگردانید",
+  front_side_scanned: "با موفقیت اسکن از جلو انجام شد!",
   glare_detected: "برای حذف انعکاس، سند را کج یا جابجا کنید",
   help_aria_label: "کمک",
   help_modal_back_btn: "برگشت",

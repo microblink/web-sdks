@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 /**
@@ -13,15 +13,25 @@ import type { WorkerScanningSession } from "@microblink/blinkid-worker";
 import { Remote } from "comlink";
 
 export * from "./BlinkIdCore";
-export * from "./createCustomImageData";
-export * from "./createProxyWorker";
 export * from "./defaultSessionSettings";
-export * from "./getCrossOriginWorkerURL";
-export * from "./getUserId";
 export * from "./utils";
 
-// WIP
-export * from "./deviceInfo/deviceInfo";
+export { getUserId } from "@microblink/core-common/getUserId";
+export { createCustomImageData } from "@microblink/core-common/createCustomImageData";
+export { createProxyWorker } from "@microblink/core-common/createProxyWorker";
+export { getCrossOriginWorkerURL } from "@microblink/core-common/getCrossOriginWorkerURL";
+export {
+  getDeviceInfo,
+  getUserAgentData,
+  createDerivedDeviceInfo,
+  type DeviceInfo,
+  type DerivedDeviceInfo,
+  type GpuInfo,
+  type BrowserStorageSupport,
+  type DeviceScreenInfo,
+  type FormFactor,
+  type UADataValues,
+} from "@microblink/core-common/deviceInfo/deviceInfo";
 
 export type * from "@microblink/blinkid-wasm";
 export type * from "@microblink/blinkid-worker";

@@ -6,7 +6,7 @@
 
 # Class: HapticFeedbackManager
 
-Manages haptic feedback for the BlinkID SDK.
+Manages haptic feedback for Microblink UX managers.
 Provides cross-platform haptic feedback using the Web Vibration API.
 
 ## Constructors

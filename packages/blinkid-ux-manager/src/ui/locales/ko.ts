@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ko.
+ */
 export default {
   alert_cancel_btn: "취소",
   alert_retry_btn: "다시 시도",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "다른 문서를 스캔해 보세요.",
   document_not_recognized: "문서 인식 실패",
   document_not_recognized_details: "사용 가능한 문서의 앞면을 스캔하세요.",
+  document_scanned: "문서 스캔 완료",
   document_too_close_to_edge: "문서가 가장자리와 너무 가깝습니다",
   face_photo_not_fully_visible: "얼굴 사진이 완전히 보이게 유지하세요",
   flip_document: "문서를 뒤집어 주세요",
   flip_to_back_side: "뒷면으로 넘겨주세요",
+  front_side_scanned: "앞면 스캔 완료",
   glare_detected: "문서를 기울이거나 이동시켜 반사광을 피하세요",
   help_aria_label: "도움말",
   help_modal_back_btn: "뒤로",

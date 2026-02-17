@@ -1,0 +1,11 @@
+{
+  "extends": "@microblink/tsconfig/base.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": false,
+    "outDir": "dist",
+    "declarationDir": "types",
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts"]
+}

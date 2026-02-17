@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for zh_TW.
+ */
 export default {
   camera_error_cancel_btn: "取消",
   camera_error_details: "請允許瀏覽器存取相機,然後再試一次。",

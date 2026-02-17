@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ms.
+ */
 export default {
   alert_cancel_btn: "Batal",
   alert_retry_btn: "Cuba semula",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Dokumen tidak dikenali",
   document_not_recognized_details:
     "Imbas bahagian hadapan dokumen yang disokong.",
+  document_scanned: "Berjaya! Dokumen telah diimbas",
   document_too_close_to_edge: "Alihkan fokumen dari tepi",
   face_photo_not_fully_visible: "Pastikan gambar muka dapat dilihat sepenuhnya",
   flip_document: "Putar dokumen",
   flip_to_back_side: "Balikkan dokumen",
+  front_side_scanned: "Berjaya! Bahagian hadapan telah diimbas",
   glare_detected:
     "Sengetkan atau gerakkan dokumen untuk mengelakkan pantulan cahaya",
   help_aria_label: "Bantuan",
@@ -36,7 +41,7 @@ export default {
   move_farther: "Jauhkan lagi",
   move_left: "Beralih ke halaman di sebelah kiri",
   move_right: "Pergi ke halaman di sebelah kanan",
-  move_top: "Beralih ke halaman di sebelah atas ",
+  move_top: "Beralih ke halaman di sebelah atas",
   occluded: "Sentiasa pastikan dokumen dapat dilihat sepenuhnya",
   onboarding_modal_btn: "Mula Mengimbas",
   onboarding_modal_details:
@@ -44,11 +49,11 @@ export default {
   onboarding_modal_title: "Pastikan semua butiran kelihatan",
   scan_data_page: "Imbas halaman data dokumen",
   scan_last_page_barcode: "Imbas kod bar daripada halaman terakhir",
-  scan_left_page: "Imbas halaman sebelah kiri ",
-  scan_right_page: "Imbas halaman sebelah kanan ",
+  scan_left_page: "Imbas halaman sebelah kiri",
+  scan_right_page: "Imbas halaman sebelah kanan",
   scan_the_back_side: "Imbas bahagian belakang dokumen",
   scan_the_barcode: "Imbas kod bar",
-  scan_the_front_side: "Imbas bahagian hadapan\ndokumen",
+  scan_the_front_side: "Imbas bahagian hadapan\\ndokumen",
   scan_top_page: "Imbas halaman sebelah atas",
   scan_unsuccessful: "Pengimbasan tidak berjaya",
   scan_unsuccessful_details: "Tidak dapat membaca dokumen. Sila cuba semula.",

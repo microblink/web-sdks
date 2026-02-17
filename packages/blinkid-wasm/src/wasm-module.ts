@@ -1,9 +1,9 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import type { EmscriptenModule } from "./emscripten";
-import { LicenseUnlockResult, ServerPermissionSubmitError } from "./licencing";
+import type { EmscriptenModule } from "@microblink/wasm-common";
+import { LicenseUnlockResult, ServerPermissionSubmitError } from "@microblink/wasm-common";
 import { BlinkIdScanningSession, BlinkIdSessionSettings } from "./session";
 
 /**
@@ -19,7 +19,7 @@ export interface BlinkIdWasmModule extends BlinkIdBindings, EmscriptenModule {}
  * @ignore
  */
 export interface BlinkIdBindings {
-  createBlinkIdScanningSession: (
+  createScanningSession: (
     sessionSettings: BlinkIdSessionSettings,
     userId: string,
   ) => BlinkIdScanningSession;

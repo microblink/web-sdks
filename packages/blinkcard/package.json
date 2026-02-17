@@ -1,0 +1,92 @@
+{
+  "name": "@microblink/blinkcard",
+  "description": "All-in-one BlinkCard browser SDK for fast and accurate debit and credit card scanning and recognition in web applications.",
+  "version": "3000.0.0",
+  "author": "Microblink",
+  "scripts": {
+    "build": "concurrently pnpm:build:js pnpm:build:types",
+    "build:js": "vite build",
+    "build:js-dev": "vite build --mode development",
+    "build:publish": "pnpm build && pnpm type-rollup",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist publish public/resources/* *.tgz",
+    "docs:api": "typedoc",
+    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
+    "lint:eslint": "eslint ./src --max-warnings 0",
+    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
+    "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepack": "pnpm prepare-publish",
+    "prepare-publish": "tsx scripts/prepare-publish.mts",
+    "publish-test": "pnpm build:publish && pnpm pack-check",
+    "type-rollup": "api-extractor run --local",
+    "watch": "concurrently pnpm:watch:js pnpm:watch:types",
+    "watch:js": "pnpm run build:js --watch --mode development",
+    "watch:types": "pnpm run build:types --watch"
+  },
+  "type": "module",
+  "main": "./dist/blinkcard.js",
+  "module": "./dist/blinkcard.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/blinkcard.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "directory": "publish",
+    "linkDirectory": false
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "dependencies": {
+    "@microblink/blinkcard-core": "workspace:^",
+    "@microblink/blinkcard-ux-manager": "workspace:^",
+    "@microblink/camera-manager": "workspace:^",
+    "type-fest": "^4.35.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.17.4",
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/repo-utils": "workspace:*",
+    "@microsoft/api-extractor": "^7.52.4",
+    "concurrently": "^9.1.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "10.0.1",
+    "eslint-define-config": "^1.24.1",
+    "publint": "^0.3.12",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.20.6",
+    "typedoc": "^0.28.7",
+    "typedoc-plugin-markdown": "^4.7.0",
+    "typescript": "5.8.3",
+    "vite": "^6.2.1",
+    "vitest": "^3.0.8",
+    "write-package": "^7.1.0",
+    "zx": "^8.8.5"
+  },
+  "keywords": [
+    "microblink",
+    "blinkcard",
+    "payment-cards",
+    "credit-cards",
+    "debit-cards",
+    "card-scanner",
+    "card-recognition",
+    "ocr",
+    "optical-character-recognition",
+    "computer-vision",
+    "verification",
+    "browser",
+    "frontend",
+    "typescript",
+    "wasm",
+    "webassembly"
+  ],
+  "license": "ISC"
+}

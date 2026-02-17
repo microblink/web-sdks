@@ -35,10 +35,8 @@ await fs.copy("dist", path.join(publishPath, "dist"));
 await fs.copy("types", path.join(publishPath, "types"));
 await fs.copy("README.md", path.join(publishPath, "README.md"));
 
-/* We don't want to include @microblink/blinkid-worker and
-@microblink/blinkid-wasm in the published package.json.
-
-They are rolled up into the main types file, and don't have any runtime code */
+// We don't want to include [@microblink/blinkid-worker, @microblink/blinkid-wasm and @microblink/core-common] in the published package.json.
+// They are rolled up into the main types file, and don't have any runtime code
 
 await writePackage(
   newPackagePath,
@@ -51,10 +49,10 @@ await writePackage(
     access: "public",
     registry: "https://registry.npmjs.org/",
     types: "./types/index.rollup.d.ts",
-    homepage: "https://github.com/BlinkID/blinkid-web",
+    homepage: "https://github.com/microblink/web-sdks",
     repository: {
       type: "git",
-      url: "git+https://github.com/BlinkID/blinkid-web.git",
+      url: "git+https://github.com/microblink/web-sdks.git",
     },
     exports: {
       ".": {

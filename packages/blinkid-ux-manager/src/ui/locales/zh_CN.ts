@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for zh_CN.
+ */
 export default {
   alert_cancel_btn: "取消",
   alert_retry_btn: "重试",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "尝试扫描不同的文档。",
   document_not_recognized: "文档无法识别",
   document_not_recognized_details: "扫描支持文件类型的正面。",
+  document_scanned: "成功！文件已扫描",
   document_too_close_to_edge: "从边缘移动文件",
   face_photo_not_fully_visible: "让面部照片完全可见",
   flip_document: "翻转文档",
   flip_to_back_side: "给文件翻页",
+  front_side_scanned: "成功！正面已扫描",
   glare_detected: "倾斜或移动文件以消除反光",
   help_aria_label: "帮助",
   help_modal_back_btn: "返回",
@@ -46,7 +51,7 @@ export default {
   scan_right_page: "扫描右侧页面",
   scan_the_back_side: "扫描文件反面",
   scan_the_barcode: "扫描条形码",
-  scan_the_front_side: "扫描文件的\n正面",
+  scan_the_front_side: "扫描文件的\\n正面",
   scan_top_page: "扫描顶部页面",
   scan_unsuccessful: "扫描失败",
   scan_unsuccessful_details: "未能读取文件,请重试。",

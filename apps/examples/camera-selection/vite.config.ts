@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import dns from "dns";
@@ -21,6 +21,7 @@ const serverOptions: ServerOptions = {
 
 export default defineConfig((config) => {
   return {
+    base: "./",
     build: {
       sourcemap: config.mode === "development",
       target: "es2022",

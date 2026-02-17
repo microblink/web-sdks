@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for en_GB.
+ */
 export default {
   alert_cancel_btn: "Cancel",
   alert_retry_btn: "Retry",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Document not recognised",
   document_not_recognized_details:
     "Scan the front side of a supported document.",
+  document_scanned: "Success! Document scanned",
   document_too_close_to_edge: "Move the document from the edge",
   face_photo_not_fully_visible: "Keep face photo fully visible",
   flip_document: "Flip the document",
   flip_to_back_side: "Flip to the back side",
+  front_side_scanned: "Success! Front side scanned",
   glare_detected: "Tilt or move document to remove reflection",
   help_aria_label: "Help",
   help_modal_back_btn: "Back",

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for pt_BR.
+ */
 export default {
   camera_error_cancel_btn: "Cancelar",
   camera_error_details:

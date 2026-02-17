@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for sk.
+ */
 export default {
   alert_cancel_btn: "Zrušiť",
   alert_retry_btn: "Skúsiť znova",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Dokument nebol rozpoznaný",
   document_not_recognized_details:
     "Naskenujte prednú stranu podporovaného dokumentu.",
+  document_scanned: "Úspech! Doklad bol naskenovaný",
   document_too_close_to_edge: "Presunúť dokument od okraja",
   face_photo_not_fully_visible: "Ponechajte fotku tváre plne viditeľnú",
   flip_document: "Otočte dokument",
   flip_to_back_side: "Otočte preukaz",
+  front_side_scanned: "Úspech! Naskenovaná predná strana",
   glare_detected: "Nakloňte alebo posuňte dokument, aby ste odstránili odraz",
   help_aria_label: "Pomoc",
   help_modal_back_btn: "Späť",
@@ -47,7 +52,7 @@ export default {
   scan_right_page: "Oskenujte stránku vpravo",
   scan_the_back_side: "Nasnímajte zadnú stranu dokumentu",
   scan_the_barcode: "Naskenovať čiarový kód",
-  scan_the_front_side: "Naskenujte prednú stranu \n preukazu",
+  scan_the_front_side: "Naskenujte prednú stranu \\n preukazu",
   scan_top_page: "Oskenujte stránku hore",
   scan_unsuccessful: "Skenovanie neúspešné",
   scan_unsuccessful_details:

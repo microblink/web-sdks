@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for pt.
+ */
 export default {
   alert_cancel_btn: "Cancelar",
   alert_retry_btn: "Tente novamente",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Documento não reconhecido",
   document_not_recognized_details:
     "Digitalize a frente de um documento suportado.",
+  document_scanned: "Documento digitalizado com sucesso!",
   document_too_close_to_edge: "Mova o documento da margem",
   face_photo_not_fully_visible: "Manter a foto do rosto totalmente visível",
   flip_document: "Virar o documento",
   flip_to_back_side: "Vire o documento",
+  front_side_scanned: "Lado da frente digitalizado com sucesso!",
   glare_detected: "Incline ou desloque o documento para eliminar o reflexo",
   help_aria_label: "Ajuda",
   help_modal_back_btn: "Anterior",
@@ -30,7 +35,7 @@ export default {
   help_modal_title_1: "Mantenha todos os campos visíveis",
   help_modal_title_2: "Cuidado com a luz intensa",
   help_modal_title_3: "Mantenha-se imóvel enquanto digitaliza",
-  help_tooltip: "Precisa de ajuda?\n",
+  help_tooltip: "Precisa de ajuda?",
   move_closer: "Aproxime",
   move_farther: "Afaste",
   move_left: "Ir para a página esquerda",
@@ -45,9 +50,9 @@ export default {
   scan_last_page_barcode: "Digitalize o código de barras da última página",
   scan_left_page: "Digitalizar a página esquerda",
   scan_right_page: "Digitalizar a página direita",
-  scan_the_back_side: "Digitalize o verso do documento\n",
+  scan_the_back_side: "Digitalize o verso do documento",
   scan_the_barcode: "Digitalizar o código de barras",
-  scan_the_front_side: "Digitalize a frente\nde um documento",
+  scan_the_front_side: "Digitalize a frente\\nde um documento",
   scan_top_page: "Digitalizar a página superior",
   scan_unsuccessful: "A digitalização falhou",
   scan_unsuccessful_details:

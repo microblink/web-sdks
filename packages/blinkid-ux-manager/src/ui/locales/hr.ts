@@ -1,21 +1,26 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for hr.
+ */
 export default {
-  alert_cancel_btn: "Poništi",
+  alert_cancel_btn: "Odustani",
   alert_retry_btn: "U redu",
   blur_detected: "Držite dokument i telefon mirno",
   camera_angle_too_steep: "Držite dokument paralelno s telefonom",
   document_filtered: "Dokument nije prihvaćen",
   document_filtered_details: "Pokušajte skenirati drugi dokument.",
-  document_not_recognized: "Nepoznat dokument",
+  document_not_recognized: "Dokument nije prepoznat",
   document_not_recognized_details:
-    "Ponovite skeniranje prednje strane podržanog dokumenta.",
+    "Skenirajte prednju stranu podržanog dokumenta.",
+  document_scanned: "Uspjeh! Dokument skeniran",
   document_too_close_to_edge: "Odmaknite dokument od ruba",
   face_photo_not_fully_visible: "Fotografija lica nije u potpunosti vidljiva",
   flip_document: "Okrenite dokument",
   flip_to_back_side: "Okrenite dokument",
+  front_side_scanned: "Uspjeh! Prednja strana skenirana",
   glare_detected:
     "Nagnite ili premjestite dokument kako biste uklonili refleksiju",
   help_aria_label: "Pomoć",
@@ -29,9 +34,9 @@ export default {
   help_modal_done_btn: "OK",
   help_modal_next_btn: "Dalje",
   help_modal_title_1: "Pazite da su sva polja vidljiva",
-  help_modal_title_2: "Pripazite na direktno osvjetljenje",
+  help_modal_title_2: "Pazite na direktno osvjetljenje",
   help_modal_title_3: "Mirno držite dokument",
-  help_tooltip: "Trebaš pomoć?",
+  help_tooltip: "Trebate pomoć?",
   move_closer: "Približite dokument",
   move_farther: "Udaljite dokument",
   move_left: "Prijeđite na lijevu stranicu",
@@ -46,9 +51,9 @@ export default {
   scan_last_page_barcode: "Skenirajte barkod sa zadnje stranice",
   scan_left_page: "Skenirajte lijevu stranicu",
   scan_right_page: "Skenirajte desnu stranicu",
-  scan_the_back_side: "Skenirajte stražnju\nstranu dokumenta",
+  scan_the_back_side: "Skenirajte stražnju stranu dokumenta",
   scan_the_barcode: "Skenirajte barkod",
-  scan_the_front_side: "Skenirajte prednju\nstranu dokumenta",
+  scan_the_front_side: "Skenirajte prednju stranu dokumenta",
   scan_top_page: "Skenirajte gornju stranicu",
   scan_unsuccessful: "Skeniranje nije uspjelo",
   scan_unsuccessful_details:

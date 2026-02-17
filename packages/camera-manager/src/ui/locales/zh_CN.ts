@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for zh_CN.
+ */
 export default {
   camera_error_cancel_btn: "取消",
   camera_error_details: "请在您的浏览器中允许相机访问权限,然后重试。",

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for km_KH.
+ */
 export default {
   alert_cancel_btn: "បោះបង់",
   alert_retry_btn: "ព្យាយាមម្តងទៀត",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "សាកល្បងស្កេនឯកសារផ្សេង។",
   document_not_recognized: "ឯកសារមិនត្រូវបានទទួលស្គាល់ទេ។",
   document_not_recognized_details: "ស្កេនផ្នែកខាងមុខនៃឯកសារដែលគាំទ្រ។",
+  document_scanned: "ជោគជ័យ! ឯកសារត្រូវបានស្កេន",
   document_too_close_to_edge: "ផ្លាស់ទីឯកសារពីគែម",
   face_photo_not_fully_visible: "រក្សារូបថតមុខដែលអាចមើលឃើញយ៉ាងពេញលេញ",
   flip_document: "ត្រឡប់ឯកសារ",
   flip_to_back_side: "បង្វិលទៅផ្នែកខាងក្រោយ",
+  front_side_scanned: "ជោគជ័យ! ផ្នែកខាងមុខត្រូវបានស្កេន",
   glare_detected: "ផ្អៀង ឬផ្លាស់ទីឯកសារ ដើម្បីលុបការឆ្លុះបញ្ចាំង",
   help_aria_label: "ជំនួយ",
   help_modal_back_btn: "ត្រឡប់មកវិញ",

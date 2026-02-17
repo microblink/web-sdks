@@ -1,0 +1,13 @@
+{
+  "extends": "@microblink/tsconfig/base.json",
+  "compilerOptions": {
+    // Override for worker/es2015
+    "lib": ["ES2022", "WebWorker"],
+    "module": "ES2022",
+    "emitDeclarationOnly": true,
+    "declarationDir": "types",
+    "moduleResolution": "Bundler",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for yo.
+ */
 export default {
   alert_cancel_btn: "Fagi lée",
   alert_retry_btn: "Tún gbìyànjú síi",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "Gbìyànjú síṣe ẹ̀dà àwòrán ìwé àkọsílẹ̀ tó yàtọ̀.",
   document_not_recognized: "A kò rí ìdámọ̀ ìwé àkọsílẹ̀ ṣe",
   document_not_recognized_details: "Ṣe ẹ̀dà àwòrán iwájú ìwé àkọsílẹ̀ tó nílò.",
+  document_scanned: "Àṣeyọrí! Ẹ̀dà àwòrán ìwé àkọsílẹ̀ ti parí",
   document_too_close_to_edge: "Sún ìwé àkọsílẹ̀ náà kúrò ní eteetí",
   face_photo_not_fully_visible: "Jẹ́ kí àwòrán ojú rẹ hàn kedere",
   flip_document: "Yí ìwé àkọsílẹ̀ padà",
   flip_to_back_side: "Yí padà sí ẹ̀yìn",
+  front_side_scanned: "Àṣeyọrí! Ẹ̀dà àwòrán apá iwájú ti parí",
   glare_detected: "Tẹ̀ ẹ́ tàbí yí ìwé àkọsílẹ̀ náà láti yọ àgbéyọ kúrò",
   help_aria_label: "Ìrànlọ́wọ́",
   help_modal_back_btn: "Padà",

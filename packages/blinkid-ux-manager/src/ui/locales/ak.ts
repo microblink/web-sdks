@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ak.
+ */
 export default {
   alert_cancel_btn: "Twam",
   alert_retry_btn: "San yɛ bio",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "Bɔ mmɔden sɛ wobɛskane krataa foforo.",
   document_not_recognized: "Yɛnnye krataa yi ntom",
   document_not_recognized_details: "Skane krataa a ɛsɔpɔɔte no anim.",
+  document_scanned: "Ayɛ yie! Wɔaskaane nhoma no",
   document_too_close_to_edge: "Twe krataa no fi ano",
   face_photo_not_fully_visible: "Ma anim mfonini nyɛ nea wotumi hu koraa",
   flip_document: "Dane krataa no",
   flip_to_back_side: "Dane kɔ akyi",
+  front_side_scanned: "Ayɛ yie! Wɔaskaane anim",
   glare_detected: "Woso anaa dane krataa no na fa yi ne sunsuma no",
   help_aria_label: "Mmoa",
   help_modal_back_btn: "Akyire",

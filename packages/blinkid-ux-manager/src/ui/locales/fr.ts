@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for fr.
+ */
 export default {
   alert_cancel_btn: "Annuler",
   alert_retry_btn: "Réessayez",
@@ -12,11 +15,13 @@ export default {
   document_not_recognized: "Document non reconnu",
   document_not_recognized_details:
     "Numérisez le recto d'un document pris en charge.",
+  document_scanned: "Document scanné avec succès !",
   document_too_close_to_edge: "Déplacer le document du bord",
   face_photo_not_fully_visible:
     "La photo de face doit être entièrement visible",
   flip_document: "Retourner le document",
   flip_to_back_side: "Retournez le document",
+  front_side_scanned: "Face avant scannée avec succès !",
   glare_detected:
     "Incliner ou déplacer le document afin d'éliminer les reflets",
   help_aria_label: "Aide",
@@ -49,7 +54,7 @@ export default {
   scan_right_page: "Numériser la page de droite",
   scan_the_back_side: "Scanner le verso du document",
   scan_the_barcode: "Scanner le code-barres",
-  scan_the_front_side: "Numérisez le recto\nd'un document",
+  scan_the_front_side: "Numérisez le recto\\nd'un document",
   scan_top_page: "Numériser la première page",
   scan_unsuccessful: "Numérisation infructueuse",
   scan_unsuccessful_details:

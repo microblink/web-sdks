@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import type {
@@ -7,12 +7,12 @@ import type {
   BlinkIdWorkerProxy,
   ProgressStatusCallback,
 } from "@microblink/blinkid-worker";
+import { createProxyWorker } from "@microblink/core-common/createProxyWorker";
+import { shouldUseLightweightBuild } from "@microblink/core-common/shouldUseLightweightBuild";
 import type { SetOptional, Simplify } from "type-fest";
-import { createProxyWorker } from "./createProxyWorker";
-import { getUserId } from "./getUserId";
+import { getUserId } from "@microblink/core-common/getUserId";
 import { proxy, Remote } from "comlink";
 import { defaultSessionSettings } from "./defaultSessionSettings";
-import { shouldUseLightweightBuild } from "./shouldUseLightweightBuild";
 
 /**
  * Configuration options for initializing the BlinkID core.
@@ -34,6 +34,8 @@ export type BlinkIdInitSettings = SetOptional<
  */
 export type BlinkIdCore = Simplify<Remote<BlinkIdWorkerProxy>>;
 
+const STORAGE_KEY = "blinkid-userid";
+
 /**
  * Creates and initializes a BlinkID core instance.
  *
@@ -46,10 +48,13 @@ export async function loadBlinkIdCore(
   settings: BlinkIdInitSettings,
   progressCallback?: ProgressStatusCallback,
 ): Promise<BlinkIdCore> {
-  const remoteWorker = await createProxyWorker(settings.resourcesLocation);
+  const remoteWorker = await createProxyWorker<BlinkIdWorkerProxy>(
+    settings.resourcesLocation ?? window.location.href,
+    "blinkid-worker.js",
+  );
 
   if (!settings.userId) {
-    settings.userId = getUserId();
+    settings.userId = getUserId(STORAGE_KEY);
   }
 
   if (!settings.resourcesLocation) {

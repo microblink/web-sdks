@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ar.
+ */
 export default {
   alert_cancel_btn: "إلغاء",
   alert_retry_btn: "إعادة المحاولة",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "حاول مسح مستند آخر.",
   document_not_recognized: "لم يتم التعرف على المستند",
   document_not_recognized_details: "امسح وجه مستند مدعوم.",
+  document_scanned: "نجحت العملية! تم مسح المستند ضوئياً",
   document_too_close_to_edge: "أبعد المستند عن الحافة",
-  face_photo_not_fully_visible: "حافظ على صورة الوجه مرئية بالكامل\n",
-  flip_document: "اقلب المستند\n",
+  face_photo_not_fully_visible: "حافظ على صورة الوجه مرئية بالكامل",
+  flip_document: "اقلب المستند",
   flip_to_back_side: "اقلب المستند",
+  front_side_scanned: "نجحت العملية! تم مسح الجانب الأمامي ضوئياً",
   glare_detected: "أمِل المستند أو حرّكه لتتخلص من الانعكاس",
   help_aria_label: "المساعدة",
   help_modal_back_btn: "عودة",
@@ -46,7 +51,7 @@ export default {
   scan_right_page: "مسح الصفحة جهة اليمين ضوئياً",
   scan_the_back_side: "المسح الضوئي للوجه الخلفي من المستند",
   scan_the_barcode: "امسح الرمز الشريطي",
-  scan_the_front_side: "مسح وجه\nمستند",
+  scan_the_front_side: "مسح وجه\\nمستند",
   scan_top_page: "مسح الصفحة العليا ضوئياً",
   scan_unsuccessful: "تمت عملية المسح بنجاح",
   scan_unsuccessful_details:

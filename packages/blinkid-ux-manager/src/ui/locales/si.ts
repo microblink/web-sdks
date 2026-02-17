@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for si.
+ */
 export default {
   alert_cancel_btn: "අවලංගු කරන්න",
   alert_retry_btn: "නැවත උත්සාහ කරන්න",
@@ -12,11 +15,13 @@ export default {
   document_not_recognized: "ලේඛනය හඳුනාගත නොහැක",
   document_not_recognized_details:
     "සහාය දක්වන ලේඛනයක ඉදිරි පැත්ත ස්කෑන් කරන්න.",
+  document_scanned: "සාර්ථකයි! ලේඛනය ස්කෑන් කර ඇත",
   document_too_close_to_edge: "ලේඛනය දාරයෙන් අල්ලා එහා මෙහා කරන්න",
   face_photo_not_fully_visible:
     "මුහුණේ ඡායාරූපය සම්පූර්ණයෙන් පෙනෙන පරිදි තබා ගන්න",
   flip_document: "ලේඛනය අනෙක් පිට හරවන්න",
   flip_to_back_side: "පිට පැත්ත හරවන්න",
+  front_side_scanned: "සාර්ථකයි! ඉදිරි පැත්ත ස්කෑන් කර ඇත",
   glare_detected: "පරාවර්තනය ඉවත් කිරීමට ලේඛනය ඇල කරන්න හෝ  එහා මෙහා කරන්න",
   help_aria_label: "උදව්",
   help_modal_back_btn: "ආපසු",

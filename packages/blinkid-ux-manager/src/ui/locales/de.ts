@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for de.
+ */
 export default {
   alert_cancel_btn: "Abbrechen",
   alert_retry_btn: "Wiederholen",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Dokument nicht erkannt",
   document_not_recognized_details:
     "Scannen Sie die Vorderseite eines unterstützten Dokuments.",
+  document_scanned: "Erfolg! Dokument gescannt",
   document_too_close_to_edge: "Verschieben des Dokuments vom Rand aus",
   face_photo_not_fully_visible: "Gesichtsfoto komplett sichtbar lassen",
   flip_document: "Dokument wenden",
   flip_to_back_side: "Drehen Sie das Dokument um",
+  front_side_scanned: "Erfolg! Vorderseite gescannt",
   glare_detected:
     "Dokument neigen oder bewegen, um die Spiegelung zu beseitigen",
   help_aria_label: "Hilfe",
@@ -48,7 +53,7 @@ export default {
   scan_right_page: "Rechte Seite scannen",
   scan_the_back_side: "Scannen Sie die Rückseite des Dokuments",
   scan_the_barcode: "Scannen Sie den Barcode",
-  scan_the_front_side: "Scannen Sie die Vorderseite \n eines Dokuments",
+  scan_the_front_side: "Scannen Sie die Vorderseite \\n eines Dokuments",
   scan_top_page: "Oberste Seite scannen",
   scan_unsuccessful: "Scan nicht erfolgreich",
   scan_unsuccessful_details:

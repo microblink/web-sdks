@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for vi.
+ */
 export default {
   alert_cancel_btn: "Hủy bỏ",
   alert_retry_btn: "Thử lại",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "Thử quét tài liệu khác.",
   document_not_recognized: "Không nhận dạng được tài liệu",
   document_not_recognized_details: "Quét mặt trước của tài liệu được hỗ trợ.",
+  document_scanned: "Thành công! Đã quét tài liệu",
   document_too_close_to_edge: "Di chuyển tài liệu từ cạnh",
   face_photo_not_fully_visible: "Đảm bảo thấy đầy đủ ảnh khuôn mặt",
   flip_document: "Lật tài liệu",
   flip_to_back_side: "Lật tài liệu",
+  front_side_scanned: "Thành công! Đã quét mặt trước",
   glare_detected:
     "Nghiêng hoặc di chuyển tài liệu để loại bỏ hiệu ứng phản chiếu",
   help_aria_label: "Trợ giúp",
@@ -47,7 +52,7 @@ export default {
   scan_right_page: "Quét trang bên phải",
   scan_the_back_side: "Quét mặt sau của tài liệu",
   scan_the_barcode: "Quét mã vạch",
-  scan_the_front_side: "Quét mặt trước\ncủa tài liệu",
+  scan_the_front_side: "Quét mặt trước\\ncủa tài liệu",
   scan_top_page: "Quét trang trên cùng",
   scan_unsuccessful: "Quét không thành công",
   scan_unsuccessful_details: "Không thể đọc tài liệu. Xin vui lòng thử lại.",

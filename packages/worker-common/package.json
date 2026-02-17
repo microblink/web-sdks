@@ -1,0 +1,65 @@
+{
+  "name": "@microblink/worker-common",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types dist *.tgz",
+    "lint": "tsc --emitDeclarationOnly false --noEmit",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch"
+  },
+  "type": "module",
+  "exports": {
+    "./buildResourcePath": {
+      "types": "./types/buildResourcePath.d.ts",
+      "import": "./dist/buildResourcePath.js"
+    },
+    "./getCrossOriginWorkerURL": {
+      "types": "./types/getCrossOriginWorkerURL.d.ts",
+      "import": "./dist/getCrossOriginWorkerURL.js"
+    },
+    "./isSafari": {
+      "types": "./types/isSafari.d.ts",
+      "import": "./dist/isSafari.js"
+    },
+    "./licencing": {
+      "types": "./types/licencing.d.ts",
+      "import": "./dist/licencing.js"
+    },
+    "./mbToWasmPages": {
+      "types": "./types/mbToWasmPages.d.ts",
+      "import": "./dist/mbToWasmPages.js"
+    },
+    "./proxy-url-validator": {
+      "types": "./types/proxy-url-validator.d.ts",
+      "import": "./dist/proxy-url-validator.js"
+    },
+    "./wasm-feature-detect": {
+      "types": "./types/wasm-feature-detect.d.ts",
+      "import": "./dist/wasm-feature-detect.js"
+    },
+    "./errors": {
+      "types": "./types/errors.d.ts",
+      "import": "./dist/errors.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "dependencies": {
+    "@microblink/wasm-common": "workspace:*",
+    "wasm-feature-detect": "^1.8.0"
+  },
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "rimraf": "^6.0.1",
+    "typescript": "5.8.3",
+    "vitest": "^3.0.8"
+  },
+  "keywords": [],
+  "license": "ISC"
+}

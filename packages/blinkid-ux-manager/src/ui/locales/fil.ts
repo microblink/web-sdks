@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for fil.
+ */
 export default {
   alert_cancel_btn: "Kanselahin",
   alert_retry_btn: "Subukan ulit",
@@ -12,11 +15,13 @@ export default {
   document_not_recognized: "Hindi nababasa ang dokumento",
   document_not_recognized_details:
     "I-scan ang unahang bahagi ng isang suportadong dokumento.",
+  document_scanned: "Tagumpay! Na-scan ang dokumento",
   document_too_close_to_edge: "Iurong ang dokumento mula sa gilid",
   face_photo_not_fully_visible:
     "Panatilihing ganap na nakikita ang larawan sa mukha",
   flip_document: "Baligtarin ang dokumento",
   flip_to_back_side: "Baligtarin ang dokumento",
+  front_side_scanned: "Tagumpay! Na-scan ang harap na bahagi",
   glare_detected: "I-tilt o iusog ang dokumento para maalis ang reflection",
   help_aria_label: "Tulong",
   help_modal_back_btn: "Bumalik",

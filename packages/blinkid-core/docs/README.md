@@ -10,11 +10,8 @@
 
 ## Interfaces
 
-- [NavigatorUABrandVersion](interfaces/NavigatorUABrandVersion.md)
-- [NavigatorUAData](interfaces/NavigatorUAData.md)
 - [PingBase](interfaces/PingBase.md)
 - [UADataValues](interfaces/UADataValues.md)
-- [UALowEntropyJSON](interfaces/UALowEntropyJSON.md)
 
 ## Type Aliases
 
@@ -68,7 +65,6 @@
 - [FormFactor](type-aliases/FormFactor.md)
 - [GpuInfo](type-aliases/GpuInfo.md)
 - [HardwareCameraInfoData](type-aliases/HardwareCameraInfoData.md)
-- [Hints](type-aliases/Hints.md)
 - [ImageAnalysisDetectionStatus](type-aliases/ImageAnalysisDetectionStatus.md)
 - [ImageAnalysisLightingStatus](type-aliases/ImageAnalysisLightingStatus.md)
 - [ImageExtractionType](type-aliases/ImageExtractionType.md)
@@ -103,7 +99,6 @@
 - [Rectangle](type-aliases/Rectangle.md)
 - [Region](type-aliases/Region.md)
 - [RemoteScanningSession](type-aliases/RemoteScanningSession.md)
-- [RemoteWorker](type-aliases/RemoteWorker.md)
 - [ResourceFileType](type-aliases/ResourceFileType.md)
 - [ResultCompleteness](type-aliases/ResultCompleteness.md)
 - [ScanningMode](type-aliases/ScanningMode.md)
@@ -117,7 +112,7 @@
 - [SdkScanConditionsData](type-aliases/SdkScanConditionsData.md)
 - [SdkUxEventData](type-aliases/SdkUxEventData.md)
 - [SdkWrapperProductData](type-aliases/SdkWrapperProductData.md)
-- [ServerPermissionError](type-aliases/ServerPermissionError.md)
+- [ServerPermissionErrorReason](type-aliases/ServerPermissionErrorReason.md)
 - [ServerPermissionSubmitError](type-aliases/ServerPermissionSubmitError.md)
 - [SingleSideScanningResult](type-aliases/SingleSideScanningResult.md)
 - [StringResult](type-aliases/StringResult.md)
@@ -130,6 +125,7 @@
 ## Variables
 
 - [defaultSessionSettings](variables/defaultSessionSettings.md)
+- [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
 - [wasmVariants](variables/wasmVariants.md)
@@ -137,15 +133,14 @@
 ## Functions
 
 - [createCustomImageData](functions/createCustomImageData.md)
+- [createDerivedDeviceInfo](functions/createDerivedDeviceInfo.md)
 - [createProxyWorker](functions/createProxyWorker.md)
 - [extractBarcodeImage](functions/extractBarcodeImage.md)
 - [extractFaceImage](functions/extractFaceImage.md)
 - [extractSideDocumentImage](functions/extractSideDocumentImage.md)
 - [extractSideInputImage](functions/extractSideInputImage.md)
 - [extractSignatureImage](functions/extractSignatureImage.md)
-- [getCrossOriginWorkerURL](functions/getCrossOriginWorkerURL.md)
 - [getDeviceInfo](functions/getDeviceInfo.md)
 - [getUserAgentData](functions/getUserAgentData.md)
 - [getUserId](functions/getUserId.md)
 - [loadBlinkIdCore](functions/loadBlinkIdCore.md)
-- [testLocalStorage](functions/testLocalStorage.md)

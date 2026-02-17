@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for pt_BR.
+ */
 export default {
   alert_cancel_btn: "Cancelar",
   alert_retry_btn: "Tentar novamente",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Documento não reconhecido",
   document_not_recognized_details:
     "Digitalize a frente de um documento suportado.",
+  document_scanned: "Sucesso! Documento digitalizado",
   document_too_close_to_edge: "Mova o documento pela borda",
   face_photo_not_fully_visible: "Mantenha a foto do rosto totalmente visível",
   flip_document: "Vire o documento",
   flip_to_back_side: "Vire para o verso",
+  front_side_scanned: "Sucesso! Frente digitalizada",
   glare_detected: "Incline ou mova o documento para remover o reflexo",
   help_aria_label: "Ajuda",
   help_modal_back_btn: "Voltar",

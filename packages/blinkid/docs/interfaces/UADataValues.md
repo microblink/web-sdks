@@ -26,7 +26,7 @@ https://wicg.github.io/ua-client-hints/#dictdef-uadatavalues
 
 ### brands?
 
-> `readonly` `optional` **brands**: [`NavigatorUABrandVersion`](NavigatorUABrandVersion.md)[]
+> `readonly` `optional` **brands**: `NavigatorUABrandVersion`[]
 
 ***
 
@@ -38,7 +38,7 @@ https://wicg.github.io/ua-client-hints/#dictdef-uadatavalues
 
 ### fullVersionList?
 
-> `readonly` `optional` **fullVersionList**: [`NavigatorUABrandVersion`](NavigatorUABrandVersion.md)[]
+> `readonly` `optional` **fullVersionList**: `NavigatorUABrandVersion`[]
 
 ***
 

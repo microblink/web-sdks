@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import {
@@ -29,7 +29,7 @@ const blinkIdCore = await loadBlinkIdCore(
   progressCallback,
 );
 
-const session = await blinkIdCore.createBlinkIdScanningSession();
+const session = await blinkIdCore.createScanningSession();
 
 const frameResult = await session.process(new ImageData(1920, 1080));
 console.log("frameResult", frameResult);

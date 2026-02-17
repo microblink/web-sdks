@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for sr.
+ */
 export default {
   alert_cancel_btn: "Otkaži",
   alert_retry_btn: "Pokušaj ponovo",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Документ није препознат",
   document_not_recognized_details:
     "Skenirajte prednju stranu podržanog dokumenta.",
+  document_scanned: "Uspeh! Dokument skeniran",
   document_too_close_to_edge: "Pomerite dokument sa ivice",
   face_photo_not_fully_visible: "Neka slika lica bude u potpunosti vidljiva",
   flip_document: "Preokrenite dokument",
   flip_to_back_side: "Preokrenite dokument",
+  front_side_scanned: "Uspeh! Prednja strana skenirana",
   glare_detected: "Nagnite ili pomerite dokument kako biste uklonili odsjaj",
   help_aria_label: "Pomoć",
   help_modal_back_btn: "Nazad",
@@ -47,7 +52,7 @@ export default {
   scan_right_page: "Skenirajte desnu stranicu",
   scan_the_back_side: "Skenirajte zadnju stranu dokumenta",
   scan_the_barcode: "Skenirajte bar kod",
-  scan_the_front_side: "Skenirajte prednju stranu\ndokumenta",
+  scan_the_front_side: "Skenirajte prednju stranu\\ndokumenta",
   scan_top_page: "Skenirajte gornju stranicu",
   scan_unsuccessful: "Skeniranje neuspešno",
   scan_unsuccessful_details:

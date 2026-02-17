@@ -1,0 +1,37 @@
+{
+  "name": "@microblink/ux-common",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types dist *.tgz",
+    "lint": "tsc --emitDeclarationOnly false --noEmit",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch"
+  },
+  "type": "module",
+  "exports": {
+    "./hapticFeedback": {
+      "types": "./types/hapticFeedback.d.ts",
+      "import": "./dist/hapticFeedback.js"
+    },
+    "./utils": {
+      "types": "./types/utils.d.ts",
+      "import": "./dist/utils.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "rimraf": "^6.0.1",
+    "typescript": "5.8.3",
+    "vitest": "^3.0.8"
+  },
+  "keywords": [],
+  "license": "ISC"
+}

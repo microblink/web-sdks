@@ -1,0 +1,62 @@
+{
+  "name": "@microblink/blinkcard-worker",
+  "description": "Provides a worker which runs the BlinkCard WebAssembly in separate thread",
+  "private": true,
+  "version": "3000.0.0",
+  "scripts": {
+    "build": "concurrently pnpm:build:js pnpm:build:types",
+    "build:js": "vite build",
+    "build:js-dev": "vite build --mode development",
+    "build:publish": "pnpm build",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist public/resources/*",
+    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
+    "lint:eslint": "eslint ./src --max-warnings 0",
+    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
+    "docs:api": "typedoc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "watch": "concurrently pnpm:watch:js pnpm:watch:types",
+    "watch:js": "vite build --mode development --watch",
+    "watch:types": "tsc --watch"
+  },
+  "main": "dist/blinkcard-worker.js",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/blinkcard-worker.js",
+      "require": "./dist/blinkcard-worker.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "dependencies": {
+    "@microblink/analytics": "workspace:*",
+    "@microblink/blinkcard-wasm": "workspace:*",
+    "@microblink/worker-common": "workspace:*",
+    "comlink": "^4.4.2",
+    "merge-anything": "^6.0.3",
+    "type-fest": "^4.35.0",
+    "wasm-feature-detect": "^1.8.0"
+  },
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/repo-utils": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "10.0.1",
+    "eslint-define-config": "^1.24.1",
+    "rimraf": "^6.0.1",
+    "typedoc": "^0.28.7",
+    "typedoc-plugin-markdown": "^4.7.0",
+    "tsx": "^4.20.6",
+    "typescript": "5.8.3",
+    "vite": "^6.2.1",
+    "vitest": "^3.0.8",
+    "zx": "^8.8.5"
+  }
+}

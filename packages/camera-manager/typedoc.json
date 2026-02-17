@@ -3,5 +3,5 @@
   "entryPoints": ["./src/index.ts"],
   "out": "docs",
   "tsconfig": "./tsconfig.json",
-  "gitRemote": "https://github.com/BlinkID/blinkid-web/tree/main/packages/camera-manager"
+  "gitRemote": "https://github.com/microblink/web-sdks/tree/main/packages/camera-manager"
 }

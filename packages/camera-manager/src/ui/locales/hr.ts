@@ -1,9 +1,12 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for hr.
+ */
 export default {
-  camera_error_cancel_btn: "Poništi",
+  camera_error_cancel_btn: "Odustani",
   camera_error_details:
     "Dopustite pristup kameri u svom pregledniku i pokušajte ponovno.",
   camera_error_primary_btn: "U redu",
@@ -11,7 +14,7 @@ export default {
   close: "Zatvori",
   loading_cameras: "Učitavanje kamera...",
   mirror_camera: "Zrcali kameru",
-  scan_document: "Skeniraj dokument",
+  scan_document: "Skenirajte dokument",
   select_a_camera: "Odaberite kameru",
   select_camera: "Odaberite kameru",
   selected_camera: "Odabrana kamera",

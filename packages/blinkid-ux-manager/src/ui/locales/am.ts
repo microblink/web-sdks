@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for am.
+ */
 export default {
   alert_cancel_btn: "ተወው",
   alert_retry_btn: "እንደገና ይሞክሩ",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "ሌላ ሰነድ ለመቃኘት ይሞክሩ።",
   document_not_recognized: "ሰነድ አልታወቀም",
   document_not_recognized_details: "ተቀባይነት ያለው ሰነድ የፊት ገፅን ይቃኙ።",
+  document_scanned: "ተሳክቷል! ሰነድ ተቃኝቷል",
   document_too_close_to_edge: "ሰነዱን ከጠርዙ ያንቀሳቅሱት",
   face_photo_not_fully_visible: "የፊት ፎቶውን ሙሉ በሙሉ እንዲታይ ያድርጉ",
   flip_document: "ሰነዱን ይገልብጡት",
   flip_to_back_side: "ወደኋላ ገጽ ይገልብጡት",
+  front_side_scanned: "ተሳክቷል! የፊት ጎኑ ተቃኝቷል",
   glare_detected: "ነጸብራቅን ለማስወገድ ሰነድ ያዘንብሉት ወይም ያስወግዱት",
   help_aria_label: "እገዛ",
   help_modal_back_btn: "ተመለስ",

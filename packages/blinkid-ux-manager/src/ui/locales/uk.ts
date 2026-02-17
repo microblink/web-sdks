@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for uk.
+ */
 export default {
   alert_cancel_btn: "Скасувати",
   alert_retry_btn: "Повторити спробу",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Документ не розпізнано",
   document_not_recognized_details:
     "Відскануйте лицьову сторону підтримуваного документа.",
+  document_scanned: "Готово! Документ відскановано.",
   document_too_close_to_edge: "Відсуньте документ від краю",
   face_photo_not_fully_visible: "Тримайте фото обличчя повністю видимим",
   flip_document: "Переверніть документ",
   flip_to_back_side: "Переверніть на зворотній бік",
+  front_side_scanned: "Готово! Передній бік відскановано.",
   glare_detected: "Нахиліть або перемістіть документ, щоб прибрати відблиск",
   help_aria_label: "Допомога",
   help_modal_back_btn: "Назад",

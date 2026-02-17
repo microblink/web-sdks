@@ -49,10 +49,10 @@ await writePackage(
     access: "public",
     registry: "https://registry.npmjs.org/",
     types: "./types/index.rollup.d.ts",
-    homepage: "https://github.com/BlinkID/blinkid-web",
+    homepage: "https://github.com/microblink/web-sdks",
     repository: {
       type: "git",
-      url: "git+https://github.com/BlinkID/blinkid-web.git",
+      url: "git+https://github.com/microblink/web-sdks.git",
     },
     exports: {
       ".": {

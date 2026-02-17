@@ -41,15 +41,19 @@ const blinkid = await createBlinkId({
 
 For more advanced usage, customization, or integration with your own UI, see the example apps and the documentation for the underlying packages.
 
+## Documentation
+
+Full documentation, API reference, and integration guides are available at [docs.microblink.com](https://docs.microblink.com).
+
 ## Example Apps
 
 Explore example applications in the GitHub repository for ready-to-run demos:
 
-- **[blinkid-simple](https://github.com/BlinkID/blinkid-web/tree/main/apps/examples/blinkid-simple)**: Minimal integration with default UI.
-- **[blinkid-core-api](https://github.com/BlinkID/blinkid-web/tree/main/apps/examples/blinkid-core-api)**: Low-level usage of the core API.
-- **[blinkid-advanced-setup](https://github.com/BlinkID/blinkid-web/tree/main/apps/examples/blinkid-advanced-setup)**: Custom UI and advanced configuration.
-- **[blinkid-preload](https://github.com/BlinkID/blinkid-web/tree/main/apps/examples/blinkid-preload)**: Preloading resources for faster startup.
-- **[blinkid-photo-upload](https://github.com/BlinkID/blinkid-web/tree/main/apps/examples/blinkid-photo-upload)**: Uploading photos example.
+- **[blinkid-simple](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-simple)**: Minimal integration with default UI.
+- **[blinkid-core-api](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-core-api)**: Low-level usage of the core API.
+- **[blinkid-advanced-setup](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-advanced-setup)**: Custom UI and advanced configuration.
+- **[blinkid-preload](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-preload)**: Preloading resources for faster startup.
+- **[blinkid-photo-upload](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-photo-upload)**: Uploading photos example.
 
 Each example demonstrates different integration patterns and features.
 
@@ -66,7 +70,7 @@ Each example demonstrates different integration patterns and features.
 
 ## License Key
 
-A valid license key is required. Request a free trial at [Microblink Developer Hub](https://account.microblink.com/signin).
+A valid license key is required. Request a free trial at [Microblink Developer Hub](https://developer.microblink.com/register).
 
 ## Development
 

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ur.
+ */
 export default {
   alert_cancel_btn: "منسوخ کریں",
   alert_retry_btn: "دوبارہ کوشش کریں",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "دستاویز شناخت نہیں ہوئی",
   document_not_recognized_details:
     "معاونت یافتہ دستاویز کے سامنے والے حصے کو اسکین کریں۔",
+  document_scanned: "کامیابی! دستاویز اسکین ہو گئی ہے",
   document_too_close_to_edge: "دستاویز کو کنارے سے ہٹائیں",
   face_photo_not_fully_visible: "چہرے کی تصویر کو مکمل طور پر نمایاں رکھیں",
   flip_document: "دستاویز کو پلٹیں",
   flip_to_back_side: "پچھلے حصے کی طرف پلٹیں",
+  front_side_scanned: "کامیابی! سامنے کا رخ اسکین ہو گیا ہے",
   glare_detected: "عکس ختم کرنے کے لئے دستاویز کو جھکائیں یا حرکت دیں",
   help_aria_label: "مدد",
   help_modal_back_btn: "پیچھے",
@@ -44,7 +49,7 @@ export default {
   scan_data_page: "دستاویز کے ڈیٹا صفحہ کو اسکین کریں",
   scan_last_page_barcode: "آخری صفحے سے بارکوڈ کو اسکین کریں",
   scan_left_page: "بائیں صفحے کو اسکین کریں",
-  scan_right_page: "دائیں صفحے کو اسکین کریں ",
+  scan_right_page: "دائیں صفحے کو اسکین کریں",
   scan_the_back_side: "دستاویز کے پچھلے حصے کو اسکین کریں",
   scan_the_barcode: "بار کوڈ اسکین کریں",
   scan_the_front_side: "دستاویز کے سامنے والے حصے کو اسکین کریں",

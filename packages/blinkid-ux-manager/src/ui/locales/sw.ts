@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for sw.
+ */
 export default {
   alert_cancel_btn: "Acha",
   alert_retry_btn: "Jaribu tena",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Hati imeshindwa kutambuliwa",
   document_not_recognized_details:
     "Skani upande wa mbele wa hati inayokubalika.",
+  document_scanned: "Imemaliza! Hati imeskaniwa",
   document_too_close_to_edge: "Sogeza hati kutoka kwenye ukingo",
   face_photo_not_fully_visible: "Hakikisha picha ya uso inaonekana kabisa",
   flip_document: "Geuza hati",
   flip_to_back_side: "Geuza upande wa nyuma",
+  front_side_scanned: "Imemaliza! Upande wa mbele umeskaniwa",
   glare_detected: "Inamisha au sogeza hati ili uondoe mwanga unaoakisiwa",
   help_aria_label: "Usaidizi",
   help_modal_back_btn: "Nyuma",

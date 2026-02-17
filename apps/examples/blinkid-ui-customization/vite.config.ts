@@ -1,8 +1,8 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { moveResources } from "@microblink/utils";
+import { moveResources } from "@microblink/repo-utils";
 import dns from "dns";
 import { ServerOptions, defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
@@ -24,6 +24,7 @@ const serverOptions: ServerOptions = {
 
 export default defineConfig((config) => {
   return {
+    base: "./",
     build: {
       sourcemap: config.mode === "development",
       target: "es2022",

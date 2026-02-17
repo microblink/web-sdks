@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for th.
+ */
 export default {
   alert_cancel_btn: "ยกเลิก",
   alert_retry_btn: "ลองอีกครั้ง",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "ลองสแกนเอกสารอย่างอื่นดู",
   document_not_recognized: "ไม่รู้จักเอกสาร",
   document_not_recognized_details: "สแกนด้านหน้าของเอกสารที่ได้รับการรองรับ",
+  document_scanned: "สำเร็จ! สแกนเอกสารแล้ว",
   document_too_close_to_edge: "เลื่อนเอกสารออกจากขอบ",
   face_photo_not_fully_visible: "ถ่ายให้เห็นรูปภาพใบหน้าอย่างชัดเจน",
   flip_document: "พลิกเอกสาร",
   flip_to_back_side: "พลิกเอกสาร",
+  front_side_scanned: "สำเร็จ! สแกนด้านหน้าแล้ว",
   glare_detected: "เอียงหรือย้ายเอกสารเพื่อลบแสงสะท้อน",
   help_aria_label: "ช่วยเหลือ",
   help_modal_back_btn: "ย้อนกลับ",
