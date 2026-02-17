@@ -1,9 +1,19 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import { expose, finalizer, proxy, ProxyMarked, transfer } from "comlink";
-import { detectWasmFeatures } from "./wasm-feature-detect";
+import { buildResourcePath } from "@microblink/worker-common/buildResourcePath";
+import { getCrossOriginWorkerURL } from "@microblink/worker-common/getCrossOriginWorkerURL";
+import { isIOS } from "@microblink/worker-common/isSafari";
+import { obtainNewServerPermission } from "@microblink/worker-common/licencing";
+import { mbToWasmPages } from "@microblink/worker-common/mbToWasmPages";
+import {
+  sanitizeProxyUrls,
+  validateLicenseProxyPermissions,
+  type SanitizedProxyUrls,
+} from "@microblink/worker-common/proxy-url-validator";
+import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
 
 import type {
   Ping,
@@ -20,12 +30,7 @@ import type {
   PingError,
 } from "@microblink/blinkid-wasm";
 import { OverrideProperties } from "type-fest";
-import { getCrossOriginWorkerURL } from "./getCrossOriginWorkerURL";
-import { isIOS } from "./isSafari";
-import { obtainNewServerPermission } from "./licencing";
-import { mbToWasmPages } from "./mbToWasmPages";
 
-import { buildResourcePath } from "./buildResourcePath";
 import {
   buildSessionSettings,
   PartialBlinkIdSessionSettings,
@@ -34,11 +39,6 @@ import {
   DownloadProgress,
   downloadResourceBuffer,
 } from "./downloadResourceBuffer";
-import {
-  sanitizeProxyUrls,
-  validateLicenseProxyPermissions,
-  type SanitizedProxyUrls,
-} from "./proxy-url-validator";
 
 /**
  * The BlinkID worker.
@@ -381,12 +381,21 @@ class BlinkIdWorker {
   }
 
   /**
+   * Backward-compatible alias for `createScanningSession`.
+   *
+   * @deprecated Use `createScanningSession` instead.
+   */
+  createBlinkIdScanningSession(options?: PartialBlinkIdSessionSettings) {
+    return this.createScanningSession(options);
+  }
+
+  /**
    * This method creates a BlinkID scanning session.
    *
    * @param options - The options for the session.
    * @returns The session.
    */
-  createBlinkIdScanningSession(options?: PartialBlinkIdSessionSettings) {
+  createScanningSession(options?: PartialBlinkIdSessionSettings) {
     if (!this.#wasmModule) {
       throw new Error("Wasm module not loaded");
     }
@@ -396,7 +405,7 @@ class BlinkIdWorker {
       this.#defaultSessionSettings,
     );
 
-    const session = this.#wasmModule.createBlinkIdScanningSession(
+    const session = this.#wasmModule.createScanningSession(
       sessionSettings,
       this.#userId,
     );

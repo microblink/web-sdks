@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ps_AF.
+ */
 export default {
   alert_cancel_btn: "لغوه کول",
   alert_retry_btn: "بیا هڅه وکړئ",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "د بل سند سکین کولو هڅه وکړئ.",
   document_not_recognized: "سند و نه پېژندل شو",
   document_not_recognized_details: "د ملاتړ شوي سند مخکینۍ برخه سکین کړئ.",
+  document_scanned: "سند په بریالیتوب سکن شو!",
   document_too_close_to_edge: "سند له څنډې څخه حرکت وکړئ",
   face_photo_not_fully_visible: "د مخ عکس په بشپړه توګه ښکاره وساتئ",
   flip_document: "سند واړوئ",
   flip_to_back_side: "شاته اړخ ته واړوئ",
+  front_side_scanned: "د مخې سکن په بریالیتوب ترسره شو!",
   glare_detected: "د انعکاس لرې کولو لپاره سند ټیټ کړئ یا حرکت ورکړئ",
   help_aria_label: "مرسته",
   help_modal_back_btn: "شاته",

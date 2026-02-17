@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for uz.
+ */
 export default {
   alert_cancel_btn: "Bekor qilish",
   alert_retry_btn: "Qayta urining",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Hujjat aniqlanmadi",
   document_not_recognized_details:
     "Dastaklanadigan hujjatning old tomonini skanerlang",
+  document_scanned: "Muvaffaqiyat! Hujjat skanerlandi",
   document_too_close_to_edge: "Hujjatni chetidan siljiting",
   face_photo_not_fully_visible: "Yuz surati toʻliq koʻrinib tursin",
   flip_document: "Hujjatni boshqa tomonga aylantiring",
   flip_to_back_side: "Orqa tomonga aylantiring",
+  front_side_scanned: "Muvaffaqiyat! Old tomon skanerlandi",
   glare_detected:
     "Akslanishni olib tashlash uchun hujjatni eging yoki siljiting",
   help_aria_label: "Yordam",

@@ -1,0 +1,7 @@
+{
+  "extends": "../../typedoc.base.json",
+  "entryPoints": ["./src/AnalyticService.ts", "./src/ping/index.ts"],
+  "out": "docs",
+  "tsconfig": "./tsconfig.json",
+  "gitRemote": "https://github.com/microblink/web-sdks/tree/main/packages/analytics"
+}

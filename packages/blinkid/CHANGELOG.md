@@ -1,5 +1,14 @@
 # @microblink/blinkid
 
+## 7.6.4
+
+### Patch Changes
+
+- Fixed `feedbackUiOptions` being reassigned to an empty object and ignoring passed configuration
+- Updated dependencies
+  - @microblink/blinkid-core@7.6.4
+  - @microblink/blinkid-ux-manager@7.6.4
+
 ## 7.6.3
 
 ### Patch Changes

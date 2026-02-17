@@ -1,7 +1,9 @@
-import { getPackagePath, linkResources } from "@microblink/utils";
+import { getPackagePath, linkResources } from "@microblink/repo-utils";
 import { defineConfig } from "vite";
 import { dependencies } from "./package.json";
 import { fs, path } from "zx";
+
+const resourcesDir = path.resolve(__dirname, "public", "resources");
 
 export default defineConfig((config) => ({
   build: {
@@ -37,12 +39,12 @@ async function moveBlinkIdResources() {
   const distPath = path.join(pkgPath, "dist", "resources");
   const files = fs.readdirSync(distPath);
 
-  fs.ensureDirSync(`public/resources`);
+  fs.ensureDirSync(resourcesDir);
 
   for (const filePath of files) {
     await linkResources(
       path.join(distPath, filePath),
-      path.join("public/resources", filePath),
+      path.join(resourcesDir, filePath),
     );
   }
 }

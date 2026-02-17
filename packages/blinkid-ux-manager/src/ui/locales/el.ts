@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for el.
+ */
 export default {
   alert_cancel_btn: "Ακύρωση",
   alert_retry_btn: "Επανάληψη",
@@ -12,11 +15,13 @@ export default {
   document_not_recognized: "Το έγγραφο δεν αναγνωρίστηκε",
   document_not_recognized_details:
     "Σαρώστε την μπροστινή όψη ενός υποστηριζόμενου εγγράφου.",
+  document_scanned: "Επιτυχία! Το έγγραφο σαρώθηκε",
   document_too_close_to_edge: "Μετακινήστε το έγγραφο από την άκρη",
   face_photo_not_fully_visible:
     "Φροντίστε τη φωτογραφία προσώπου να είναι πλήρως ορατή",
   flip_document: "Αναποδογυρίστε το έγγραφο",
   flip_to_back_side: "Γυρίστε στην πίσω όψη",
+  front_side_scanned: "Επιτυχία! Σαρώθηκε η μπροστινή πλευρά",
   glare_detected:
     "Γείρετε ή μετακινήστε το έγγραφο για να αφαιρέσετε την αντανάκλαση",
   help_aria_label: "Βοήθεια",
@@ -41,7 +46,7 @@ export default {
   occluded: "Φροντίστε το έγγραφο να είναι πλήρως ορατό",
   onboarding_modal_btn: "Έναρξη σάρωσης",
   onboarding_modal_details:
-    "Φροντίστε το έγγραφο να είναι καλά φωτισμένο. Όλα τα πεδία του εγγράφου θα πρέπει να είναι ορατά στην οθόνη της κάμερας.\n",
+    "Φροντίστε το έγγραφο να είναι καλά φωτισμένο. Όλα τα πεδία του εγγράφου θα πρέπει να είναι ορατά στην οθόνη της κάμερας.",
   onboarding_modal_title: "Φροντίστε όλες οι λεπτομέρειες να είναι ορατές",
   scan_data_page: "Σαρώστε τη σελίδα δεδομένων του εγγράφου",
   scan_last_page_barcode: "Σάρωση γραμμωτού κώδικα από την τελευταία σελίδα",

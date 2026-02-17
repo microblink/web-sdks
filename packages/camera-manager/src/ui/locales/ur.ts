@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ur.
+ */
 export default {
   camera_error_cancel_btn: "منسوخ کریں",
   camera_error_details: "براؤزر میں کیمرہ کی اجازت دیں اور دوبارہ کوشش کریں۔",

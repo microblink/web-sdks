@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for sv.
+ */
 export default {
   alert_cancel_btn: "Avbryt",
   alert_retry_btn: "Försök igen",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Dokumentet kändes inte igen",
   document_not_recognized_details:
     "Skanna framsidan på ett dokument som stöds.",
+  document_scanned: "Lyckades! Skannat dokument",
   document_too_close_to_edge: "Flytta dokumentet bort från kanten",
   face_photo_not_fully_visible: "Håll fotot fullt synligt",
   flip_document: "Vänd på dokumentet",
   flip_to_back_side: "Vänd till baksidan",
+  front_side_scanned: "Lyckades! Framsidan skannad",
   glare_detected: "Luta eller flytta dokumentet för att ta bort reflektionen",
   help_aria_label: "Hjälp",
   help_modal_back_btn: "Tillbaka",
@@ -52,7 +57,7 @@ export default {
   scan_unsuccessful: "Skanningen misslyckades",
   scan_unsuccessful_details: "Det gick inte att läsa dokumentet. Försök igen.",
   too_bright: "Flytta till mindre belyst plats",
-  too_dark: "Flytta till mer belyst plats ",
+  too_dark: "Flytta till mer belyst plats",
   wrong_left: "Flytta till den vänstra sidan",
   wrong_right: "Flytta till den högra sidan",
   wrong_top: "Flytta till den översta sidan",

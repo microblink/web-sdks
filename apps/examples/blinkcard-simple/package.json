@@ -1,0 +1,40 @@
+{
+  "name": "@microblink/blinkcard-simple-example",
+  "description": "Example quickstart app showcasing usage of the @microblink/blinkcard package",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "build:js-dev": "vite build --mode development",
+    "clean": "rimraf dist public .turbo types tsconfig.tsbuildinfo",
+    "dev": "vite",
+    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
+    "lint:eslint": "eslint ./src --max-warnings 0",
+    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
+    "preview": "vite preview",
+    "watch": "vite build --watch --mode development"
+  },
+  "type": "module",
+  "dependencies": {
+    "@microblink/blinkcard": "workspace:^"
+  },
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/repo-utils": "workspace:*",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "concurrently": "^9.1.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "10.0.1",
+    "eslint-define-config": "^1.24.1",
+    "eslint-plugin-solid": "0.14.5",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "sass": "^1.85.0",
+    "serve": "^14.2.4",
+    "tsc-files": "^1.1.4",
+    "typescript": "5.8.3",
+    "vite": "^6.2.1",
+    "vite-plugin-mkcert": "^1.17.6",
+    "zx": "^8.8.5"
+  },
+  "license": "MIT"
+}

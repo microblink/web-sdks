@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ka_GE.
+ */
 export default {
   alert_cancel_btn: "გაუქმება",
   alert_retry_btn: "ხელახლა ცდა",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "დოკუმენტის ამოცნობა ვერ მოხერხდა",
   document_not_recognized_details:
     "დაასკანერეთ მხარდაჭერილი დოკუმენტის წინა მხარე.",
+  document_scanned: "წარმატებული! დოკუმენტი დასკანერებულია",
   document_too_close_to_edge: "მოაშორეთ დოკუმენტი კიდეს",
   face_photo_not_fully_visible: "სახის ფოტო სრულად უნდა ჩანდეს",
   flip_document: "ამოატრიალეთ დოკუმენტი",
   flip_to_back_side: "შემოატრიალეთ უკანა მხარეს",
+  front_side_scanned: "წარმატებული! წინა მხარე დასკანერებულია",
   glare_detected: "გადახარეთ ან გაამოძრავეთ დოკუმენტი ანარეკლის მოსაშორებლად",
   help_aria_label: "დახმარება",
   help_modal_back_btn: "უკან",

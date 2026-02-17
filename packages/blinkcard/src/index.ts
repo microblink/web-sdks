@@ -1,0 +1,16 @@
+/**
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
+ */
+
+/**
+ * @packageDocumentation
+ * BlinkCard SDK for web browsers - enables client-side, real time capturing and extracting
+ * data from identity documents. This package combines core extraction functionality with
+ * UI components and camera management to offer a complete solution for web applications.
+ */
+
+export * from "@microblink/blinkcard-core";
+export * from "@microblink/camera-manager";
+export * from "@microblink/blinkcard-ux-manager";
+
+export * from "./createBlinkCard";

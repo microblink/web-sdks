@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 /* @refresh reload */
@@ -195,7 +195,7 @@ export const App: Component = () => {
         }
       }
 
-      scanningSession = await blinkIdCore.createBlinkIdScanningSession();
+      scanningSession = await blinkIdCore.createScanningSession();
     } catch (error) {
       console.error("Failed to initialize session:", error);
 

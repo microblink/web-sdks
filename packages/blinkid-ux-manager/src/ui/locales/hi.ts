@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for hi.
+ */
 export default {
   alert_cancel_btn: "रद्द करें",
   alert_retry_btn: "दोबारा प्रयास करें",
@@ -13,11 +16,13 @@ export default {
   document_not_recognized: "डॉक्यूमेंट पहचाना नहीं गया",
   document_not_recognized_details:
     "समर्थित दस्तावेज़ के सामने वाले भाग को स्कैन करें.",
+  document_scanned: "सफ़लता! डॉक्यूमेंट स्कैन किया गया",
   document_too_close_to_edge: "दस्तावेज़ को किनारे से हटाएँ",
   face_photo_not_fully_visible:
     "चेहरे की तस्वीर इस तरह रखें की पूरी तरह से दिखाई दे",
   flip_document: "दस्तावेज़ को पलटें",
   flip_to_back_side: "पीछे की ओर पलटें",
+  front_side_scanned: "सफ़लता! सामने का हिस्सा स्कैन किया गया",
   glare_detected:
     "प्रतिबिंब हटाने के लिए दस्तावेज़ को झुकाएँ या ट्रान्सफर करें",
   help_aria_label: "सहायता",

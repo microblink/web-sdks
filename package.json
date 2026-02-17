@@ -2,13 +2,20 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:blinkid": "turbo build --filter=@microblink/blinkid...",
+    "build:blinkcard": "turbo build --filter=@microblink/blinkcard...",
     "build:packages": "turbo build --filter={./packages/*}",
     "build:publish": "turbo build:publish --filter={./packages/*}",
+    "clean:blinkid": "turbo clean --filter=@microblink/blinkid...",
+    "clean:blinkcard": "turbo clean --filter=@microblink/blinkcard...",
     "clean": "turbo clean && rimraf .turbo .venv",
-    "create-github": "pnpm run clean && pnpm run build:publish && pnpm --filter 'github-release' create-github",
+    "lint:blinkid": "turbo lint --filter=@microblink/blinkid...",
+    "lint:blinkcard": "turbo lint --filter=@microblink/blinkcard...",
     "lint": "turbo lint",
     "prepare": "husky",
     "publish-test": "turbo publish-test",
+    "test:blinkid": "turbo test --filter=@microblink/blinkid...",
+    "test:blinkcard": "turbo test --filter=@microblink/blinkcard...",
     "test": "turbo test",
     "test:watch": "turbo test:watch",
     "upgrade-packages": "pnpm dlx npm-check-updates -ui -ws --root",
@@ -24,5 +31,5 @@
     "vitest": "^3.0.8"
   },
   "license": "ISC",
-  "packageManager": "pnpm@10.18.1"
+  "packageManager": "pnpm@10.29.3"
 }

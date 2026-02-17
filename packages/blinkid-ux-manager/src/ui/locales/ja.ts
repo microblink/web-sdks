@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ja.
+ */
 export default {
   alert_cancel_btn: "キャンセル",
   alert_retry_btn: "再試行",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "ドキュメントが認識されません",
   document_not_recognized_details:
     "サポートされている書類の表側をスキャンしてください。",
+  document_scanned: "成功！ドキュメントをスキャンしました",
   document_too_close_to_edge: "書類を端から動かしてください",
   face_photo_not_fully_visible: "顔写真が完全に見えるようにしてください",
   flip_document: "書類を反転してください",
   flip_to_back_side: "裏面にしてください",
+  front_side_scanned: "成功！表面をスキャンしました",
   glare_detected: "書類を傾けたり移動したりして反射を除去する",
   help_aria_label: "ヘルプ",
   help_modal_back_btn: "戻る",

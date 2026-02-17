@@ -32,7 +32,7 @@ You can use `@microblink/blinkid-core` directly in your project for custom integ
 
 ### License key
 
-A valid license key is required. Request a free trial at [Microblink Developer Hub](https://account.microblink.com/signin).
+A valid license key is required. Request a free trial at [Microblink Developer Hub](https://developer.microblink.com/register).
 
 ### Hosting resources
 

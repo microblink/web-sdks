@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import { createListCollection, Select } from "@ark-ui/solid/select";

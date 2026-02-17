@@ -1,0 +1,64 @@
+{
+  "name": "@microblink/blinkcard-wasm",
+  "private": true,
+  "version": "3000.0.0",
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types",
+    "docs:api": "typedoc",
+    "lint": "pnpm lint:types",
+    "lint:types": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "./dist/index.js",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./size-manifest.json": "./dist/size-manifest.json",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/wasm-common": "workspace:*",
+    "dotenv-cli": "^8.0.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-jsdoc": "^1.3.3",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.20.6",
+    "type-fest": "^4.35.0",
+    "typedoc": "^0.28.7",
+    "typedoc-plugin-markdown": "^4.7.0",
+    "typescript": "5.8.3",
+    "zx": "^8.8.5"
+  },
+  "keywords": [
+    "aml",
+    "blinkcard",
+    "compliance",
+    "computer-vision",
+    "card-scanner",
+    "card-verification",
+    "fraud-detection",
+    "frontend",
+    "card-check",
+    "microblink",
+    "ocr",
+    "typescript",
+    "verification",
+    "credit-card",
+    "creditcard",
+    "video",
+    "wasm",
+    "webassembly"
+  ],
+  "description": "Wasm runtime"
+}

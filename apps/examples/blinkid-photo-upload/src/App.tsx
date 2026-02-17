@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import {
@@ -12,7 +12,7 @@ import { Component, createSignal, Show } from "solid-js";
 
 type BlinkIdSession = Awaited<
   ReturnType<
-    Awaited<ReturnType<typeof loadBlinkIdCore>>["createBlinkIdScanningSession"]
+    Awaited<ReturnType<typeof loadBlinkIdCore>>["createScanningSession"]
   >
 >;
 
@@ -53,7 +53,7 @@ const initBlinkIdScanningSession = async (): Promise<BlinkIdSession> => {
     licenseKey: import.meta.env.VITE_LICENCE_KEY,
   });
 
-  return blinkIdCore.createBlinkIdScanningSession({
+  return blinkIdCore.createScanningSession({
     inputImageSource: "photo",
   });
 };

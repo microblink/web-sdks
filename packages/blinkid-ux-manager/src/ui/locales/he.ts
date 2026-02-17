@@ -1,8 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-/* eslint-disable no-useless-escape */
+/**
+ * Localization strings for he.
+ */
 export default {
   alert_cancel_btn: "ביטול",
   alert_retry_btn: "לנסות שוב",
@@ -12,10 +14,12 @@ export default {
   document_filtered_details: "נסו לסרוק מסמך אחר.",
   document_not_recognized: "המסמך לא זוהה",
   document_not_recognized_details: "לסרוק את הצד הקדמי של מסמך נתמך.",
-  document_too_close_to_edge: "הזז\/י את המסמך מהקצה",
+  document_scanned: "הצלחה! המסמך נסרק",
+  document_too_close_to_edge: "הזז/י את המסמך מהקצה",
   face_photo_not_fully_visible: "לשמור על נראות מלאה של תמונת פנים",
   flip_document: "להפוך את המסמך",
   flip_to_back_side: "להפוך את המסמך",
+  front_side_scanned: "הצלחה! הצד הקדמי נסרק",
   glare_detected: "הטו או הזיזו את המסמך כדי להסיר את ההשתקפות",
   help_aria_label: "עזרה",
   help_modal_back_btn: "חזור",
@@ -31,8 +35,8 @@ export default {
   help_modal_title_2: "התרחק מאור חזק",
   help_modal_title_3: "הישאר יציב בזמן הסריקה",
   help_tooltip: "זקוקים לעזרה?",
-  move_closer: "קרב\/י",
-  move_farther: "התרחק\/י",
+  move_closer: "קרב/י",
+  move_farther: "התרחק/י",
   move_left: "עבור אל העמוד בצד שמאל",
   move_right: "עבור אל העמוד בצד ימין",
   move_top: "עבור אל העמוד העליון",

@@ -23,6 +23,13 @@ const config = {
     "peerDependencies",
   ],
   dependencyTypes: ["!local"],
+  versionGroups: [
+    {
+      label: "Pin TypeScript to 5.8.3",
+      dependencies: ["typescript"],
+      pinVersion: "5.8.3",
+    },
+  ],
 };
 
 module.exports = config;

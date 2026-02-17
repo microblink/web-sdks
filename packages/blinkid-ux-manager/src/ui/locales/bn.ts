@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for bn.
+ */
 export default {
   alert_cancel_btn: "বাতিল করুন",
   alert_retry_btn: "পুনরায় চেষ্টা করুন",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "ভিন্ন ডকুমেন্ট স্ক্যান করার চেষ্টা করুন।",
   document_not_recognized: "ডকুমেন্ট সনাক্ত করা যায়নি",
   document_not_recognized_details: "সমর্থিত ডকুমেন্টের সামনের দিক স্ক্যান করুন",
+  document_scanned: "সফল! ডকুমেন্ট স্ক্যান সম্পন্ন",
   document_too_close_to_edge: "ডকুমেন্টটি প্রান্ত থেকে সরান",
   face_photo_not_fully_visible: "ফেস ফটো সম্পূর্ণ দৃশ্যমান রাখুন",
   flip_document: "ডকুমেন্ট উল্টান",
   flip_to_back_side: "পিছনের দিকে উল্টান",
+  front_side_scanned: "সফল! সামনের দিকটি স্ক্যান হয়েছে",
   glare_detected: "প্রতিফলন দূর করতে ডকুমেন্টটি বাঁকান বা সরান",
   help_aria_label: "সহায়তা",
   help_modal_back_btn: "পেছনে",

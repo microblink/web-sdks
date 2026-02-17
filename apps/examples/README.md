@@ -1,8 +1,10 @@
-# BlinkID SDK Example Applications
+# BlinkID and BlinkCard Example Applications
 
-This directory contains example applications demonstrating the capabilities of the BlinkID SDK.
+This directory contains example applications demonstrating the capabilities of the BlinkID and BlinkCard SDKs.
 
 ## Available Examples
+
+### BlinkID
 
 - [BlinkID Simple](./blinkid-simple/): A simple example of how to use the BlinkID SDK.
 - [BlinkID Advanced Setup](./blinkid-advanced-setup/): Demonstrates advanced setup and customization of the BlinkID SDK.
@@ -10,6 +12,14 @@ This directory contains example applications demonstrating the capabilities of t
 - [BlinkID Photo Upload](./blinkid-photo-upload/): An example of how to use the BlinkID SDK with photo upload functionality.
 - [BlinkID Core API](./blinkid-core-api/): Shows how to use the core API of the BlinkID SDK.
 - [BlinkID Preload](./blinkid-preload/): Demonstrates how to preload the BlinkID SDK for faster initialization.
+
+### BlinkCard
+
+- [BlinkCard Simple](./blinkcard-simple/): A simple example of how to use the BlinkCard SDK.
+- [BlinkCard Advanced Setup](./blinkcard-advanced-setup/): Demonstrates advanced setup and customization of the BlinkCard SDK.
+
+### Camera
+
 - [Camera Manager](./camera-manager/): An example of how to use the camera manager.
 - [Camera Selection](./camera-selection/): An example of how to use the camera selection feature.
 
@@ -35,7 +45,7 @@ pnpm build:packages
 
 ### 3. Set up the License Key
 
-Most of the example applications require a license key to run. You can obtain a free trial license key by registering on the [Microblink Developer Hub](https://developer.microblink.com/license/new).
+BlinkID and BlinkCard example applications require a license key to run. You can obtain a free trial license key by registering on the [Microblink Developer Hub](https://developer.microblink.com/license/new).
 
 After obtaining the license key, create a `.env.local` file in the root of the specific example application you want to run (e.g., `apps/examples/blinkid-simple/.env.local`) and add the following line:
 

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for zh_TW.
+ */
 export default {
   alert_cancel_btn: "取消",
   alert_retry_btn: "重試",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "請嘗試掃描其他文件。",
   document_not_recognized: "無法辨識文件",
   document_not_recognized_details: "掃描受支援文件的正面。",
+  document_scanned: "成功！文件已掃描",
   document_too_close_to_edge: "將文件從邊緣移開",
   face_photo_not_fully_visible: "請保持臉部照片能夠完整顯示",
   flip_document: "翻轉文件",
   flip_to_back_side: "將文件翻面",
+  front_side_scanned: "成功！正面已掃描",
   glare_detected: "傾斜或移動文件以移除反光",
   help_aria_label: "說明",
   help_modal_back_btn: "背面",

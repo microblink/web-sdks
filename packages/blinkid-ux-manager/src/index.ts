@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 /**
@@ -11,7 +11,6 @@
 
 export * from "./core/blinkid-ui-state";
 export * from "./core/BlinkIdUxManager";
-export * from "./core/HapticFeedback";
 export * from "./ui/createBlinkIdFeedbackUi";
 export type {
   LocaleRecord,
@@ -19,6 +18,7 @@ export type {
 } from "./ui/LocalizationContext";
 export type { DocumentClassFilter } from "./core/DocumentClassFilter";
 
+export type * from "@microblink/ux-common/hapticFeedback";
 export type * from "@microblink/feedback-stabilizer";
 export type { BlinkIdProcessingError } from "./core/BlinkIdProcessingError";
 

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for cs.
+ */
 export default {
   alert_cancel_btn: "Storno",
   alert_retry_btn: "Opakovat",
@@ -12,11 +15,13 @@ export default {
   document_not_recognized: "Dokument nebyl rozpoznán",
   document_not_recognized_details:
     "Naskenujte přední stranu podporovaného dokumentu.",
+  document_scanned: "Úspěch! Dokument byl naskenován",
   document_too_close_to_edge: "Přesunout dokument dál od kraje",
   face_photo_not_fully_visible:
     "Zachovejte úplnou viditelnost fotografie obličeje",
   flip_document: "Překlopit dokument",
   flip_to_back_side: "Otočte dokument",
+  front_side_scanned: "Úspěch! Čelní strana byla naskenována",
   glare_detected: "Nakloňte nebo přesuňte dokument pro odstranění odrazů",
   help_aria_label: "Nápověda",
   help_modal_back_btn: "Zpět",
@@ -48,7 +53,7 @@ export default {
   scan_right_page: "Naskenujte pravou stránku",
   scan_the_back_side: "Naskenujte zadní stranu dokumentu",
   scan_the_barcode: "Naskenujte čárový kód",
-  scan_the_front_side: "Naskenujte přední\nstranu dokumentu.",
+  scan_the_front_side: "Naskenujte přední\\nstranu dokumentu.",
   scan_top_page: "Naskenujte horní stránku",
   scan_unsuccessful: "Skenování neúspěšné",
   scan_unsuccessful_details: "Dokument se nepodařilo přečíst. Zkuste to znovu.",

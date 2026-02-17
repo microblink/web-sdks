@@ -1,8 +1,8 @@
 import { Simplify } from "type-fest";
-import { PackageJsonData, updatePackage, writePackage } from "write-package";
+import { PackageJsonData, writePackage } from "write-package";
 import "zx/globals";
 
-import { getPackagePath } from "@microblink/utils";
+import { getPackagePath } from "@microblink/repo-utils";
 import packageJson from "../package.json";
 
 type PackageKeys = keyof typeof packageJson;
@@ -68,10 +68,10 @@ await writePackage(
     access: "public",
     registry: "https://registry.npmjs.org/",
     types: "./types/index.rollup.d.ts",
-    homepage: "https://github.com/BlinkID/blinkid-web",
+    homepage: "https://github.com/microblink/web-sdks",
     repository: {
       type: "git",
-      url: "git+https://github.com/BlinkID/blinkid-web.git",
+      url: "git+https://github.com/microblink/web-sdks.git",
     },
     exports: {
       ".": {

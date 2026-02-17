@@ -1,5 +1,15 @@
 # @microblink/blinkid-worker
 
+## 7.6.4
+
+### Patch Changes
+
+- Now uses `@microblink/worker-common` for shared worker and Wasm utilities (resource path building, cross-origin worker URL handling, licensing helpers, Wasm feature detection, error types).
+- Deprecated `createBlinkIdScanningSession`; use `createScanningSession` instead.
+- Updated dependencies
+  - @microblink/blinkid-wasm@7.6.4
+  - @microblink/worker-common@1.0.0
+
 ## 7.6.3
 
 ### Patch Changes

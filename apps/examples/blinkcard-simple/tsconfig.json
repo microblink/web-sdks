@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "Preserve",
+    "strict": true,
+    "declarationMap": false,
+    "target": "es2022",
+    "rootDir": "src",
+    "jsx": "preserve",
+    "types": ["vite/client"]
+  },
+  "include": ["src"]
+}

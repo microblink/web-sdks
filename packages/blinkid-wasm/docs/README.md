@@ -92,7 +92,7 @@
 - [SdkScanConditionsData](type-aliases/SdkScanConditionsData.md)
 - [SdkUxEventData](type-aliases/SdkUxEventData.md)
 - [SdkWrapperProductData](type-aliases/SdkWrapperProductData.md)
-- [ServerPermissionError](type-aliases/ServerPermissionError.md)
+- [ServerPermissionErrorReason](type-aliases/ServerPermissionErrorReason.md)
 - [ServerPermissionSubmitError](type-aliases/ServerPermissionSubmitError.md)
 - [SingleSideScanningResult](type-aliases/SingleSideScanningResult.md)
 - [StringResult](type-aliases/StringResult.md)

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for nl.
+ */
 export default {
   alert_cancel_btn: "Annuleren",
   alert_retry_btn: "Probeer opnieuw",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "Document niet herkend",
   document_not_recognized_details:
     "Scan de voorzijde van een ondersteund document.",
+  document_scanned: "Succes! Document gescand",
   document_too_close_to_edge: "Verplaats het document weg van de rand",
   face_photo_not_fully_visible: "Houd foto gezicht volledig zichtbaar",
   flip_document: "Draai het document om",
   flip_to_back_side: "Draai het document om",
+  front_side_scanned: "Succes! Voorkant gescand",
   glare_detected:
     "Kantel of verplaats het document om de reflectie te verwijderen",
   help_aria_label: "Help",
@@ -48,7 +53,7 @@ export default {
   scan_right_page: "Scan de rechterpagina",
   scan_the_back_side: "Scan de achterkant van het document",
   scan_the_barcode: "Scan de barcode",
-  scan_the_front_side: "Scan de voorzijde\nvan een document",
+  scan_the_front_side: "Scan de voorzijde\\nvan een document",
   scan_top_page: "Scan de bovenste pagina",
   scan_unsuccessful: "Scan niet gelukt",
   scan_unsuccessful_details:

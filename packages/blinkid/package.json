@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid",
   "description": "All-in-one BlinkID browser SDK for fast and accurate ID document scanning and recognition in web applications.",
-  "version": "7.6.3",
+  "version": "7.6.4",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -51,19 +51,19 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.4",
     "@microblink/tsconfig": "workspace:*",
-    "@microblink/utils": "workspace:*",
+    "@microblink/repo-utils": "workspace:*",
     "@microsoft/api-extractor": "^7.52.4",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "10.0.1",
     "eslint-define-config": "^1.24.1",
+    "prettier": "^3.6.2",
     "publint": "^0.3.12",
     "rimraf": "^6.0.1",
-    "sonda": "^0.7.1",
     "tsx": "^4.20.6",
     "typedoc": "^0.28.7",
     "typedoc-plugin-markdown": "^4.7.0",
-    "typescript": "^5.8.3",
+    "typescript": "5.8.3",
     "vite": "^6.2.1",
     "write-package": "^7.1.0",
     "zx": "^8.8.5"

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for tr.
+ */
 export default {
   alert_cancel_btn: "İptal",
   alert_retry_btn: "Tekrar dene",
@@ -11,16 +14,18 @@ export default {
   document_filtered_details: "Farklı bir belge taramayı dene.",
   document_not_recognized: "Belge tanınmadı",
   document_not_recognized_details: "Desteklenen bir belgenin ön tarafını tara.",
+  document_scanned: "Başarılı! Belge tarandı",
   document_too_close_to_edge: "Belgeyi kenardan taşı",
   face_photo_not_fully_visible:
     "Yüz fotoğrafının tam olarak görünür şekilde tut",
   flip_document: "Belgeyi çevir",
   flip_to_back_side: "Arka tarafa çevir",
+  front_side_scanned: "Başarılı! Ön taraf tarandı",
   glare_detected: "Yansımayı gidermek için belgeyi eğ veya hareket ettir",
   help_aria_label: "Yardım",
   help_modal_back_btn: "Geri",
   help_modal_details_1:
-    "Alt satırlar da dâhil olmak üzere, belgenin hiçbir bölümünü parmağınla kapatmadığından emin ol. Ayrıca, belge alanlarının üzerini kapatan hologram yansımalarına da dikkat et. ",
+    "Alt satırlar da dâhil olmak üzere, belgenin hiçbir bölümünü parmağınla kapatmadığından emin ol. Ayrıca, belge alanlarının üzerini kapatan hologram yansımalarına da dikkat et.",
   help_modal_details_2:
     "Doğrudan gelen sert ışık belgeden yansıyarak belgenin bazı kısımlarını okunmaz hâle getirebileceği için bu tür ışık kullanmaktan kaçın. Belgedeki verileri okuyamıyorsan bu veriler kamerada da görünmeyecektir.",
   help_modal_details_3:

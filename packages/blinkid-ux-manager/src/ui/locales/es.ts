@@ -1,22 +1,27 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for es.
+ */
 export default {
   alert_cancel_btn: "Cancelar",
   alert_retry_btn: "Reintentar",
-  blur_detected: "No mueva ni el documento ni el teléfono ",
+  blur_detected: "No mueva ni el documento ni el teléfono",
   camera_angle_too_steep: "Mantenga el documento en paralelo al teléfono",
   document_filtered: "Documento no aceptado",
   document_filtered_details: "Intente escanear otro documento.",
   document_not_recognized: "Documento no reconocido",
   document_not_recognized_details:
     "Escanee la parte frontal de un documento compatible.",
+  document_scanned: "¡Bien! Documento escaneado",
   document_too_close_to_edge: "Mueva el documento desde el borde",
   face_photo_not_fully_visible:
     "Mantenga la foto del rostro completamente visible",
   flip_document: "Dar la vuelta al documento",
   flip_to_back_side: "Dele la vuelta al documento",
+  front_side_scanned: "¡Bien! Cara frontal escaneada",
   glare_detected: "Incline o mueva el documento para evitar los reflejos",
   help_aria_label: "Ayuda",
   help_modal_back_btn: "Atrás",
@@ -48,7 +53,7 @@ export default {
   scan_right_page: "Escanear la página de la derecha",
   scan_the_back_side: "Escanea la parte de atrás del documento",
   scan_the_barcode: "Escanea el código de barras",
-  scan_the_front_side: "Escaneo de la parte frontal\nde un documento",
+  scan_the_front_side: "Escaneo de la parte frontal\\nde un documento",
   scan_top_page: "Escanear la página superior",
   scan_unsuccessful: "Escaneo fallido",
   scan_unsuccessful_details:

@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for fi.
+ */
 export default {
   alert_cancel_btn: "Peruuta",
   alert_retry_btn: "Yritä uudelleen",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "Yritä skannata toinen asiakirja.",
   document_not_recognized: "Asiakirjaa ei tunnistettu",
   document_not_recognized_details: "Skannaa tuetun asiakirjan etupuoli.",
+  document_scanned: "Onnistui! Asiakirja skannattu",
   document_too_close_to_edge: "Siirrä asiakirjaa reunasta",
   face_photo_not_fully_visible: "Pidä kasvokuva täysin näkyvissä",
   flip_document: "Käännä asiakirja ympäri",
   flip_to_back_side: "Käännä taustapuoli näkyviin",
+  front_side_scanned: "Onnistui! Etupuoli skannattu",
   glare_detected: "Kallista tai siirrä asiakirjaa heijastuksen poistamiseksi",
   help_aria_label: "Ohje",
   help_modal_back_btn: "Takaisin",

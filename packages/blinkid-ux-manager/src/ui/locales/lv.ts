@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for lv.
+ */
 export default {
   alert_cancel_btn: "Atcelt",
   alert_retry_btn: "Mēģināt no jauna",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "Mēģiniet skenēt citu dokumentu.",
   document_not_recognized: "Dokuments nav atpazīts",
   document_not_recognized_details: "Skenējiet atbalstītā dokumenta priekšpusi.",
+  document_scanned: "Dokuments noskenēts veiksmīgi!",
   document_too_close_to_edge: "Pārvietot dokumentu prom no malas",
   face_photo_not_fully_visible: "Turēt sejas fotoattēlu pilnībā redzamu",
   flip_document: "Apvērst dokumentu",
   flip_to_back_side: "Apvērst uz aizmuguri",
+  front_side_scanned: "Priekšpuse noskenēta veiksmīgi!",
   glare_detected: "Sasvērt vai pārvietot dokumentu, lai novērstu atspīdumu",
   help_aria_label: "Palīdzība",
   help_modal_back_btn: "Atpakaļ",

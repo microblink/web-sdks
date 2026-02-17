@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ne.
+ */
 export default {
   alert_cancel_btn: "रद्द गर्नुहोस्",
   alert_retry_btn: "पुन: प्रयास गर्नुहोस्",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "कागजात पहिचान हुन सकेन",
   document_not_recognized_details:
     "सपोर्ट हुने कागजातको अगाडि पट्टिको भाग स्क्यान गर्नुहोस्।",
+  document_scanned: "पूरा भयो! कागजात स्क्यान भयो",
   document_too_close_to_edge: "कागजातलाई किनाराबाट हटाउनुहोस्",
   face_photo_not_fully_visible: "फेस फोटो पूर्ण रूपमा देखिने गरी राख्नुहोस्",
   flip_document: "कागजात फ्लिप गर्नुहोस्",
   flip_to_back_side: "पछाडि पट्टि फ्लिप गर्नुहोस्",
+  front_side_scanned: "पूरा भयो! अगाडिपट्टिको भाग स्क्यान भयो",
   glare_detected: "रिफ्लेक्सन हटाउन कागजात ढल्क्याउनुहोस् वा हटाउनुहोस्",
   help_aria_label: "मद्दत",
   help_modal_back_btn: "पछाडि",

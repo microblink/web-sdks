@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for ru.
+ */
 export default {
   alert_cancel_btn: "Отменить",
   alert_retry_btn: "Попробовать еще",
@@ -12,11 +15,13 @@ export default {
   document_not_recognized: "Документ не распознан",
   document_not_recognized_details:
     "Отсканируйте лицевую сторону поддерживаемого документа.",
+  document_scanned: "Успех! Документ отсканирован",
   document_too_close_to_edge: "Уберите документ подальше от края",
   face_photo_not_fully_visible:
     "Сделайте так, чтобы фотография лица была видна полностью",
   flip_document: "Переверните документ",
   flip_to_back_side: "Переверните документ на обратную сторону",
+  front_side_scanned: "Успех! Передняя сторона отсканирована",
   glare_detected: "Наклоните или сместите документ, чтобы убрать отражение",
   help_aria_label: "Помощь",
   help_modal_back_btn: "Назад",

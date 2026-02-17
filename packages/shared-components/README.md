@@ -1,6 +1,6 @@
 # @microblink/shared-components
 
-Internal SolidJS-based UI components and utilities shared across BlinkID browser SDK packages within this monorepo.
+Internal SolidJS-based UI components and utilities shared across BlinkID and BlinkCard browser SDK packages within this monorepo.
 
 This package does not have a build step. Instead it only provides shared code which is directly consumed by other packages in their build step.
 

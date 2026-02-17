@@ -3,6 +3,12 @@ packages:
   - packages/*
 
 onlyBuiltDependencies:
-  - '@parcel/watcher'
+  - "@parcel/watcher"
   - esbuild
   - msw
+
+publicHoistPattern:
+  - "*types*"
+  - "*eslint*"
+  - "*prettier*"
+  - "*plugin*"

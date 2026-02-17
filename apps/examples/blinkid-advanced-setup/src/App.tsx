@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 /* @refresh reload */
@@ -18,12 +18,6 @@ import {
 } from "@microblink/camera-manager";
 
 import { Component, createSignal, onMount, Show } from "solid-js";
-import { ScoreDisplay } from "./ScoreDisplay";
-
-/**
- * Debug info will be displayed in the UI.
- */
-const SHOW_DEBUG = true;
 
 /**
  * If you are using a portal, you can set this to true. Portal is a way to render the UI outside of the root element.
@@ -78,7 +72,7 @@ export const App: Component = () => {
      * We first initialize the direct API. This loads the WASM module and initializes the engine.
      * For additional configuration look at the BlinkIdInitSettings type.
      *
-     * @see https://github.com/BlinkID/blinkid-web/blob/main/packages/blinkid-core/docs/type-aliases/BlinkIdInitSettings.md
+     * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid-core/docs/type-aliases/BlinkIdInitSettings.md
      */
     const blinkIdCore = await loadBlinkIdCore({
       licenseKey: import.meta.env.VITE_LICENCE_KEY,
@@ -90,13 +84,13 @@ export const App: Component = () => {
      * Initialize the session with the default settings.
      * For additional configuration look at the BlinkIdSessionSettings type.
      *
-     * @see https://github.com/BlinkID/blinkid-web/blob/main/packages/blinkid-core/docs/type-aliases/BlinkIdSessionSettings.md
+     * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid-core/docs/type-aliases/BlinkIdSessionSettings.md
      */
-    const session = await blinkIdCore.createBlinkIdScanningSession({
+    const session = await blinkIdCore.createScanningSession({
       /*
        * For default settings look at defaultSessionSettings
        *
-       * @see https://github.com/BlinkID/blinkid-web/blob/main/packages/blinkid-core/src/defaultSessionSettings.ts
+       * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid-core/src/defaultSessionSettings.ts
        */
       scanningSettings: {
         // scanPassportDataPageOnly: false,
@@ -121,7 +115,7 @@ export const App: Component = () => {
      * This creates the UI and attaches it to the DOM.
      * For additional configuration look at the CameraManagerUiOptions type.
      *
-     * @see https://github.com/BlinkID/blinkid-web/blob/main/packages/camera-manager/docs/type-aliases/CameraManagerUiOptions.md
+     * @see https://github.com/microblink/web-sdks/blob/main/packages/camera-manager/docs/type-aliases/CameraManagerUiOptions.md
      */
     const cameraUi = await createCameraManagerUi(cameraManager, targetNode, {
       showMirrorCameraButton: true,
@@ -223,10 +217,6 @@ export const App: Component = () => {
         >
           Load
         </button>
-      </Show>
-      {/* Debug info */}
-      <Show when={SHOW_DEBUG && blinkIdUxManager() && !resultWithoutImages()}>
-        <ScoreDisplay blinkIdUxManager={blinkIdUxManager()!} />
       </Show>
 
       {/* Results */}

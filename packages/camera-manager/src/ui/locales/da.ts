@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for da.
+ */
 export default {
   camera_error_cancel_btn: "Annuller",
   camera_error_details: "Tillad kameraadgang i din browser, og prøv igen.",

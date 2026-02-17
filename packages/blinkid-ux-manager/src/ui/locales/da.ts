@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for da.
+ */
 export default {
   alert_cancel_btn: "Annuller",
   alert_retry_btn: "Prøv igen",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "Prøv at scanne et andet dokument.",
   document_not_recognized: "Dokument ikke genkendt",
   document_not_recognized_details: "Scan forsiden af et understøttet dokument.",
+  document_scanned: "Det lykkedes! Dokumentet er scannet.",
   document_too_close_to_edge: "Flyt dokumentet væk fra kanten",
   face_photo_not_fully_visible: "Hold ansigtsfotoet helt synligt",
   flip_document: "Vend dokumentet",
   flip_to_back_side: "Vend på bagsiden",
+  front_side_scanned: "Det lykkedes! Forsiden er scannet.",
   glare_detected: "Vip eller flyt dokumentet for at fjerne reflektionen",
   help_aria_label: "Hjælp",
   help_modal_back_btn: "Tilbage",

@@ -1,10 +1,11 @@
-import { getPackagePath, linkResources } from "@microblink/utils";
+import { getPackagePath, linkResources } from "@microblink/repo-utils";
 import { stripIndents } from "common-tags";
 import { defineConfig } from "vite";
 import { fs, path } from "zx";
 import { dependencies } from "./package.json";
 
 let ranOnce = false;
+const resourcesDir = path.resolve(__dirname, "public", "resources");
 
 type Dependency = keyof typeof dependencies;
 
@@ -37,7 +38,7 @@ export default defineConfig((config) => ({
 
 async function writeResourceDoc() {
   fs.outputFile(
-    "public/resources/DO_NOT_MODIFY_THIS_DIRECTORY.md",
+    path.join(resourcesDir, "DO_NOT_MODIFY_THIS_DIRECTORY.md"),
     stripIndents`
       Do not modify the name of this directory, or the files inside it.
       The Wasm and Web Workers will look for the \`resources\` directory on the path.`,
@@ -59,12 +60,12 @@ async function moveWorker() {
 
   const files = fs.readdirSync(distPath);
 
-  fs.ensureDirSync("public/resources");
+  fs.ensureDirSync(resourcesDir);
 
   for (const filePath of files) {
     await linkResources(
       path.join(distPath, filePath),
-      path.join("public/resources", filePath),
+      path.join(resourcesDir, filePath),
     );
   }
 }
@@ -84,12 +85,12 @@ async function moveBlinkIdResources() {
   }
 
   const files = fs.readdirSync(distPath);
-  fs.ensureDirSync("public/resources");
+  fs.ensureDirSync(resourcesDir);
 
   for (const filePath of files) {
     await linkResources(
       path.join(distPath, filePath),
-      path.join("public/resources", filePath),
+      path.join(resourcesDir, filePath),
     );
   }
 }

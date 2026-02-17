@@ -1,0 +1,22 @@
+body {
+  margin: 0;
+}
+
+:root {
+  background-color: #282c34;
+  color: white;
+  min-height: 300vh;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+}
+
+/* override variable example */
+/*#mb-camera-host::part(capture-screen-part) {
+  --color-primary: 255 5 5;
+}*/
+
+/* modify the camera select here */
+/* #mb-camera-host::part(camera-select-part) {
+  display: none;
+} */

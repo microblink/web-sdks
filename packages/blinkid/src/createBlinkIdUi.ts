@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
 import {
@@ -158,7 +158,7 @@ export const createBlinkId = async ({
     wasmVariant,
   });
 
-  const scanningSession = await blinkIdCore.createBlinkIdScanningSession({
+  const scanningSession = await blinkIdCore.createScanningSession({
     scanningMode,
     scanningSettings,
   });
@@ -184,7 +184,7 @@ export const createBlinkId = async ({
         createBlinkIdFeedbackUi(
           blinkIdUxManager,
           cameraUi,
-          (feedbackUiOptions = {}),
+          feedbackUiOptions ?? {},
         );
 
         if (feedbackUiOptions?.showOnboardingGuide === false) {

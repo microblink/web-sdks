@@ -1,0 +1,59 @@
+/**
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
+ */
+
+import { AlertModal } from "@microblink/shared-components/Modal";
+import { type Component } from "solid-js";
+import { useBlinkCardUiStore } from "../BlinkCardUiStoreContext";
+
+/**
+ * The props for the ErrorModal component.
+ */
+interface ErrorModalProps {
+  header: string;
+  text: string;
+  primaryButtonText: string;
+  secondaryButtonText: string;
+  shouldResetScanningSession?: boolean;
+}
+
+/**
+ * The ErrorModal component.
+ *
+ * @param props - The props for the ErrorModal component.
+ * @returns The ErrorModal component.
+ */
+export const ErrorModal: Component<ErrorModalProps> = (props) => {
+  const { store, updateStore } = useBlinkCardUiStore();
+
+  const hideModal = () => {
+    updateStore({ errorState: undefined });
+  };
+
+  const dismountCameraManagerUi = () => {
+    store.cameraManagerComponent.dismount();
+  };
+
+  const handlePrimaryClick = async () => {
+    hideModal();
+
+    if (props.shouldResetScanningSession) {
+      await store.blinkCardUxManager.resetScanningSession(true);
+    }
+
+    await store.blinkCardUxManager.cameraManager.startFrameCapture();
+  };
+
+  return (
+    <AlertModal
+      mountTarget={store.cameraManagerComponent.overlayLayerNode}
+      header={props.header}
+      text={props.text}
+      open={true}
+      onPrimaryClick={() => void handlePrimaryClick()}
+      onSecondaryClick={() => dismountCameraManagerUi()}
+      primaryButtonText={props.primaryButtonText}
+      secondaryButtonText={props.secondaryButtonText}
+    />
+  );
+};

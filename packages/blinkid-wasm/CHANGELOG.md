@@ -1,5 +1,12 @@
 # @microblink/blinkid-wasm
 
+## 7.6.4
+
+### Patch Changes
+
+- Shared types moved to `@microblink/wasm-common`.
+- `createBlinkIdScanningSession` renamed to `createScanningSession`.
+
 ## 7.6.3
 
 ### Patch Changes

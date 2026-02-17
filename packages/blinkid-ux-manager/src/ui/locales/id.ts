@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for id.
+ */
 export default {
   alert_cancel_btn: "Batal",
   alert_retry_btn: "Coba Lagi",
@@ -11,11 +14,13 @@ export default {
   document_filtered_details: "Coba pindai dokumen yang berbeda.",
   document_not_recognized: "Dokumen tak dikenali",
   document_not_recognized_details: "Pindai sisi depan dokumen yang didukung.",
+  document_scanned: "Berhasil! Dokumen dipindai",
   document_too_close_to_edge: "Gerakkan dokumen dari tepian",
   face_photo_not_fully_visible:
     "Atur agar foto wajah tetap terlihat sepenuhnya",
   flip_document: "Balik dokumen",
   flip_to_back_side: "Balik dokumen",
+  front_side_scanned: "Berhasil! Sisi depan dipindai",
   glare_detected:
     "Miringkan atau pindahkan dokumen untuk menghilangkan pantulan",
   help_aria_label: "Bantuan",
@@ -48,7 +53,7 @@ export default {
   scan_right_page: "Pindai halaman kanan",
   scan_the_back_side: "Pindai sisi belakang dokumen",
   scan_the_barcode: "Pindai kode batang",
-  scan_the_front_side: "Pindai sisi depan\ndokumen.",
+  scan_the_front_side: "Pindai sisi depan\\ndokumen.",
   scan_top_page: "Pindai halaman atas",
   scan_unsuccessful: "Pemindaian gagal",
   scan_unsuccessful_details: "Tak dapat membaca dokumen. Silakan coba lagi.",

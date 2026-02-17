@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for am.
+ */
 export default {
   camera_error_cancel_btn: "ተወው",
   camera_error_details: "እባክዎ በአሳሽዎ ውስጥ የካሜራ መዳረሻ ይፍቀዱና እንደገና ይሞክሩ።",

@@ -17,11 +17,8 @@
 
 ## Interfaces
 
-- [NavigatorUABrandVersion](interfaces/NavigatorUABrandVersion.md)
-- [NavigatorUAData](interfaces/NavigatorUAData.md)
 - [PingBase](interfaces/PingBase.md)
 - [UADataValues](interfaces/UADataValues.md)
-- [UALowEntropyJSON](interfaces/UALowEntropyJSON.md)
 
 ## Type Aliases
 
@@ -100,7 +97,6 @@
 - [GpuInfo](type-aliases/GpuInfo.md)
 - [HapticFeedbackType](type-aliases/HapticFeedbackType.md)
 - [HardwareCameraInfoData](type-aliases/HardwareCameraInfoData.md)
-- [Hints](type-aliases/Hints.md)
 - [ImageAnalysisDetectionStatus](type-aliases/ImageAnalysisDetectionStatus.md)
 - [ImageAnalysisLightingStatus](type-aliases/ImageAnalysisLightingStatus.md)
 - [ImageExtractionType](type-aliases/ImageExtractionType.md)
@@ -140,7 +136,6 @@
 - [Rectangle](type-aliases/Rectangle.md)
 - [Region](type-aliases/Region.md)
 - [RemoteScanningSession](type-aliases/RemoteScanningSession.md)
-- [RemoteWorker](type-aliases/RemoteWorker.md)
 - [Resolution](type-aliases/Resolution.md)
 - [ResourceFileType](type-aliases/ResourceFileType.md)
 - [ResultCompleteness](type-aliases/ResultCompleteness.md)
@@ -155,7 +150,7 @@
 - [SdkScanConditionsData](type-aliases/SdkScanConditionsData.md)
 - [SdkUxEventData](type-aliases/SdkUxEventData.md)
 - [SdkWrapperProductData](type-aliases/SdkWrapperProductData.md)
-- [ServerPermissionError](type-aliases/ServerPermissionError.md)
+- [ServerPermissionErrorReason](type-aliases/ServerPermissionErrorReason.md)
 - [ServerPermissionSubmitError](type-aliases/ServerPermissionSubmitError.md)
 - [SingleSideScanningResult](type-aliases/SingleSideScanningResult.md)
 - [StartCameraStreamOptions](type-aliases/StartCameraStreamOptions.md)
@@ -176,7 +171,6 @@
 - [blinkIdUiStateMap](variables/blinkIdUiStateMap.md)
 - [cameraManagerStore](variables/cameraManagerStore.md)
 - [cameraUiRefStore](variables/cameraUiRefStore.md)
-- [createProxyWorker](variables/createProxyWorker.md)
 - [defaultCameraManagerOptions](variables/defaultCameraManagerOptions.md)
 - [defaultSessionSettings](variables/defaultSessionSettings.md)
 - [errorUiStateKeys](variables/errorUiStateKeys.md)
@@ -197,6 +191,8 @@
 - [createBlinkIdFeedbackUi](functions/createBlinkIdFeedbackUi.md)
 - [createCameraManagerUi](functions/createCameraManagerUi.md)
 - [createCustomImageData](functions/createCustomImageData.md)
+- [createDerivedDeviceInfo](functions/createDerivedDeviceInfo.md)
+- [createProxyWorker](functions/createProxyWorker.md)
 - [extractBarcodeImage](functions/extractBarcodeImage.md)
 - [extractFaceImage](functions/extractFaceImage.md)
 - [extractSideDocumentImage](functions/extractSideDocumentImage.md)
@@ -212,4 +208,3 @@
 - [loadBlinkIdCore](functions/loadBlinkIdCore.md)
 - [matchClosestResolution](functions/matchClosestResolution.md)
 - [returnLongerSide](functions/returnLongerSide.md)
-- [testLocalStorage](functions/testLocalStorage.md)

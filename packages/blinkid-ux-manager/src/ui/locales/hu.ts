@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for hu.
+ */
 export default {
   alert_cancel_btn: "Mégsem",
   alert_retry_btn: "Próbálja újra",
@@ -12,10 +15,12 @@ export default {
   document_not_recognized: "A dokumentum nincs felismerve",
   document_not_recognized_details:
     "Szkennelje be egy támogatott dokumentum elülső oldalát.",
+  document_scanned: "Siker! Dokumentum beolvasva",
   document_too_close_to_edge: "Mozdítsa el a dokumentumot a széltől",
   face_photo_not_fully_visible: "Tartsa az arcképet teljesen láthatóan",
   flip_document: "Fordítsa meg a dokumentumot",
   flip_to_back_side: "Fordítsa meg a dokumentumot",
+  front_side_scanned: "Siker! Első oldal beolvasva",
   glare_detected:
     "Döntse meg vagy mozgassa a dokumentumot a tükröződés megszüntetéséhez",
   help_aria_label: "Súgó",
@@ -48,7 +53,7 @@ export default {
   scan_right_page: "A jobb oldali oldal beolvasása",
   scan_the_back_side: "Szkennelje be a dokumentum hátoldalát",
   scan_the_barcode: "Szkennelje be a vonalkódot",
-  scan_the_front_side: "Szkennelje be egy dokumentum\nelülső oldalát",
+  scan_the_front_side: "Szkennelje be egy dokumentum\\nelülső oldalát",
   scan_top_page: "A felső oldal beolvasása",
   scan_unsuccessful: "Sikertelen szkennelés",
   scan_unsuccessful_details:

@@ -1,8 +1,7 @@
 {
-  "name": "example-camera-manager",
+  "name": "@microblink/camera-manager-example",
   "description": "Example app showcasing the usage of the @microblink/camera-manager package",
   "private": true,
-  "version": "1.1.10",
   "scripts": {
     "build": "vite build",
     "build:js-dev": "vite build --mode development",
@@ -23,7 +22,7 @@
   },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
-    "@microblink/utils": "workspace:*",
+    "@microblink/repo-utils": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
@@ -36,7 +35,7 @@
     "sass": "^1.85.0",
     "serve": "^14.2.4",
     "tsc-files": "^1.1.4",
-    "typescript": "^5.8.3",
+    "typescript": "5.8.3",
     "vite": "^6.2.1",
     "vite-plugin-mkcert": "^1.17.6",
     "vite-plugin-qrcode": "^0.2.4",

@@ -4,15 +4,18 @@
   "commit": false,
   "fixed": [
     [
-      "@microblink/blinkid",
-      "@microblink/blinkid-core",
-      "@microblink/blinkid-ux-manager",
-      "@microblink/blinkid-wasm",
-      "@microblink/blinkid-worker"
+      "@microblink/blinkid*"
+    ],
+    [
+      "@microblink/blinkcard*"
     ]
   ],
-  "access": "restricted",
+  "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": [
+    "@microblink/*-example",
+    "@microblink/*-qa-app",
+    "@microblink/*-test"
+]
 }

@@ -1,5 +1,14 @@
 # @microblink/blinkid-ux-manager
 
+## 7.6.4
+
+### Patch Changes
+
+- Now uses `@microblink/ux-common` for shared UX utilities (haptic feedback helpers and common utils for user experience logic).
+- Updated dependencies
+  - @microblink/blinkid-core@7.6.4
+  - @microblink/ux-common@1.0.0
+
 ## 7.6.3
 
 ### Patch Changes

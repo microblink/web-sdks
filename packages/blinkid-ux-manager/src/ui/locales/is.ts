@@ -1,7 +1,10 @@
 /**
- * Copyright (c) 2025 Microblink Ltd. All rights reserved.
+ * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+/**
+ * Localization strings for is.
+ */
 export default {
   alert_cancel_btn: "Hætta við",
   alert_retry_btn: "Reynið aftur",
@@ -11,10 +14,12 @@ export default {
   document_filtered_details: "Prófið að skannað annað skjal.",
   document_not_recognized: "Skjal ekki þekkt",
   document_not_recognized_details: "Skannið framhliðina á studdu skjali.",
+  document_scanned: "Tókst! Skjalið var skannað",
   document_too_close_to_edge: "Færið skjalið frá brúninni",
   face_photo_not_fully_visible: "Haldið andlitsmynd fyllilega sýnilegri",
   flip_document: "Snúið skjalinu",
   flip_to_back_side: "Snúið á bakhliðina",
+  front_side_scanned: "Tókst! Framhlið skönnuð",
   glare_detected: "Hallið eða færið skjalið til að fjarlægja endurkast",
   help_aria_label: "Hjálp",
   help_modal_back_btn: "Til baka",

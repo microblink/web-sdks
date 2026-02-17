@@ -1,5 +1,16 @@
 # @microblink/blinkid-core
 
+## 7.6.4
+
+### Patch Changes
+
+- **Worker proxy**: Use `createProxyWorker<BlinkIdWorkerProxy>` from `@microblink/core-common` instead of local `createProxyWorker`. Optimize worker frame processing by auto-transferring ImageData buffers in the proxy worker layer, reducing per-frame copy overhead and GC pressure. After process(...), the original ImageData.data.buffer is intentionally detached.
+- **core-common integration**: Depend on and re-export shared utilities from `@microblink/core-common` instead of in-package implementations: `createProxyWorker`, `getUserId`, `createCustomImageData`, `getCrossOriginWorkerURL`, `shouldUseLightweightBuild`, and `deviceInfo` (including derived device info, navigator types, and related helpers). Removed local implementations and their tests; `getUserId` is now called with a storage key (`getUserId(STORAGE_KEY)`). Prepare-publish updated to exclude `@microblink/core-common` from published package.json. README and repository URLs updated (Developer Hub, microblink/web-sdks).
+- Updated dependencies
+  - @microblink/blinkid-wasm@7.6.4
+  - @microblink/blinkid-worker@7.6.4
+  - @microblink/core-common@1.0.0
+
 ## 7.6.3
 
 ### Patch Changes
