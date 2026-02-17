@@ -120,7 +120,7 @@ jobs:
             FILTER_ARGS+=("--filter=${package}")
           done <<< "${{ steps.resolve-targets.outputs.selected_packages }}"
 
-          pnpm publish "${FILTER_ARGS[@]}" --no-git-checks
+          pnpm publish "${FILTER_ARGS[@]}" --no-git-checks --access public --provenance
 
       - name: Publish summary
         if: always()
