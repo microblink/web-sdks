@@ -40,7 +40,7 @@ Map of all possible UI states and their configurations
 
 ##### initialKey
 
-\`$\{Extract\<keyof SdkSpecificStateMap, string \| number\>\}\`
+`StateKey`\<`SdkSpecificStateMap`\>
 
 Key of the initial UI state to display
 
@@ -80,13 +80,13 @@ true if the current state's minimum duration has elapsed
 
 #### Get Signature
 
-> **get** **currentState**(): `SdkSpecificStateMap`\[\`$\{Extract\<keyof SdkSpecificStateMap, string \| number\>\}\`\]
+> **get** **currentState**(): `SdkSpecificStateMap`\[`StateKey`\<`SdkSpecificStateMap`\>\]
 
 Gets the currently active UI state configuration.
 
 ##### Returns
 
-`SdkSpecificStateMap`\[\`$\{Extract\<keyof SdkSpecificStateMap, string \| number\>\}\`\]
+`SdkSpecificStateMap`\[`StateKey`\<`SdkSpecificStateMap`\>\]
 
 The currently active UI state configuration.
 
@@ -94,13 +94,13 @@ The currently active UI state configuration.
 
 ### getEventQueue()
 
-> **getEventQueue**(): [`UiStateEvent`](../type-aliases/UiStateEvent.md)[]
+> **getEventQueue**(): [`UiStateEvent`](../type-aliases/UiStateEvent.md)\<`StateKey`\<`SdkSpecificStateMap`\>\>[]
 
 Gets a copy of the current event queue for debugging.
 
 #### Returns
 
-[`UiStateEvent`](../type-aliases/UiStateEvent.md)[]
+[`UiStateEvent`](../type-aliases/UiStateEvent.md)\<`StateKey`\<`SdkSpecificStateMap`\>\>[]
 
 A copy of the current event queue.
 
@@ -108,7 +108,7 @@ A copy of the current event queue.
 
 ### getNewUiState()
 
-> **getNewUiState**(`incomingUiStateKey`): `SdkSpecificStateMap`\[\`$\{Extract\<keyof SdkSpecificStateMap, string \| number\>\}\`\]
+> **getNewUiState**(`incomingUiStateKey`): `SdkSpecificStateMap`\[`StateKey`\<`SdkSpecificStateMap`\>\]
 
 Processes a new UI state event and determines the state to display.
 
@@ -121,15 +121,29 @@ This method:
 
 ##### incomingUiStateKey
 
-\`$\{Extract\<keyof SdkSpecificStateMap, string \| number\>\}\`
+`StateKey`\<`SdkSpecificStateMap`\>
 
 Key of the new UI state event
 
 #### Returns
 
-`SdkSpecificStateMap`\[\`$\{Extract\<keyof SdkSpecificStateMap, string \| number\>\}\`\]
+`SdkSpecificStateMap`\[`StateKey`\<`SdkSpecificStateMap`\>\]
 
 The UI state that should be displayed.
+
+***
+
+### getRemainingDuration()
+
+> **getRemainingDuration**(): `number`
+
+Retrieves the remaining time for the current state to satisfy its minimum duration.
+
+#### Returns
+
+`number`
+
+Remaining time in milliseconds.
 
 ***
 
@@ -161,17 +175,72 @@ The current summed scores for each state.
 
 ***
 
-### reset()
+### getSingleEventQueue()
 
-> **reset**(): `void`
+> **getSingleEventQueue**(): [`UiStateEvent`](../type-aliases/UiStateEvent.md)\<`StateKey`\<`SdkSpecificStateMap`\>\>[]
 
-Resets the stabilizer to its initial state.
+Gets a copy of the single event queue for debugging.
+
+#### Returns
+
+[`UiStateEvent`](../type-aliases/UiStateEvent.md)\<`StateKey`\<`SdkSpecificStateMap`\>\>[]
+
+A copy of the current event queue.
+
+***
+
+### ingest()
+
+> **ingest**(`incomingUiStateKey`): `void`
+
+Enqueues a new UI state event to be considered on the next `tick()`.
+
+#### Parameters
+
+##### incomingUiStateKey
+
+`StateKey`\<`SdkSpecificStateMap`\>
+
+Key of the new UI state event
 
 #### Returns
 
 `void`
 
-The initial state.
+***
+
+### reset()
+
+> **reset**(`currentKey?`): `void`
+
+Resets the stabilizer to its initial state.
+
+#### Parameters
+
+##### currentKey?
+
+`StateKey`\<`SdkSpecificStateMap`\>
+
+resets the stabilizer with a different key
+than the one it was initialized with. Does not mutate `this.initialKey`
+
+#### Returns
+
+`void`
+
+***
+
+### restartCurrentStateTimer()
+
+> **restartCurrentStateTimer**(): `void`
+
+Restarts the minimum-duration timer for the current state.
+Useful when a state should be timed from an external lifecycle point
+(e.g. actual capture start) instead of construction/reset time.
+
+#### Returns
+
+`void`
 
 ***
 
@@ -192,3 +261,22 @@ New time window in milliseconds
 #### Returns
 
 `void`
+
+***
+
+### tick()
+
+> **tick**(): `SdkSpecificStateMap`\[`StateKey`\<`SdkSpecificStateMap`\>\]
+
+Advances stabilizer time and returns the state that should be displayed.
+
+This method:
+1. Handles single-emit events that bypass normal stabilization
+2. Maintains a time-windowed queue of regular events
+3. Applies temporal averaging with decay to determine the winning state
+
+#### Returns
+
+`SdkSpecificStateMap`\[`StateKey`\<`SdkSpecificStateMap`\>\]
+
+The UI state that should be displayed.

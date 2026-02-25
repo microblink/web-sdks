@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Palīdzība", tooltip: "Vai vajadzīga palīdzība?" },
   help_modal: {
+    aria: "Palīdzība skenēšanas procesā",
     back_btn: "Atpakaļ",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Kur atrast kartes numuru?",
     },
     done_btn: "Gatavs",
+    done_btn_aria: "Atsākt skenēšanu",
     lighting: {
       details:
         "Izvairieties no tiešas spilgtas gaismas, jo tā atstarojas no kartes un var padarīt atsevišķas kartes daļas nesalasāmas. Ja nevarat salasīt datus uz kartes, tos neredzēs arī kamera.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Skenēšanas norādījumi",
     btn: "Sāciet skenēšanu",
     details:
       "Parasti kartes numuru veido 16 cipari. Tam jābūt uzdrukātam vai reljefi iespiestam pār karti. Pārliecinieties, ka apgaismojums ir pietiekams un visa kartes informācija ir labi redzama.",
@@ -63,6 +66,7 @@ export default {
       "Parasti kartes numuru veido 16 cipari. Tam jābūt uzdrukātam vai reljefi izspiestam uz kartes. Pārliecinieties, ka kameras objektīvs ir tīrs, karte ir labi apgaismota un visi kartes dati ir redzami.",
     title: "Vispirms noskenējiet kartes numuru",
   },
+  sdk_aria: "Kartes skenēšanas ekrāns",
   timeout_modal: {
     cancel_btn: "Atcelt",
     details: "Nevar nolasīt karti. Lūdzu, mēģiniet vēlreiz.",

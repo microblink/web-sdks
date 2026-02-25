@@ -2,6 +2,7 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import type { OverrideProperties } from "type-fest";
 import type {
   AnonymizationSettings,
   CardNumberAnonymizationSettings,
@@ -10,7 +11,6 @@ import type {
   LivenessSettings,
   ScanningSettings,
 } from "./scanning-settings";
-import type { OverrideProperties } from "type-fest";
 
 /**
  * Represents the configuration settings for a scanning session.
@@ -38,8 +38,8 @@ export type BlinkCardSessionSettings = {
 };
 
 /**
- * Partial scanning settings with optional nested objects.
- * Used when passing partial settings to the Wasm module.
+ * Partial scanning settings with optional nested objects. Used when passing
+ * partial settings to the Wasm module.
  */
 export type PartialScanningSettingsInput = Partial<
   OverrideProperties<
@@ -48,16 +48,21 @@ export type PartialScanningSettingsInput = Partial<
       croppedImageSettings: Partial<CroppedImageSettings>;
       extractionSettings: Partial<ExtractionSettings>;
       livenessSettings: Partial<LivenessSettings>;
-      anonymizationSettings: Partial<OverrideProperties<AnonymizationSettings, {
-        cardNumberAnonymizationSettings: Partial<CardNumberAnonymizationSettings>;
-      }>>;
+      anonymizationSettings: Partial<
+        OverrideProperties<
+          AnonymizationSettings,
+          {
+            cardNumberAnonymizationSettings: Partial<CardNumberAnonymizationSettings>;
+          }
+        >
+      >;
     }
   >
 >;
 
 /**
- * Partial session settings accepted by the Wasm module.
- * All fields are optional; the C++ layer merges with defaults.
+ * Partial session settings accepted by the Wasm module. All fields are
+ * optional; the C++ layer merges with defaults.
  */
 export type BlinkCardSessionSettingsInput = OverrideProperties<
   Partial<BlinkCardSessionSettings>,

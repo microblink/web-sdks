@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Usaidizi", tooltip: "Unahitaji usaidizi?" },
   help_modal: {
+    aria: "Usaidizi wa kuskani",
     back_btn: "Nyuma",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Namba ya kadi iko wapi?",
     },
     done_btn: "Umemaliza",
+    done_btn_aria: "Endelea kuskani",
     lighting: {
       details:
         "Epuka mwanga mkali wa moja kwa moja kwa sababu huakisiwa kutoka kwenye kadi na inaweza kufanya sehemu za kadi zisiweze kusomeka. Ikiwa huwezi kusoma data kwenye kadi, vilevile haitaonekana kwenye kamera.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Maagizo ya kuskani",
     btn: "Anza kuskani",
     details:
       "Namba ya kadi kawaida ni namba 16. Inapaswa kuwa imechapishwa au kuchorwa kwa namba zilizoinuka kwenye kadi. Hakikisha kadi iko kwenye mwanga wa kutosha na maelezo yote yanaonekana.",
@@ -63,6 +66,7 @@ export default {
       "Namba ya kadi kawaida ni namba 16. Inapaswa kuwa imechapishwa au kuchorwa kwa namba zilizoinuka kwenye kadi. Hakikisha lenzi ya kamera yako ni safi, kadi iko kwenye mwanga wa kutosha na maelezo yote yanaonekana.",
     title: "Skani namba ya kadi kwanza",
   },
+  sdk_aria: "Skrini ya kuskani kadi",
   timeout_modal: {
     cancel_btn: "Acha",
     details: "Imeshindwa kusoma kadi. Tafadhali jaribu tena.",

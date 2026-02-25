@@ -180,6 +180,14 @@ The driver license detailed info
 
 ***
 
+### effectiveDate?
+
+> `optional` **effectiveDate**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\>
+
+The effective date of the document
+
+***
+
 ### eligibilityCategory?
 
 > `optional` **eligibilityCategory**: [`StringResult`](StringResult.md)
@@ -220,6 +228,14 @@ The full name of the document owner
 
 ***
 
+### husbandName?
+
+> `optional` **husbandName**: [`StringResult`](StringResult.md)
+
+The husband name of the document owner
+
+***
+
 ### issuingAuthority?
 
 > `optional` **issuingAuthority**: [`StringResult`](StringResult.md)
@@ -233,6 +249,14 @@ The issuing authority of the document
 > `optional` **lastName**: [`StringResult`](StringResult.md)
 
 The last name of the document owner
+
+***
+
+### legalStatus?
+
+> `optional` **legalStatus**: [`StringResult`](StringResult.md)
+
+The legal status of the document owner
 
 ***
 
@@ -321,6 +345,14 @@ The national insurance number of the document owner
 > `optional` **nationality**: [`StringResult`](StringResult.md)
 
 The nationality of the document owner
+
+***
+
+### parentsInfo?
+
+> `optional` **parentsInfo**: [`ParentInfo`](ParentInfo.md)[]
+
+The parents info
 
 ***
 
@@ -420,6 +452,14 @@ The sex of the document owner
 
 ***
 
+### socialSecurityStatus?
+
+> `optional` **socialSecurityStatus**: [`StringResult`](StringResult.md)
+
+The social security status of the document owner
+
+***
+
 ### specificDocumentValidity?
 
 > `optional` **specificDocumentValidity**: [`StringResult`](StringResult.md)
@@ -481,3 +521,11 @@ The vehicle type
 > `optional` **visaType**: [`StringResult`](StringResult.md)
 
 The visa type of the document
+
+***
+
+### workRestriction?
+
+> `optional` **workRestriction**: [`StringResult`](StringResult.md)
+
+The work restriction of the document owner

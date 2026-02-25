@@ -16,7 +16,7 @@ import type { BlinkIdUxManager } from "../core/BlinkIdUxManager";
 /**
  * The BlinkIdUiStore type.
  */
-export type BlinkIdUiStore = {
+type BlinkIdUiStore = {
   /**
    * The BlinkIdUxManager instance.
    */
@@ -38,9 +38,13 @@ export type BlinkIdUiStore = {
    */
   showOnboardingGuide?: boolean;
   /**
-   * The timeout for the help tooltip.
+   * Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
    */
-  showHelpTooltipTimeout?: number;
+  helpTooltipShowDelay?: number | null;
+  /**
+   * Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden.
+   */
+  helpTooltipHideDelay?: number | null;
   /**
    * Whether the help modal should be shown.
    */
@@ -91,7 +95,8 @@ export const BlinkIdUiStoreProvider: ParentComponent<{
   cameraManagerComponent: CameraManagerComponent;
   showOnboardingGuide: boolean;
   showHelpButton: boolean;
-  showHelpTooltipTimeout: number;
+  helpTooltipShowDelay: number | null;
+  helpTooltipHideDelay: number | null;
   showDocumentFilteredModal: boolean;
   showTimeoutModal: boolean;
   showUnsupportedDocumentModal: boolean;
@@ -108,7 +113,8 @@ export const BlinkIdUiStoreProvider: ParentComponent<{
     blinkIdUxManager: props.blinkIdUxManager,
     cameraManagerComponent: props.cameraManagerComponent,
     showOnboardingGuide: props.showOnboardingGuide,
-    showHelpTooltipTimeout: props.showHelpTooltipTimeout,
+    helpTooltipShowDelay: props.helpTooltipShowDelay,
+    helpTooltipHideDelay: props.helpTooltipHideDelay,
     showHelpButton: props.showHelpButton,
     showDocumentFilteredModal: props.showDocumentFilteredModal,
     showTimeoutModal: props.showTimeoutModal,

@@ -38,4 +38,4 @@
 
 ### platform
 
-> **platform**: `OperatingSystem` \| `""`
+> **platform**: `string`

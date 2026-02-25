@@ -2,8 +2,8 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { JSX, Owner, createRoot } from "solid-js";
-import { MountableElement, insert } from "solid-js/web";
+import { createRoot, JSX, Owner } from "solid-js";
+import { insert, MountableElement } from "solid-js/web";
 
 /**
  * A custom render function that allows you to specify the owner of the rendered component.
@@ -25,7 +25,10 @@ export const renderWithOwner = (
 
     return () => {
       dispose();
-      element.textContent = "";
+      // textContent is readonly on Document
+      if (!(element instanceof Document)) {
+        element.textContent = "";
+      }
     };
   }, owner);
 };

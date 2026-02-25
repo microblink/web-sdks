@@ -2,12 +2,19 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { describe, expect, test, vi, beforeEach } from "vitest";
 import type { RemoteScanningSession } from "@microblink/blinkcard-core";
-import { createBlinkCardUxManager } from "./createBlinkCardUxManager";
-import { BlinkCardUxManager } from "./BlinkCardUxManager";
 import { getDeviceInfo } from "@microblink/blinkcard-core";
 import type { CameraManager } from "@microblink/camera-manager";
+import { createFakeScanningSession } from "@microblink/test-utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import { BlinkCardUxManager } from "./BlinkCardUxManager";
+import { createBlinkCardUxManager } from "./createBlinkCardUxManager";
+
+/**
+ * Test file role:
+ * - Verifies constructor wiring for createBlinkCardUxManager().
+ * - Focuses on dependency forwarding/default setup, not scan flow behavior.
+ */
 
 vi.mock("./BlinkCardUxManager", () => ({
   BlinkCardUxManager: vi.fn(),
@@ -33,21 +40,23 @@ describe("createBlinkCardUxManager", () => {
 
     const cameraManager = {} as CameraManager;
     const sessionSettings = { inputImageSource: "video", scanningSettings: {} };
-    const scanningSession = {
-      getSettings: vi.fn().mockResolvedValue(sessionSettings),
-      showDemoOverlay: vi.fn().mockResolvedValue(SHOW_DEMO_OVERLAY),
-      showProductionOverlay: vi.fn().mockResolvedValue(SHOW_PRODUCTION_OVERLAY),
-    } as unknown as RemoteScanningSession;
+    const scanningSession = createFakeScanningSession({
+      settings: sessionSettings,
+      showDemoOverlay: SHOW_DEMO_OVERLAY,
+      showProductionOverlay: SHOW_PRODUCTION_OVERLAY,
+    });
 
-    const deviceInfo = { userAgent: "ua" };
-    vi.mocked(getDeviceInfo).mockResolvedValue(deviceInfo as never);
+    const deviceInfo = { userAgent: "ua" } as Awaited<
+      ReturnType<typeof getDeviceInfo>
+    >;
+    vi.mocked(getDeviceInfo).mockResolvedValue(deviceInfo);
 
-    const instance = { manager: "instance" };
-    vi.mocked(BlinkCardUxManager).mockImplementation(() => instance as never);
+    const instance = {} as BlinkCardUxManager;
+    vi.mocked(BlinkCardUxManager).mockImplementation(() => instance);
 
     const result = await createBlinkCardUxManager(
       cameraManager,
-      scanningSession,
+      scanningSession as unknown as RemoteScanningSession,
     );
 
     expect(result).toBe(instance);
@@ -55,6 +64,7 @@ describe("createBlinkCardUxManager", () => {
     expect(BlinkCardUxManager).toHaveBeenCalledWith(
       cameraManager,
       scanningSession,
+      {},
       sessionSettings,
       SHOW_DEMO_OVERLAY,
       SHOW_PRODUCTION_OVERLAY,

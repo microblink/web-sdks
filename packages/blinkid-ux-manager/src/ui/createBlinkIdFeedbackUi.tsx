@@ -6,10 +6,10 @@ import { BlinkIdUxManager } from "../core/BlinkIdUxManager";
 
 import { CameraManagerComponent } from "@microblink/camera-manager";
 import { renderWithOwner } from "@microblink/shared-components/renderWithOwner";
+import { merge } from "merge-anything";
 import { BlinkIdFeedbackUi } from "./BlinkIdFeedbackUi";
 import { BlinkIdUiStoreProvider } from "./BlinkIdUiStoreContext";
 import { LocalizationStrings } from "./LocalizationContext";
-import { merge } from "merge-anything";
 
 /**
  * The options for the createBlinkIdFeedbackUi function.
@@ -39,11 +39,24 @@ export type FeedbackUiOptions = {
    */
   showHelpButton?: boolean;
   /**
-   * The timeout for the help tooltip.
+   * The timeout for the help tooltip in ms.
    *
    * @defaultValue 3000
+   * @deprecated This option will be removed in a future release. Use `helpTooltipShowDelay` instead.
    */
   showHelpTooltipTimeout?: number;
+  /**
+   * Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
+   *
+   * @defaultValue 5000
+   */
+  helpTooltipShowDelay?: number | null;
+  /**
+   * Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden.
+   *
+   * @defaultValue 5000
+   */
+  helpTooltipHideDelay?: number | null;
   /**
    * If set to `true`, the document filtered modal will be shown.
    *
@@ -64,15 +77,21 @@ export type FeedbackUiOptions = {
   showUnsupportedDocumentModal?: boolean;
 };
 
-const defaultFeedbackUiOptions: Required<FeedbackUiOptions> = {
+type DefaultFeedbackUiOptions = Omit<
+  Required<FeedbackUiOptions>,
+  "showHelpTooltipTimeout"
+>;
+
+const defaultFeedbackUiOptions: DefaultFeedbackUiOptions = {
   localizationStrings: {},
   preserveSdkInstance: false,
   showOnboardingGuide: true,
   showHelpButton: true,
+  helpTooltipShowDelay: 5000,
+  helpTooltipHideDelay: 5000,
   showDocumentFilteredModal: true,
   showTimeoutModal: true,
   showUnsupportedDocumentModal: true,
-  showHelpTooltipTimeout: 3000,
 };
 
 /**
@@ -80,7 +99,7 @@ const defaultFeedbackUiOptions: Required<FeedbackUiOptions> = {
  *
  * @param blinkIdUxManager - The BlinkID Ux Manager.
  * @param cameraManagerComponent - The Camera Manager Component.
- * @param feedbackUiOptions - The feedback UI options for the createBlinkIdFeedbackUi function.
+ * @param options - The feedback UI options for the createBlinkIdFeedbackUi function
  *
  * @returns The function to unmount the feedback UI.
  */
@@ -98,6 +117,17 @@ export function createBlinkIdFeedbackUi(
 
   const mergedUiOptions = merge(defaultFeedbackUiOptions, feedbackUiOptions);
 
+  if (
+    feedbackUiOptions.showHelpTooltipTimeout !== undefined &&
+    feedbackUiOptions.helpTooltipShowDelay === undefined
+  ) {
+    console.warn(
+      "FeedbackUiOptions.showHelpTooltipTimeout is deprecated and will be removed in a future release. Use helpTooltipShowDelay instead.",
+    );
+    mergedUiOptions.helpTooltipShowDelay =
+      feedbackUiOptions.showHelpTooltipTimeout;
+  }
+
   cameraManagerComponent.addOnDismountCallback(() => {
     // if the camera manager is unmounted, we need to unmount the feedback UI
     dismountFeedbackUiRef.current();
@@ -110,12 +140,13 @@ export function createBlinkIdFeedbackUi(
         cameraManagerComponent={cameraManagerComponent}
         showOnboardingGuide={mergedUiOptions.showOnboardingGuide}
         showHelpButton={mergedUiOptions.showHelpButton}
+        helpTooltipShowDelay={mergedUiOptions.helpTooltipShowDelay}
+        helpTooltipHideDelay={mergedUiOptions.helpTooltipHideDelay}
         showDocumentFilteredModal={mergedUiOptions.showDocumentFilteredModal}
         showTimeoutModal={mergedUiOptions.showTimeoutModal}
         showUnsupportedDocumentModal={
           mergedUiOptions.showUnsupportedDocumentModal
         }
-        showHelpTooltipTimeout={mergedUiOptions.showHelpTooltipTimeout}
         dismountFeedbackUi={() => dismountFeedbackUiRef.current()}
       >
         <BlinkIdFeedbackUi localization={mergedUiOptions.localizationStrings} />

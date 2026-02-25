@@ -3,16 +3,15 @@
  */
 
 import {
-  type BlinkCardCore,
   loadBlinkCardCore,
+  type BlinkCardCore,
   type BlinkCardInitSettings,
   type BlinkCardSessionSettingsInput,
 } from "@microblink/blinkcard-core";
 import {
-  createBlinkCardUxManager,
   createBlinkCardFeedbackUi,
+  createBlinkCardUxManager,
   FeedbackUiOptions,
-  LocalizationStrings,
 } from "@microblink/blinkcard-ux-manager";
 import {
   CameraManager,
@@ -35,12 +34,6 @@ export type BlinkCardComponentOptions = Simplify<
      * If not provided, the UI will be mounted to the document body.
      */
     targetNode?: HTMLElement;
-
-    /**
-     * Custom localization strings for the feedback UI.
-     * Allows overriding default text messages shown during scanning.
-     */
-    feedbackLocalization?: Partial<LocalizationStrings>;
 
     /**
      * Customization options for the camera manager UI.

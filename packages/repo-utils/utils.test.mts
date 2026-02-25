@@ -24,6 +24,8 @@ vi.mock("zx", async (importOriginal) => {
     },
     fs: {
       pathExistsSync: vi.fn(),
+      existsSync: vi.fn(),
+      removeSync: vi.fn(),
       ensureSymlink: vi.fn(),
       copy: vi.fn(),
       readdirSync: vi.fn().mockReturnValue(["file1.js", "file2.js"]),
@@ -83,6 +85,7 @@ describe("Utils", () => {
       vi.clearAllMocks();
       // Reset copy mock to succeed by default
       vi.mocked(fs.copy).mockResolvedValue();
+      vi.mocked(fs.existsSync).mockReturnValue(false);
     });
 
     describe("when source exists", () => {
@@ -157,6 +160,7 @@ describe("Utils", () => {
       // Mock the shell command for getPackagePath which is used by moveResources
       mockSyncFn.mockReturnValue(mockProcessOutput(mockPkgPath));
       vi.mocked(fs.pathExistsSync).mockReturnValue(true);
+      vi.mocked(fs.ensureSymlink).mockResolvedValue();
       // Reset copy mock to succeed by default
       vi.mocked(fs.copy).mockResolvedValue();
     });
@@ -182,20 +186,8 @@ describe("Utils", () => {
         path.join(moveTo, "file2.js"),
       );
 
-      // Verify copy was called as fallback
-      expect(fs.copy).toHaveBeenCalledTimes(2);
-      expect(fs.copy).toHaveBeenNthCalledWith(
-        1,
-        path.join(mockPkgPath, "dist", "resources", "file1.js"),
-        path.join(moveTo, "file1.js"),
-        { overwrite: true },
-      );
-      expect(fs.copy).toHaveBeenNthCalledWith(
-        2,
-        path.join(mockPkgPath, "dist", "resources", "file2.js"),
-        path.join(moveTo, "file2.js"),
-        { overwrite: true },
-      );
+      // Symlinking succeeds in this scenario, so fallback copy is not used.
+      expect(fs.copy).not.toHaveBeenCalled();
     });
 
     it("should throw error when package path is not found", async () => {

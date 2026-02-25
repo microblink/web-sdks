@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "Dokumen tak dikenali",
   document_not_recognized_details: "Pindai sisi depan dokumen yang didukung.",
   document_scanned: "Berhasil! Dokumen dipindai",
-  document_too_close_to_edge: "Gerakkan dokumen dari tepian",
+  document_too_close_to_edge: "Mohon jauhkan",
   face_photo_not_fully_visible:
     "Atur agar foto wajah tetap terlihat sepenuhnya",
   flip_document: "Balik dokumen",
@@ -25,6 +25,11 @@ export default {
     "Miringkan atau pindahkan dokumen untuk menghilangkan pantulan",
   help_aria_label: "Bantuan",
   help_modal_back_btn: "Kembali",
+  help_modal_blur_details_desktop:
+    "Pastikan perangkat dan dokumen tidak goyang saat pemindaian. Jika bergerak, gambar bisa kabur atau data di dokumen tidak terbaca.",
+  help_modal_camera_lens_details:
+    "Pastikan tidak ada noda atau debu pada lensa kamera. Jika lensa kotor, hasil gambar menjadi buram. Akibatnya, detail dokumen tidak dapat terbaca dan data gagal dipindai.",
+  help_modal_camera_lens_title: "Bersihkan lensa kamera",
   help_modal_details_1:
     "Pastikan jari Anda tidak menutupi bagian mana pun dari dokumen, termasuk baris paling bawah. Waspadai juga pantulan hologram yang menerpa bagian dokumen.",
   help_modal_details_2:
@@ -37,6 +42,8 @@ export default {
   help_modal_title_2: "Waspadai cahaya tajam",
   help_modal_title_3: "Pastikan dokumen tidak bergerak saat pemindaian",
   help_tooltip: "Perlu bantuan?",
+  keep_document_parallel: "Pastikan dokumen sejajar dengan layar",
+  keep_document_still: "Pastikan dokumen dan perangkat tidak goyang",
   move_closer: "Mohon dekatkan",
   move_farther: "Mohon jauhkan",
   move_left: "Pindah ke halaman di sebelah kiri",
@@ -46,7 +53,11 @@ export default {
   onboarding_modal_btn: "Mulai Pemindaian",
   onboarding_modal_details:
     "Pastikan dokumen cukup diterangi cahaya. Semua bagian dokumen harus terlihat di layar kamera.",
+  onboarding_modal_details_desktop:
+    "Pastikan lensa kamera bersih dan dokumen cukup terang. Semua bagian dokumen harus terlihat di layar kamera.",
   onboarding_modal_title: "Pastikan semua detail terlihat",
+  onboarding_modal_title_desktop: "Bersiap memindai",
+  resume_scanning: "Lanjutkan pemindaian",
   scan_data_page: "Memindai halaman data dokumen",
   scan_last_page_barcode: "Pindai kode batang dari halaman terakhir",
   scan_left_page: "Pindai halaman kiri",
@@ -57,6 +68,9 @@ export default {
   scan_top_page: "Pindai halaman atas",
   scan_unsuccessful: "Pemindaian gagal",
   scan_unsuccessful_details: "Tak dapat membaca dokumen. Silakan coba lagi.",
+  scanning_help: "Bantuan pemindaian",
+  scanning_instructions: "Petunjuk Pemindaian",
+  scanning_screen: "Layar pemindaian dokumen",
   too_bright: "Pindah ke tempat dengan pencahayaan yang lebih sedikit",
   too_dark: "Pindah ke tempat yang lebih terang",
   wrong_left: "Pindah ke halaman kiri",

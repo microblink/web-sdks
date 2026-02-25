@@ -3,6 +3,7 @@
  */
 
 import { cameraManagerStore } from "@microblink/camera-manager";
+import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import type { Component } from "solid-js";
 import {
   createEffect,
@@ -15,8 +16,11 @@ import {
 } from "solid-js";
 import { createWithSignal } from "solid-zustand";
 import {
+  blinkIdPageTransitionKeys,
+  blinkIdUiIntroStateKeys,
   BlinkIdUiState,
-  firstSideCapturedUiStateKeys,
+  BlinkIdUiStateKey,
+  blinkIdUiStepSuccessKeys,
 } from "../core/blinkid-ui-state";
 import {
   LocalizationProvider,
@@ -28,16 +32,12 @@ import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
 // this triggers extraction of CSS from the UnoCSS plugin
 import "virtual:uno.css";
 
-import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import DemoOverlay from "./assets/demo-overlay.svg?component-solid";
 import MicroblinkOverlay from "./assets/microblink.svg?component-solid";
 import { useBlinkIdUiStore } from "./BlinkIdUiStoreContext";
 import { ErrorModal } from "./dialogs/ErrorModal";
 import { HelpButton, HelpModal } from "./dialogs/HelpModal";
 import { OnboardingGuideModal } from "./dialogs/OnboardingGuideModal";
-
-import { PingSdkUxEventImpl } from "../shared/ping-implementations";
-import styles from "./styles.module.scss";
 
 /**
  * The BlinkIdFeedbackUi component. This is the main component that renders the
@@ -59,14 +59,11 @@ export const BlinkIdFeedbackUi: Component<{
   );
 
   // Handle errors during scanning
-  createEffect(() => {
-    const errorCallbackCleanup = store.blinkIdUxManager.addOnErrorCallback(
-      (errorState) => {
-        updateStore({ errorState });
-      },
-    );
-    onCleanup(() => errorCallbackCleanup());
-  });
+  const errorCallbackCleanup = store.blinkIdUxManager.addOnErrorCallback(
+    (errorState) => {
+      updateStore({ errorState });
+    },
+  );
 
   onMount(() => {
     const cleanupDismountCallback =
@@ -75,78 +72,116 @@ export const BlinkIdFeedbackUi: Component<{
 
         // if not user-initiated, it's a regular dismount, not a button-click,
         // so we early exit.
+
+        // TODO: test if this store proxies capture values in a closure on declaration
         if (!store.cameraManagerComponent.cameraManager.userInitiatedAbort) {
           return;
         }
 
-        void store.blinkIdUxManager.scanningSession.ping(
-          new PingSdkUxEventImpl({
-            eventType: "CloseButtonClicked",
-          }),
-        );
+        void store.blinkIdUxManager.analytics.logCloseButtonClickedEvent();
       });
   });
 
   // Handle document filtered during scanning
-  createEffect(() => {
-    const documentFilteredCallbackCleanup =
-      store.blinkIdUxManager.addOnDocumentFilteredCallback(() => {
-        updateStore({ documentFiltered: true });
-        void store.blinkIdUxManager.scanningSession.ping(
-          new PingSdkUxEventImpl({
-            eventType: "AlertDisplayed",
-            alertType: "DocumentClassNotAllowed",
-          }),
-        );
-      });
-    onCleanup(() => documentFilteredCallbackCleanup());
-  });
+  const documentFilteredCallbackCleanup =
+    store.blinkIdUxManager.addOnDocumentFilteredCallback(() => {
+      updateStore({ documentFiltered: true });
+      void store.blinkIdUxManager.analytics.logAlertDisplayedEvent(
+        "DocumentClassNotAllowed",
+      );
+    });
 
   const playbackState = createWithSignal(cameraManagerStore)(
     (s) => s.playbackState,
   );
 
+  // assume modal is displayed on camera error
+  const cameraErrorState = createWithSignal(cameraManagerStore)(
+    (s) => s.errorState,
+  );
+
   const isProcessing = () => playbackState() === "capturing";
 
+  /**
+   * These UI states pause frame processing, however we treat them as if we are
+   * still in processing state from a UX perspective
+   */
+  const pseudoProcessingKeys: BlinkIdUiStateKey[] = [
+    ...blinkIdUiIntroStateKeys,
+    ...blinkIdPageTransitionKeys,
+    ...blinkIdUiStepSuccessKeys,
+  ];
+
   // Processing is stopped, but we still want to show the feedback
-  // TODO: see if there is a better way to handle these edge-cases
   const shouldShowFeedback = () => {
     return (
-      isProcessing() ||
-      firstSideCapturedUiStateKeys.includes(uiState().key) ||
-      uiState().key === "DOCUMENT_CAPTURED"
+      // processing + pseudo-processing
+      (isProcessing() || pseudoProcessingKeys.includes(uiState().key)) &&
+      // never show while modal is open
+      !isModalOpen()
     );
   };
 
   const displayTimeoutModal = () =>
-    store.showTimeoutModal && store.errorState === "timeout";
+    Boolean(store.showTimeoutModal) && store.errorState === "timeout";
+
+  const displayUnsupportedDocumentModal = () =>
+    Boolean(store.showUnsupportedDocumentModal) &&
+    store.errorState === "unsupported_document";
+
+  const displayDocumentFilteredModal = () =>
+    Boolean(store.showDocumentFilteredModal) && store.documentFiltered;
+
+  const isModalOpen = () => {
+    return (
+      displayTimeoutModal() ||
+      displayDocumentFilteredModal() ||
+      displayUnsupportedDocumentModal() ||
+      // TODO: Unify modal dialogs in blinkid UX manager
+      Boolean(store.showOnboardingGuide) ||
+      Boolean(store.showHelpModal) ||
+      // camera manager
+      Boolean(cameraErrorState())
+    );
+  };
+
+  createEffect(() => {
+    if (!isModalOpen()) {
+      void store.blinkIdUxManager.cameraManager.startFrameCapture();
+      store.blinkIdUxManager.startUiUpdateLoop();
+    } else {
+      void store.blinkIdUxManager.cameraManager.stopFrameCapture();
+      store.blinkIdUxManager.stopUiUpdateLoop();
+    }
+  });
 
   const shouldShowDemoOverlay = () => {
-    return store.blinkIdUxManager.getShowDemoOverlay();
+    return store.blinkIdUxManager.showDemoOverlay;
   };
 
   const shouldShowProductionOverlay = () => {
-    return store.blinkIdUxManager.getShowProductionOverlay();
+    return store.blinkIdUxManager.showProductionOverlay;
   };
 
-  const handleUiStateChange = (newUiState: BlinkIdUiState) => {
-    setUiState(newUiState);
-  };
+  const removeUiStateChangeCallback =
+    store.blinkIdUxManager.addOnUiStateChangedCallback(setUiState);
 
-  createEffect(() => {
-    const removeUiStateChangeCallback =
-      store.blinkIdUxManager.addOnUiStateChangedCallback(handleUiStateChange);
-
-    onCleanup(() => removeUiStateChangeCallback());
+  onCleanup(() => {
+    removeUiStateChangeCallback();
+    errorCallbackCleanup();
+    documentFilteredCallbackCleanup();
   });
+
+  const isDesktop = () => {
+    return store.blinkIdUxManager.deviceInfo?.derivedDeviceInfo.formFactors.includes(
+      "Desktop",
+    );
+  };
 
   createEffect(() => {
     if (displayTimeoutModal()) {
-      void store.blinkIdUxManager.scanningSession.ping(
-        new PingSdkUxEventImpl({
-          eventType: "AlertDisplayed",
-          alertType: "StepTimeout",
-        }),
+      void store.blinkIdUxManager.analytics.logAlertDisplayedEvent(
+        "StepTimeout",
       );
     }
   });
@@ -166,6 +201,11 @@ export const BlinkIdFeedbackUi: Component<{
           {() => {
             const { t } = useLocalization();
 
+            // update camera manager dialog title localization
+            store.cameraManagerComponent.updateLocalization({
+              dialog_title: t.scanning_screen,
+            });
+
             return (
               <>
                 <Switch>
@@ -176,23 +216,14 @@ export const BlinkIdFeedbackUi: Component<{
                       shouldResetScanningSession={true}
                     />
                   </Match>
-                  <Match
-                    when={
-                      store.showUnsupportedDocumentModal &&
-                      store.errorState === "unsupported_document"
-                    }
-                  >
+                  <Match when={displayUnsupportedDocumentModal()}>
                     <ErrorModal
                       header={t.document_not_recognized}
                       text={t.document_not_recognized_details}
                       shouldResetScanningSession={true}
                     />
                   </Match>
-                  <Match
-                    when={
-                      store.showDocumentFilteredModal && store.documentFiltered
-                    }
-                  >
+                  <Match when={displayDocumentFilteredModal()}>
                     <ErrorModal
                       header={t.document_filtered}
                       text={t.document_filtered_details}
@@ -202,18 +233,27 @@ export const BlinkIdFeedbackUi: Component<{
                 </Switch>
 
                 <Show when={shouldShowFeedback()}>
-                  <UiFeedbackOverlay uiState={uiState()} />
+                  <UiFeedbackOverlay
+                    uiState={uiState()}
+                    isDesktop={isDesktop()}
+                  />
                 </Show>
 
                 <Show when={shouldShowDemoOverlay()}>
-                  <div class={styles.demoOverlay}>
-                    <DemoOverlay width="250" aria-hidden />
+                  <div
+                    class="absolute top-[15%] flex justify-center items-center
+                      w-full"
+                  >
+                    <DemoOverlay width="250" aria-hidden="true" />
                   </div>
                 </Show>
 
                 <Show when={shouldShowProductionOverlay()}>
-                  <div class={styles.microblinkOverlay}>
-                    <MicroblinkOverlay width="100" aria-hidden />
+                  <div
+                    class="absolute bottom-4 flex justify-center items-center
+                      w-full"
+                  >
+                    <MicroblinkOverlay width="100" aria-hidden="true" />
                   </div>
                 </Show>
 
@@ -225,8 +265,8 @@ export const BlinkIdFeedbackUi: Component<{
           }}
         </SmartEnvironmentProvider>
 
-        <OnboardingGuideModal />
-        <HelpModal />
+        <OnboardingGuideModal isDesktop={isDesktop()} />
+        <HelpModal isDesktop={isDesktop()} />
       </LocalizationProvider>
     </div>
   );

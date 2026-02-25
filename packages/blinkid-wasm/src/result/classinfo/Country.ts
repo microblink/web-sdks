@@ -258,4 +258,5 @@ export type Country =
   | "yugoslavia"
   | "zambia"
   | "zimbabwe"
-  | "schengen-area";
+  | "schengen-area"
+  | "saint-thomas-and-prince";

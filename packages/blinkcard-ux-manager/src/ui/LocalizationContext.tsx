@@ -20,7 +20,6 @@ export type LocaleRecord = typeof enLocaleStrings;
 /**
  * Recursively transforms a locale record to allow string overrides at any level.
  */
-// eslint-disable @typescript-eslint/ban-types
 export type LocalizedValue<T> =
   T extends Record<string, unknown>
     ?
@@ -43,7 +42,6 @@ type DeepPartialLocalized<T> =
           : string;
       }
     : never;
-// eslint-enable @typescript-eslint/ban-types
 
 /**
  * The localization strings type.
@@ -56,7 +54,6 @@ export type LocalizationStrings = LocalizedValue<LocaleRecord>;
  * Partial version of LocalizationStrings that allows any string to be assigned.
  */
 export type PartialLocalizationStrings = DeepPartialLocalized<LocaleRecord>;
-// eslint-enable @typescript-eslint/ban-types
 
 /**
  * The localization context.

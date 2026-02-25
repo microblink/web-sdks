@@ -101,7 +101,10 @@ export type CardAccountResult = {
   /** The name of the financial institution that issued the payment card. */
   issuerName: string | undefined;
 
-  /** The ISO 3166-1 alpha-3 country code of the card issuer's country (e.g., "USA", "GBR", "HRV"). */
+  /**
+   * The ISO 3166-1 alpha-3 country code of the card issuer's country (e.g.,
+   * "USA", "GBR", "HRV").
+   */
   issuerCountryCode: string | undefined;
 
   /** The name of the card issuer's country. */
@@ -115,16 +118,16 @@ export type DateResult = {
 
   /** Month in year [1-12] */
   month: number | undefined;
-  
+
   /** Four digit year */
   year: number;
-  
+
   /** Original date string from the document */
   originalString: string | undefined;
-  
+
   /** Indicates whether this date is filled by internal domain knowledge */
   filledByDomainKnowledge: boolean | undefined;
-  
+
   /** Indicates whether date was parsed successfully */
   successfullyParsed: boolean | undefined;
 };

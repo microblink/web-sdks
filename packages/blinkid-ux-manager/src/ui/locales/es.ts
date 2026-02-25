@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Escanee la parte frontal de un documento compatible.",
   document_scanned: "¡Bien! Documento escaneado",
-  document_too_close_to_edge: "Mueva el documento desde el borde",
+  document_too_close_to_edge: "Alejarse",
   face_photo_not_fully_visible:
     "Mantenga la foto del rostro completamente visible",
   flip_document: "Dar la vuelta al documento",
@@ -25,6 +25,11 @@ export default {
   glare_detected: "Incline o mueva el documento para evitar los reflejos",
   help_aria_label: "Ayuda",
   help_modal_back_btn: "Atrás",
+  help_modal_blur_details_desktop:
+    "Intente mantener el dispositivo y el documento quietos mientras escanea. Mover cualquiera de los dos puede difuminar la imagen y hacer que los datos del documento sean ilegibles.",
+  help_modal_camera_lens_details:
+    "Revisa que no haya manchas ni polvo en la lente de la cámara. Una lente sucia hace que la imagen final salga borrosa, lo que hace que los datos del documento sean ilegibles e impide escanear la información correctamente.",
+  help_modal_camera_lens_title: "Limpia la lente de la cámara",
   help_modal_details_1:
     "Asegúrese de que no está cubriendo partes del documento con el dedo, incluidas las líneas inferiores. Además, tenga cuidado con los reflejos de los hologramas que sobrepasan los campos del documento.",
   help_modal_details_2:
@@ -37,6 +42,8 @@ export default {
   help_modal_title_2: "Cuidado con la luz intensa",
   help_modal_title_3: "No se mueva mientras escanea",
   help_tooltip: "¿Necesitas ayuda?",
+  keep_document_parallel: "Mantén el documento paralelo a la pantalla",
+  keep_document_still: "No muevas ni el documento ni el dispositivo",
   move_closer: "Acercarse",
   move_farther: "Alejarse",
   move_left: "Ir a la página de la izquierda",
@@ -46,7 +53,11 @@ export default {
   onboarding_modal_btn: "Empezar a escanear",
   onboarding_modal_details:
     "Asegúrese de mantener el documento bien iluminado. Todos los campos del documento deben ser visibles en la pantalla de la cámara.",
+  onboarding_modal_details_desktop:
+    "Asegúrate de mantener limpia la lente de la cámara y de que el documento esté bien iluminado. Todos los campos del documento deben ser visibles en la pantalla de la cámara.",
   onboarding_modal_title: "Mantenga todos los detalles visibles",
+  onboarding_modal_title_desktop: "Prepárate para escanear",
+  resume_scanning: "Reanudar escaneo",
   scan_data_page: "Escanea la página de datos del documento.",
   scan_last_page_barcode: "Escanee el código de barras de la última página",
   scan_left_page: "Escanear la página de la izquierda",
@@ -58,6 +69,9 @@ export default {
   scan_unsuccessful: "Escaneo fallido",
   scan_unsuccessful_details:
     "No se puede leer el documento. Por favor, inténtelo de nuevo.",
+  scanning_help: "Ayuda para escanear",
+  scanning_instructions: "Instrucciones para escanear",
+  scanning_screen: "Pantalla de escaneo de documentos",
   too_bright: "Muévase a un lugar con menos luz",
   too_dark: "Muévase a un lugar con más luz",
   wrong_left: "Ir a la página de la izquierda",

@@ -12,7 +12,7 @@ export type OperatingSystem =
   // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {});
 
-export interface DetectedOS {
+interface DetectedOS {
   os: OperatingSystem;
   version: string; // Will be an empty string if not found
 }

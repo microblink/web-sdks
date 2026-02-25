@@ -3,42 +3,51 @@
  */
 
 import { expose, finalizer, proxy, ProxyMarked, transfer } from "comlink";
-import { buildResourcePath } from "@microblink/worker-common/buildResourcePath";
-import { getCrossOriginWorkerURL } from "@microblink/worker-common/getCrossOriginWorkerURL";
-import { isIOS } from "@microblink/worker-common/isSafari";
-import { obtainNewServerPermission } from "@microblink/worker-common/licencing";
-import { mbToWasmPages } from "@microblink/worker-common/mbToWasmPages";
-import {
-  sanitizeProxyUrls,
-  validateLicenseProxyPermissions,
-  type SanitizedProxyUrls,
-} from "@microblink/worker-common/proxy-url-validator";
-import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
 
 import type {
-  Ping,
   BlinkIdProcessResult,
   BlinkIdScanningResult,
   BlinkIdScanningSession,
   BlinkIdSessionError,
   BlinkIdSessionSettings,
   BlinkIdWasmModule,
+  DocumentClassInfo,
+  DocumentRotation,
   EmscriptenModuleFactory,
-  PingSdkInitStart,
-  SdkInitStartData,
   WasmVariant,
-  PingError,
 } from "@microblink/blinkid-wasm";
 import { OverrideProperties } from "type-fest";
 
+import type {
+  Ping,
+  PingError,
+  PingSdkInitStart,
+  PingSdkInitStartData,
+} from "@microblink/analytics/ping";
+import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
+
+import sizeManifest from "@microblink/blinkid-wasm/size-manifest.json";
+import { buildResourcePath } from "@microblink/worker-common/buildResourcePath";
+import {
+  downloadResourceBuffer,
+  type DownloadProgress,
+} from "@microblink/worker-common/downloadResourceBuffer";
+import { getCrossOriginWorkerURL } from "@microblink/worker-common/getCrossOriginWorkerURL";
+import { getWasmFileSize } from "@microblink/worker-common/getWasmFileSize";
+import { isIOS } from "@microblink/worker-common/isSafari";
+import { obtainNewServerPermission } from "@microblink/worker-common/licencing";
+import { mbToWasmPages } from "@microblink/worker-common/mbToWasmPages";
+import {
+  SanitizedProxyUrls,
+  sanitizeProxyUrls,
+  validateLicenseProxyPermissions,
+} from "@microblink/worker-common/proxy-url-validator";
 import {
   buildSessionSettings,
   PartialBlinkIdSessionSettings,
 } from "./buildSessionSettings";
-import {
-  DownloadProgress,
-  downloadResourceBuffer,
-} from "./downloadResourceBuffer";
+
+export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 /**
  * The BlinkID worker.
@@ -84,18 +93,14 @@ class BlinkIdWorker {
    */
   async #loadWasm({
     resourceUrl,
-    variant,
-    useLightweightBuild,
+    wasmVariant,
+    featureVariant,
     initialMemory,
   }: LoadWasmParams) {
     if (this.#wasmModule) {
       console.log("Wasm already loaded");
       return;
     }
-
-    const wasmVariant = variant ?? (await detectWasmFeatures());
-
-    const featureVariant = useLightweightBuild ? "lightweight" : "full";
 
     const MODULE_NAME = "BlinkIdModule";
 
@@ -188,21 +193,34 @@ class BlinkIdWorker {
       void throttledCombinedProgress();
     };
 
+    const getExpectedSize = (params: {
+      fileType: "wasm" | "data";
+      variant: WasmVariant;
+      buildType?: "full" | "lightweight";
+    }) =>
+      getWasmFileSize({ ...params, buildType: featureVariant }, sizeManifest);
+
     // Replace simple fetch with progress tracking for both wasm and data downloads
     const [preloadedWasm, preloadedData] = await Promise.all([
       downloadResourceBuffer(
-        wasmUrl,
-        "wasm",
-        wasmVariant,
-        featureVariant,
-        wasmProgressCallback,
+        {
+          url: wasmUrl,
+          fileType: "wasm",
+          variant: wasmVariant,
+          buildType: featureVariant,
+          progressCallback: wasmProgressCallback,
+        },
+        getExpectedSize,
       ),
       downloadResourceBuffer(
-        dataUrl,
-        "data",
-        wasmVariant,
-        featureVariant,
-        dataProgressCallback,
+        {
+          url: dataUrl,
+          fileType: "data",
+          variant: wasmVariant,
+          buildType: featureVariant,
+          progressCallback: dataProgressCallback,
+        },
+        getExpectedSize,
       ),
     ]);
 
@@ -243,7 +261,7 @@ class BlinkIdWorker {
 
   reportPinglet(pinglet: Ping) {
     if (!this.#wasmModule) {
-      throw new Error("Wasm module not loaded");
+      throw new Error("Cannot report pinglet: Wasm module not loaded");
     }
 
     if (!this.#wasmModule.isPingEnabled()) {
@@ -251,22 +269,67 @@ class BlinkIdWorker {
       return;
     }
 
-    this.#wasmModule.queuePinglet(
-      JSON.stringify(pinglet.data),
-      pinglet.schemaName,
-      pinglet.schemaVersion,
-      // session number can be overriden by pinglet, otherwise use current
-      // session count
-      pinglet.sessionNumber ?? this.#sessionCount,
-    );
+    try {
+      this.#wasmModule.queuePinglet(
+        JSON.stringify(pinglet.data),
+        pinglet.schemaName,
+        pinglet.schemaVersion,
+        // session number can be overriden by pinglet, otherwise use current
+        // session count
+        pinglet.sessionNumber ?? this.#sessionCount,
+      );
+    } catch (error) {
+      console.warn("Failed to queue pinglet:", error, pinglet);
+    }
   }
 
   sendPinglets() {
     if (!this.#wasmModule) {
-      throw new Error("Wasm module not loaded");
+      throw new Error("Cannot send pinglets: Wasm module not loaded");
     }
-    this.#wasmModule.sendPinglets();
+
+    try {
+      this.#wasmModule.sendPinglets();
+    } catch (error) {
+      console.warn("Failed to send pinglets:", error);
+    }
   }
+
+  /**
+   * Creates standardized ping events for common worker operations
+   */
+  #createPingEvent = {
+    sdkInit: (
+      packageName: string,
+      platform: "Emscripten",
+      platformDetails: PingSdkInitStartData["platformDetails"],
+      product: "BlinkID",
+      userId: string,
+    ): PingSdkInitStart => ({
+      schemaName: "ping.sdk.init.start",
+      schemaVersion: "1.1.0",
+      sessionNumber: 0,
+      data: {
+        packageName,
+        platform,
+        product,
+        platformDetails,
+        userId,
+      },
+    }),
+
+    error: (
+      errorType: "Crash" | "NonFatal",
+      errorMessage: string,
+    ): PingError => ({
+      schemaName: "ping.error",
+      schemaVersion: "1.0.0",
+      data: {
+        errorType,
+        errorMessage,
+      },
+    }),
+  };
 
   /**
    * This method initializes everything.
@@ -285,11 +348,16 @@ class BlinkIdWorker {
     this.progressStatusCallback = progressCallback;
     this.#userId = settings.userId;
 
+    const wasmVariant = settings.wasmVariant ?? (await detectWasmFeatures());
+    const featureVariant = settings.useLightweightBuild
+      ? "lightweight"
+      : "full";
+
     await this.#loadWasm({
       resourceUrl: resourcesPath,
-      variant: settings.wasmVariant,
+      wasmVariant,
+      featureVariant,
       initialMemory: settings.initialMemory,
-      useLightweightBuild: settings.useLightweightBuild,
     });
 
     if (!this.#wasmModule) {
@@ -318,14 +386,15 @@ class BlinkIdWorker {
       }
     }
 
-    const sdkInitPinglet = new StartPing({
-      packageName: self.location.hostname,
-      platform: "Emscripten",
-      product: "BlinkID",
-      userId: this.#userId,
-    });
+    const sdkInitPing = this.#createPingEvent.sdkInit(
+      self.location.hostname,
+      "Emscripten",
+      `${featureVariant}-${wasmVariant}`,
+      "BlinkID",
+      this.#userId,
+    );
 
-    this.reportPinglet(sdkInitPinglet);
+    this.reportPinglet(sdkInitPing);
     this.sendPinglets();
 
     if (licenseUnlockResult.licenseError) {
@@ -346,7 +415,7 @@ class BlinkIdWorker {
         this.#proxyUrls?.baltazar && licenseUnlockResult.allowBaltazarProxy;
 
       const baltazarProxyUrl = shouldUseBaltazarProxy
-        ? this.#proxyUrls!.baltazar
+        ? this.#proxyUrls?.baltazar
         : undefined;
 
       if (baltazarProxyUrl) {
@@ -381,15 +450,6 @@ class BlinkIdWorker {
   }
 
   /**
-   * Backward-compatible alias for `createScanningSession`.
-   *
-   * @deprecated Use `createScanningSession` instead.
-   */
-  createBlinkIdScanningSession(options?: PartialBlinkIdSessionSettings) {
-    return this.createScanningSession(options);
-  }
-
-  /**
    * This method creates a BlinkID scanning session.
    *
    * @param options - The options for the session.
@@ -420,6 +480,15 @@ class BlinkIdWorker {
   }
 
   /**
+   * Backward-compatible alias for `createScanningSession`.
+   *
+   * @deprecated Use `createScanningSession` instead.
+   */
+  createBlinkIdScanningSession(options?: PartialBlinkIdSessionSettings) {
+    return this.createScanningSession(options);
+  }
+
+  /**
    * This method creates a proxy session.
    *
    * @param session - The session.
@@ -431,6 +500,13 @@ class BlinkIdWorker {
     sessionSettings: BlinkIdSessionSettings,
   ): WorkerScanningSession & ProxyMarked {
     /**
+     * Cache for document class info and rotation, since it's cleared on each process call,
+     * however the classification is immutable across the session lifecycle.
+     * TODO: hoist to C++ side to avoid redundant allocations altogether.
+     */
+    let cachedClassInfo: DocumentClassInfo | null = null;
+    let cachedRotation: DocumentRotation | null = null;
+    /**
      * this is a custom session that will be proxied
      * it handles the transfer of the image data buffer
      */
@@ -440,14 +516,59 @@ class BlinkIdWorker {
         const processResult = session.process(image);
 
         if ("error" in processResult) {
+          // processResult is BlinkIdSessionErrorWithBuffer
           this.#reportErrorPing({
             errorType: "NonFatal",
             errorMessage: processResult.error,
           });
-          throw new Error(`Error processing frame: ${processResult.error}`);
+
+          // not an error: processResult is ProcessResultWithBuffer
+        } else {
+          /**
+           * As documentClassInfo is not an optional property, assume that `type` being
+           * defined means the whole object is defined and can be cached.
+           */
+          if (processResult.inputImageAnalysisResult.documentClassInfo.type) {
+            // cache class info for future use
+            cachedClassInfo =
+              processResult.inputImageAnalysisResult.documentClassInfo;
+          }
+
+          /**
+           * Cache rotation, assume that rotation remains the same if document is not detected,
+           * i.e. rotation is only updated when detection is successful.
+           */
+          if (
+            processResult.inputImageAnalysisResult.documentRotation !==
+            "not-available"
+          ) {
+            // cache rotation for future use
+            cachedRotation =
+              processResult.inputImageAnalysisResult.documentRotation;
+          }
+
+          if (
+            cachedClassInfo &&
+            cachedClassInfo?.type !==
+              processResult.inputImageAnalysisResult.documentClassInfo.type
+          ) {
+            processResult.inputImageAnalysisResult.documentClassInfo =
+              cachedClassInfo;
+          }
+
+          if (
+            cachedRotation &&
+            cachedRotation !==
+              processResult.inputImageAnalysisResult.documentRotation
+          ) {
+            processResult.inputImageAnalysisResult.documentRotation =
+              cachedRotation;
+          }
         }
 
-        const transferPackage: ProcessResultWithBuffer = transfer(
+        const transferPackage:
+          | ProcessResultWithBuffer
+          | BlinkIdSessionErrorWithBuffer = transfer(
           {
             ...processResult,
             arrayBuffer: image.data.buffer,
@@ -460,7 +581,11 @@ class BlinkIdWorker {
       ping: (ping) => this.reportPinglet(ping),
       sendPinglets: () => this.sendPinglets(),
       getSettings: () => sessionSettings,
-      reset: () => session.reset(),
+      reset: () => {
+        session.reset();
+        cachedClassInfo = null;
+        cachedRotation = null;
+      },
       delete: () => session.delete(),
       deleteLater: () => session.deleteLater(),
       isDeleted: () => session.isDeleted(),
@@ -473,16 +598,11 @@ class BlinkIdWorker {
   }
 
   #reportErrorPing(data: PingError["data"]) {
-    const error: PingError = {
-      data: {
-        errorType: data.errorType,
-        errorMessage: data.errorMessage,
-      },
-      schemaName: "ping.error",
-      schemaVersion: "1.0.0",
-    };
-
-    this.reportPinglet(error);
+    const errorPing = this.#createPingEvent.error(
+      data.errorType,
+      data.errorMessage,
+    );
+    this.reportPinglet(errorPing);
   }
 
   /**
@@ -570,13 +690,19 @@ export type ProcessResultWithBuffer = BlinkIdProcessResult & {
   arrayBuffer: ArrayBuffer;
 };
 
+export type BlinkIdSessionErrorWithBuffer = BlinkIdSessionError & {
+  arrayBuffer: ArrayBuffer;
+};
+
 /**
  * The worker scanning session.
  */
 export type WorkerScanningSession = OverrideProperties<
   BlinkIdScanningSession,
   {
-    process: (image: ImageData) => ProcessResultWithBuffer;
+    process: (
+      image: ImageData,
+    ) => ProcessResultWithBuffer | BlinkIdSessionErrorWithBuffer;
   }
 > & {
   /**
@@ -666,8 +792,8 @@ export type BlinkIdWorkerInitSettings = {
  */
 export type LoadWasmParams = {
   resourceUrl: string;
-  variant?: WasmVariant;
-  useLightweightBuild: boolean;
+  wasmVariant: WasmVariant;
+  featureVariant: "full" | "lightweight";
   initialMemory?: number;
 };
 
@@ -675,18 +801,6 @@ export type LoadWasmParams = {
  * The progress status callback.
  */
 export type ProgressStatusCallback = (progress: DownloadProgress) => void;
-
-class StartPing implements PingSdkInitStart {
-  readonly data: SdkInitStartData;
-  /** Needs to be 0 for sorting purposes */
-  readonly sessionNumber = 0;
-  readonly schemaName = "ping.sdk.init.start";
-  readonly schemaVersion = "1.0.0";
-
-  constructor(data: SdkInitStartData) {
-    this.data = data;
-  }
-}
 
 export type LicenseErrorCode = "LICENSE_ERROR";
 

@@ -3,13 +3,18 @@
  */
 
 import {
-  DocumentClassInfo,
   InputImageAnalysisResult,
   ResultCompleteness,
   ScanningSettings,
 } from "@microblink/blinkid-core";
 import { UiState } from "@microblink/feedback-stabilizer";
 import { match, P } from "ts-pattern";
+import { getChainedUiStateKey } from "./getChainedUiStateKey";
+import {
+  isPassport,
+  isPassportWithBarcode,
+  isPassportWithoutBarcode,
+} from "./ui-state-utils";
 
 /**
  * The type of reticle to display.
@@ -25,39 +30,169 @@ export type BlinkIdReticleType =
   | "move_right";
 
 /**
+ * Intro state keys for BlinkID UI.
+ *
+ * @remarks
+ * These states display introductory screens that guide users to scan the correct
+ * side or page of their document. Most intro states are automatically reached
+ * during the scanning flow, but `INTRO_DATA_PAGE` requires manual initialization.
+ *
+ * **Default behavior:**
+ * The UX manager defaults to `INTRO_FRONT_PAGE`, assuming users will scan
+ * non-passport documents (ID cards, driver's licenses, etc.).
+ *
+ * **Automatically reachable states:**
+ * After capturing a page, the flow automatically transitions through appropriate
+ * intro states:
+ * - `INTRO_BACK_PAGE` - After flipping an ID card (`FLIP_CARD`)
+ * - `INTRO_TOP_PAGE` - After moving to passport top page (`MOVE_TOP`)
+ * - `INTRO_LEFT_PAGE` - After moving to passport left page (`MOVE_LEFT`)
+ * - `INTRO_RIGHT_PAGE` - After moving to passport right page (`MOVE_RIGHT`)
+ * - `INTRO_LAST_PAGE` - After moving to passport barcode page (`MOVE_LAST_PAGE`)
+ *
+ * **Manual initialization required:**
+ * - `INTRO_DATA_PAGE` - Only reachable by overriding the UX manager initial
+ *   state. Use this when restricting scanning to passport documents only,
+ *   as the SDK assumes non-passport documents by default.
+ *
+ * @example
+ * ```typescript
+ * // Limit scanning to passport documents only
+ * const uxManager = new BlinkIdUxManager(cameraManager, session);
+ * uxManager.setInitialUiStateKey("INTRO_DATA_PAGE", true);
+ * ```
+ *
+ * @see {@link BlinkIdUiIntroStateKey} for the union type of these keys
+ * @see {@link getChainedUiStateKey} for the automatic state transition logic
+ */
+export const blinkIdUiIntroStateKeys = [
+  "INTRO_FRONT_PAGE",
+  "INTRO_BACK_PAGE",
+  "INTRO_DATA_PAGE",
+  "INTRO_TOP_PAGE",
+  "INTRO_LEFT_PAGE",
+  "INTRO_RIGHT_PAGE",
+  "INTRO_LAST_PAGE",
+] as const;
+
+/**
+ * Union type of all intro state keys.
+ *
+ * @see {@link blinkIdUiIntroStateKeys} for detailed documentation on each state
+ */
+export type BlinkIdUiIntroStateKey = (typeof blinkIdUiIntroStateKeys)[number];
+
+/**
+ * Page transition state keys for BlinkID UI.
+ *
+ * @remarks
+ * These states display transition animations and instructions between scanning
+ * different document pages or sides. They are automatically triggered after
+ * successfully capturing a page (`PAGE_CAPTURED`) and cannot be manually set.
+ *
+ * Each transition state corresponds to a specific document type and guides the
+ * user to position the document for the next scan:
+ * - `FLIP_CARD` - Instructs user to flip ID card to scan the back side
+ * - `MOVE_LAST_PAGE` - Instructs user to move to passport's last page (barcode)
+ * - `MOVE_TOP` - Instructs user to rotate passport to top orientation (0°)
+ * - `MOVE_RIGHT` - Instructs user to rotate passport 90° clockwise
+ * - `MOVE_LEFT` - Instructs user to rotate passport 90° counter-clockwise
+ *
+ * **Automatic flow:**
+ * After a transition animation completes, the UI automatically advances to the
+ * corresponding intro state to begin scanning the next page:
+ * - `FLIP_CARD` → `INTRO_BACK_PAGE`
+ * - `MOVE_LAST_PAGE` → `INTRO_LAST_PAGE`
+ * - `MOVE_TOP` → `INTRO_TOP_PAGE`
+ * - `MOVE_RIGHT` → `INTRO_RIGHT_PAGE`
+ * - `MOVE_LEFT` → `INTRO_LEFT_PAGE`
+ *
+ * @see {@link BlinkIdPageTransitionKey} for the union type of these keys
+ * @see {@link getChainedUiStateKey} for the automatic state transition logic
+ * @see {@link blinkIdUiIntroStateKeys} for the intro states that follow transitions
+ */
+export const blinkIdPageTransitionKeys = [
+  "FLIP_CARD",
+  "MOVE_TOP",
+  "MOVE_LEFT",
+  "MOVE_RIGHT",
+  "MOVE_LAST_PAGE",
+] as const;
+
+/**
+ * Union type of all page transition state keys.
+ *
+ * @see {@link blinkIdPageTransitionKeys} for detailed documentation on each state
+ */
+export type BlinkIdPageTransitionKey =
+  (typeof blinkIdPageTransitionKeys)[number];
+
+/**
+ * The error states for BlinkID. Mappable from `ProcessResult`.
+ */
+export const blinkIdUiErrorStateKeys = [
+  // framing
+  "FRONT_PAGE_NOT_IN_FRAME",
+  "BACK_PAGE_NOT_IN_FRAME",
+  "DATA_PAGE_NOT_IN_FRAME",
+  "TOP_PAGE_NOT_IN_FRAME",
+  "LEFT_PAGE_NOT_IN_FRAME",
+  "RIGHT_PAGE_NOT_IN_FRAME",
+  "LAST_PAGE_NOT_IN_FRAME",
+  "BARCODE_NOT_IN_FRAME",
+  "DOCUMENT_FRAMING_CAMERA_TOO_FAR",
+  "DOCUMENT_FRAMING_CAMERA_TOO_CLOSE",
+  "DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP",
+  "DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE",
+  // image quality
+  "BLUR_DETECTED",
+  "GLARE_DETECTED",
+  "TOO_DARK",
+  "TOO_BRIGHT",
+  // occlusion
+  "OCCLUDED",
+  "FACE_PHOTO_OCCLUDED",
+  // classification
+  "WRONG_SIDE",
+  "WRONG_TOP_PAGE",
+  "WRONG_LEFT_PAGE",
+  "WRONG_RIGHT_PAGE",
+  "WRONG_LAST_PAGE",
+  "UNSUPPORTED_DOCUMENT",
+] as const;
+
+export type BlinkIdUiErrorStateKey = (typeof blinkIdUiErrorStateKeys)[number];
+
+/**
+ * These keys represent successful steps in the BlinkID scanning process.
+ */
+export const blinkIdUiStepSuccessKeys = [
+  "PAGE_CAPTURED",
+  "DOCUMENT_CAPTURED",
+] as const;
+
+export type BlinkIdUiStepSuccessKey = (typeof blinkIdUiStepSuccessKeys)[number];
+
+/**
+ * These keys are directly mappable from a `ProcessResult`
+ */
+export type BlinkIdUiMappableKey =
+  | BlinkIdUiErrorStateKey
+  // success
+  | BlinkIdUiStepSuccessKey
+  // "SCANNING_BARCODE" is the only exception as it's an active processing state
+  | "PROCESSING_BARCODE";
+
+/**
  * The key of the UI state.
  */
 export type BlinkIdUiStateKey =
-  | "FLIP_CARD"
-  | "DOCUMENT_CAPTURED"
-  | "SENSING_FRONT"
-  | "SENSING_BACK"
-  | "SENSING_DATA_PAGE"
-  | "SENSING_TOP_PAGE"
-  | "SENSING_LEFT_PAGE"
-  | "SENSING_RIGHT_PAGE"
-  | "SENSING_LAST_PAGE"
-  | "MOVE_TOP"
-  | "MOVE_LEFT"
-  | "MOVE_RIGHT"
-  | "MOVE_LAST_PAGE"
-  | "DOCUMENT_FRAMING_CAMERA_TOO_FAR"
-  | "DOCUMENT_FRAMING_CAMERA_TOO_CLOSE"
-  | "DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP"
-  | "DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE"
-  | "BLUR_DETECTED"
-  | "GLARE_DETECTED"
-  | "TOO_DARK"
-  | "TOO_BRIGHT"
-  | "OCCLUDED"
-  | "FACE_PHOTO_OCCLUDED"
-  | "UNSUPPORTED_DOCUMENT"
-  | "SCAN_BARCODE"
-  | "WRONG_TOP_PAGE"
-  | "WRONG_LEFT_PAGE"
-  | "WRONG_RIGHT_PAGE"
-  | "WRONG_LAST_PAGE"
-  | "WRONG_SIDE";
+  // intro states
+  | BlinkIdUiIntroStateKey
+  // transition states
+  | BlinkIdPageTransitionKey
+  // states with 1:1 mapping from `ProcessResult`
+  | BlinkIdUiMappableKey;
 
 /**
  * Extended UI state for BlinkID.
@@ -78,190 +213,237 @@ export type BlinkIdUiStateMap = {
  */
 export type BlinkIdUiState = BlinkIdUiStateMap[keyof BlinkIdUiStateMap];
 
+const INTRO_DURATION = 2000;
+const ERROR_DURATION = 1500;
+const SUCCESS_DURATION = 800;
+const TRANSITION_DURATION = 2000;
+
 /**
  * The UI state map of BlinkID.
  */
 export const blinkIdUiStateMap: BlinkIdUiStateMap = {
-  SENSING_FRONT: {
-    key: "SENSING_FRONT",
+  INTRO_FRONT_PAGE: {
+    key: "INTRO_FRONT_PAGE",
     reticleType: "searching",
-    minDuration: 1000,
+    minDuration: INTRO_DURATION,
+    singleEmit: true,
   },
-  SENSING_BACK: {
-    key: "SENSING_BACK",
+  INTRO_BACK_PAGE: {
+    key: "INTRO_BACK_PAGE",
     reticleType: "searching",
-    minDuration: 1000,
+    minDuration: INTRO_DURATION,
+    singleEmit: true,
   },
-  SENSING_DATA_PAGE: {
-    key: "SENSING_DATA_PAGE",
+  INTRO_DATA_PAGE: {
+    key: "INTRO_DATA_PAGE",
     reticleType: "searching",
-    minDuration: 1000,
+    minDuration: INTRO_DURATION,
+    singleEmit: true,
   },
-  SENSING_TOP_PAGE: {
-    key: "SENSING_TOP_PAGE",
+  INTRO_TOP_PAGE: {
+    key: "INTRO_TOP_PAGE",
     reticleType: "searching",
-    minDuration: 1000,
+    minDuration: INTRO_DURATION,
+    singleEmit: true,
   },
-  SENSING_LEFT_PAGE: {
-    key: "SENSING_LEFT_PAGE",
+  INTRO_LEFT_PAGE: {
+    key: "INTRO_LEFT_PAGE",
     reticleType: "searching",
-    minDuration: 1000,
+    minDuration: INTRO_DURATION,
+    singleEmit: true,
   },
-  SENSING_RIGHT_PAGE: {
-    key: "SENSING_RIGHT_PAGE",
+  INTRO_RIGHT_PAGE: {
+    key: "INTRO_RIGHT_PAGE",
     reticleType: "searching",
-    minDuration: 1000,
+    minDuration: INTRO_DURATION,
+    singleEmit: true,
   },
-  SENSING_LAST_PAGE: {
-    key: "SENSING_LAST_PAGE",
+  INTRO_LAST_PAGE: {
+    key: "INTRO_LAST_PAGE",
     reticleType: "searching",
-    minDuration: 1000,
+    minDuration: INTRO_DURATION,
+    singleEmit: true,
   },
-  SCAN_BARCODE: {
-    key: "SCAN_BARCODE",
+  // processing states
+  PROCESSING_BARCODE: {
+    key: "PROCESSING_BARCODE",
     reticleType: "processing",
-    minDuration: 1000,
+    minDuration: 1500,
+  },
+  // framing
+  FRONT_PAGE_NOT_IN_FRAME: {
+    key: "FRONT_PAGE_NOT_IN_FRAME",
+    reticleType: "searching",
+    minDuration: ERROR_DURATION,
+  },
+  BACK_PAGE_NOT_IN_FRAME: {
+    key: "BACK_PAGE_NOT_IN_FRAME",
+    reticleType: "searching",
+    minDuration: ERROR_DURATION,
+  },
+  DATA_PAGE_NOT_IN_FRAME: {
+    key: "DATA_PAGE_NOT_IN_FRAME",
+    reticleType: "searching",
+    minDuration: ERROR_DURATION,
+  },
+  TOP_PAGE_NOT_IN_FRAME: {
+    key: "TOP_PAGE_NOT_IN_FRAME",
+    reticleType: "searching",
+    minDuration: ERROR_DURATION,
+  },
+  LEFT_PAGE_NOT_IN_FRAME: {
+    key: "LEFT_PAGE_NOT_IN_FRAME",
+    reticleType: "searching",
+    minDuration: ERROR_DURATION,
+  },
+  RIGHT_PAGE_NOT_IN_FRAME: {
+    key: "RIGHT_PAGE_NOT_IN_FRAME",
+    reticleType: "searching",
+    minDuration: ERROR_DURATION,
+  },
+  LAST_PAGE_NOT_IN_FRAME: {
+    key: "LAST_PAGE_NOT_IN_FRAME",
+    reticleType: "searching",
+    minDuration: ERROR_DURATION,
+  },
+  BARCODE_NOT_IN_FRAME: {
+    key: "BARCODE_NOT_IN_FRAME",
+    reticleType: "searching",
+    minDuration: ERROR_DURATION,
+  },
+  DOCUMENT_FRAMING_CAMERA_TOO_FAR: {
+    key: "DOCUMENT_FRAMING_CAMERA_TOO_FAR",
+    reticleType: "error",
+    minDuration: ERROR_DURATION,
+  },
+  DOCUMENT_FRAMING_CAMERA_TOO_CLOSE: {
+    key: "DOCUMENT_FRAMING_CAMERA_TOO_CLOSE",
+    reticleType: "error",
+    minDuration: ERROR_DURATION,
+  },
+  DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP: {
+    key: "DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP",
+    reticleType: "error",
+    minDuration: ERROR_DURATION,
+  },
+  DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE: {
+    key: "DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE",
+    reticleType: "error",
+    minDuration: ERROR_DURATION,
   },
   // ID card captured, flip to back side
   FLIP_CARD: {
     key: "FLIP_CARD",
     reticleType: "flip",
-    minDuration: 2000,
+    minDuration: TRANSITION_DURATION,
     singleEmit: true,
   },
   // Passport pages captured, move to the next page
   MOVE_TOP: {
     key: "MOVE_TOP",
     reticleType: "move_top",
-    minDuration: 2000,
+    minDuration: TRANSITION_DURATION,
     singleEmit: true,
   },
   MOVE_LEFT: {
     key: "MOVE_LEFT",
     reticleType: "move_left",
-    minDuration: 2000,
+    minDuration: TRANSITION_DURATION,
     singleEmit: true,
   },
   MOVE_RIGHT: {
     key: "MOVE_RIGHT",
     reticleType: "move_right",
-    minDuration: 2000,
+    minDuration: TRANSITION_DURATION,
     singleEmit: true,
   },
   MOVE_LAST_PAGE: {
     key: "MOVE_LAST_PAGE",
-    reticleType: "done",
-    minDuration: 0,
+    reticleType: "flip",
+    minDuration: TRANSITION_DURATION,
     singleEmit: true,
   },
+  /**
+   * Generic step done state after capturing a side
+   */
+  PAGE_CAPTURED: {
+    key: "PAGE_CAPTURED",
+    reticleType: "done",
+    minDuration: SUCCESS_DURATION,
+    singleEmit: true,
+  },
+
   // Capturing all sides completed
   DOCUMENT_CAPTURED: {
     key: "DOCUMENT_CAPTURED",
     reticleType: "done",
-    minDuration: 1000,
+    minDuration: SUCCESS_DURATION,
     singleEmit: true,
   },
+  // image quality checks
   BLUR_DETECTED: {
     key: "BLUR_DETECTED",
     reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
   },
   GLARE_DETECTED: {
     key: "GLARE_DETECTED",
     reticleType: "error",
-    minDuration: 1500,
-  },
-  OCCLUDED: {
-    key: "OCCLUDED",
-    reticleType: "error",
-    minDuration: 1500,
-  },
-  FACE_PHOTO_OCCLUDED: {
-    key: "FACE_PHOTO_OCCLUDED",
-    reticleType: "error",
-    minDuration: 1500,
-  },
-  WRONG_SIDE: {
-    key: "WRONG_SIDE",
-    reticleType: "error",
-    minDuration: 1500,
-  },
-  WRONG_TOP_PAGE: {
-    key: "WRONG_TOP_PAGE",
-    reticleType: "error",
-    minDuration: 1500,
-  },
-  WRONG_LEFT_PAGE: {
-    key: "WRONG_LEFT_PAGE",
-    reticleType: "error",
-    minDuration: 1500,
-  },
-  WRONG_RIGHT_PAGE: {
-    key: "WRONG_RIGHT_PAGE",
-    reticleType: "error",
-    minDuration: 1500,
-  },
-  WRONG_LAST_PAGE: {
-    key: "WRONG_LAST_PAGE",
-    reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
   },
   TOO_DARK: {
     key: "TOO_DARK",
     reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
   },
   TOO_BRIGHT: {
     key: "TOO_BRIGHT",
     reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
   },
-  DOCUMENT_FRAMING_CAMERA_TOO_FAR: {
-    key: "DOCUMENT_FRAMING_CAMERA_TOO_FAR",
+  // occlusion
+  OCCLUDED: {
+    key: "OCCLUDED",
     reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
   },
-  DOCUMENT_FRAMING_CAMERA_TOO_CLOSE: {
-    key: "DOCUMENT_FRAMING_CAMERA_TOO_CLOSE",
+  FACE_PHOTO_OCCLUDED: {
+    key: "FACE_PHOTO_OCCLUDED",
     reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
   },
-  DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP: {
-    key: "DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP",
+  // classification
+  WRONG_SIDE: {
+    key: "WRONG_SIDE",
     reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
   },
-  DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE: {
-    key: "DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE",
+  WRONG_TOP_PAGE: {
+    key: "WRONG_TOP_PAGE",
     reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
+  },
+  WRONG_LEFT_PAGE: {
+    key: "WRONG_LEFT_PAGE",
+    reticleType: "error",
+    minDuration: ERROR_DURATION,
+  },
+  WRONG_RIGHT_PAGE: {
+    key: "WRONG_RIGHT_PAGE",
+    reticleType: "error",
+    minDuration: ERROR_DURATION,
+  },
+  WRONG_LAST_PAGE: {
+    key: "WRONG_LAST_PAGE",
+    reticleType: "error",
+    minDuration: ERROR_DURATION,
   },
   UNSUPPORTED_DOCUMENT: {
     key: "UNSUPPORTED_DOCUMENT",
     reticleType: "error",
-    minDuration: 1500,
+    minDuration: ERROR_DURATION,
   },
 } as const;
-
-/**
- * The states that are captured when the first side is captured.
- */
-export const firstSideCapturedUiStateKeys: BlinkIdUiStateKey[] = [
-  // two sided documents
-  "FLIP_CARD",
-  // passport pages
-  "MOVE_LEFT",
-  "MOVE_RIGHT",
-  "MOVE_TOP",
-  "MOVE_LAST_PAGE",
-] as const;
-
-/** The error UI state keys. */
-export const errorUiStateKeys: BlinkIdUiStateKey[] = Object.values(
-  blinkIdUiStateMap,
-)
-  .filter((state) => state.reticleType === "error")
-  .map((state) => state.key);
 
 /**
  * The partial process result.
@@ -272,29 +454,6 @@ export type PartialProcessResult = {
   /** The result completeness. */
   resultCompleteness: Partial<ResultCompleteness>;
 };
-
-/**
- * Checks if the document is a passport.
- *
- * @param docClass - The document class info.
- * @returns True if the document is a passport, false otherwise.
- */
-function isPassport(docClass: DocumentClassInfo | undefined) {
-  return docClass?.type === "passport";
-}
-
-/**
- * Checks if the document is a passport and has a barcode on the last page (USA or India).
- *
- * @param docClass - The document class info.
- * @returns True if the document is a passport and has a barcode on the last page (USA or India), false otherwise.
- */
-function isPassportWithBarcode(docClass: DocumentClassInfo | undefined) {
-  return (
-    isPassport(docClass) &&
-    (docClass?.country === "usa" || docClass?.country === "india")
-  );
-}
 
 /**
  * Determines the appropriate UI state key based on the current frame processing
@@ -315,7 +474,9 @@ export function getUiStateKey(
   settings?: Partial<ScanningSettings>,
 ) {
   return (
-    match<PartialProcessResult, BlinkIdUiStateKey>(frameProcessResult)
+    match<PartialProcessResult, BlinkIdUiMappableKey | undefined>(
+      frameProcessResult,
+    )
       // Success states
       .with(
         {
@@ -325,8 +486,16 @@ export function getUiStateKey(
         },
         () => "DOCUMENT_CAPTURED",
       )
+      .with(
+        {
+          resultCompleteness: {
+            scanningStatus: "side-scanned",
+          },
+        },
+        () => "PAGE_CAPTURED",
+      )
 
-      // unsupported document
+      // Unsupported document
       .with(
         {
           inputImageAnalysisResult: {
@@ -336,62 +505,70 @@ export function getUiStateKey(
         () => "UNSUPPORTED_DOCUMENT",
       )
 
-      // passport pages captured
+      // scan wrong side / page
       .with(
         {
-          resultCompleteness: {
-            scanningStatus: "side-scanned",
-          },
           inputImageAnalysisResult: {
+            scanningSide: "second",
+            processingStatus: "scanning-wrong-side",
             documentClassInfo: P.when(isPassportWithBarcode),
           },
         },
-        () => "MOVE_LAST_PAGE",
+        () => "WRONG_LAST_PAGE",
       )
       .with(
         {
-          resultCompleteness: {
-            scanningStatus: "side-scanned",
-          },
           inputImageAnalysisResult: {
-            documentClassInfo: P.when(isPassport),
+            scanningSide: "second",
+            processingStatus: "scanning-wrong-side",
+            documentClassInfo: P.when(isPassportWithoutBarcode),
             documentRotation: "counter-clockwise-90",
           },
         },
-        () => "MOVE_LEFT",
+        () => "WRONG_LEFT_PAGE",
       )
       .with(
         {
-          resultCompleteness: {
-            scanningStatus: "side-scanned",
-          },
           inputImageAnalysisResult: {
-            documentClassInfo: P.when(isPassport),
+            scanningSide: "second",
+            processingStatus: "scanning-wrong-side",
+            documentClassInfo: P.when(isPassportWithoutBarcode),
             documentRotation: "clockwise-90",
           },
         },
-        () => "MOVE_RIGHT",
+        () => "WRONG_RIGHT_PAGE",
       )
       .with(
         {
-          resultCompleteness: {
-            scanningStatus: "side-scanned",
-          },
           inputImageAnalysisResult: {
-            documentClassInfo: P.when(isPassport),
+            scanningSide: "second",
+            processingStatus: "scanning-wrong-side",
+            documentClassInfo: P.when(isPassportWithoutBarcode),
           },
         },
-        () => "MOVE_TOP",
+        () => "WRONG_TOP_PAGE",
+      )
+      .with(
+        {
+          inputImageAnalysisResult: {
+            processingStatus: "scanning-wrong-side",
+          },
+        },
+        () => "WRONG_SIDE",
       )
 
-      // side captured on non-passport
+      // passport not in frame
       .with(
         {
           resultCompleteness: {
-            scanningStatus: "side-scanned",
+            scanningStatus: "scanning-side-in-progress",
+          },
+          inputImageAnalysisResult: {
+            scanningSide: "first",
+            documentClassInfo: P.when(isPassportWithBarcode),
           },
         },
-        () => "FLIP_CARD",
+        () => "DATA_PAGE_NOT_IN_FRAME",
       )
 
       // framing
@@ -432,7 +609,6 @@ export function getUiStateKey(
       .with(
         {
           inputImageAnalysisResult: {
-            processingStatus: "image-preprocessing-failed",
             documentLightingStatus: P.when(
               (status) =>
                 status === "too-bright" &&
@@ -445,7 +621,6 @@ export function getUiStateKey(
       .with(
         {
           inputImageAnalysisResult: {
-            processingStatus: "image-preprocessing-failed",
             documentLightingStatus: P.when(
               (status) =>
                 status === "too-dark" &&
@@ -460,7 +635,6 @@ export function getUiStateKey(
       .with(
         {
           inputImageAnalysisResult: {
-            processingStatus: "image-preprocessing-failed",
             glareDetectionStatus: P.when(
               (status) =>
                 status === "detected" && settings?.skipImagesWithGlare,
@@ -542,7 +716,6 @@ export function getUiStateKey(
       .with(
         {
           inputImageAnalysisResult: {
-            processingStatus: "image-preprocessing-failed",
             blurDetectionStatus: P.when(
               (status) => status === "detected" && settings?.skipImagesWithBlur,
             ),
@@ -551,152 +724,114 @@ export function getUiStateKey(
         () => "BLUR_DETECTED",
       )
 
-      // scan wrong side / page
+      // document not in frame
       .with(
         {
           inputImageAnalysisResult: {
-            scanningSide: "second",
-            processingStatus: "scanning-wrong-side",
+            scanningSide: "first",
+            documentDetectionStatus: "failed",
             documentClassInfo: P.when(isPassportWithBarcode),
           },
         },
-        () => "WRONG_LAST_PAGE",
+        () => "DATA_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
           inputImageAnalysisResult: {
             scanningSide: "second",
-            processingStatus: "scanning-wrong-side",
-            documentClassInfo: P.when(isPassport),
+            documentDetectionStatus: "failed",
+            documentClassInfo: P.when(isPassportWithoutBarcode),
             documentRotation: "counter-clockwise-90",
           },
         },
-        () => "WRONG_LEFT_PAGE",
+        () => "LEFT_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
           inputImageAnalysisResult: {
             scanningSide: "second",
-            processingStatus: "scanning-wrong-side",
-            documentClassInfo: P.when(isPassport),
+            documentDetectionStatus: "failed",
+            documentClassInfo: P.when(isPassportWithoutBarcode),
             documentRotation: "clockwise-90",
           },
         },
-        () => "WRONG_RIGHT_PAGE",
+        () => "RIGHT_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
           inputImageAnalysisResult: {
             scanningSide: "second",
-            processingStatus: "scanning-wrong-side",
-            documentClassInfo: P.when(isPassport),
+            documentDetectionStatus: "failed",
+            documentClassInfo: P.when(isPassportWithoutBarcode),
           },
         },
-        () => "WRONG_TOP_PAGE",
+        () => "TOP_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
           inputImageAnalysisResult: {
-            processingStatus: "scanning-wrong-side",
+            scanningSide: "second",
+            documentDetectionStatus: "failed",
+            documentClassInfo: P.when(isPassportWithBarcode),
           },
         },
-        () => "WRONG_SIDE",
+        () => "LAST_PAGE_NOT_IN_FRAME",
+      )
+      // non-passport not in frame
+      .with(
+        {
+          resultCompleteness: {
+            scanningStatus: "scanning-side-in-progress",
+          },
+          inputImageAnalysisResult: {
+            scanningSide: "first",
+            documentDetectionStatus: "failed",
+            documentClassInfo: P.when((x) => !isPassport(x)),
+          },
+        },
+        () => "FRONT_PAGE_NOT_IN_FRAME",
+      )
+      .with(
+        {
+          resultCompleteness: {
+            scanningStatus: "scanning-side-in-progress",
+          },
+          inputImageAnalysisResult: {
+            scanningSide: "second",
+            documentDetectionStatus: "failed",
+            documentClassInfo: P.when((x) => !isPassport(x)),
+          },
+        },
+        () => "BACK_PAGE_NOT_IN_FRAME",
+      )
+      // barcode
+      .with(
+        {
+          inputImageAnalysisResult: {
+            /**
+             * This processing status can only occur if document has mandatory barcode,
+             * during the VIZ step
+             */
+            processingStatus: "barcode-detection-failed",
+          },
+        },
+        () => "BARCODE_NOT_IN_FRAME",
       )
 
       // scan barcode
       .with(
         {
-          resultCompleteness: {
-            scanningStatus: "scanning-barcode-in-progress",
-          },
-        },
-        () => "SCAN_BARCODE",
-      )
-
-      // scan passport second page (in frame)
-      .with(
-        {
           inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentClassInfo: P.when(isPassportWithBarcode),
+            processingStatus: "barcode-recognition-failed",
           },
         },
-        () => "SENSING_LAST_PAGE",
-      )
-      .with(
-        {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentClassInfo: P.when(isPassport),
-            documentRotation: "counter-clockwise-90",
-          },
-        },
-        () => "SENSING_LEFT_PAGE",
-      )
-      // TODO: upside-down?
-      .with(
-        {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentClassInfo: P.when(isPassport),
-            documentRotation: "clockwise-90",
-          },
-        },
-        () => "SENSING_RIGHT_PAGE",
-      )
-
-      // sensing passport data page
-      // TODO: this cannot occur
-      .with(
-        {
-          inputImageAnalysisResult: {
-            scanningSide: "first",
-            documentClassInfo: P.when(isPassport),
-          },
-        },
-        () => "SENSING_DATA_PAGE",
-      )
-
-      // passport side fallback
-      .with(
-        {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentClassInfo: P.when(isPassport),
-          },
-        },
-        () => "SENSING_TOP_PAGE",
-      )
-
-      // scan front
-      .with(
-        {
-          inputImageAnalysisResult: {
-            scanningSide: "first",
-          },
-        },
-        () => "SENSING_FRONT",
-      )
-
-      // scan back
-      .with(
-        {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-          },
-          // TODO: do we need this?
-          resultCompleteness: {
-            scanningStatus: "scanning-side-in-progress",
-          },
-        },
-        () => "SENSING_BACK",
+        () => "PROCESSING_BARCODE",
       )
 
       // fallback
-      .otherwise((processResult) => {
-        console.debug("Fallback to SENSING_FRONT", processResult);
-
-        return "SENSING_FRONT";
+      .otherwise(() => {
+        // most likely stability test failing which should be a no-op
+        return undefined;
       })
   );
 }

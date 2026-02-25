@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Taimako", tooltip: "Ana buƙatar taimako?" },
   help_modal: {
+    aria: "Taimako a fannin ɗaukar hoto",
     back_btn: "Baya",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "A ina lambar katin take?",
     },
     done_btn: "Kammala",
+    done_btn_aria: "Ci gaba da ɗaukar hoto",
     lighting: {
       details:
         "Kada a yi amfani da haske mai ƙarfi domin zai yi dau a kan katin sannan zai sa ba za a iya karanta wasu ɓangarorin katin ba. Idan ba za ku iya karanta bayanan da suke kan katin ba, to kamara ma ba za ta iya ganin su ba.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Ƙa'idojin Ɗaukar Hoto",
     btn: "Fara ɗaukar hoto",
     details:
       "Yawanci lambar kati takan kasance lambobi 16. Za su kasance ko dai waɗanda aka gurza da rubutun kwamfuta ko waɗanda aka zana da tsarin rubutu mai tudu a kan katin. A tabbatar da cewa an haska katin yadda ya kamata sannan ana kallon dukkannin bayanan da suke kai.",
@@ -63,6 +66,7 @@ export default {
       "Yawanci lambar kati takan kasance lambobi 16. Za su kasance ko dai waɗanda aka gurza da rubutun kwamfuta ko waɗanda aka zana da tsarin rubutu mai tudu a kan katin. A tabbatar da cewa ƙura bai tare gilashin kamerarku ba, sannan tabbatar an haska katin yadda ya kamata kuma ana kallon dukkannin bayanan da suke kai.",
     title: "A fara ɗaukar hoton lambar katin",
   },
+  sdk_aria: "Sikin na ɗaukar hoton kati",
   timeout_modal: {
     cancel_btn: "Soke",
     details: "An kasa karanta katin. A sake gwadawa.",

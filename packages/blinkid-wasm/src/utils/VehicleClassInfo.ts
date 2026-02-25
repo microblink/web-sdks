@@ -2,8 +2,8 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { DateResult } from "./DateResult";
 import { StringResult } from "../result";
+import { DateResult } from "./DateResult";
 
 /**
  * Represents the information about the vehicle class.

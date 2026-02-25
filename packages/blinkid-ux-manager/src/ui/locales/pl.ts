@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Zeskanuj przednią stronę obsługiwanego dokumentu.",
   document_scanned: "Udało się! Zeskanowano dokument",
-  document_too_close_to_edge: "Odsuń dokument od krawędzi",
+  document_too_close_to_edge: "Przesuń dalej",
   face_photo_not_fully_visible: "Zdjęcie twarzy powinno być w całości widoczne",
   flip_document: "Odwróć dokument",
   flip_to_back_side: "Obróć na drugą stronę",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "Przechyl lub przesuń dokument, aby usunąć odbicie światła",
   help_aria_label: "Pomoc",
   help_modal_back_btn: "Wstecz",
+  help_modal_blur_details_desktop:
+    "Staraj się trzymać urządzenie i dokument nieruchomo podczas skanowania. Poruszanie którymkolwiek z nich może spowodować rozmazanie obrazu i uniemożliwić odczyt danych z dokumentu.",
+  help_modal_camera_lens_details:
+    "Sprawdź, czy obiektyw aparatu nie jest zabrudzony lub zakurzony. Zabrudzenia mogą powodować rozmycie obrazu, przez co szczegóły dokumentu stają się nieczytelne, a ich zeskanowanie niemożliwe.",
+  help_modal_camera_lens_title: "Wyczyść obiektyw aparatu",
   help_modal_details_1:
     "Upewnij się, że nie zasłaniasz dokumentu, w tym jego dolnych krawędzi, palcem. Zwróć też uwagę na refleksy z hologramu na polach dokumentu.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "Uważaj na silne światło",
   help_modal_title_3: "Nie ruszaj się podczas skanowania",
   help_tooltip: "Potrzebujesz pomocy?",
+  keep_document_parallel: "Trzymaj dokument równolegle do ekranu",
+  keep_document_still: "Trzymaj dokument i urządzenie nieruchomo",
   move_closer: "Przesuń bliżej",
   move_farther: "Przesuń dalej",
   move_left: "Przejdź do strony po lewej",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "Rozpocznij skanowanie",
   onboarding_modal_details:
     "Upewnij się, że dokument jest dobrze oświetlony. Wszystkie pola dokumentu powinny być widoczne na ekranie aparatu.",
+  onboarding_modal_details_desktop:
+    "Upewnij się, że obiektyw aparatu jest czysty, a dokument dobrze oświetlony. Wszystkie pola dokumentu powinny być widoczne na ekranie aparatu.",
   onboarding_modal_title: "Wszystkie szczegóły powinny być widoczne",
+  onboarding_modal_title_desktop: "Przygotuj się do skanowania",
+  resume_scanning: "Wznów skanowanie",
   scan_data_page: "Zeskanuj stronę dokumentu z danymi",
   scan_last_page_barcode: "Zeskanuj kod kreskowy z ostatniej strony",
   scan_left_page: "Zeskanuj lewą stronę",
@@ -56,6 +67,9 @@ export default {
   scan_top_page: "Zeskanuj górną stronę",
   scan_unsuccessful: "Nieudane skanowanie",
   scan_unsuccessful_details: "Nie można odczytać dokumentu. Spróbuj ponownie.",
+  scanning_help: "Pomoc dotycząca skanowania",
+  scanning_instructions: "Instrukcje skanowania",
+  scanning_screen: "Ekran skanowania dokumentów",
   too_bright: "Przejdź w mniej oświetlone miejsce",
   too_dark: "Przejdź w jaśniejsze miejsce",
   wrong_left: "Przejdź do lewej strony",

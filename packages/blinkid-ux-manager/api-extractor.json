@@ -67,7 +67,10 @@
    *
    *   "bundledPackages": [ "@my-company/*" ],
    */
-  "bundledPackages": ["@microblink/feedback-stabilizer", "@microblink/ux-common"],
+  "bundledPackages": [
+    "@microblink/feedback-stabilizer",
+    "@microblink/ux-common"
+  ],
 
   /**
    * Specifies what type of newlines API Extractor should use when writing output files.  By default, the output files

@@ -79,7 +79,8 @@ The name of the card issuer's country.
 
 > **issuerCountryCode**: `string` \| `undefined`
 
-The ISO 3166-1 alpha-3 country code of the card issuer's country (e.g., "USA", "GBR", "HRV").
+The ISO 3166-1 alpha-3 country code of the card issuer's country (e.g.,
+"USA", "GBR", "HRV").
 
 ***
 

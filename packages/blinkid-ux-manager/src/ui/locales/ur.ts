@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "معاونت یافتہ دستاویز کے سامنے والے حصے کو اسکین کریں۔",
   document_scanned: "کامیابی! دستاویز اسکین ہو گئی ہے",
-  document_too_close_to_edge: "دستاویز کو کنارے سے ہٹائیں",
+  document_too_close_to_edge: "اور دور جائیں",
   face_photo_not_fully_visible: "چہرے کی تصویر کو مکمل طور پر نمایاں رکھیں",
   flip_document: "دستاویز کو پلٹیں",
   flip_to_back_side: "پچھلے حصے کی طرف پلٹیں",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "عکس ختم کرنے کے لئے دستاویز کو جھکائیں یا حرکت دیں",
   help_aria_label: "مدد",
   help_modal_back_btn: "پیچھے",
+  help_modal_blur_details_desktop:
+    "اسکین کرتے وقت ڈیوائس اور دستاویز کو ساکن رکھنے کی کوشش کریں۔ ان میں سے کسی کو بھی حرکت دینے سے تصویر دھندلا سکتی ہے اور دستاویز پر موجود ڈیٹا پڑھنے کے قابل نہیں رہتا۔",
+  help_modal_camera_lens_details:
+    "اپنے کیمرے کے لینز پر دھبوں یا گردوغبار کی جانچ کریں۔ گندا لینز حتمی تصویر کو دھندلا کر دیتا ہے، جس سے دستاویز کی تفصیلات پڑھنے کے قابل نہیں رہتیں اور ڈیٹا کامیابی سے اسکین نہیں ہو پاتا۔",
+  help_modal_camera_lens_title: "اپنے کیمرہ کے لینز کو صاف کریں",
   help_modal_details_1:
     "یقینی بنائیں کہ آپ اپنی انگلی سے دستاویز کے کسی حصے کو، خاص طور پر نچلی سطروں کو ڈھانپ نہیں رہے۔ اس کے علاوہ ہولوگرام کے عکس سے بھی بچیں جو دستاویز کے خانوں پر پڑ سکتا ہے۔",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "تیز روشنی سے بچیں",
   help_modal_title_3: "اسکین کرتے وقت ساکن رہیں",
   help_tooltip: "مدد چاہیے؟",
+  keep_document_parallel: "دستاویز کو سکرین کے متوازی رکھیں",
+  keep_document_still: "دستاویز اور ڈیوائس کو ساکن رکھیں",
   move_closer: "اور قریب جائیں",
   move_farther: "اور دور جائیں",
   move_left: "بائیں جانب والے صفحے پر جائیں",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "اسکیننگ شروع کریں",
   onboarding_modal_details:
     "یقینی بنائیں کہ دستاویز اچھی طرح روشن ہو۔ دستاویز کے تمام خانے کیمرہ اسکرین پر واضح نظر آنے چاہئیں۔",
+  onboarding_modal_details_desktop:
+    "یقینی بنائیں کہ آپ کا کیمرہ لینز صاف ہو اور دستاویز اچھی طرح روشن ہو۔ دستاویز کے تمام خانے کیمرہ اسکرین پر واضح نظر آنے چاہئیں۔",
   onboarding_modal_title: "تمام تفصیلات نمایاں رکھیں",
+  onboarding_modal_title_desktop: "اسکین کرنے کے لیے تیار ہو جائیں",
+  resume_scanning: "اسکیننگ دوبارہ شروع کریں",
   scan_data_page: "دستاویز کے ڈیٹا صفحہ کو اسکین کریں",
   scan_last_page_barcode: "آخری صفحے سے بارکوڈ کو اسکین کریں",
   scan_left_page: "بائیں صفحے کو اسکین کریں",
@@ -57,6 +68,9 @@ export default {
   scan_unsuccessful: "اسکین ناکام رہا",
   scan_unsuccessful_details:
     "دستاویز پڑھنے میں ناکامی۔ براہ کرم دوبارہ کوشش کریں۔",
+  scanning_help: "اسکیننگ میں مدد",
+  scanning_instructions: "اسکیننگ کی ہدایات",
+  scanning_screen: "دستاویز اسکین کرنے کی اسکرین",
   too_bright: "کم روشنی والی جگہ پر جائیں",
   too_dark: "زیادہ روشن جگہ پر جائیں",
   wrong_left: "بائیں صفحے پر جائیں",

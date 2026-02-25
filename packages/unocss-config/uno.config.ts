@@ -4,19 +4,30 @@
 
 import {
   defineConfig,
-  presetUno,
+  presetWind3,
   transformerDirectives,
   type PresetUnoTheme,
 } from "unocss";
 import {
   addScaleMultiplier,
   createSpacingRules,
+  createVerticalRules,
   sizeObject,
 } from "./src/rules/index.ts";
 
 export default defineConfig({
-  presets: [presetUno()],
-  rules: [...createSpacingRules()],
+  presets: [presetWind3()],
+  rules: [...createSpacingRules(), ...createVerticalRules()],
+  autocomplete: {
+    templates: [
+      "h-(xs|sm|md|lg|xl|2xl):",
+      "lt-h-(xs|sm|md|lg|xl|2xl):",
+      "at-h-(xs|sm|md|lg|xl|2xl):",
+      "compact:",
+      "portrait:",
+      "landscape:",
+    ],
+  },
   extendTheme: (theme: PresetUnoTheme) => {
     return {
       ...theme,
@@ -24,20 +35,143 @@ export default defineConfig({
         xs: "380px",
         ...theme.breakpoints,
       },
+      verticalBreakpoints: {
+        "h-xs": "400px",
+        "h-sm": "640px",
+        "h-md": "768px",
+        "h-lg": "1024px",
+        "h-xl": "1280px",
+        "h-2xl": "1536px",
+      },
     };
   },
-  shortcuts: {
-    "btn-focus":
-      "focus-visible:outline focus-visible:outline-2px focus-visible:outline-solid focus-visible:outline-primary focus-visible:outline-offset-4px",
-    "btn-disabled":
-      "[&[disabled]]:cursor-not-allowed [&[disabled]]:bg-gray-200 [&[disabled]]:text-gray-500 hover:[&[disabled]]:bg-gray-200 hover:[&[disabled]]:text-gray-500 [&[disabled]]:ring-0",
+  variants: [
+    // Compact modal guard:
+    // short viewport + minimum width, to avoid narrow two-column collapse.
+    (matcher) => {
+      const match = matcher.match(/^compact:(.+)$/);
+      if (!match) return matcher;
 
-    btn: "px-5 py-1 text-sm text-nowrap rounded-10 border-none transition-colors transition-duration-100 appearance-none h-[2.5rem] btn-disabled btn-focus",
+      const [, rest] = match;
+      return {
+        matcher: rest,
+        parent: "@media (max-height: 639.9px) and (min-width: 380px)",
+      };
+    },
+    // Vertical breakpoints - min-height based
+    (matcher) => {
+      const match = matcher.match(/^h-(xs|sm|md|lg|xl|2xl):(.+)$/);
+      if (!match) return matcher;
+
+      const [, size, rest] = match;
+      const heights = {
+        xs: "400px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
+      };
+
+      return {
+        matcher: rest,
+        parent: `@media (min-height: ${heights[size as keyof typeof heights]})`,
+      };
+    },
+    // Vertical breakpoints - max-height based (less than)
+    (matcher) => {
+      const match = matcher.match(/^lt-h-(xs|sm|md|lg|xl|2xl):(.+)$/);
+      if (!match) return matcher;
+
+      const [, size, rest] = match;
+      const heights = {
+        xs: "400px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
+      };
+
+      // Subtract 0.1px for max-height to avoid overlap
+      const height = parseFloat(heights[size as keyof typeof heights]);
+      return {
+        matcher: rest,
+        parent: `@media (max-height: ${height - 0.1}px)`,
+      };
+    },
+    // Vertical breakpoints - exact height (at)
+    (matcher) => {
+      const match = matcher.match(/^at-h-(xs|sm|md|lg|xl|2xl):(.+)$/);
+      if (!match) return matcher;
+
+      const [, size, rest] = match;
+      const heights = {
+        xs: "400px",
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
+      };
+
+      const nextSizes = {
+        xs: "sm",
+        sm: "md",
+        md: "lg",
+        lg: "xl",
+        xl: "2xl",
+        "2xl": null,
+      };
+
+      const currentHeight = parseFloat(heights[size as keyof typeof heights]);
+      const nextSize = nextSizes[size as keyof typeof nextSizes];
+      const maxHeight = nextSize
+        ? parseFloat(heights[nextSize as keyof typeof heights]) - 0.1
+        : 999999;
+
+      return {
+        matcher: rest,
+        parent: `@media (min-height: ${currentHeight}px) and (max-height: ${maxHeight}px)`,
+      };
+    },
+    // Orientation variants
+    (matcher) => {
+      if (matcher.startsWith("portrait:")) {
+        return {
+          matcher: matcher.slice(9),
+          parent: "@media (orientation: portrait)",
+        };
+      }
+      if (matcher.startsWith("landscape:")) {
+        return {
+          matcher: matcher.slice(10),
+          parent: "@media (orientation: landscape)",
+        };
+      }
+      return matcher;
+    },
+  ],
+  shortcuts: {
+    // dialog buttons
+    btn: "px-6 py-1 text-sm text-nowrap rounded-10 border-none transition-colors transition-duration-100 appearance-none h-[2.5rem] btn-disabled btn-focus truncate",
+    "btn-focus":
+      "focus-visible:enabled:outline focus-visible:enabled:outline-2px focus-visible:enabled:outline-solid focus-visible:enabled:outline-primary focus-visible:enabled:outline-offset-4px",
+    "btn-disabled": "disabled:cursor-not-allowed",
 
     "btn-primary":
-      "btn bg-primary text-white hover:bg-accent-700 active:bg-accent-800",
+      "bg-primary text-white hover:enabled:bg-accent-700 active:enabled:bg-accent-800 disabled:bg-gray-300 disabled:text-gray-500",
     "btn-secondary":
-      "btn bg-transparent text-primary ring-primary ring-1 hover:bg-accent-25 hover:ring-accent-700 hover:text-accent-700 active:ring-accent-800 active:text-accent-800 active:bg-accent-50",
+      "bg-transparent text-primary ring-primary ring-1 hover:enabled:bg-accent-25 hover:enabled:ring-accent-700 hover:enabled:text-accent-700 active:enabled:ring-accent-800 active:enabled:text-accent-800 active:enabled:bg-accent-50 disabled:text-gray-400 disabled:ring-gray-400",
+
+    // dialog copy — requires a fluid base font-size on a Modal ancestor
+    // (currently calc(0.875rem + 0.125rem * var(--modal-t)) → 14px–16px).
+    // --modal-t is a 0→1 progress variable set by ResizeObserver.
+    // All sizes are em-relative to that base.
+    "dialog-title":
+      "text-[1.5em] leading-[calc(1em+0.5rem)] font-bold text-center text-pretty text-gray-700",
+    "dialog-description":
+      "text-[1em] leading-[calc(1em+0.5rem)] text-gray-500 text-center text-pretty mt-[1em]",
   },
   theme: {
     spacing: sizeObject,

@@ -3,11 +3,12 @@
  */
 
 import { AlertModal } from "@microblink/shared-components/AlertModal";
-import { Component, Show } from "solid-js";
+import { Component } from "solid-js";
 import { CameraError } from "../core/cameraError";
 import { useCameraUiStore } from "./CameraUiStoreContext";
 import { useLocalization } from "./LocalizationContext";
 import { cameraUiRefSignalStore } from "./zustandRefStore";
+import { Dialog } from "@ark-ui/solid";
 
 /**
  * The CameraErrorModal component.
@@ -51,18 +52,25 @@ const CameraErrorModal: Component = () => {
 
   return (
     <>
-      <Show when={isPermissionError()}>
-        <AlertModal
-          mountTarget={overlayLayer()}
-          header={headerText()}
-          text={bodyText()}
-          open={true}
-          onPrimaryClick={() => void cameraManager.startCameraStream()}
-          onSecondaryClick={() => dismountCameraUi()}
-          primaryButtonText={t.camera_error_primary_btn}
-          secondaryButtonText={t.camera_error_cancel_btn}
-        />
-      </Show>
+      <AlertModal
+        mountTarget={overlayLayer()}
+        open={isPermissionError()}
+        actions={{
+          primary: {
+            label: t.camera_error_primary_btn,
+            onclick: () => void cameraManager.startCameraStream(),
+          },
+          secondary: {
+            label: t.camera_error_cancel_btn,
+            onclick: () => dismountCameraUi(),
+          },
+        }}
+      >
+        <Dialog.Title class="dialog-title">{headerText()}</Dialog.Title>
+        <Dialog.Description class="dialog-description">
+          <p>{bodyText()}</p>
+        </Dialog.Description>
+      </AlertModal>
     </>
   );
 };

@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Help", tooltip: "Need help?" },
   help_modal: {
+    aria: "Scanning help",
     back_btn: "Back",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Where’s the card number?",
     },
     done_btn: "Done",
+    done_btn_aria: "Resume scanning",
     lighting: {
       details:
         "Avoid direct harsh light because it reflects from the card and can make parts of the card unreadable. If you can’t read data on the card, it won’t be visible to the camera either.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Scanning Instructions",
     btn: "Start scanning",
     details:
       "Card number is usually a 16-digit number. It should be either printed or embossed in raised numbers across the card. Make sure that the card is well lit and all details are visible.",
@@ -63,6 +66,7 @@ export default {
       "Card number is usually a 16-digit number. It should be either printed or embossed in raised numbers across the card. Make sure your camera lens is clean, the card is well lit, and all details are visible.",
     title: "Scan the card number first",
   },
+  sdk_aria: "Card scanning screen",
   timeout_modal: {
     cancel_btn: "Cancel",
     details: "Unable to read the card. Please try again.",

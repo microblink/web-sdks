@@ -2,18 +2,18 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { ProcessingStatus } from "./ProcessingStatus";
-import { FieldType } from "./FieldType";
-import { ImageExtractionType } from "./ImageExtractionType";
-import { ScanningSide } from "./ScanningSide";
 import { DetectionStatus } from "../session";
+import { Quadrilateral } from "../utils";
 import { DocumentClassInfo } from "./classinfo";
-import { ImageAnalysisDetectionStatus } from "./ImageAnalysisDetectionStatus";
 import { DocumentImageColor } from "./DocumentImageColor";
-import { ImageAnalysisLightingStatus } from "./ImageAnalysisLightingStatus";
 import { DocumentOrientation } from "./DocumentOrientation";
 import { DocumentRotation } from "./DocumentRotation";
-import { Quadrilateral } from "../utils";
+import { FieldType } from "./FieldType";
+import { ImageAnalysisDetectionStatus } from "./ImageAnalysisDetectionStatus";
+import { ImageAnalysisLightingStatus } from "./ImageAnalysisLightingStatus";
+import { ImageExtractionType } from "./ImageExtractionType";
+import { ProcessingStatus } from "./ProcessingStatus";
+import { ScanningSide } from "./ScanningSide";
 
 /**
  * Represents the results of processing and analyzing an input image.

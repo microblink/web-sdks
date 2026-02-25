@@ -29,6 +29,10 @@ export const App: Component = () => {
     const cameraUi = await createCameraManagerUi(
       cameraManager,
       !PORTAL ? document.getElementById("root")! : undefined,
+      {
+        showMirrorCameraButton: true,
+        zIndex: 5,
+      },
     );
 
     await cameraManager.startCameraStream();
@@ -65,7 +69,7 @@ export const App: Component = () => {
     <div>
       <button onClick={() => void initialize()}>Scan</button>
       <Show when={PROCESS_FRAMES}>
-        <canvas ref={canvas} class="camera-preview" />
+        <canvas aria-hidden="true" ref={canvas} class="camera-preview" />
       </Show>
     </div>
   );

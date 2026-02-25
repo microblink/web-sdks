@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "文档无法识别",
   document_not_recognized_details: "扫描支持文件类型的正面。",
   document_scanned: "成功！文件已扫描",
-  document_too_close_to_edge: "从边缘移动文件",
+  document_too_close_to_edge: "离远一些",
   face_photo_not_fully_visible: "让面部照片完全可见",
   flip_document: "翻转文档",
   flip_to_back_side: "给文件翻页",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "倾斜或移动文件以消除反光",
   help_aria_label: "帮助",
   help_modal_back_btn: "返回",
+  help_modal_blur_details_desktop:
+    "扫描时尽量保持设备和文件不动。移动可能导致图像模糊，使文件数据无法读取。",
+  help_modal_camera_lens_details:
+    "请检查相机镜头是否有污渍或灰尘。镜头脏污会导致成像模糊，从而无法读取文件信息，影响数据扫描成功率。",
+  help_modal_camera_lens_title: "清洁摄像头镜头",
   help_modal_details_1:
     "确保不要用手指遮盖文件的任意部分，包括底部边线。同时注意全息图在文件字段的反射。",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "注意强光直射",
   help_modal_title_3: "扫描时保持不动",
   help_tooltip: "需要帮助？",
+  keep_document_parallel: "请将文件与屏幕保持平行",
+  keep_document_still: "请保持文件和设备静止",
   move_closer: "靠近一些",
   move_farther: "离远一些",
   move_left: "移动至左侧页面",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "开始扫描",
   onboarding_modal_details:
     "确保文件处于光线充足的地方。所有文件字段应在相机屏幕上可见。",
+  onboarding_modal_details_desktop:
+    "确保相机镜头和文件处于光线充足的地方。所有文件字段应在相机屏幕上清晰可见。",
   onboarding_modal_title: "保持所有细节可见",
+  onboarding_modal_title_desktop: "准备扫描",
+  resume_scanning: "恢复扫描",
   scan_data_page: "扫描文档的数据页",
   scan_last_page_barcode: "扫描最后一页的条形码",
   scan_left_page: "扫描左侧页面",
@@ -55,6 +66,9 @@ export default {
   scan_top_page: "扫描顶部页面",
   scan_unsuccessful: "扫描失败",
   scan_unsuccessful_details: "未能读取文件,请重试。",
+  scanning_help: "扫描帮助",
+  scanning_instructions: "扫描说明",
+  scanning_screen: "文件扫描屏幕",
   too_bright: "移动到光线更暗的位置",
   too_dark: "移动到更明亮的位置",
   wrong_left: "移动至左侧页面",

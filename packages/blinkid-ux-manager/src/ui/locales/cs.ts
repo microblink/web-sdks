@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Naskenujte přední stranu podporovaného dokumentu.",
   document_scanned: "Úspěch! Dokument byl naskenován",
-  document_too_close_to_edge: "Přesunout dokument dál od kraje",
+  document_too_close_to_edge: "Kousek dál",
   face_photo_not_fully_visible:
     "Zachovejte úplnou viditelnost fotografie obličeje",
   flip_document: "Překlopit dokument",
@@ -25,6 +25,11 @@ export default {
   glare_detected: "Nakloňte nebo přesuňte dokument pro odstranění odrazů",
   help_aria_label: "Nápověda",
   help_modal_back_btn: "Zpět",
+  help_modal_blur_details_desktop:
+    "Při skenování se snažte držet zařízení a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+  help_modal_camera_lens_details:
+    "Zkontrolujte, zda na objektivu fotoaparátu nejsou šmouhy nebo prach. Špinavý objektiv způsobuje rozmazání výsledného obrazu, což znemožňuje přečtení údajů v dokumentu a úspěšné naskenování dat.",
+  help_modal_camera_lens_title: "Vyčistěte objektiv fotoaparátu",
   help_modal_details_1:
     "Ujistěte se, že prstem nezakrýváte části dokumentu, včetně spodních řádků. Dávejte si také pozor na hologramové odlesky, které přesahují pole dokumentu.",
   help_modal_details_2:
@@ -37,6 +42,8 @@ export default {
   help_modal_title_2: "Dávejte pozor na ostré světlo",
   help_modal_title_3: "Při skenování se nehýbejte",
   help_tooltip: "Potřebujete pomoct?",
+  keep_document_parallel: "Držte dokument rovnoběžně s obrazovkou",
+  keep_document_still: "Držte dokument a zařízení v klidu",
   move_closer: "Kousek blíž",
   move_farther: "Kousek dál",
   move_left: "Přesuňte se na stránku vlevo",
@@ -46,7 +53,11 @@ export default {
   onboarding_modal_btn: "Spustit skenování",
   onboarding_modal_details:
     "Ujistěte se, že je dokument dobře osvětlen. Na obrazovce fotoaparátu by měla být vidět všechna pole dokumentu.",
+  onboarding_modal_details_desktop:
+    "Ujistěte se, že je objektiv fotoaparátu čistý a dokument je dobře osvětlen. Na obrazovce fotoaparátu by měla být vidět všechna pole dokumentu.",
   onboarding_modal_title: "Všechny detaily musejí být ve viditelném stavu",
+  onboarding_modal_title_desktop: "Připravte se na skenování",
+  resume_scanning: "Pokračovat ve skenování",
   scan_data_page: "Naskenujte datovou stránku dokumentu",
   scan_last_page_barcode: "Naskenujte čárový kód z poslední stránky",
   scan_left_page: "Naskenujte levou stránku",
@@ -57,6 +68,9 @@ export default {
   scan_top_page: "Naskenujte horní stránku",
   scan_unsuccessful: "Skenování neúspěšné",
   scan_unsuccessful_details: "Dokument se nepodařilo přečíst. Zkuste to znovu.",
+  scanning_help: "Nápověda pro skenování",
+  scanning_instructions: "Pokyny pro skenování",
+  scanning_screen: "Obrazovka skenování dokumentu",
   too_bright: "Přesuňte se na méně osvětlené místo",
   too_dark: "Přesuňte se na lépe osvětlené místo",
   wrong_left: "Přesuňte se na levou stránku",

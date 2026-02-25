@@ -2,15 +2,15 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import { BlinkIdScanningResult } from "@microblink/blinkid-wasm";
 import { describe, expect, it } from "vitest";
 import {
-  extractSideInputImage,
   extractBarcodeImage,
-  extractSideDocumentImage,
   extractFaceImage,
+  extractSideDocumentImage,
+  extractSideInputImage,
   extractSignatureImage,
 } from "./utils";
-import { BlinkIdScanningResult } from "@microblink/blinkid-wasm";
 
 // Mock ImageData for testing
 const createMockImageData = () => new ImageData(1, 1);

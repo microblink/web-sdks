@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import { getPackagePath, linkResources } from "@microblink/repo-utils";
 import { defineConfig } from "vite";
 import { dependencies } from "./package.json";
@@ -29,7 +31,7 @@ export default defineConfig((config) => ({
     },
   ],
   test: {
-    environment: "jsdom",
+    environment: "happy-dom",
   },
 }));
 

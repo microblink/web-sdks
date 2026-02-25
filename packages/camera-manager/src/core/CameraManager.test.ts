@@ -3,8 +3,13 @@
  */
 
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import { enableFakeTimers } from "@microblink/test-utils";
 import { VideoResolutionName } from "./Camera";
 import { CameraManager, defaultCameraManagerOptions } from "./CameraManager";
+import {
+  cameraManagerStore as store,
+  resetCameraManagerStore,
+} from "./cameraManagerStore";
 
 // Mock VideoFrameProcessor
 vi.mock("./VideoFrameProcessor", () => ({
@@ -115,5 +120,111 @@ describe("CameraManager - Resolution Settings", () => {
     // Change back to 1080p
     await cameraManager.setResolution("1080p");
     expect(cameraManager.resolution).toBe("1080p");
+  });
+});
+
+describe("CameraManager - Visibility Guards", () => {
+  let cameraManager: CameraManager;
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetCameraManagerStore();
+    cameraManager = new CameraManager();
+  });
+
+  test("should not start camera stream while document is hidden", async () => {
+    const startStreamSpy = vi.fn();
+    const videoElement = document.createElement("video");
+
+    store.setState({
+      videoElement,
+      selectedCamera: {
+        startStream: startStreamSpy,
+      } as never,
+    });
+
+    vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
+
+    await cameraManager.startCameraStream();
+
+    expect(startStreamSpy).not.toHaveBeenCalled();
+    expect(store.getState().playbackState).toBe("idle");
+  });
+
+  test("should not transition to capturing while document is hidden", async () => {
+    const startStreamSpy = vi.fn();
+    const playSpy = vi
+      .spyOn(HTMLMediaElement.prototype, "play")
+      .mockResolvedValue(undefined);
+    const videoElement = document.createElement("video");
+
+    store.setState({
+      videoElement,
+      selectedCamera: {
+        startStream: startStreamSpy,
+        facingMode: "back",
+      } as never,
+    });
+
+    vi.spyOn(document, "visibilityState", "get").mockReturnValue("hidden");
+
+    await cameraManager.startFrameCapture();
+
+    expect(startStreamSpy).not.toHaveBeenCalled();
+    expect(playSpy).not.toHaveBeenCalled();
+    expect(store.getState().playbackState).toBe("idle");
+  });
+
+  test("should resume queued playback when tab becomes visible again", async () => {
+    enableFakeTimers();
+
+    const stream = new MediaStream();
+    const camera = {
+      activeStream: undefined as MediaStream | undefined,
+      facingMode: "back",
+      stopStream: vi.fn(),
+      startStream: vi.fn(() => {
+        camera.activeStream = stream;
+        return stream;
+      }),
+    };
+    const playSpy = vi
+      .spyOn(HTMLMediaElement.prototype, "play")
+      .mockResolvedValue(undefined);
+    const videoElement = document.createElement("video");
+    document.body.appendChild(videoElement);
+    cameraManager.initVideoElement(videoElement);
+
+    store.setState({
+      selectedCamera: camera as never,
+    });
+
+    let visibilityState: DocumentVisibilityState = "hidden";
+    vi.spyOn(document, "visibilityState", "get").mockImplementation(
+      () => visibilityState,
+    );
+
+    window.setTimeout(() => {
+      void cameraManager.startPlayback();
+    }, 3000);
+
+    vi.advanceTimersByTime(3000);
+    await Promise.resolve();
+
+    expect(camera.startStream).not.toHaveBeenCalled();
+    expect(playSpy).not.toHaveBeenCalled();
+    expect(store.getState().playbackState).toBe("idle");
+
+    visibilityState = "visible";
+    document.dispatchEvent(new Event("visibilitychange"));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(camera.startStream).toHaveBeenCalledTimes(1);
+    expect(playSpy).toHaveBeenCalled();
+    expect(store.getState().playbackState).toBe("playback");
+
+    videoElement.remove();
+    vi.useRealTimers();
   });
 });

@@ -2,9 +2,10 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "build:force": "TURBO_FORCE=1 turbo run build",
+    "build:packages": "VITE_BUILD_MODE=development turbo build --filter={./packages/*}",
     "build:blinkid": "turbo build --filter=@microblink/blinkid...",
     "build:blinkcard": "turbo build --filter=@microblink/blinkcard...",
-    "build:packages": "turbo build --filter={./packages/*}",
     "build:publish": "turbo build:publish --filter={./packages/*}",
     "clean:blinkid": "turbo clean --filter=@microblink/blinkid...",
     "clean:blinkcard": "turbo clean --filter=@microblink/blinkcard...",
@@ -19,16 +20,21 @@
     "test": "turbo test",
     "test:watch": "turbo test:watch",
     "upgrade-packages": "pnpm dlx npm-check-updates -ui -ws --root",
-    "watch": "turbo watch --filter='./packages/*'"
+    "watch": "turbo watch --filter='./packages/*'",
+    "knip": "knip"
   },
   "devDependencies": {
-    "@changesets/cli": "2.29.7",
+    "@changesets/cli": "2.29.8",
+    "@types/node": "^25.2.3",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.6",
+    "knip": "^5.84.0",
+    "lint-staged": "^16.2.7",
     "rimraf": "^6.0.1",
-    "syncpack": "13.0.3",
-    "turbo": "^2.6.0",
-    "vitest": "^3.0.8"
+    "syncpack": "14.0.0",
+    "turbo": "^2.8.10",
+    "typescript": "5.8.3",
+    "vitest": "^3.0.8",
+    "zx": "^8.8.5"
   },
   "license": "ISC",
   "packageManager": "pnpm@10.29.3"

@@ -1,5 +1,12 @@
 # @microblink/blinkid-worker
 
+## 7.7.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@7.7.0
+
 ## 7.6.4
 
 ### Patch Changes
@@ -42,9 +49,7 @@
 
 ### Patch Changes
 
-- Update dependencies
 - Updated dependencies
-- Updated dependencies [8e05b35]
   - @microblink/blinkid-wasm@7.6.0
 
 ## 7.5.0

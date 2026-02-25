@@ -11,7 +11,7 @@ import { getResolutionFromConstraints } from "./utils";
 /**
  * Options for the MediaMocker.
  */
-export type MediaMockerOptions = Partial<{
+type MediaMockerOptions = Partial<{
   device: keyof typeof fakeDevices;
   facing: FacingMode;
   reverseCameraOrder: boolean;

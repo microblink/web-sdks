@@ -2,20 +2,16 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import fakeTimer from "@sinonjs/fake-timers";
-import { beforeEach, describe, expect, test } from "vitest";
-import { FeedbackStabilizer, UiStateMap } from "./index";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+import { FeedbackStabilizer, UiStateMap } from "./FeedbackStabilizer";
 
-const clock = fakeTimer.install({
-  shouldAdvanceTime: true,
-  advanceTimeDelta: 1,
-});
 const DEFAULT_TICK = 500;
 
 const uiStateMap = {
   A: {
     key: "A",
     minDuration: 1000,
+    singleEmit: true,
   },
   B: {
     key: "B",
@@ -42,16 +38,21 @@ let stabilizer: FeedbackStabilizer<typeof uiStateMap>;
 
 beforeEach(() => {
   // initial event has delay, prevent starting at 0
-  clock.reset();
-  clock.tick(1000);
+  vi.useFakeTimers();
+  vi.setSystemTime(0);
+  vi.advanceTimersByTime(1000);
   stabilizer = new FeedbackStabilizer(uiStateMap, "A");
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 const getStateWithClockTick = (
   key: strictKeyof<typeof uiStateMap>,
   timeSkip?: number | string,
 ) => {
-  clock.tick(timeSkip ?? DEFAULT_TICK);
+  vi.advanceTimersByTime(Number(timeSkip ?? DEFAULT_TICK));
   return stabilizer.getNewUiState(key);
 };
 
@@ -63,7 +64,7 @@ const feedEvents = (
   timeSkip?: number | string,
 ) => {
   if (keys.length === 0) {
-    clock.tick(timeSkip ?? DEFAULT_TICK);
+    vi.advanceTimersByTime(Number(timeSkip ?? DEFAULT_TICK));
   }
   for (const key of keys) {
     getStateWithClockTick(key, timeSkip);
@@ -71,9 +72,10 @@ const feedEvents = (
 };
 
 test("clock tick precisely increments performance.now", () => {
-  clock.reset();
+  vi.useFakeTimers();
+  vi.setSystemTime(0);
   const start = performance.now();
-  clock.tick(1000);
+  vi.advanceTimersByTime(1000);
   const end = performance.now();
   expect(end - start).toEqual(1000);
 });
@@ -82,7 +84,7 @@ test("EventQueue is filled correctly", () => {
   feedEvents(["B", "C", "C", "C", "B"]);
 
   const eventQueue = stabilizer.getEventQueue();
-  expect(eventQueue).toHaveLength(6);
+  expect(eventQueue).toHaveLength(5);
 });
 
 test("feedEvents can be broken up", () => {
@@ -90,7 +92,7 @@ test("feedEvents can be broken up", () => {
   feedEvents(["C", "B"]);
 
   const eventQueue = stabilizer.getEventQueue();
-  expect(eventQueue).toHaveLength(6);
+  expect(eventQueue).toHaveLength(5);
 });
 
 test("EventQueue discards events outside the time window", () => {
@@ -120,8 +122,7 @@ describe("Scoring", () => {
     feedEvents(["B", "C", "C", "C", "B"]);
 
     const scoreBoard = stabilizer.getScoreBoard();
-    expect(Object.keys(scoreBoard)).toEqual(["A", "B", "C"]);
-    expect(scoreBoard.A).toHaveLength(1);
+    expect(Object.keys(scoreBoard)).toEqual(["B", "C"]);
     expect(scoreBoard.B).toHaveLength(2);
     expect(scoreBoard.C).toHaveLength(3);
   });
@@ -130,7 +131,7 @@ describe("Scoring", () => {
     feedEvents(["B", "C", "C", "C", "B"]);
 
     const summedScores = stabilizer.getScores();
-    expect(Object.keys(summedScores)).toEqual(["A", "B", "C"]);
+    expect(Object.keys(summedScores)).toEqual(["B", "C"]);
   });
 
   test("highest value event is chosen correctly", () => {
@@ -145,7 +146,6 @@ describe("Minimum duration", () => {
     // A is the initial state
     feedEvents(["B", "C", "C", "C", "B"], 100); // shorten the time between events
     expect(stabilizer.getEventQueue().map((event) => event.key)).toEqual([
-      "A",
       "B",
       "C",
       "C",
@@ -153,7 +153,7 @@ describe("Minimum duration", () => {
       "B",
     ]); // nothing is discarded
     expect(stabilizer.currentState.key).toEqual("A");
-    clock.tick(1000);
+    vi.advanceTimersByTime(1000);
     expect(stabilizer.canShowNewUiState()).toBe(true);
     stabilizer.getNewUiState("B");
     expect(stabilizer.canShowNewUiState()).toBe(false);
@@ -164,7 +164,7 @@ describe("Minimum duration", () => {
     feedEvents(["B", "C", "C", "C", "C", "C", "C", "C", "B"], 20);
     expect(stabilizer.currentState.key).toEqual("A");
     expect(stabilizer.canShowNewUiState()).toBe(false);
-    clock.tick(1000);
+    vi.advanceTimersByTime(1000);
     expect(stabilizer.canShowNewUiState()).toBe(true);
     stabilizer.getNewUiState("B");
     expect(stabilizer.canShowNewUiState()).toBe(false);
@@ -183,7 +183,7 @@ describe("Single-emitted events", () => {
   test("single emitted emits after time window", () => {
     feedEvents(["B", "C", "C", "C", "X", "C", "C", "C", "B"], 20);
     expect(stabilizer.currentState.key).toEqual("A");
-    clock.tick(1000);
+    vi.advanceTimersByTime(1000);
     stabilizer.getNewUiState("B");
     expect(stabilizer.currentState.key).toEqual("X");
   });

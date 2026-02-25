@@ -8,5 +8,5 @@
 
 > **BlinkCardSessionSettingsInput** = `OverrideProperties`\<`Partial`\<[`BlinkCardSessionSettings`](BlinkCardSessionSettings.md)\>, \{ `scanningSettings?`: [`PartialScanningSettingsInput`](PartialScanningSettingsInput.md); \}\>
 
-Partial session settings accepted by the Wasm module.
-All fields are optional; the C++ layer merges with defaults.
+Partial session settings accepted by the Wasm module. All fields are
+optional; the C++ layer merges with defaults.

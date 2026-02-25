@@ -32,6 +32,7 @@ export default defineConfig((config) => ({
     },
   },
   test: {
+    silent: true,
     browser: {
       enabled: true,
       provider: "playwright",

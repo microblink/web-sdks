@@ -2,11 +2,11 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
 import type {
   BlinkCardWorkerInitSettings,
   ProgressStatusCallback,
 } from "@microblink/blinkcard-worker";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { BlinkCardInitSettings } from "./loadBlinkCardCore";
 
 const { createProxyWorkerMock, getUserIdMock, proxyMock, remoteWorker } =

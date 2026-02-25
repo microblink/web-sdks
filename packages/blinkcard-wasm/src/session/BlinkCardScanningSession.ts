@@ -11,7 +11,7 @@ import { BlinkCardSessionSettings } from "./session-settings";
 export type BlinkCardScanningSession = EmbindObject<{
   /**
    * Resets the `BlinkCardScanningSession` to initial state.
-   * 
+   *
    * @throws {Error} Throws an error if the card has already been scanned.
    */
   reset: () => void;
@@ -19,7 +19,7 @@ export type BlinkCardScanningSession = EmbindObject<{
   /**
    * Performs the processing of the input image and returns the
    * `BlinkCardProcessResult`.
-   * 
+   *
    * @throws {Error} Throws an error if the card has already been scanned.
    */
   process: (image: ImageData) => BlinkCardProcessResult;

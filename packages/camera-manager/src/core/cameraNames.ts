@@ -5,7 +5,7 @@
 /**
  * Generic keywords for back camera.
  */
-export const backCameraKeywords = [
+const backCameraKeywords = [
   // English
   "back",
   "rear",
@@ -81,7 +81,7 @@ export const backCameraKeywords = [
 /**
  * Generic keywords for front camera.
  */
-export const frontCameraKeywords = [
+const frontCameraKeywords = [
   // English
   "front",
   // German
@@ -153,7 +153,7 @@ export const frontCameraKeywords = [
 /**
  * Localizations for iOS back camera.
  */
-export const backCameraLocalizations = [
+const backCameraLocalizations = [
   "후면 카메라",
   "後置相機",
   "Задна камера",
@@ -204,7 +204,7 @@ export const backCameraLocalizations = [
 /**
  * Localizations for iOS back dual wide camera.
  */
-export const backDualWideCameraLocalizations = [
+const backDualWideCameraLocalizations = [
   "Cameră dublă cu obiectiv superangular spate",
   "מצלמה כפולה רחבה אחורית",
   "Артқы қос кең бұрышты камера",
@@ -251,7 +251,7 @@ export const backDualWideCameraLocalizations = [
  * @param keywords - The keywords to check.
  * @returns true if the string contains any of the keywords.
  */
-export const containsKeyword = (string: string, keywords: string[]) => {
+const containsKeyword = (string: string, keywords: string[]) => {
   return keywords.some((keyword) => string.toLowerCase().includes(keyword));
 };
 

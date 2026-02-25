@@ -2,15 +2,14 @@
   "name": "@microblink/repo-utils",
   "private": true,
   "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run --silent",
+    "test:watch": "vitest --silent"
   },
   "main": "utils.mts",
   "module": "utils.mts",
   "types": "utils.mts",
   "devDependencies": {
-    "@microblink/tsconfig": "workspace:*",
-    "@types/node": "^25.2.1",
+    "@types/node": "^25.2.3",
     "typescript": "5.8.3",
     "vitest": "^3.0.8",
     "zx": "^8.8.5"

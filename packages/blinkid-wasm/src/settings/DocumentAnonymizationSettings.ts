@@ -2,8 +2,8 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { DocumentFilter } from "./DocumentFilter";
 import { FieldType } from "../result";
+import { DocumentFilter } from "./DocumentFilter";
 
 /** Represents the document number anonymization settings. */
 export type DocumentNumberAnonymizationSettings = {

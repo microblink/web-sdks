@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkcard-wasm",
   "private": true,
-  "version": "3000.0.0",
+  "version": "3000.0.1",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",
@@ -30,10 +30,10 @@
     "@microblink/tsconfig": "workspace:*",
     "@microblink/wasm-common": "workspace:*",
     "dotenv-cli": "^8.0.0",
-    "prettier": "^3.6.2",
+    "prettier": "^3.8.1",
     "prettier-plugin-jsdoc": "^1.3.3",
     "rimraf": "^6.0.1",
-    "tsx": "^4.20.6",
+    "tsx": "^4.21.0",
     "type-fest": "^4.35.0",
     "typedoc": "^0.28.7",
     "typedoc-plugin-markdown": "^4.7.0",

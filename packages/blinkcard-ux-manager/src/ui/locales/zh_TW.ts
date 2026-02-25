@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "說明", tooltip: "需要協助嗎？" },
   help_modal: {
+    aria: "掃描支援",
     back_btn: "背面",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "卡號在哪裡？",
     },
     done_btn: "完成",
+    done_btn_aria: "繼續掃描",
     lighting: {
       details:
         "避免直接刺眼的光線，因為光線會反射卡片，並且使卡片的某些內容無法讀取。如果您無法讀取卡片的內容，則相機也無法看清。",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "掃描說明",
     btn: "開始掃描",
     details:
       "卡號通常為 16 位數字。應該在卡片上以凸起數字印刷或雕刻。確保卡片光線充足並且所有內容都很清楚。",
@@ -63,6 +66,7 @@ export default {
       "卡號通常為 16 位數字。應該在卡片上以凸起數字印刷或雕刻。確保相機鏡頭乾淨、光線充足，並讓卡片上的所有資訊清楚可見。",
     title: "先掃描卡號",
   },
+  sdk_aria: "卡片掃描畫面",
   timeout_modal: {
     cancel_btn: "取消",
     details: "無法讀取卡片，請再試一次。",

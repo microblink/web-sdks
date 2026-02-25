@@ -9,20 +9,19 @@
  * an intuitive card scanning experience.
  */
 
+export type * from "@microblink/feedback-stabilizer";
+export type * from "@microblink/ux-common/hapticFeedback";
 export * from "./core/blinkcard-ui-state";
+export type { BlinkCardProcessingError } from "./core/BlinkCardProcessingError";
+export type { BlinkCardUxManager } from "./core/BlinkCardUxManager";
 export * from "./core/createBlinkCardUxManager";
 export * from "./ui/createBlinkCardFeedbackUi";
 export type {
   LocaleRecord,
-  LocalizedValue,
   LocalizationStrings,
+  LocalizedValue,
   PartialLocalizationStrings,
 } from "./ui/LocalizationContext";
-
-export type * from "@microblink/ux-common/hapticFeedback";
-export type * from "@microblink/feedback-stabilizer";
-export type { BlinkCardProcessingError } from "./core/BlinkCardProcessingError";
-export type { BlinkCardUxManager } from "./core/BlinkCardUxManager";
 
 /**
  * The global interface.

@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Hjælp", tooltip: "Brug for hjælp?" },
   help_modal: {
+    aria: "Hjælp til scanning",
     back_btn: "Tilbage",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Hvor er kortnummeret?",
     },
     done_btn: "Færdig",
+    done_btn_aria: "Genoptag scanning",
     lighting: {
       details:
         "Undgå direkte skarpt lys, da det reflekteres fra kortet og kan gøre dele af kortet ulæselige. Hvis du ikke kan læse dataene på kortet, vil de heller ikke være synlige for kameraet.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instruktioner i scanning",
     btn: "Start scanning",
     details:
       "Kortnummeret er normalt et 16-cifret nummer. Det skal enten være trykt eller præget med hævede tal på tværs af kortet. Sørg for, at kortet er godt oplyst, og at alle detaljer er synlige.",
@@ -63,6 +66,7 @@ export default {
       "Kortnummeret er normalt et 16-cifret nummer. Det er enten trykt eller præget som tal på tværs af kortet. Sørg for, at din kameralinse er ren, at kortet er ordentligt oplyst, og at alle detaljerne er synlige.",
     title: "Scan først kortnummeret",
   },
+  sdk_aria: "Skærm til kortscanning",
   timeout_modal: {
     cancel_btn: "Annuller",
     details: "Kan ikke læse kortet. Prøv igen.",

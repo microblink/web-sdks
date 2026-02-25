@@ -2,11 +2,14 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import type { EmscriptenModule } from "@microblink/wasm-common";
-import type { LicenseUnlockResult, ServerPermissionSubmitError } from "@microblink/wasm-common";
+import type {
+  EmscriptenModule,
+  LicenseUnlockResult,
+  ServerPermissionSubmitError,
+} from "@microblink/wasm-common";
 import {
-  BlinkCardSessionSettingsInput,
   BlinkCardScanningSession,
+  BlinkCardSessionSettingsInput,
 } from "./session";
 
 /**
@@ -15,8 +18,7 @@ import {
  * @ignore
  */
 export interface BlinkCardWasmModule
-  extends BlinkCardBindings,
-    EmscriptenModule {}
+  extends BlinkCardBindings, EmscriptenModule {}
 
 /**
  * The BlinkCard bindings.

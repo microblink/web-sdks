@@ -6,14 +6,17 @@
 
 # Function: getUiStateKey()
 
-> **getUiStateKey**(`frameProcessResult`, `settings`): [`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
+> **getUiStateKey**(`frameProcessResult`, `settings`): `undefined` \| [`BlinkCardUiMappableKey`](../type-aliases/BlinkCardUiMappableKey.md)
 
 Determines the appropriate UI state key based on the current frame processing
 result and scanning settings.
 
 This function acts as a state machine, translating the low-level analysis and
-completeness results into a high-level UI state that drives the user
-interface.
+completeness results into a high-level UI state that drives the user interface.
+
+Returns `undefined` for unrecognized frames (e.g. stability checks) — the
+manager treats `undefined` as a no-op and does not ingest it into the
+feedback stabilizer.
 
 ## Parameters
 
@@ -28,11 +31,10 @@ processing, including image analysis and completeness.
 
 [`ScanningSettings`](../type-aliases/ScanningSettings.md)
 
-Optional scanning settings that may influence state
-selection.
+Scanning settings that may influence state selection.
 
 ## Returns
 
-[`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
+`undefined` \| [`BlinkCardUiMappableKey`](../type-aliases/BlinkCardUiMappableKey.md)
 
-The UI state key representing what should be shown to the user.
+The UI state key, or `undefined` if no state change is warranted.

@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Help", tooltip: "Hulp nodig?" },
   help_modal: {
+    aria: "Hulp bij scannen",
     back_btn: "Terug",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Waar staat het kaartnummer?",
     },
     done_btn: "Gereed",
+    done_btn_aria: "Verder met scannen",
     lighting: {
       details:
         "Vermijd direct fel licht, omdat dat vanaf de kaart weerspiegelt en delen van de kaart onleesbaar kan maken. Als u gegevens op de kaart niet kunt lezen, zijn ze voor de camera ook niet zichtbaar.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instructies voor scannen",
     btn: "Beginnen met scannen",
     details:
       "Het kaartnummer bestaat in de regel uit 16 cijfers. Het nummer is ofwel gedrukt of in reliëf in verhoogde cijfers op de kaart aangebracht. Zorg ervoor dat de kaart goed wordt verlicht en dat alle details zichtbaar zijn.",
@@ -63,6 +66,7 @@ export default {
       "Het kaartnummer bestaat in de regel uit 16 cijfers. Het nummer is ofwel gedrukt of in reliëf in verhoogde cijfers op de kaart aangebracht. Zorg ervoor dat de cameralens goed schoon is, de kaart goed wordt belicht en dat alle details zichtbaar zijn.",
     title: "Scan eerst het kaartnummer",
   },
+  sdk_aria: "Scherm voor kaarten scannen",
   timeout_modal: {
     cancel_btn: "Annuleren",
     details: "Kon de kaart niet lezen. Probeer het opnieuw.",

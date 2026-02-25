@@ -37,6 +37,7 @@ import {
  */
 export class CameraManager {
   #resumeRequest?: Exclude<PlaybackState, "idle">;
+  #resumeWhenVisible?: Exclude<PlaybackState, "idle">;
 
   /**
    * The desired video resolution for camera streams. This is used as the ideal resolution
@@ -54,6 +55,23 @@ export class CameraManager {
   #mirrorFrontCameras: boolean;
 
   #eventListenerCleanup?: () => void;
+
+  #isDocumentHidden() {
+    if (typeof document === "undefined") {
+      return false;
+    }
+
+    return document.visibilityState === "hidden";
+  }
+
+  #queueResumeWhenVisible(request: Exclude<PlaybackState, "idle">) {
+    // Preserve the strongest intent ("capturing" includes playback).
+    if (this.#resumeWhenVisible === "capturing") {
+      return;
+    }
+
+    this.#resumeWhenVisible = request;
+  }
 
   /**
    * If true, the user has initiated an abort. This will prevent the
@@ -280,7 +298,6 @@ export class CameraManager {
     // when the website is in the background
     let previousPlaybackState: PlaybackState = "idle";
 
-    // TODO: doesn't work if document is unfocused during stream starting
     const cleanupVisibilityListener = radEventListener(
       document,
       "visibilitychange",
@@ -293,9 +310,11 @@ export class CameraManager {
           return;
         }
 
-        // Visible again
-        // Resume stream when document becomes visible
-        switch (previousPlaybackState) {
+        // Visible again. Resume either previous state or hidden-time queued request.
+        const resumeTarget = this.#resumeWhenVisible ?? previousPlaybackState;
+        this.#resumeWhenVisible = undefined;
+
+        switch (resumeTarget) {
           case "playback":
             await this.startCameraStream();
             await this.startPlayback();
@@ -568,6 +587,12 @@ export class CameraManager {
    * @returns resolves when playback starts
    */
   async startPlayback() {
+    if (this.#isDocumentHidden()) {
+      this.#queueResumeWhenVisible("playback");
+      console.warn("Can't start playback while document is hidden");
+      return;
+    }
+
     const state = store.getState();
 
     // No-op if we're already playing.
@@ -620,6 +645,11 @@ export class CameraManager {
       return;
     }
 
+    if (this.#isDocumentHidden()) {
+      this.#queueResumeWhenVisible("capturing");
+      return;
+    }
+
     // No-op if we're already capturing frames
     if (
       state.playbackState === "capturing" &&
@@ -644,6 +674,11 @@ export class CameraManager {
     }
 
     await this.startPlayback();
+
+    // If playback did not start (e.g. document hidden), do not move to capture.
+    if (store.getState().playbackState !== "playback") {
+      return;
+    }
 
     store.setState({
       playbackState: "capturing",
@@ -682,6 +717,14 @@ export class CameraManager {
     preferredCamera,
     preferredFacing = "back",
   }: StartCameraStreamOptions = {}) {
+    if (this.#isDocumentHidden()) {
+      if (autoplay) {
+        this.#queueResumeWhenVisible("playback");
+      }
+      console.warn("Can't start stream while document is hidden");
+      return;
+    }
+
     const videoElement = store.getState().videoElement;
 
     if (!videoElement) {
@@ -766,6 +809,12 @@ export class CameraManager {
       throw new Error("No selected camera");
     }
 
+    // Prevent starting a stream if app moved to background mid-start.
+    if (this.#isDocumentHidden()) {
+      console.warn("Can't start stream while document is hidden");
+      return;
+    }
+
     const stream = await selectedCamera.startStream(this.#resolution);
 
     if (!videoElement.isConnected) {
@@ -830,6 +879,9 @@ export class CameraManager {
    * Pauses capturing frames, without stopping playback.
    */
   stopFrameCapture() {
+    // Cancel any pending video frame callback to prevent race conditions
+    this.#cancelVideoFrameCallback();
+
     store.setState({
       playbackState: "playback",
     });
@@ -855,21 +907,16 @@ export class CameraManager {
    */
   pausePlayback() {
     console.debug("pausePlayback called");
-    const video = store.getState().videoElement;
+
+    const state = store.getState();
+
+    this.#cancelVideoFrameCallback();
 
     store.setState({
       playbackState: "idle",
     });
 
-    if (!video) {
-      return;
-    }
-
-    if (this.#videoFrameRequestId) {
-      video.cancelVideoFrameCallback(this.#videoFrameRequestId);
-    }
-
-    video.pause();
+    state.videoElement?.pause();
   }
 
   /**
@@ -959,9 +1006,7 @@ export class CameraManager {
     }
 
     // clean up previous frame callback if it exists
-    if (this.#videoFrameRequestId) {
-      state.videoElement.cancelVideoFrameCallback(this.#videoFrameRequestId);
-    }
+    this.#cancelVideoFrameCallback();
 
     this.#videoFrameRequestId = state.videoElement.requestVideoFrameCallback(
       () => void this.#loop(),
@@ -988,6 +1033,21 @@ export class CameraManager {
       this.setCameraMirrorX(true);
     } else {
       this.setCameraMirrorX(false);
+    }
+  }
+
+  /**
+   * Cancels any pending video frame callback and optionally clears the request ID.
+   *
+   * @param clearRequestId - Whether to clear the request ID after canceling
+   */
+  #cancelVideoFrameCallback() {
+    const state = store.getState();
+
+    if (this.#videoFrameRequestId && state.videoElement) {
+      state.videoElement.cancelVideoFrameCallback(this.#videoFrameRequestId);
+
+      this.#videoFrameRequestId = undefined;
     }
   }
 

@@ -88,4 +88,8 @@ export type DocumentType =
   | "emergency-passport"
   | "temporary-passport"
   | "metis-federation-card"
-  | "adr-certificate";
+  | "adr-certificate"
+  | "nin-card"
+  | "mysss-card"
+  | "gendarmerie-id"
+  | "police-id";

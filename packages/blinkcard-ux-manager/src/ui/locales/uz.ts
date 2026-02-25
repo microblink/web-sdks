@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Yordam", tooltip: "Yordam kerakmi?" },
   help_modal: {
+    aria: "Skanerlashda yordam",
     back_btn: "Ortga",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Karta raqami qayerda?",
     },
     done_btn: "Tayyor",
+    done_btn_aria: "Skanerlashni davom etish",
     lighting: {
       details:
         "Yorqin yorugʻlik bevosita tushmasin, chunki u kartada aks etadi va kartaning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Karta maʼlumotlarini oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Skanerlash yo‘riqnomasi",
     btn: "Skanerlashni boshlash",
     details:
       "Karta raqami odatda 16 ta raqamdan iborat. U kartada bosma yoki boʻrtma shaklda tushirilgan boʻlishi kerak. Skanerlaganda yorugʻlik yetarlicha boʻlsin va barcha tafsilotlari koʻrinsin.",
@@ -63,6 +66,7 @@ export default {
       "Karta raqami odatda 16 ta raqamdan iborat. U kartada bosma yoki boʻrtma shaklda tushirilgan boʻlishi kerak. Kamerangiz obyektivi toza, karta yetarlicha yoritilgan boʻlsin va barcha tafsilotlari koʻrinsin.",
     title: "Avval karta raqamini skanerlang",
   },
+  sdk_aria: "Karta skanerlash ekrani",
   timeout_modal: {
     cancel_btn: "Bekor qilish",
     details: "Kartani oʻqish imkonsiz. Qayta urining.",

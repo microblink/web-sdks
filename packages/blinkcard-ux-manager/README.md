@@ -36,14 +36,14 @@ The UX Manager includes a comprehensive haptic feedback system that provides tac
 
 ### Haptic Feedback Types
 
-| Event              | Duration | Type  | Description                                |
-| ------------------ | -------- | ----- | ------------------------------------------ |
+| Event              | Duration | Type  | Description                               |
+| ------------------ | -------- | ----- | ----------------------------------------- |
 | First Side Success | 100ms    | Short | When the card is first captured           |
-| Final Success      | 300ms    | Long  | When card scanning is completed            |
-| Error States       | 100ms    | Short | Quality issues (blur, glare, positioning)     |
-| Error Dialogs      | 300ms    | Long  | Timeout or critical errors                    |
-| Flashlight Toggle  | 100ms    | Short | When camera flashlight is activated           |
-| Warning States     | 100ms    | Short | During sensing phases (with 1s cooldown)      |
+| Final Success      | 300ms    | Long  | When card scanning is completed           |
+| Error States       | 100ms    | Short | Quality issues (blur, glare, positioning) |
+| Error Dialogs      | 300ms    | Long  | Timeout or critical errors                |
+| Flashlight Toggle  | 100ms    | Short | When camera flashlight is activated       |
+| Warning States     | 100ms    | Short | During sensing phases (with 1s cooldown)  |
 
 ### Haptic Feedback Usage
 
@@ -54,7 +54,10 @@ import {
 } from "@microblink/blinkcard-ux-manager";
 
 // Create UX Manager (haptic feedback enabled by default)
-const uxManager = await createBlinkCardUxManager(cameraManager, scanningSession);
+const uxManager = await createBlinkCardUxManager(
+  cameraManager,
+  scanningSession,
+);
 
 // Check if haptic feedback is supported
 if (uxManager.isHapticFeedbackSupported()) {

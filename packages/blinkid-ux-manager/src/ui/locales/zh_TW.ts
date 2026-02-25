@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "無法辨識文件",
   document_not_recognized_details: "掃描受支援文件的正面。",
   document_scanned: "成功！文件已掃描",
-  document_too_close_to_edge: "將文件從邊緣移開",
+  document_too_close_to_edge: "再離遠一點",
   face_photo_not_fully_visible: "請保持臉部照片能夠完整顯示",
   flip_document: "翻轉文件",
   flip_to_back_side: "將文件翻面",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "傾斜或移動文件以移除反光",
   help_aria_label: "說明",
   help_modal_back_btn: "背面",
+  help_modal_blur_details_desktop:
+    "掃描時盡量保持裝置及文件穩定。任何移動可能會使圖像模糊，導致無法辨識文件資料。",
+  help_modal_camera_lens_details:
+    "檢查相機鏡頭是否有髒污或灰塵。鏡頭若不乾淨，會導致照片模糊，使文件資訊無法辨識，進而導致掃描失敗。",
+  help_modal_camera_lens_title: "清潔相機鏡頭",
   help_modal_details_1:
     "確保您的手指沒有蓋到文件的某些內容，包括底線。此外，請注意文件欄位的全息圖反射。",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "注意刺眼的光線",
   help_modal_title_3: "掃描時保持靜止",
   help_tooltip: "需要協助嗎？",
+  keep_document_parallel: "請保持文件與螢幕平行",
+  keep_document_still: "保持文件與裝置靜止不動",
   move_closer: "再靠近一點",
   move_farther: "再離遠一點",
   move_left: "移動到左方的頁面",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "開始掃描",
   onboarding_modal_details:
     "確保文件光線充足。所有文件欄位在相機螢幕都應清楚可見。",
+  onboarding_modal_details_desktop:
+    "確保相機鏡頭清晰乾淨，且文件光線充足。所有文件欄位在相機螢幕都應清楚可見。",
   onboarding_modal_title: "保持所有細節清楚可見",
+  onboarding_modal_title_desktop: "準備好開始掃描",
+  resume_scanning: "繼續掃描",
   scan_data_page: "掃描文件的資料頁",
   scan_last_page_barcode: "掃描最後一頁的條碼",
   scan_left_page: "掃描左頁",
@@ -55,6 +66,9 @@ export default {
   scan_top_page: "掃描上方頁面",
   scan_unsuccessful: "掃描成功",
   scan_unsuccessful_details: "無法讀取文件,請再試一次。",
+  scanning_help: "掃描支援",
+  scanning_instructions: "掃描說明",
+  scanning_screen: "文件掃描畫面",
   too_bright: "移到照明較暗的點",
   too_dark: "移到更亮的點",
   wrong_left: "移動到左頁",

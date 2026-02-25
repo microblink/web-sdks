@@ -35,7 +35,7 @@ export default defineConfig((config) => ({
     },
   ],
   test: {
-    environment: "jsdom",
+    environment: "happy-dom",
     setupFiles: [path.resolve(__dirname, "vitest.setup.ts")],
   },
 }));

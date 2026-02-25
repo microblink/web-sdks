@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Numérisez le recto d'un document pris en charge.",
   document_scanned: "Succès ! Document numérisé",
-  document_too_close_to_edge: "Déplacez le document depuis le bord",
+  document_too_close_to_edge: "Éloignez-vous",
   face_photo_not_fully_visible:
     "Veuillez vous assurer que la photo du visage est entièrement visible.",
   flip_document: "Veuillez retourner le document.",
@@ -26,6 +26,11 @@ export default {
     "Veuillez incliner ou déplacer le document pour éliminer les reflets.",
   help_aria_label: "Aide",
   help_modal_back_btn: "Retour",
+  help_modal_blur_details_desktop:
+    "Essayez de maintenir l'appareil et le document immobiles pendant la numérisation. Tout mouvement peut rendre l'image floue et les données du document illisibles.",
+  help_modal_camera_lens_details:
+    "Vérifiez que l'objectif de votre appareil photo ne présente pas de trace ou de poussière. Un objectif sale rend l'image finale floue, les détails du document illisibles et empêche la bonne numérisation des données.",
+  help_modal_camera_lens_title: "Nettoyez l'objectif de votre appareil photo",
   help_modal_details_1:
     "Assurez-vous de ne pas couvrir certaines parties du document avec votre doigt, y compris les lignes du bas. Faites également attention aux reflets holographiques qui apparaissent sur les champs du document.",
   help_modal_details_2:
@@ -38,6 +43,9 @@ export default {
   help_modal_title_2: "Faites attention à la lumière vive",
   help_modal_title_3: "Restez immobile pendant le scan.",
   help_tooltip: "Besoin d'aide?",
+  keep_document_parallel: "Maintenez le document parallèle à l'écran",
+  keep_document_still:
+    "Veuillez maintenir le document et l'appareil immobiles.",
   move_closer: "Rapprochez-vous",
   move_farther: "Éloignez-vous",
   move_left: "Veuillez passer à la page de gauche.",
@@ -47,7 +55,11 @@ export default {
   onboarding_modal_btn: "Commencer le balayage",
   onboarding_modal_details:
     "Assurez-vous que le document est bien éclairé. Tous les champs du document doivent être visibles sur l'écran de l'appareil photo.",
+  onboarding_modal_details_desktop:
+    "Assurez-vous que l'objectif de votre caméra est propre et que le document est bien éclairé. Tous les champs du document doivent être visibles sur l'écran de l'appareil photo.",
   onboarding_modal_title: "Veillez à ce que tous les détails soient visibles.",
+  onboarding_modal_title_desktop: "Préparez-vous à la numérisation",
+  resume_scanning: "Reprendre la numérisation",
   scan_data_page: "Numérisez la page de données du document",
   scan_last_page_barcode: "Scanner le code-barres de la dernière page.",
   scan_left_page: "Veuillez numériser la page de gauche.",
@@ -59,6 +71,9 @@ export default {
   scan_unsuccessful: "Échec de la numérisation",
   scan_unsuccessful_details:
     "Impossible de lire le document. Veuillez réessayer.",
+  scanning_help: "Aide à la numérisation",
+  scanning_instructions: "Instructions de numérisation",
+  scanning_screen: "Écran de numérisation du document",
   too_bright: "Veuillez vous déplacer vers un endroit moins éclairé.",
   too_dark: "Veuillez vous déplacer vers un endroit plus éclairé.",
   wrong_left: "Veuillez passer à la page de gauche.",

@@ -12,7 +12,7 @@ import {
   RemoteScanningSession,
 } from "@microblink/blinkid-core";
 import {
-  BlinkIdUxManager,
+  createBlinkIdUxManager,
   createBlinkIdFeedbackUi,
 } from "@microblink/blinkid-ux-manager";
 import {
@@ -128,7 +128,10 @@ export const App: Component = () => {
           });
 
           // we create the UX manager
-          const blinkIdUxManager = new BlinkIdUxManager(cameraManager, core);
+          const blinkIdUxManager = await createBlinkIdUxManager(
+            cameraManager,
+            core,
+          );
           blinkIdUxManager.setTimeoutDuration(8000);
 
           blinkIdUxManager.addOnResultCallback((result) => {

@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Skani upande wa mbele wa hati inayokubalika.",
   document_scanned: "Imemaliza! Hati imeskaniwa",
-  document_too_close_to_edge: "Sogeza hati kutoka kwenye ukingo",
+  document_too_close_to_edge: "Songa mbali",
   face_photo_not_fully_visible: "Hakikisha picha ya uso inaonekana kabisa",
   flip_document: "Geuza hati",
   flip_to_back_side: "Geuza upande wa nyuma",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "Inamisha au sogeza hati ili uondoe mwanga unaoakisiwa",
   help_aria_label: "Usaidizi",
   help_modal_back_btn: "Nyuma",
+  help_modal_blur_details_desktop:
+    "Jaribu kuhakikisha hati na kifaa havisongi unaposkani. Ukisogeza chochote picha inaweza kukosa kuonekana vizuri na kufanya data kwenye hati isiweze kusomeka.",
+  help_modal_camera_lens_details:
+    "Angalia lenzi ya kamera yako kama ina uchafu au madoa. Lenzi chafu hufanya picha ya mwisho isionekane vizuri, na kufanya maelezo ya hati yasiweze kusomeka na kuzuia data kuskanikiwa vizuri.",
+  help_modal_camera_lens_title: "Safisha lenzi ya kamera yako",
   help_modal_details_1:
     "Hakikisha hujafunika sehemu za hati kwa kidole, ikijumuisha laini za chini. Pia, kuwa mwangalifu na mwanga unaoakisiwa na hologramu unaopita juu ya sehemu za hati.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "Kuwa mwangalifu na mwanga mkali",
   help_modal_title_3: "Usisonge unaposkani",
   help_tooltip: "Unahitaji usaidizi?",
+  keep_document_parallel: "Hakikisha hati iko sambamba na skrini",
+  keep_document_still: "Hakikisha hati na kifaa havisongi",
   move_closer: "Songa karibu",
   move_farther: "Songa mbali",
   move_left: "Nenda kwenye ukurasa wa kushoto",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "Anza kuskani",
   onboarding_modal_details:
     "Hakikisha hati iko kwenye mwanga wa kutosha. Sehemu zote za hati zinapaswa kuonekana kwenye skrini ya kamera.",
+  onboarding_modal_details_desktop:
+    "Hakikisha lenzi ya kamera yako ni safi na hati iko kwenye mwanga wa kutosha. Sehemu zote za hati zinapaswa kuonekana kwenye skrini ya kamera.",
   onboarding_modal_title: "Hakikisha kila kitu kinaonekana",
+  onboarding_modal_title_desktop: "Kuwa tayari kuskani",
+  resume_scanning: "Endelea kuskani",
   scan_data_page: "Skani ukurasa wa data wa hati",
   scan_last_page_barcode: "Changanua msimbopau kwenye ukurasa wa mwisho",
   scan_left_page: "Skani ukurasa wa kushoto",
@@ -56,6 +67,9 @@ export default {
   scan_top_page: "Skani ukurasa wa juu",
   scan_unsuccessful: "Imeshindwa kuskani",
   scan_unsuccessful_details: "Imeshindwa kusoma hati. Tafadhali jaribu tena.",
+  scanning_help: "Usaidizi wa kuskani",
+  scanning_instructions: "Maagizo ya kuskani",
+  scanning_screen: "Skrini ya kuskani hati",
   too_bright: "Songa mahali penye mwanga kidogo",
   too_dark: "Songa mahali penye mwanga mwingi",
   wrong_left: "Nenda kwenye ukurasa wa kushoto",

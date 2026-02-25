@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Pomoč", tooltip: "Potrebujete pomoč?" },
   help_modal: {
+    aria: "Pomoč pri optičnem branju",
     back_btn: "Nazaj",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Kje je številka kartice?",
     },
     done_btn: "Končano",
+    done_btn_aria: "Nadaljuj optično branje",
     lighting: {
       details:
         "Izogibajte se neposredni močni svetlobi, ker se ta odbija od kartice in lahko povzroči, da delov kartice ni mogoče prebrati. Če podatkov na kartici ne morete prebrati, jih tudi fotoaparat ne bo videl.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Navodila za optično branje",
     btn: "Začetek skeniranja",
     details:
       "Številka kartice je običajno 16-mestna. Natisnjena ali vtisnjena mora biti z dvignjenimi številkami po celotni kartici. Prepričajte se, da je kartica dobro osvetljena in da so vidne vse podrobnosti.",
@@ -63,6 +66,7 @@ export default {
       "Številka kartice je običajno 16-mestna. Morala bi biti natisnjena ali vtisnjena z izbočenimi številkami po celotni kartici. Prepričajte se, da je objektiv kamere čist, kartica dobro osvetljena in da so vidne vse podrobnosti.",
     title: "Najprej skenirajte številko kartice",
   },
+  sdk_aria: "Zaslon za optično branje kartic",
   timeout_modal: {
     cancel_btn: "Prekliči",
     details: "Kartice ni bilo mogoče prebrati. Poskusite znova.",

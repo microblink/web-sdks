@@ -892,14 +892,13 @@ export type BarcodeElementKey =
    */
   | "security-version"
   /**
-   * SubField Designator extracted from barcode, to support proper document classification based on the standard.
-   *      subfield designator is a 2-character code that specifies the type of document, typically DL or ID. It is located
-   *      immediately after the IIN and the variable metadata structure in the PDF417 barcode data structure.
-   *      for example: ANSI 636010090002DL00410267ZF03080067DLDAQS1234567812300000000000000
-   *                                    ^^
-   *                        |           |
-   *                        |           +-- SubField Designator (DL, ID, EN, etc.)
-   *                        +----- IIN (636010)
+   * SubField Designator extracted from barcode, to support proper document
+   * classification based on the standard. subfield designator is a 2-character
+   * code that specifies the type of document, typically DL or ID. It is located
+   * immediately after the IIN and the variable metadata structure in the PDF417
+   * barcode data structure. for example: ANSI
+   * 636010090002DL00410267ZF03080067DLDAQS1234567812300000000000000 ^^ | | |
+   * +-- SubField Designator (DL, ID, EN, etc.) +----- IIN (636010)
    *
    *       Mandatory on all AAMVA barcodes.
    */

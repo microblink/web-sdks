@@ -3,7 +3,7 @@
  */
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { Component, JSX, ParentComponent, Show } from "solid-js";
+import { Component, JSX, ParentComponent, Show, splitProps } from "solid-js";
 import CloseIcon from "~icons/material-symbols/close";
 import FlashOff from "~icons/material-symbols/flash-off";
 import FlashOn from "~icons/material-symbols/flash-on";
@@ -71,9 +71,10 @@ export const Header: Component = () => {
                 part="mirror-camera-button-part"
                 tooltipLabel={t.mirror_camera}
                 onClick={() => toggleMirrorX()}
+                aria-pressed={isMirrored() ? "true" : "false"}
               >
-                <span class="sr-only">{t.mirror_camera}</span>
                 <MirrorIcon
+                  aria-hidden="true"
                   class={`size-6 shrink-0 transition-transform duration-300
                   ease-in-out`}
                   style={{
@@ -89,13 +90,13 @@ export const Header: Component = () => {
                 part="torch-button-part"
                 onClick={() => toggleTorch()}
                 tooltipLabel={t.torch}
+                aria-pressed={torchEnabled() ? "true" : "false"}
               >
                 <Show when={!torchEnabled()}>
-                  <span class="sr-only">{t.torch}</span>
-                  <FlashOn class="size-6 shrink-0" />
+                  <FlashOn aria-hidden="true" class="size-6 shrink-0" />
                 </Show>
                 <Show when={torchEnabled()}>
-                  <FlashOff class="size-6 shrink-0" />
+                  <FlashOff aria-hidden="true" class="size-6 shrink-0" />
                 </Show>
               </ToolbarButton>
             </Show>
@@ -113,12 +114,12 @@ export const Header: Component = () => {
             <div class="justify-self-end">
               {/* close button */}
               <ToolbarButton
+                // {...closeTriggerProps()}
                 part="close-button-part"
                 onClick={() => dismountCameraUi()}
                 tooltipLabel={t.close}
               >
-                <span class="sr-only">{t.close}</span>
-                <CloseIcon class="size-6 shrink-0" />
+                <CloseIcon class="size-6 shrink-0" aria-hidden="true" />
               </ToolbarButton>
             </div>
           </Show>
@@ -139,20 +140,28 @@ type ToolbarButtonProps = {
  * The toolbar button component.
  */
 const ToolbarButton: ParentComponent<ToolbarButtonProps> = (props) => {
+  const [local, buttonProps] = splitProps(props, ["tooltipLabel", "children"]);
+
   return (
     <Tooltip.Root>
       {/* Button */}
       <Tooltip.Trigger
-        {...props}
         asChild={(tooltipProps) => {
+          // Remove aria-describedby to prevent tooltip from being announced
+          const [, cleanProps] = splitProps(tooltipProps(), [
+            "aria-describedby",
+          ]);
           return (
             <button
-              {...eventFixer(tooltipProps())}
+              aria-label={local.tooltipLabel}
+              {...buttonProps}
+              {...eventFixer(cleanProps)}
+              // TODO: add visual distinction for a aria-pressed state
               class={`btn-focus rounded-full bg-gray-550/70 backdrop-blur grid
               place-items-center size-12 appearance-none border-none
               cursor-pointer`}
             >
-              {props.children}
+              {local.children}
             </button>
           );
         }}
@@ -162,8 +171,9 @@ const ToolbarButton: ParentComponent<ToolbarButtonProps> = (props) => {
         <Tooltip.Content
           class={`bg-gray-550/70 backdrop-blur color-white text-align-center p-2
             rounded-md text-sm drop-shadow-md`}
+          aria-hidden="true"
         >
-          {props.tooltipLabel}
+          {local.tooltipLabel}
         </Tooltip.Content>
       </Tooltip.Positioner>
     </Tooltip.Root>

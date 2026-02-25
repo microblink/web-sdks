@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Scan the front side of a supported document.",
   document_scanned: "Success! Document scanned",
-  document_too_close_to_edge: "Move the document from the edge",
+  document_too_close_to_edge: "Move farther",
   face_photo_not_fully_visible: "Keep face photo fully visible",
   flip_document: "Flip the document",
   flip_to_back_side: "Flip to the back side",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "Tilt or move document to remove reflection",
   help_aria_label: "Help",
   help_modal_back_btn: "Back",
+  help_modal_blur_details_desktop:
+    "Try to keep the device and document still while scanning. Moving either can blur the image and make data on the document unreadable.",
+  help_modal_camera_lens_details:
+    "Check your camera lens for smudges or dust. A dirty lens causes the final image to blur, making the document details unreadable and preventing successful scan of the data.",
+  help_modal_camera_lens_title: "Clean your camera lens",
   help_modal_details_1:
     "Make sure you aren’t covering parts of the document with a finger, including the bottom lines. Also, watch out for hologram reflections that go over the document fields.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "Watch out for harsh light",
   help_modal_title_3: "Keep still while scanning",
   help_tooltip: "Need help?",
+  keep_document_parallel: "Keep document parallel with screen",
+  keep_document_still: "Keep document and device still",
   move_closer: "Move closer",
   move_farther: "Move farther",
   move_left: "Move to the page on the left",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "Start scanning",
   onboarding_modal_details:
     "Make sure you keep the document well lit. All document fields should be visible on the camera screen.",
+  onboarding_modal_details_desktop:
+    "Make sure you keep your camera lens clean and the document well lit. All document fields should be visible on the camera screen.",
   onboarding_modal_title: "Keep all the details visible",
+  onboarding_modal_title_desktop: "Get ready to scan",
+  resume_scanning: "Resume scanning",
   scan_data_page: "Scan the data page of the document",
   scan_last_page_barcode: "Scan barcode from the last page",
   scan_left_page: "Scan the left page",
@@ -56,6 +67,9 @@ export default {
   scan_top_page: "Scan the top page",
   scan_unsuccessful: "Scan unsuccessful",
   scan_unsuccessful_details: "Unable to read the document. Please try again.",
+  scanning_help: "Scanning help",
+  scanning_instructions: "Scanning Instructions",
+  scanning_screen: "Document scanning screen",
   too_bright: "Move to spot with less lighting",
   too_dark: "Move to brighter spot",
   wrong_left: "Move to the left page",

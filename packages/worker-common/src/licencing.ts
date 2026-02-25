@@ -2,10 +2,7 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import {
-  LicenseRequest,
-  LicenseUnlockResult,
-} from "@microblink/wasm-common";
+import { LicenseRequest, LicenseUnlockResult } from "@microblink/wasm-common";
 
 /**
  * Constructs the license request.

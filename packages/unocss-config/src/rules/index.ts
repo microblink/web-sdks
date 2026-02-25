@@ -3,3 +3,4 @@
  */
 
 export * from "./spacing.ts";
+export * from "./vertical.ts";

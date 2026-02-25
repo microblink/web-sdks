@@ -14,8 +14,10 @@ export const feedbackMessages: Partial<
     (isDesktop?: boolean) => keyof LocalizationStrings["feedback_messages"]
   >
 > = {
-  SENSING_FRONT: () => "scan_the_front_side",
-  SENSING_BACK: () => "scan_the_back_side",
+  INTRO_FRONT: () => "scan_the_front_side",
+  INTRO_BACK: () => "scan_the_back_side",
+  CARD_NOT_IN_FRAME_FRONT: () => "scan_the_front_side",
+  CARD_NOT_IN_FRAME_BACK: () => "scan_the_back_side",
   FLIP_CARD: () => "flip_to_back_side",
   WRONG_SIDE: () => "flip_card",
 

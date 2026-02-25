@@ -25,6 +25,7 @@ export default {
   },
   help_button: { aria_label: "Ayuda", tooltip: "¿Necesitas ayuda?" },
   help_modal: {
+    aria: "Ayuda para escanear",
     back_btn: "Anterior",
     blur: {
       details:
@@ -44,6 +45,7 @@ export default {
       title: "¿Dónde está el número de la tarjeta?",
     },
     done_btn: "Finalizar",
+    done_btn_aria: "Escaneo de currículums",
     lighting: {
       details:
         "Evite la luz directa intensa, ya que se refleja en la tarjeta y puede hacer que algunas partes de la misma resulten ilegibles. Si usted no puede leer los datos de la tarjeta, tampoco serán visibles para la cámara.",
@@ -57,6 +59,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instrucciones para escanear",
     btn: "Comience a escanear",
     details:
       "El número de la tarjeta suele ser un número de 16 dígitos. Debe estar impreso o grabado en relieve en la tarjeta. Asegúrese que la tarjeta esté bien iluminada y que todos los detalles sean visibles.",
@@ -64,6 +67,7 @@ export default {
       "El número de la tarjeta suele ser un número de 16 dígitos. Debe estar impreso o grabado en relieve en la tarjeta. Asegúrese que la lente de la cámara esté limpia, que la tarjeta esté bien iluminada y que todos los detalles sean visibles.",
     title: "Escanee primero el número de la tarjeta",
   },
+  sdk_aria: "Pantalla para escanear tarjetas",
   timeout_modal: {
     cancel_btn: "Cancelar",
     details: "No se puede leer la tarjeta. Inténtelo de nuevo.",

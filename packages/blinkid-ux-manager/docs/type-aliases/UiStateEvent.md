@@ -4,12 +4,20 @@
 
 [@microblink/blinkid-ux-manager](../README.md) / UiStateEvent
 
-# Type Alias: UiStateEvent
+# Type Alias: UiStateEvent\<K\>
 
-> **UiStateEvent** = `object`
+> **UiStateEvent**\<`K`\> = `object`
 
 Represents a UI state event in the stabilization queue.
 These events are processed to determine which UI state should be displayed.
+
+## Type Parameters
+
+### K
+
+`K` *extends* `string` = `string`
+
+The key type for this event, matching a UI state key
 
 ## Properties
 
@@ -23,7 +31,7 @@ Current weight of this event in the stabilization process
 
 ### key
 
-> **key**: `string`
+> **key**: `K`
 
 Identifier matching a UI state key
 

@@ -2,13 +2,13 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { Ping } from "@microblink/analytics/ping";
 import type {
   BlinkCardProcessResult,
   BlinkCardScanningSession,
   BlinkCardSessionSettings,
 } from "@microblink/blinkcard-wasm";
-import type { Ping } from "@microblink/analytics/ping";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("comlink", () => {
   const finalizer = Symbol("finalizer");

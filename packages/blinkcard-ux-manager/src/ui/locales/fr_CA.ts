@@ -25,6 +25,7 @@ export default {
   },
   help_button: { aria_label: "Aide", tooltip: "Besoin d'aide?" },
   help_modal: {
+    aria: "Aide à la numérisation",
     back_btn: "Retour",
     blur: {
       details:
@@ -44,6 +45,7 @@ export default {
       title: "Où se trouve le numéro de la carte?",
     },
     done_btn: "Terminé",
+    done_btn_aria: "Reprendre la numérisation",
     lighting: {
       details:
         "Évitez la lumière directe et intense, car elle se reflète sur la carte et peut rendre certaines parties illisibles. Si vous ne parvenez pas à lire les données sur la carte, elles ne seront pas non plus visibles pour la caméra.",
@@ -57,6 +59,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instructions de numérisation",
     btn: "Commencer le balayage",
     details:
       "Le numéro de la carte est généralement un numéro à 16 chiffres. Il doit être imprimé ou gravé en relief sur la carte. Assurez-vous que la carte est bien éclairée et que tous les détails sont visibles.",
@@ -64,6 +67,7 @@ export default {
       "Le numéro de carte comporte généralement 16 chiffres. Il doit être imprimé ou gravé en relief sur la carte. Assurez-vous que l'objectif de votre appareil photo est propre, que la carte est bien éclairée et que tous les détails sont visibles.",
     title: "Veuillez d'abord numériser le numéro de la carte",
   },
+  sdk_aria: "Écran de numérisation de la carte de crédit",
   timeout_modal: {
     cancel_btn: "Annuler",
     details: "Impossible de lire la carte. Veuillez réessayer.",

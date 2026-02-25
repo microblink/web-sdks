@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "Dokument ikke genkendt",
   document_not_recognized_details: "Scan forsiden af et understøttet dokument.",
   document_scanned: "Det lykkedes! Dokumentet er scannet.",
-  document_too_close_to_edge: "Flyt dokumentet væk fra kanten",
+  document_too_close_to_edge: "Flyt længere væk",
   face_photo_not_fully_visible: "Hold ansigtsfotoet helt synligt",
   flip_document: "Vend dokumentet",
   flip_to_back_side: "Vend på bagsiden",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "Vip eller flyt dokumentet for at fjerne reflektionen",
   help_aria_label: "Hjælp",
   help_modal_back_btn: "Tilbage",
+  help_modal_blur_details_desktop:
+    "Prøv at holde enheden og dokumentet stille, mens du scanner. Bevægelse kan enten sløre billedet eller gøre dataene på dokumentet ulæselige.",
+  help_modal_camera_lens_details:
+    "Tjek, om der er snavs eller støv på din kameralinse. En snavset linse gør billedet sløret, hvilket gør dokumentets oplysninger ulæselige og forhindrer scanning af dataene.",
+  help_modal_camera_lens_title: "Rens din kameralinse",
   help_modal_details_1:
     "Sørg for, at du ikke dækker nogen dele af dokumentet med en finger, herunder stregerne i bunden. Vær også opmærksom på hologramreflektioner, der går henover dokumentets felter.",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "Vær opmærksom på skarpt lys",
   help_modal_title_3: "Undgå bevægelse, mens du scanner",
   help_tooltip: "Brug for hjælp?",
+  keep_document_parallel: "Hold dokumentet parallelt med skærmen",
+  keep_document_still: "Hold dokumentet og enheden stille",
   move_closer: "Flyt tættere på",
   move_farther: "Flyt længere væk",
   move_left: "Flyt til den venstre side",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "Start scanning",
   onboarding_modal_details:
     "Sørg for, at dokumentet er godt oplyst. Alle dokumentets felter skal være synlige på kameraskærmen.",
+  onboarding_modal_details_desktop:
+    "Sørg for, at kameralinsen er ren, og dokumentet er belyst. Alle dokumentets felter skal være synlige på kameraskærmen.",
   onboarding_modal_title: "Hold alle oplysningerne synlige",
+  onboarding_modal_title_desktop: "Gør dig klar til at scanne",
+  resume_scanning: "Genoptag scanning",
   scan_data_page: "Scan dokumentets dataside",
   scan_last_page_barcode: "Scan stregkoden fra den sidste side",
   scan_left_page: "Scan den venstre side",
@@ -55,6 +66,9 @@ export default {
   scan_top_page: "Scan den øverste side",
   scan_unsuccessful: "Scanning mislykkedes",
   scan_unsuccessful_details: "Kunne ikke læse dokumentet. Prøv igen.",
+  scanning_help: "Hjælp til scanning",
+  scanning_instructions: "Instruktioner i scanning",
+  scanning_screen: "Skærm til dokumentscanning",
   too_bright: "Flyt til en sted med mindre lys",
   too_dark: "Flyt til et lysere sted",
   wrong_left: "Flyt til den venstre side",

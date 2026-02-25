@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "Documentul nu a fost recunoscut",
   document_not_recognized_details: "Scanați fața unui document suportat.",
   document_scanned: "Excelent! Documentul a fost scanat",
-  document_too_close_to_edge: "Îndepărtați documentul de margine",
+  document_too_close_to_edge: "Îndepărtați",
   face_photo_not_fully_visible: "Mențineți fotografia feței complet vizibilă",
   flip_document: "Întoarceți documentul",
   flip_to_back_side: "Întoarceți documentul",
@@ -24,6 +24,11 @@ export default {
     "Înclinați sau deplasați documentul pentru a elimina reflexiile",
   help_aria_label: "Ajutor",
   help_modal_back_btn: "Înapoi",
+  help_modal_blur_details_desktop:
+    "Încercați să mențineți dispozitivul și documentul nemișcate în timpul scanării. Deplasarea oricăruia poate face imaginea neclară și datele de pe document ilizibile.",
+  help_modal_camera_lens_details:
+    "Verificați ca lentila camerei să nu prezinte pete sau praf. Folosirea unei lentile murdare duce la o imagine finală neclară, făcând detaliile documentului ilizibile și împiedicând scanarea cu succes a datelor.",
+  help_modal_camera_lens_title: "Curățați lentila camerei",
   help_modal_details_1:
     "Asigurați-vă că nu ați acoperit cu degetul porțiuni din document, nici rândurile de jos. Evitați și reflexiile holografice care se suprapun pe secțiunile din document.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "Feriți-vă de lumina puternică",
   help_modal_title_3: "Nu vă mișcați în timpul scanării",
   help_tooltip: "Aveți nevoie de ajutor?",
+  keep_document_parallel: "Țineți documentul paralel cu ecranul",
+  keep_document_still: "Mențineți documentul și dispozitivul nemișcate",
   move_closer: "Apropiați",
   move_farther: "Îndepărtați",
   move_left: "Treceți la pagina din stânga",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "Porniți scanarea",
   onboarding_modal_details:
     "Asigurați-vă că documentul este bine iluminat. Toate secțiunile din document trebuie să fie vizibile pe ecranul camerei.",
+  onboarding_modal_details_desktop:
+    "Asigurați-vă că lentila camerei este curată, iar documentul este bine iluminat. Toate câmpurile din document trebuie să fie vizibile pe ecranul camerei.",
   onboarding_modal_title: "Asigurați vizibilitatea tuturor detaliilor",
+  onboarding_modal_title_desktop: "Pregătiți-vă să scanați",
+  resume_scanning: "Reluați scanarea",
   scan_data_page: "Scanați pagina de date a documentului",
   scan_last_page_barcode: "Scanează codul de bare de pe ultima pagină",
   scan_left_page: "Scanați pagina stângă",
@@ -56,6 +67,9 @@ export default {
   scan_top_page: "Scanați prima pagină",
   scan_unsuccessful: "Scanare nereușită",
   scan_unsuccessful_details: "Documentul nu poate fi citit. Încercați din nou.",
+  scanning_help: "Ajutor pentru scanare",
+  scanning_instructions: "Instrucțiuni de scanare",
+  scanning_screen: "Ecran scanare documente",
   too_bright: "Mutați-vă într-un loc mai puțin luminos",
   too_dark: "Mutați-vă într-un loc mai luminos",
   wrong_left: "Treceți la pagina stângă",

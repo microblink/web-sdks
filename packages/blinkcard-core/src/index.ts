@@ -12,28 +12,25 @@
 import type { WorkerScanningSession } from "@microblink/blinkcard-worker";
 import { Remote } from "comlink";
 
-export * from "./loadBlinkCardCore";
-export * from "./utils";
-
-export { getUserId } from "@microblink/core-common/getUserId";
-export { createCustomImageData } from "@microblink/core-common/createCustomImageData";
-export { createProxyWorker } from "@microblink/core-common/createProxyWorker";
-export { getCrossOriginWorkerURL } from "@microblink/core-common/getCrossOriginWorkerURL";
-export {
-  getDeviceInfo,
-  getUserAgentData,
-  createDerivedDeviceInfo,
-  type DeviceInfo,
-  type DerivedDeviceInfo,
-  type GpuInfo,
-  type BrowserStorageSupport,
-  type DeviceScreenInfo,
-  type FormFactor,
-  type UADataValues,
-} from "@microblink/core-common/deviceInfo/deviceInfo";
-
 export type * from "@microblink/blinkcard-wasm";
 export type * from "@microblink/blinkcard-worker";
+export { createProxyWorker } from "@microblink/core-common/createProxyWorker";
+export {
+  createDerivedDeviceInfo,
+  getDeviceInfo,
+  getUserAgentData,
+  type BrowserStorageSupport,
+  type DerivedDeviceInfo,
+  type DeviceInfo,
+  type DeviceScreenInfo,
+  type FormFactor,
+  type GpuInfo,
+  type UADataValues,
+} from "@microblink/core-common/deviceInfo/deviceInfo";
+export { getCrossOriginWorkerURL } from "@microblink/core-common/getCrossOriginWorkerURL";
+export { getUserId } from "@microblink/core-common/getUserId";
+export * from "./loadBlinkCardCore";
+export * from "./utils";
 
 /** Represents a remote scanning session. */
 export type RemoteScanningSession = Remote<WorkerScanningSession>;

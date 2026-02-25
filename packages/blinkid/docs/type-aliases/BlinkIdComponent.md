@@ -14,7 +14,7 @@ Represents the BlinkID component with all SDK instances and UI elements.
 
 ### addDocumentClassFilter
 
-> **addDocumentClassFilter**: `InstanceType`\<*typeof* [`BlinkIdUxManager`](../classes/BlinkIdUxManager.md)\>\[`"addDocumentClassFilter"`\]
+> **addDocumentClassFilter**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)\[`"addDocumentClassFilter"`\]
 
 Adds a document class filter function.
 
@@ -22,7 +22,7 @@ Adds a document class filter function.
 
 ### addOnDocumentFilteredCallback
 
-> **addOnDocumentFilteredCallback**: `InstanceType`\<*typeof* [`BlinkIdUxManager`](../classes/BlinkIdUxManager.md)\>\[`"addOnDocumentFilteredCallback"`\]
+> **addOnDocumentFilteredCallback**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)\[`"addOnDocumentFilteredCallback"`\]
 
 Adds a callback function to be called when a document is filtered.
 
@@ -30,7 +30,7 @@ Adds a callback function to be called when a document is filtered.
 
 ### addOnErrorCallback
 
-> **addOnErrorCallback**: `InstanceType`\<*typeof* [`BlinkIdUxManager`](../classes/BlinkIdUxManager.md)\>\[`"addOnErrorCallback"`\]
+> **addOnErrorCallback**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)\[`"addOnErrorCallback"`\]
 
 Adds a callback function to be called when an error occurs.
 
@@ -38,7 +38,7 @@ Adds a callback function to be called when an error occurs.
 
 ### addOnResultCallback
 
-> **addOnResultCallback**: `InstanceType`\<*typeof* [`BlinkIdUxManager`](../classes/BlinkIdUxManager.md)\>\[`"addOnResultCallback"`\]
+> **addOnResultCallback**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)\[`"addOnResultCallback"`\]
 
 Adds a callback function to be called when a result is obtained.
 
@@ -54,7 +54,7 @@ The BlinkID Core SDK instance.
 
 ### blinkIdUxManager
 
-> **blinkIdUxManager**: [`BlinkIdUxManager`](../classes/BlinkIdUxManager.md)
+> **blinkIdUxManager**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)
 
 The BlinkID UX Manager instance.
 

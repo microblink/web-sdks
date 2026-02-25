@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Ajuda", tooltip: "Precisa de ajuda?" },
   help_modal: {
+    aria: "Ajuda de digitalização",
     back_btn: "Anterior",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Onde está o número do cartão",
     },
     done_btn: "Concluído",
+    done_btn_aria: "Retomar digitalização",
     lighting: {
       details:
         "Evite luz direta intensa, pois reflete-se no cartão e pode deixar partes do mesmo ilegíveis. Se não consegue ler os dados no cartão, também não ficarão visíveis para a câmara.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instruções de digitalização",
     btn: "Começar a digitalizar",
     details:
       "O número do cartão geralmente é um número de 16 dígitos. Deverá estar impresso ou gravado com relevo no cartão. Garanta que o cartão fique bem iluminado e que todos os detalhes estejam visíveis.",
@@ -63,6 +66,7 @@ export default {
       "O número do cartão geralmente é um número de 16 dígitos. Deverá estar impresso ou gravado com relevo no cartão. Garanta que a lente da sua câmara esteja limpa, o cartão fique bem iluminado e que todos os detalhes estejam visíveis.",
     title: "Digitalize primeiro o número do cartão",
   },
+  sdk_aria: "Ecrã de digitalização de cartões",
   timeout_modal: {
     cancel_btn: "Cancelar",
     details: "Não foi possível ler o cartão. Tente novamente.",

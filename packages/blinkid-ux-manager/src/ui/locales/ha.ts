@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "A ɗauki hoton gaban takardar ƙarin bayanin.",
   document_scanned: "An yi nasara! An ɗauki hoton takarda",
-  document_too_close_to_edge: "A kawar da takardar daga dungun",
+  document_too_close_to_edge: "Matsa baya",
   face_photo_not_fully_visible:
     "A daidaita hoton fuska yadda za a riƙa kallon sa duka",
   flip_document: "Juya takardar",
@@ -26,6 +26,11 @@ export default {
     "A karkata ko a matsar da takarda domin a cire dau da hasken yake yi",
   help_aria_label: "Taimako",
   help_modal_back_btn: "Baya",
+  help_modal_blur_details_desktop:
+    "A daina motsa na'ura da takarda yayin ɗaukar hoto. Motsa ɗaya daga cikinsu zai sa hoton ya yi dishi-dishi sannan zai sa ba za a iya karanta bayanan da suke kan takardar ba.",
+  help_modal_camera_lens_details:
+    "A duba domin tabbatar da gilashin kamerarku bai yi dishi-dishi ba, kuma ba ya ɗauke da ƙura. Gilashin kamera mai datti yakan sa hoton ya yi bishi-bishi, wanda hakan zai sa ba za a iya karanta bayanan da suke kan takardar ba sannan zai hana a ɗauki hoton bayanna yadda ya kamata.",
+  help_modal_camera_lens_title: "Ku tsaftace gilashin kamerarku",
   help_modal_details_1:
     "A tabbatar da cewa ba a rufe wasu ɓangarorin takardar ba da yatsa, ciki har da layukan da suke ƙasan takardar. Bayan haka, a duba ko akwai layukan haske da suka hau kan ɓangarorin takardar.",
   help_modal_details_2:
@@ -38,6 +43,8 @@ export default {
   help_modal_title_2: "A duba haske mai ƙarfi",
   help_modal_title_3: "Kada a motsa yayin ɗaukar hoto",
   help_tooltip: "Ana buƙatar taimako?",
+  keep_document_parallel: "Sanya takarda a saitin sikirin ɗin",
+  keep_document_still: "A daina motsa takarda da na'ura",
   move_closer: "Matsa kusa",
   move_farther: "Matsa baya",
   move_left: "Koma zuwa shafin da yake ta hagu",
@@ -47,7 +54,11 @@ export default {
   onboarding_modal_btn: "Fara ɗaukar hoto",
   onboarding_modal_details:
     "A tabbatar da an haska ɗaukacin takardar. Ya kasance ana ganin dukkannin ɓangarorin takardar a cikin sikirin ɗin kamera.",
+  onboarding_modal_details_desktop:
+    "A tabbatar da cewa gilashin kamera ɗin ba shi da ƙura sannan an haska ɗaukacin takardar. Ya kasance ana ganin dukkannin ɓangarorin takardar a cikin sikirin ɗin kamera.",
   onboarding_modal_title: "A daidaita yadda za a riƙa ganin dukkannin bayanan",
+  onboarding_modal_title_desktop: "Shirya domin ɗaukar hoto",
+  resume_scanning: "Ci gaba da ɗaukar hoto",
   scan_data_page: "Ɗauki hoton shafin bayanan takardar",
   scan_last_page_barcode: "Sikanin lambar kaya daga shafin ƙarshe",
   scan_left_page: "Ɗauki hoton shafin hagu",
@@ -58,6 +69,9 @@ export default {
   scan_top_page: "Ɗauki hoton shafin sama",
   scan_unsuccessful: "An yi nasarar ɗaukar hoto",
   scan_unsuccessful_details: "An kasa karanta takardar. A sake gwadawa.",
+  scanning_help: "Taimako a fannin ɗaukar hoto",
+  scanning_instructions: "Ƙa'idojin Ɗaukar Hoto",
+  scanning_screen: "Sikirin na ɗaukar hoton takarda",
   too_bright: "Matsa zuwa wuri mai ƙarancin haske",
   too_dark: "Matsa zuwa wuri mai haske",
   wrong_left: "Koma zuwa shafin hagu",

@@ -3,24 +3,11 @@
  */
 
 import { Rerun } from "@solid-primitives/keyed";
-import {
-  Component,
-  createEffect,
-  createSignal,
-  Match,
-  onCleanup,
-  ParentComponent,
-  Show,
-  Switch,
-} from "solid-js";
+import { Component, Match, ParentComponent, Show, Switch } from "solid-js";
 import { Motion, Presence } from "solid-motionone";
 
 import { clsx } from "clsx";
-import {
-  BlinkIdUiState,
-  blinkIdUiStateMap,
-  firstSideCapturedUiStateKeys,
-} from "../core/blinkid-ui-state";
+import { BlinkIdUiState, blinkIdUiStateMap } from "../core/blinkid-ui-state";
 import { useLocalization } from "./LocalizationContext";
 import { feedbackMessages } from "./feedbackMessages";
 
@@ -43,33 +30,8 @@ import ScanIcon from "./assets/reticles/spin.svg?component-solid";
  */
 export const UiFeedbackOverlay: Component<{
   uiState: BlinkIdUiState;
+  isDesktop: boolean;
 }> = (props) => {
-  /**
-   * This is a hack since we don't have a discrete state for both a successful
-   * scan and a card flip.
-   */
-  const [showSuccessOnly, setShowSuccessOnly] = createSignal(false);
-  let timeout: number;
-
-  /**
-   * Handles showing the success feedback before other states defined in `firstSideCapturedStates`
-   */
-  createEffect(() => {
-    if (firstSideCapturedUiStateKeys.includes(props.uiState.key)) {
-      setShowSuccessOnly(true);
-
-      timeout = window.setTimeout(
-        () => setShowSuccessOnly(false),
-        blinkIdUiStateMap.DOCUMENT_CAPTURED.minDuration,
-      );
-    } else {
-      setShowSuccessOnly(false);
-      window.clearTimeout(timeout!);
-    }
-
-    onCleanup(() => clearTimeout(timeout!));
-  });
-
   const isPassportCaptureState = () => {
     return (
       props.uiState.key === "MOVE_TOP" ||
@@ -77,6 +39,10 @@ export const UiFeedbackOverlay: Component<{
       props.uiState.key === "MOVE_RIGHT"
     );
   };
+
+  const isSuccess = () =>
+    props.uiState.key === "DOCUMENT_CAPTURED" ||
+    props.uiState.key === "PAGE_CAPTURED";
 
   const getDirection = () => {
     switch (props.uiState.key) {
@@ -105,7 +71,10 @@ export const UiFeedbackOverlay: Component<{
           message positioning is consistent.
            */}
           <div class="size-24">
-            <div class="relative size-full grid place-items-center" aria-hidden>
+            <div
+              class="relative size-full grid place-items-center"
+              aria-hidden="true"
+            >
               {/* default spinners */}
               <Switch>
                 <Match when={props.uiState.reticleType === "searching"}>
@@ -119,25 +88,17 @@ export const UiFeedbackOverlay: Component<{
                 </Match>
 
                 {/* Success – reused between multiple states */}
-                <Match
-                  when={
-                    props.uiState.reticleType === "done" || showSuccessOnly()
-                  }
-                >
+                <Match when={isSuccess()}>
                   <SuccessFeedback />
                 </Match>
 
                 {/* flip card */}
-                <Match
-                  when={
-                    props.uiState.reticleType === "flip" && !showSuccessOnly()
-                  }
-                >
+                <Match when={props.uiState.reticleType === "flip"}>
                   <FlipCardFeedback />
                 </Match>
 
                 {/* move passport */}
-                <Match when={isPassportCaptureState() && !showSuccessOnly()}>
+                <Match when={isPassportCaptureState()}>
                   <PassportAnimation
                     direction={getDirection()}
                     duration={blinkIdUiStateMap[props.uiState.key].minDuration}
@@ -148,9 +109,10 @@ export const UiFeedbackOverlay: Component<{
           </div>
 
           {/* feedback message */}
-          <Show when={!showSuccessOnly()}>
-            <UiFeedbackMessage uiState={props.uiState} />
-          </Show>
+          <UiFeedbackMessage
+            uiState={props.uiState}
+            isDesktop={props.isDesktop}
+          />
         </div>
       </div>
     </>
@@ -399,20 +361,30 @@ const ScanningReticle: Component = () => (
  */
 const UiFeedbackMessage: Component<{
   uiState: BlinkIdUiState;
+  isDesktop: boolean;
 }> = (props) => {
   const { t } = useLocalization();
 
   const message = () => {
     const key = props.uiState.key;
     if (key in feedbackMessages) {
-      return feedbackMessages[key];
+      return feedbackMessages[key]?.(props.isDesktop);
     }
 
     return;
   };
 
+  const isSuccess = () =>
+    props.uiState.key === "DOCUMENT_CAPTURED" ||
+    props.uiState.key === "PAGE_CAPTURED";
+
   return (
-    <div class="absolute left-0 mt-3 w-full flex justify-center p-inline-4">
+    <div
+      class="absolute left-0 mt-3 w-full flex justify-center p-inline-4"
+      aria-live="polite"
+      // role="status"
+      aria-atomic="true"
+    >
       <Presence exitBeforeEnter>
         <Rerun on={() => props.uiState.key}>
           <Show when={message()}>
@@ -425,12 +397,15 @@ const UiFeedbackMessage: Component<{
               }}
               transition={{ duration: 0.05 }}
               exit={{ opacity: 0, transform: "translateY(-2rem)" }}
-              class="max-w-45 text-base gap-1 rounded-2 bg-gray-550/90 px-2 py-3
+              class={clsx(
+                `max-w-45 text-base gap-1 rounded-2 bg-gray-550/90 px-2 py-3
                 text-center text-balance text-white font-bold
                 text-shadow-[0_1px_4px_rgba(0,0,0,0.1)] backdrop-blur-xl
-                will-change-transform"
+                will-change-transform`,
+                isSuccess() && "sr-only",
+              )}
             >
-              <div role="alert">{t[message()!]}</div>
+              <div>{t[message()!]}</div>
             </Motion.div>
           </Show>
         </Rerun>

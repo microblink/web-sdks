@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Skenirajte prednju stranu podržanog dokumenta.",
   document_scanned: "Uspeh! Dokument skeniran",
-  document_too_close_to_edge: "Pomerite dokument sa ivice",
+  document_too_close_to_edge: "Udaljite",
   face_photo_not_fully_visible: "Neka slika lica bude u potpunosti vidljiva",
   flip_document: "Preokrenite dokument",
   flip_to_back_side: "Preokrenite dokument",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "Nagnite ili pomerite dokument kako biste uklonili odsjaj",
   help_aria_label: "Pomoć",
   help_modal_back_btn: "Nazad",
+  help_modal_blur_details_desktop:
+    "Pokušajte da uređaj  i dokument budu mirni tokom skeniranja. Pomeranje bilo koje od njih može zamutiti sliku i učiniti podatke na dokumentu nečitljivim.",
+  help_modal_camera_lens_details:
+    "Proverite da li na sočivu kamere ima mrlja ili prašine. Prljavo sočivo može zamutiti konačnu sliku, zbog čega detalji na dokumentu postaju nečitljivi i onemogućavaju uspešno skeniranje podataka.",
+  help_modal_camera_lens_title: "Očistite sočiva kamere",
   help_modal_details_1:
     "Uverite se da ne prekrivate delove dokumenta prstom, uključujući donje redove. Takođe, pazite na hologramske refleksije koje prelaze preko polja dokumenta.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "Pazite na oštro svetlo",
   help_modal_title_3: "Ostanite mirni dok skenirate",
   help_tooltip: "Potrebna vam je pomoć?",
+  keep_document_parallel: "Držite dokument paralelno s ekranom",
+  keep_document_still: "Držite mirno dokument i ure]aj",
   move_closer: "Približite",
   move_farther: "Udaljite",
   move_left: "Pređite na stranicu sa leve strane",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "Pokreni skeniranje",
   onboarding_modal_details:
     "Uverite se da je dokument dobro osvetljen. Sva polja dokumenta treba da budu vidljiva na ekranu kamere.",
+  onboarding_modal_details_desktop:
+    "Uverite se da je sočivo kamere čisto i dobro osvetljeno. Sva polja dokumenta treba da budu vidljiva na ekranu kamere.",
   onboarding_modal_title: "Neka svi detalji budu vidljivi",
+  onboarding_modal_title_desktop: "Pripremite se za skeniranje",
+  resume_scanning: "Nastavi skeniranje",
   scan_data_page: "Skenirajte stranicu sa podacima dokumenta",
   scan_last_page_barcode: "Skenirajte barkod sa zadnje stranice",
   scan_left_page: "Skenirajte levu stranicu",
@@ -57,6 +68,9 @@ export default {
   scan_unsuccessful: "Skeniranje neuspešno",
   scan_unsuccessful_details:
     "Nije moguće pročitati dokument. Molimo Vas, pokušajte ponovo.",
+  scanning_help: "Pomoć za skeniranje",
+  scanning_instructions: "Uputstva za skeniranje",
+  scanning_screen: "Ekran skeniranja dokumenta",
   too_bright: "Pomerite se na mesto sa manje svetla",
   too_dark: "Pomerite se na svetlije mesto",
   wrong_left: "Pređite na levu stranicu",

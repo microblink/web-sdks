@@ -12,6 +12,34 @@ The options for the createBlinkIdFeedbackUi function.
 
 ## Properties
 
+### helpTooltipHideDelay?
+
+> `optional` **helpTooltipHideDelay**: `number` \| `null`
+
+Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden.
+
+#### Default Value
+
+```ts
+5000
+```
+
+***
+
+### helpTooltipShowDelay?
+
+> `optional` **helpTooltipShowDelay**: `number` \| `null`
+
+Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
+
+#### Default Value
+
+```ts
+5000
+```
+
+***
+
 ### localizationStrings?
 
 > `optional` **localizationStrings**: `Partial`\<[`LocalizationStrings`](LocalizationStrings.md)\>
@@ -63,17 +91,21 @@ true
 
 ***
 
-### showHelpTooltipTimeout?
+### ~~showHelpTooltipTimeout?~~
 
 > `optional` **showHelpTooltipTimeout**: `number`
 
-The timeout for the help tooltip.
+The timeout for the help tooltip in ms.
 
 #### Default Value
 
 ```ts
 3000
 ```
+
+#### Deprecated
+
+This option will be removed in a future release. Use `helpTooltipShowDelay` instead.
 
 ***
 

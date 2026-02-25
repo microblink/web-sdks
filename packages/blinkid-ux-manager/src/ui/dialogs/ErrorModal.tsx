@@ -2,6 +2,7 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import { Dialog } from "@ark-ui/solid";
 import { AlertModal } from "@microblink/shared-components/Modal";
 import { type Component } from "solid-js";
 import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
@@ -41,20 +42,27 @@ export const ErrorModal: Component<ErrorModalProps> = (props) => {
     if (props.shouldResetScanningSession) {
       await store.blinkIdUxManager.resetScanningSession(false);
     }
-
-    await store.blinkIdUxManager.cameraManager.startFrameCapture();
   };
 
   return (
     <AlertModal
       mountTarget={store.cameraManagerComponent.overlayLayerNode}
-      header={props.header}
-      text={props.text}
       open={true}
-      onPrimaryClick={() => void handlePrimaryClick()}
-      onSecondaryClick={() => dismountCameraManagerUi()}
-      primaryButtonText={t.alert_retry_btn}
-      secondaryButtonText={t.alert_cancel_btn}
-    />
+      actions={{
+        primary: {
+          label: t.alert_retry_btn,
+          onClick: () => void handlePrimaryClick(),
+        },
+        secondary: {
+          label: t.alert_cancel_btn,
+          onClick: () => dismountCameraManagerUi(),
+        },
+      }}
+    >
+      <Dialog.Title class="dialog-title">{props.header}</Dialog.Title>
+      <Dialog.Description class="dialog-description">
+        <p>{props.text}</p>
+      </Dialog.Description>
+    </AlertModal>
   );
 };

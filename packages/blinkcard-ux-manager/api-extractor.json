@@ -1,7 +1,11 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "mainEntryPointFilePath": "<projectFolder>/types/index.d.ts",
-  "bundledPackages": ["@microblink/analytics", "@microblink/feedback-stabilizer", "@microblink/ux-common"],
+  "bundledPackages": [
+    "@microblink/analytics",
+    "@microblink/feedback-stabilizer",
+    "@microblink/ux-common"
+  ],
   "compiler": {},
   "apiReport": {
     "enabled": false

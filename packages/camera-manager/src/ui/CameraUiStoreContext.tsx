@@ -31,7 +31,7 @@ function createCameraManagerSolidStore() {
  * as a context. The store is `cameraManagerSolidStore`, and it doesn't have anything
  * related to the Camera Manager UI component
  */
-export type CameraUiStore = {
+type CameraUiStore = {
   /** Function which will dismount the component */
   dismountCameraUi: () => void;
 
@@ -52,6 +52,8 @@ export type CameraUiStore = {
   showCloseButton: boolean;
   /** Whether to show the camera error modal */
   showCameraErrorModal: boolean;
+  /** The z-index of the camera UI */
+  zIndex?: number;
   /** Sets a callback to be called when the component is unmounted.
    * Returns a cleanup function that removes the callback when called.
    */
@@ -69,6 +71,7 @@ export const CameraUiStoreProvider: ParentComponent<{
   showTorchButton: boolean;
   showCloseButton: boolean;
   showCameraErrorModal: boolean;
+  zIndex?: number;
   addOnDismountCallback: (fn: DismountCallback) => () => void;
 }> = (props) => {
   // initial context value
@@ -93,6 +96,8 @@ export const CameraUiStoreProvider: ParentComponent<{
     showCloseButton: props.showCloseButton,
     // eslint-disable-next-line solid/reactivity
     showCameraErrorModal: props.showCameraErrorModal,
+    // eslint-disable-next-line solid/reactivity
+    zIndex: props.zIndex,
   };
 
   onCleanup(() => {

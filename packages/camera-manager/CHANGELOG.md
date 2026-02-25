@@ -1,5 +1,19 @@
 # @microblink/camera-manager
 
+## 7.3.0
+
+### Minor Changes
+
+- Renames the capture-dialog locale key from `scan_document` to `dialog_title` for clarity and consistency.
+- To migrate, update custom translation files: replace the key `scan_document` with `dialog_title`. The string value can remain the same (e.g. "Scan document" or your translated text).
+- Adds an option to configure the `z-index` of the `camera-manager` UI when no target element is provided.
+
+### Patch Changes
+
+- Refactors `CameraErrorModal` to use the updated `AlertModal` API from `shared-components`. No visual changes.
+- Prevents starting camera playback or frame capture while the document is hidden, and resumes queued playback/capture requests when the tab becomes visible again.
+- Prevents double-tap zooming on UI elements on mobile browsers.
+
 ## 7.2.7
 
 ### Patch Changes

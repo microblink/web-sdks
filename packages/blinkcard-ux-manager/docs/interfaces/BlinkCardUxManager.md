@@ -8,13 +8,13 @@
 
 The BlinkCardUxManager class. This is the main class that manages the UX of
 the BlinkCard SDK. It is responsible for handling the UI state, the timeout,
-the help tooltip, and the document class filter.
+and the haptic feedback.
 
 ## Properties
 
 ### cameraManager
 
-> **cameraManager**: `CameraManager`
+> `readonly` **cameraManager**: `CameraManager`
 
 The camera manager.
 
@@ -22,7 +22,7 @@ The camera manager.
 
 ### deviceInfo
 
-> **deviceInfo**: `DeviceInfo`
+> `readonly` **deviceInfo**: `DeviceInfo`
 
 The device info.
 
@@ -30,23 +30,16 @@ The device info.
 
 ### feedbackStabilizer
 
-> **feedbackStabilizer**: [`FeedbackStabilizer`](../classes/FeedbackStabilizer.md)\<[`BlinkCardUiStateMap`](../type-aliases/BlinkCardUiStateMap.md)\>
+> `readonly` **feedbackStabilizer**: [`FeedbackStabilizer`](../classes/FeedbackStabilizer.md)\<[`BlinkCardUiStateMap`](../type-aliases/BlinkCardUiStateMap.md)\>
 
-The feedback stabilizer.
-
-***
-
-### rawUiStateKey
-
-> **rawUiStateKey**: [`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
-
-The raw UI state key.
+The feedback stabilizer. Public to allow UI components to read scores,
+event queues, and call restartCurrentStateTimer() for help-tooltip resets.
 
 ***
 
 ### scanningSession
 
-> **scanningSession**: `RemoteScanningSession`
+> `readonly` **scanningSession**: `RemoteScanningSession`
 
 The scanning session.
 
@@ -54,7 +47,7 @@ The scanning session.
 
 ### sessionSettings
 
-> **sessionSettings**: `BlinkCardSessionSettings`
+> `readonly` **sessionSettings**: `BlinkCardSessionSettings`
 
 The session settings.
 
@@ -62,7 +55,7 @@ The session settings.
 
 ### showDemoOverlay
 
-> **showDemoOverlay**: `boolean`
+> `readonly` **showDemoOverlay**: `boolean`
 
 Whether the demo overlay should be shown.
 
@@ -70,17 +63,83 @@ Whether the demo overlay should be shown.
 
 ### showProductionOverlay
 
-> **showProductionOverlay**: `boolean`
+> `readonly` **showProductionOverlay**: `boolean`
 
 Whether the production overlay should be shown.
+
+## Accessors
+
+### analytics
+
+#### Get Signature
+
+> **get** **analytics**(): `AnalyticService`
+
+Gets the analytics service for tracking UX events.
+
+##### Returns
+
+`AnalyticService`
+
+***
+
+### mappedUiStateKey
+
+#### Get Signature
+
+> **get** **mappedUiStateKey**(): [`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
+
+Latest mapped candidate key before stabilization.
+
+##### Returns
+
+[`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
+
+***
+
+### rawUiStateKey
+
+#### Get Signature
+
+> **get** **rawUiStateKey**(): [`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
+
+##### Deprecated
+
+Use `mappedUiStateKey` (internal/debug) or `uiStateKey` (displayed state).
+
+##### Returns
+
+[`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
 
 ***
 
 ### uiState
 
-> **uiState**: [`BlinkCardUiState`](../type-aliases/BlinkCardUiState.md)
+#### Get Signature
 
-The current UI state.
+> **get** **uiState**(): [`BlinkCardUiState`](../type-aliases/BlinkCardUiState.md)
+
+The current UI state. Updated internally by the RAF update loop.
+Read externally once at UI mount to seed the initial Solid signal value;
+subsequent updates are delivered via [addOnUiStateChangedCallback](#addonuistatechangedcallback).
+
+##### Returns
+
+[`BlinkCardUiState`](../type-aliases/BlinkCardUiState.md)
+
+***
+
+### uiStateKey
+
+#### Get Signature
+
+> **get** **uiStateKey**(): [`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
+
+The currently applied UI state key.
+
+##### Returns
+
+[`BlinkCardUiStateKey`](../type-aliases/BlinkCardUiStateKey.md)
 
 ## Methods
 
@@ -110,17 +169,6 @@ callback.
 
 `void`
 
-#### Example
-
-```ts
-const cleanup = manager.addOnErrorCallback((error) => {
-  console.error('Processing error:', error);
-});
-
-// Later, to remove the callback:
-cleanup();
-```
-
 ***
 
 ### addOnFrameProcessCallback()
@@ -149,17 +197,6 @@ callback.
 
 `void`
 
-#### Example
-
-```ts
-const cleanup = manager.addOnFrameProcessCallback((frameResult) => {
-  console.log('Frame processed:', frameResult);
-});
-
-// Later, to remove the callback:
-cleanup();
-```
-
 ***
 
 ### addOnResultCallback()
@@ -186,17 +223,6 @@ callback.
 ##### Returns
 
 `void`
-
-#### Example
-
-```ts
-const cleanup = manager.addOnResultCallback((result) => {
-  console.log('Scan result:', result);
-});
-
-// Later, to remove the callback:
-cleanup();
-```
 
 ***
 
@@ -225,16 +251,6 @@ A cleanup function that removes the callback when called.
 
 `void`
 
-#### Example
-
-```ts
-const cleanup = manager.addOnUiStateChangedCallback((newState) => {
-  console.log('UI state changed to:', newState);
-});
-
-cleanup();
-```
-
 ***
 
 ### cleanupAllObservers()
@@ -262,6 +278,22 @@ Clears the scanning session timeout.
 ### clearUserCallbacks()
 
 > **clearUserCallbacks**(): `void`
+
+#### Returns
+
+`void`
+
+***
+
+### destroy()
+
+> **destroy**(): `void`
+
+Fully tears down the BlinkCardUxManager. Stops frame processing, cancels the
+scan timeout, removes all subscriptions and the RAF loop, and clears all
+registered callbacks. Should be called when the manager is no longer needed.
+
+Does not stop the camera stream or delete the scanning session.
 
 #### Returns
 
@@ -509,9 +541,7 @@ Whether haptic feedback should be enabled
 
 > **setTimeoutDuration**(`duration`): `void`
 
-Sets the duration after which the scanning session will timeout. The
-timeout can occur in various scenarios and may be restarted by different
-scanning events.
+Sets the duration after which the scanning session will timeout.
 
 #### Parameters
 
@@ -529,3 +559,23 @@ be triggered ever.
 #### Throws
 
 Throws an error if duration is less than or equal to 0 when not null.
+
+***
+
+### startUiUpdateLoop()
+
+> **startUiUpdateLoop**(): `void`
+
+#### Returns
+
+`void`
+
+***
+
+### stopUiUpdateLoop()
+
+> **stopUiUpdateLoop**(): `void`
+
+#### Returns
+
+`void`

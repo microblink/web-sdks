@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "Dokuments nav atpazīts",
   document_not_recognized_details: "Skenējiet atbalstītā dokumenta priekšpusi.",
   document_scanned: "Dokuments noskenēts veiksmīgi!",
-  document_too_close_to_edge: "Pārvietot dokumentu prom no malas",
+  document_too_close_to_edge: "Pārvietot tālāk",
   face_photo_not_fully_visible: "Turēt sejas fotoattēlu pilnībā redzamu",
   flip_document: "Apvērst dokumentu",
   flip_to_back_side: "Apvērst uz aizmuguri",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "Sasvērt vai pārvietot dokumentu, lai novērstu atspīdumu",
   help_aria_label: "Palīdzība",
   help_modal_back_btn: "Atpakaļ",
+  help_modal_blur_details_desktop:
+    "Skenēšanas laikā centieties nekustināt ierīci un dokumentu. Pretējā gadījumā attēls var būt izplūdis, un dokumenta dati var kļūt nesalasāmi.",
+  help_modal_camera_lens_details:
+    "Pārbaudiet, vai uz kameras objektīva nav traipu vai putekļu. Ar netīru objektīvu uzņemts attēls būs izplūdis, un informācija dokumentā nebūs salasāma un noskenējama.",
+  help_modal_camera_lens_title: "Notīriet kameras objektīvu",
   help_modal_details_1:
     "Raugieties, lai neaizsegtu dokumenta daļas ar pirkstu, ieskaitot apakšējās līnijas. Uzmanieties arī no hologrammas atspulgiem virs dokumenta laukiem.",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "Uzmanieties no spilgtas gaismas",
   help_modal_title_3: "Skenēšanas laikā turēt nekustīgu",
   help_tooltip: "Vai vajadzīga palīdzība?",
+  keep_document_parallel: "Turiet dokumentu paralēli ekrānam",
+  keep_document_still: "Nekustiniet dokumentu un ierīci",
   move_closer: "Pārvietot tuvāk",
   move_farther: "Pārvietot tālāk",
   move_left: "Pārvietot uz kreiso lapu",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "Sāciet skenēšanu",
   onboarding_modal_details:
     "Pārliecinieties, vai dokuments ir labi apgaismots. Kameras ekrānā jābūt redzamiem visiem dokumenta laukiem.",
+  onboarding_modal_details_desktop:
+    "Pārliecinieties, ka kameras objektīvs ir tīrs un dokuments ir labi apgaismots. Kameras ekrānā jābūt redzamiem visiem dokumenta laukiem.",
   onboarding_modal_title: "Paturēt redzamu visu detalizēto informāciju",
+  onboarding_modal_title_desktop: "Sagatavojieties skenēšanai",
+  resume_scanning: "Atsākt skenēšanu",
   scan_data_page: "Skenēt dokumenta datu lapu",
   scan_last_page_barcode: "Skenēt svītrkodu no pēdējās lapas",
   scan_left_page: "Skenēt kreiso lapu",
@@ -56,6 +67,9 @@ export default {
   scan_unsuccessful: "Skenēšana neizdevās",
   scan_unsuccessful_details:
     "Nevar nolasīt dokumentu. Lūdzu, mēģiniet vēlreiz.",
+  scanning_help: "Palīdzība skenēšanas procesā",
+  scanning_instructions: "Skenēšanas norādījumi",
+  scanning_screen: "Dokumenta skenēšanas ekrāns",
   too_bright: "Pārvietot uz vietu ar mazāku apgaismojumu",
   too_dark: "Pārvietot uz vietu ar spilgtāku apgaismojumu",
   wrong_left: "Pārvietot uz kreiso lapu",

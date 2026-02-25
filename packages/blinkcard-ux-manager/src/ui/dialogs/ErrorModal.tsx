@@ -2,9 +2,11 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import { Dialog } from "@ark-ui/solid";
 import { AlertModal } from "@microblink/shared-components/Modal";
 import { type Component } from "solid-js";
 import { useBlinkCardUiStore } from "../BlinkCardUiStoreContext";
+import { useLocalization } from "../LocalizationContext";
 
 /**
  * The props for the ErrorModal component.
@@ -12,8 +14,6 @@ import { useBlinkCardUiStore } from "../BlinkCardUiStoreContext";
 interface ErrorModalProps {
   header: string;
   text: string;
-  primaryButtonText: string;
-  secondaryButtonText: string;
   shouldResetScanningSession?: boolean;
 }
 
@@ -24,6 +24,8 @@ interface ErrorModalProps {
  * @returns The ErrorModal component.
  */
 export const ErrorModal: Component<ErrorModalProps> = (props) => {
+  const { t } = useLocalization();
+
   const { store, updateStore } = useBlinkCardUiStore();
 
   const hideModal = () => {
@@ -40,20 +42,27 @@ export const ErrorModal: Component<ErrorModalProps> = (props) => {
     if (props.shouldResetScanningSession) {
       await store.blinkCardUxManager.resetScanningSession(true);
     }
-
-    await store.blinkCardUxManager.cameraManager.startFrameCapture();
   };
 
   return (
     <AlertModal
       mountTarget={store.cameraManagerComponent.overlayLayerNode}
-      header={props.header}
-      text={props.text}
       open={true}
-      onPrimaryClick={() => void handlePrimaryClick()}
-      onSecondaryClick={() => dismountCameraManagerUi()}
-      primaryButtonText={props.primaryButtonText}
-      secondaryButtonText={props.secondaryButtonText}
-    />
+      actions={{
+        primary: {
+          label: t.timeout_modal.retry_btn,
+          onClick: () => void handlePrimaryClick(),
+        },
+        secondary: {
+          label: t.timeout_modal.cancel_btn,
+          onClick: () => dismountCameraManagerUi(),
+        },
+      }}
+    >
+      <Dialog.Title class="dialog-title">{props.header}</Dialog.Title>
+      <Dialog.Description class="dialog-description">
+        <p>{props.text}</p>
+      </Dialog.Description>
+    </AlertModal>
   );
 };

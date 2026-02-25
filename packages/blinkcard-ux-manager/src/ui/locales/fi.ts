@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Ohje", tooltip: "Tarvitsetko apua?" },
   help_modal: {
+    aria: "Apua skannaukseen",
     back_btn: "Takaisin",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Missä kortin numero on?",
     },
     done_btn: "Valmis",
+    done_btn_aria: "Jatka skannausta",
     lighting: {
       details:
         "Vältä suoraa voimakasta valoa, koska se heijastuu kortista ja voi tehdä osan kortista lukukelvottomaksi. Jos et pysty lukemaan kortin tietoja, ne eivät näy myöskään kameralle.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Skannausohjeet",
     btn: "Aloita skannaus",
     details:
       "Kortin numero sisältää tavallisesti 16 numeroa, ja sen tulisi olla painettuna tai kohokuvioituna korttiin. Varmista, että kortti on hyvin valaistu ja että kaikki tiedot ovat näkyvissä.",
@@ -63,6 +66,7 @@ export default {
       "Kortin numero on yleensä 16-numeroinen. Sen pitäisi kulkea kortin poikki joko painettuna tai kohokuvioituina numeroina. Varmista, että kameran linssi on puhdas, kortti on hyvin valaistu ja kaikki yksityiskohdat näkyvät.",
     title: "Skannaa ensin kortin numero",
   },
+  sdk_aria: "Kortin skannausnäyttö",
   timeout_modal: {
     cancel_btn: "Peruuta",
     details: "Korttia ei pystytä lukemaan. Yritä uudelleen.",

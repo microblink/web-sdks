@@ -1,5 +1,13 @@
 # @microblink/blinkid-wasm
 
+## 7.7.0
+
+### Patch Changes
+
+- Extends `BlinkIdScanningResult` and `VizResult` with optional fields for parents info (`ParentInfo[]`), effective date, husband name, legal status, social security status, and work restriction. The new `ParentInfo` type (parent first/last name) is exported from the result module.
+- Switches `FieldType` to an explicit string union so types match supported extraction fields. New literals include `effectiveDate`, `parentsFirstName`, `parentsLastName`, `workRestriction`, `socialSecurityStatus`, `legalStatus`, `husbandName`, `chinPermanentExpiry`, and other dependent/document/vehicle/locality field types.
+- Adds country `saint-thomas-and-prince`; document types `nin-card`, `mysss-card`, `gendarmerie-id`, `police-id`; and additional Brazilian and Indian regions (e.g. `acre`, `espirito-santo`, `odisha`, `uttarakhand`) to class info.
+
 ## 7.6.4
 
 ### Patch Changes
@@ -95,10 +103,10 @@
 ##### New Segments Supported on Documents
 
 - Switzerland, Residence Permit - 'dateOfEntry'
-- Hungary, Identity Card - 'maidenName', 'nationality', 'sexOrGender', 'documentNumber', 'dateOfBirth'
-- Greece, Identity Card - 'fathersName' (Latin and Greek), 'mothersName' (Latin and Greek), 'personalIdNumber', 'issuingAuthority' (Greek), 'municipalityOfRegistration' (Greek)
-- Mexico, Voter ID - 'sectionCode', 'stateCode', 'municipalityCode', 'localityCode'
-- Mexico, Consular Voter ID - 'stateCode', 'stateName'
+- Hungary, Identity Card - `maidenName`, `nationality`, `sex`, `documentNumber`, `dateOfBirth`
+- Greece, Identity Card - `fathersName` (Latin and Greek), `mothersName` (Latin and Greek), `personalIdNumber`, `issuingAuthority` (Greek), `municipalityOfRegistration` (Greek)
+- Mexico, Voter ID - `sectionCode`, `stateCode`, `municipalityCode`, `localityCode`
+- Mexico, Consular Voter ID - `stateCode`, `stateName`
 
 ##### Renamed segments
 

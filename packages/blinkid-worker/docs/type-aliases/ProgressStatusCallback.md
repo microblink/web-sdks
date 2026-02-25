@@ -14,7 +14,7 @@ The progress status callback.
 
 ### progress
 
-`DownloadProgress`
+[`DownloadProgress`](DownloadProgress.md)
 
 ## Returns
 
