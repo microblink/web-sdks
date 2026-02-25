@@ -8,9 +8,9 @@ import type {
   ProgressStatusCallback,
 } from "@microblink/blinkcard-worker";
 import { createProxyWorker } from "@microblink/core-common/createProxyWorker";
-import type { SetOptional, Simplify } from "type-fest";
 import { getUserId } from "@microblink/core-common/getUserId";
 import { proxy, Remote } from "comlink";
+import type { SetOptional, Simplify } from "type-fest";
 
 /**
  * Configuration options for initializing the BlinkCard core.

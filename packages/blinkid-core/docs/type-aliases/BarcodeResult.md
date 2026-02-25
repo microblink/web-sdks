@@ -171,7 +171,8 @@ The nationality of the document owner.
 
 > **parsed**: `boolean`
 
-Whether the raw barcode data was successfully parsed into structured information.
+Whether the raw barcode data was successfully parsed into structured
+information.
 
 ***
 

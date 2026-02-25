@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Tulong", tooltip: "Kailangan ng tulong?" },
   help_modal: {
+    aria: "Tulong sa pag-scan",
     back_btn: "Bumalik",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Saan makikita ang numero ng card?",
     },
     done_btn: "Tapos na",
+    done_btn_aria: "I-resume ang pag-scan",
     lighting: {
       details:
         "Iwasan ang direktang nakakasilaw na ilaw dahil maaari itong mag-reflect sa card at hindi mababasa ang mga bahagi ng card. Kung mo mabasa ang data sa card, hindi rin ito makikita ng camera.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Mga Tagubilin sa Pag-scan",
     btn: "Simulan ang Pag-scan",
     details:
       "Kadalasang 16 na digit ang numero ng card. Dapat itong naka-print o naka-emboss sa mga nakataas na numero sa buong card. Siguraduhing sapat na naiilawan ang card na iyon at nakikita ang lahat ng detalye.",
@@ -63,6 +66,7 @@ export default {
       "Kadalasang 16 na digit ang numero ng card. Dapat itong naka-print o naka-emboss sa mga nakataas na numero sa buong card. Siguraduhing na malinis ang lens ng iyong camera, sapat na naiilawan ang card na iyon, at nakikita ang lahat ng detalye.",
     title: "I-scan muna ang numero ng card",
   },
+  sdk_aria: "Screen ng pag-scan ng card",
   timeout_modal: {
     cancel_btn: "Kanselahin",
     details: "Hindi mabasa ang card. Pakisubukan ulit.",

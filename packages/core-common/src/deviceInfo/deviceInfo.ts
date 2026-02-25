@@ -3,7 +3,6 @@
  */
 
 import { createDerivedDeviceInfo } from "./createDerivedDeviceInfo";
-import { OperatingSystem } from "./getOsFromUserAgent";
 import "./navigator-types";
 import type { FormFactor, UADataValues } from "./navigator-types";
 
@@ -48,7 +47,7 @@ export type DeviceInfo = {
 export type DerivedDeviceInfo = {
   model: string;
   formFactors: FormFactor[];
-  platform: OperatingSystem | "";
+  platform: string;
   browser: {
     brand: string;
     version: string;

@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Scansiona il lato anteriore di un documento supportato.",
   document_scanned: "Perfetto! Documento scansionato",
-  document_too_close_to_edge: "Sposta il documento dal bordo",
+  document_too_close_to_edge: "Spostati più lontano",
   face_photo_not_fully_visible:
     "Mantenere la foto del viso completamente visibile",
   flip_document: "Girare il documento",
@@ -25,6 +25,11 @@ export default {
   glare_detected: "Inclina o muovi il documento per eliminare il riflesso",
   help_aria_label: "Aiuto",
   help_modal_back_btn: "Indietro",
+  help_modal_blur_details_desktop:
+    "Cerca di tenere fermi il dispositivo e il documento durante la scansione. Muoverli può sfocare l'immagine e rendere illeggibili i dati riportati sul documento.",
+  help_modal_camera_lens_details:
+    "Controlla che la lente della fotocamera sia priva di macchie o polvere. Una lente sporca sfoca l'immagine finale, rendendo illeggibili le informazioni riportate sul documento e impedendo la corretta scansione dei dati.",
+  help_modal_camera_lens_title: "Pulisci la lente della fotocamera",
   help_modal_details_1:
     "Controlla di non stare coprendo parte del documento, comprese le ultime righe, con un dito. Fai attenzione anche ai riflessi olografici situati sui campi del documento.",
   help_modal_details_2:
@@ -37,6 +42,8 @@ export default {
   help_modal_title_2: "Attenzione alla luce intensa",
   help_modal_title_3: "Resta immobile durante la scansione",
   help_tooltip: "Ti serve aiuto?",
+  keep_document_parallel: "Tieni il documento parallelo allo schermo",
+  keep_document_still: "Tieni fermi il dispositivo e il documento",
   move_closer: "Avvicinati",
   move_farther: "Spostati più lontano",
   move_left: "Muovi sulla pagina alla sinistra",
@@ -46,7 +53,11 @@ export default {
   onboarding_modal_btn: "Avvia scansione",
   onboarding_modal_details:
     "Controlla che il documento sia ben illuminato. Tutti i campi del documento devono essere visibili sullo schermo della fotocamera.",
+  onboarding_modal_details_desktop:
+    "Controlla che la lente della fotocamera sua pulita e che il documento sia ben illuminato. Tutti i campi del documento devono essere visibili sullo schermo della fotocamera.",
   onboarding_modal_title: "Fai in modo tutti i dati siano visibili",
+  onboarding_modal_title_desktop: "Preparati per la scansione",
+  resume_scanning: "Riprendi scansione",
   scan_data_page: "Scansiona la pagina dei dati del documento",
   scan_last_page_barcode: "Scansiona codice a barre dall'ultima pagina",
   scan_left_page: "Scansiona la pagina a sinistra",
@@ -57,6 +68,9 @@ export default {
   scan_top_page: "Scansiona la pagina in alto",
   scan_unsuccessful: "Scansione non riuscita",
   scan_unsuccessful_details: "Impossibile leggere il documento. Riprova.",
+  scanning_help: "Aiuto per la scansione",
+  scanning_instructions: "Istruzioni per la scansione",
+  scanning_screen: "Schermata di scansione del documento",
   too_bright: "Sposta in un punto meno illuminato",
   too_dark: "Sposta in un punto più illuminato",
   wrong_left: "Muovi alla pagina di sinistra",

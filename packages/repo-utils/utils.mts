@@ -62,8 +62,11 @@ export async function linkResources(
 
   try {
     // First try to create a symlink
+    // If it exists at the destination, `fs.ensureSymlink` will throw!
+    if (fs.existsSync(destinationPath)) {
+      fs.removeSync(destinationPath);
+    }
     await fs.ensureSymlink(sourcePath, destinationPath);
-    console.log(`Symlinked files to ${destinationPath}`);
   } catch (error) {
     // If symlinking fails, fall back to copying
     console.log(

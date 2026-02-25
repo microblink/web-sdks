@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Pomoć", tooltip: "Potrebna vam je pomoć?" },
   help_modal: {
+    aria: "Pomoć za skeniranje",
     back_btn: "Nazad",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Gde se nalazi broj kartice?",
     },
     done_btn: "Završeno",
+    done_btn_aria: "Nastavi skeniranje",
     lighting: {
       details:
         "Izbegavajte direktnu oštru svetlost jer se odbija od kartice i može učiniti delove kartice nečitljivim. Ako ne možete da pročitate podatke na kartici, neće biti vidljivi ni kameri.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Uputstva za skeniranje",
     btn: "Pokreni skeniranje",
     details:
       "Broj kartice je obično 16-cifreni broj. Trebalo bi da bude odštampan ili utisnut podignutim brojevima preko kartice. Uverite se da je kartica dobro osvetljena i da su svi detalji vidljivi.",
@@ -63,6 +66,7 @@ export default {
       "Broj kartice je obično 16-cifreni broj. Može biti odštampan ili utisnut u vidu izdignutih brojeva na kartici. Uvjerite se da je sočivo kamere čisto, da je kartica dobro osvetljena i da su svi detalji jasno vidljivi.",
     title: "Prvo skenirajte broj kartice",
   },
+  sdk_aria: "Ekran skeniranja kartice",
   timeout_modal: {
     cancel_btn: "Otkaži",
     details: "Nije moguće pročitati karticu. Pokušajte ponovo.",

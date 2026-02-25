@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "Yɛnnye krataa yi ntom",
   document_not_recognized_details: "Skane krataa a ɛsɔpɔɔte no anim.",
   document_scanned: "Ayɛ yie! Wɔaskaane nhoma no",
-  document_too_close_to_edge: "Twe krataa no fi ano",
+  document_too_close_to_edge: "Kɔ akyirikyiri",
   face_photo_not_fully_visible: "Ma anim mfonini nyɛ nea wotumi hu koraa",
   flip_document: "Dane krataa no",
   flip_to_back_side: "Dane kɔ akyi",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "Woso anaa dane krataa no na fa yi ne sunsuma no",
   help_aria_label: "Mmoa",
   help_modal_back_btn: "Akyire",
+  help_modal_blur_details_desktop:
+    "Bɔ mmɔden sɛ worenwoso krataa no ne afiri no abere a woreskane. Sɛ wo wosow emu biara a ebetumi ama mfonini no anim nna hɔ na ama no ayɛ den sɛ wobɛkenkan krataa no.",
+  help_modal_camera_lens_details:
+    "Hwɛ sɛ nkekae anaa mfuturu nni wo lɛns no so. Lɛns a ani ayɛ fi ma mfonini no anim nna hɔ, ɛyɛ den sɛ wɔbɛkenkan nhoma no so nkyerɛw na ɛmma wontumi nskane nsɛm a ɛwɔ so yiye.",
+  help_modal_camera_lens_title: "Popa wo kamɛra lɛns",
   help_modal_details_1:
     "Hwɛ hu sɛ womfa wo nsateaa nkata krataa no afã horow so, a ase nkyerɛwde no ka ho. Afei nso, hwɛ yiye wɔ hologram reflections a ɛfa krataa no so ho.",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "Hwɛ hann a ano yɛ den kwan",
   help_modal_title_3: "Gyina faako abere a woreskanee no",
   help_tooltip: "Wohia mmoa?",
+  keep_document_parallel: "Ma nhoma no ani nkyerɛ skriin no tee",
+  keep_document_still: "Ma krataa ne afiri no nna faako",
   move_closer: "Bɛn ho",
   move_farther: "Kɔ akyirikyiri",
   move_left: "Dane kɔ kratafa no benkum so",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "Fi ase skaane",
   onboarding_modal_details:
     "Hwɛ hu sɛ wobɛma han atɔ krataa no so yiye. Ɛsɛ sɛ wohu krataa a no afa nyinaa wɔ kamara no skreen so.",
+  onboarding_modal_details_desktop:
+    "Hwɛ hu sɛ wobɛma wo kamɛra lɛns no ani atew na han atɔ krataa no so yiye. Ɛsɛ sɛ wohu krataa no afa nyinaa wɔ kamɛra no skriin so.",
   onboarding_modal_title: "Hwɛ sɛ wobehu afa nyinaa",
+  onboarding_modal_title_desktop: "Yɛ krado sɛ wobɛskaane",
+  resume_scanning: "Toa skaane no so",
   scan_data_page: "Skane krataa no akyi nsɛm",
   scan_last_page_barcode: "Skaane baakoodu a ɛwɔ kratafa a etwa toɔ no mu",
   scan_left_page: "Skane benkum so",
@@ -55,6 +66,9 @@ export default {
   scan_top_page: "Skane soro",
   scan_unsuccessful: "Skane no ankɔ yiye",
   scan_unsuccessful_details: "Wontumi nkan krataa no. Yɛsrɛw san yɛ bio.",
+  scanning_help: "Skaane ho mmoa",
+  scanning_instructions: "Skaane ho akwankyerɛ",
+  scanning_screen: "Skriin a wɔde skaane nhoma",
   too_bright: "Dane kɔ baabi a hann nni hɔ papa",
   too_dark: "Dane kɔ baabi a ɛhyerɛn",
   wrong_left: "Dane kɔ benkum so",

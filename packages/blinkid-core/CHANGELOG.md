@@ -1,5 +1,18 @@
 # @microblink/blinkid-core
 
+## 7.7.0
+
+### Patch Changes
+
+- Extends `BlinkIdScanningResult` and `VizResult` with optional fields for parents info (`ParentInfo[]`), effective date, husband name, legal status, social security status, and work restriction. The new `ParentInfo` type (parent first/last name) is exported from the result module.
+- Switches `FieldType` to an explicit string union so types match supported extraction fields. New literals include `effectiveDate`, `parentsFirstName`, `parentsLastName`, `workRestriction`, `socialSecurityStatus`, `legalStatus`, `husbandName`, `chinPermanentExpiry`, and other dependent/document/vehicle/locality field types.
+- Adds country `saint-thomas-and-prince`; document types `nin-card`, `mysss-card`, `gendarmerie-id`, `police-id`; and additional Brazilian and Indian regions (e.g. `acre`, `espirito-santo`, `odisha`, `uttarakhand`) to class info.
+- Introduces `createScanningSession(...)` as the primary API and keeps `createBlinkIdScanningSession(...)` as a backward-compatible alias with a deprecation notice.
+- Optimizes worker frame processing by auto-transferring `ImageData` buffers, reducing per-frame copy overhead. After `process(...)`, the original `ImageData.data.buffer` is intentionally detached.
+- Updated dependencies
+  - @microblink/blinkid-wasm@7.7.0
+  - @microblink/blinkid-worker@7.7.0
+
 ## 7.6.4
 
 ### Patch Changes

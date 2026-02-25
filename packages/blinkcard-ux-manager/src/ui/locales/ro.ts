@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Ajutor", tooltip: "Aveți nevoie de ajutor?" },
   help_modal: {
+    aria: "Ajutor pentru scanare",
     back_btn: "Înapoi",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Unde se află numărul cardului?",
     },
     done_btn: "Terminat",
+    done_btn_aria: "Reluați scanarea",
     lighting: {
       details:
         "Evitați lumina puternică directă, deoarece se va reflecta din card și poate face imposibilă citirea anumitor porțiuni din acesta. Dacă nu puteți citi datele de pe card, ele nu vor fi vizibile nici pe cameră.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instrucțiuni de scanare",
     btn: "Porniți scanarea",
     details:
       "Numărul cardului conține de regulă 16 cifre. În principiu, acesta este inscripționat sau reliefat pe card. Asigurați-vă că este bine iluminat cardul și că toate detaliile sunt vizibile.",
@@ -63,6 +66,7 @@ export default {
       "Numărul cardului este de obicei compus din 16 cifre. Acesta ar trebui să fie inscripționat sau reliefat pe card. Asigurați-vă că lentila camerei este curată, cardul este bine iluminat, iar toate detaliile sunt vizibile.",
     title: "Scanați numărul cardului mai întâi",
   },
+  sdk_aria: "Ecran scanare carduri",
   timeout_modal: {
     cancel_btn: "Anulați",
     details: "Cardul nu poate fi citit. Vă rugăm să încercați din nou.",

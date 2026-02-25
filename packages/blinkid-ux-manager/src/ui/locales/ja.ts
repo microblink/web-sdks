@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "サポートされている書類の表側をスキャンしてください。",
   document_scanned: "成功！ドキュメントをスキャンしました",
-  document_too_close_to_edge: "書類を端から動かしてください",
+  document_too_close_to_edge: "遠くへ移動",
   face_photo_not_fully_visible: "顔写真が完全に見えるようにしてください",
   flip_document: "書類を反転してください",
   flip_to_back_side: "裏面にしてください",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "書類を傾けたり移動したりして反射を除去する",
   help_aria_label: "ヘルプ",
   help_modal_back_btn: "戻る",
+  help_modal_blur_details_desktop:
+    "スキャン中は、端末とドキュメントをできるだけ動かさないでください。どちらかが動くと画像がぼやけ、ドキュメントの情報が読み取れなくなる場合があります。",
+  help_modal_camera_lens_details:
+    "カメラのレンズに汚れやホコリが付いていないか確認してください。レンズが汚れていると最終画像がぼやけ、ドキュメントの詳細が読み取れなくなり、データのスキャンに失敗する原因になります。",
+  help_modal_camera_lens_title: "カメラのレンズを拭いてください",
   help_modal_details_1:
     "書類の下部の線も含め,指で書類の一部を覆わないようにしてください。また,書類のフィールドを覆うホログラムの反射にもご注意ください。",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "強い光にご注意ください",
   help_modal_title_3: "スキャン中は動かさないでください",
   help_tooltip: "ヘルプが必要ですか？",
+  keep_document_parallel: "ドキュメントを画面と平行に保ってください",
+  keep_document_still: "ドキュメントと端末を動かさないでください",
   move_closer: "近くへ移動",
   move_farther: "遠くへ移動",
   move_left: "左のページへ移動する",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "スキャンを開始",
   onboarding_modal_details:
     "書類を十分に明るく保ち,カメラの画面に書類のすべての項目が映っていることを確認してください。",
+  onboarding_modal_details_desktop:
+    "カメラのレンズを清潔に保ち、ドキュメントが十分明る口なるようにしてください。ドキュメントのすべての項目がカメラの画面内ににおさまるようにしてください。",
   onboarding_modal_title: "すべての詳細が見えるようにしてください",
+  onboarding_modal_title_desktop: "スキャンの準備",
+  resume_scanning: "スキャンを再開",
   scan_data_page: "書類のデータページをスキャンしてください",
   scan_last_page_barcode: "最後のページからバーコードをスキャンしてください",
   scan_left_page: "左のページをスキャンする",
@@ -56,6 +67,9 @@ export default {
   scan_top_page: "上のページをスキャンする",
   scan_unsuccessful: "スキャンに失敗しました",
   scan_unsuccessful_details: "書類を読み取れません。もう一度お試しください。",
+  scanning_help: "スキャンに関するヘルプ",
+  scanning_instructions: "スキャンの手順",
+  scanning_screen: "ドキュメントスキャン画面",
   too_bright: "暗い場所に移動してください",
   too_dark: "明るい場所に移動してください",
   wrong_left: "左ページへ移動",

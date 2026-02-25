@@ -6,7 +6,7 @@
 
 # Type Alias: WorkerScanningSession
 
-> **WorkerScanningSession** = `OverrideProperties`\<[`BlinkIdScanningSession`](BlinkIdScanningSession.md), \{ `process`: (`image`) => [`ProcessResultWithBuffer`](ProcessResultWithBuffer.md); \}\> & `object`
+> **WorkerScanningSession** = `OverrideProperties`\<[`BlinkIdScanningSession`](BlinkIdScanningSession.md), \{ `process`: (`image`) => [`ProcessResultWithBuffer`](ProcessResultWithBuffer.md) \| [`BlinkIdSessionErrorWithBuffer`](BlinkIdSessionErrorWithBuffer.md); \}\> & `object`
 
 The worker scanning session.
 

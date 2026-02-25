@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Hjälp", tooltip: "Behöver du hjälp?" },
   help_modal: {
+    aria: "Hjälp med skanning",
     back_btn: "Tillbaka",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Var finns kortnumret?",
     },
     done_btn: "Klart",
+    done_btn_aria: "Återuppta skanning",
     lighting: {
       details:
         "Undvik starkt direktljus eftersom det reflekteras från kortet och kan göra delar av det oläsliga. Om du inte kan läsa informationen på kortet kommer den inte heller att synas för kameran.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Skanningsinstruktioner",
     btn: "Börja skanna",
     details:
       "Kortnumret består oftast av 16 siffror. Det är antingen tryckt eller präglat i upphöjda siffror på kortets fram- eller baksida. Se till att kortet är ordentligt upplyst och att alla detaljer syns.",
@@ -63,6 +66,7 @@ export default {
       "Kortnumret är vanligtvis ett 16-siffrigt nummer. Det ska vara tryckt eller präglat med upphöjda siffror på kortet. Se till att kameralinsen är ren, att kortet är väl belyst och att alla uppgifter är synliga.",
     title: "Skanna kortnumret först",
   },
+  sdk_aria: "Skärm för kortskanning",
   timeout_modal: {
     cancel_btn: "Avbryt",
     details: "Det gick inte att läsa kortet. Försök igen.",

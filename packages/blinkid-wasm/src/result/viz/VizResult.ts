@@ -2,9 +2,10 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import { DateResult, DriverLicenceDetailedInfo } from "../../utils";
 import { DependentInfo } from "../DependentInfo";
 import { StringResult } from "../StringResult";
-import { DriverLicenceDetailedInfo, DateResult } from "../../utils";
+import { ParentInfo } from "../ParentInfo";
 
 /** VizResult contains data extracted from the Visual Inspection Zone. */
 export type VizResult = {
@@ -83,6 +84,8 @@ export type VizResult = {
 
   /** The transcription of the document subtype */
   documentSubtype?: StringResult;
+  /** The effective date of the document */
+  effectiveDate?: DateResult<StringResult>;
   /** The remarks on the residence permit */
   remarks?: StringResult;
   /** The residence permit type */
@@ -93,6 +96,10 @@ export type VizResult = {
   vehicleType?: StringResult;
   /** The eligibility category */
   eligibilityCategory?: StringResult;
+  /** The husband name of the document owner */
+  husbandName?: StringResult;
+  /** The legal status of the document owner */
+  legalStatus?: StringResult;
   /** The specific document validity */
   specificDocumentValidity?: StringResult;
   /** The dependents info */
@@ -119,8 +126,15 @@ export type VizResult = {
   registrationCenterCode?: StringResult;
   /** The section code of the document owner */
   sectionCode?: StringResult;
+  /** The social security status of the document owner */
+  socialSecurityStatus?: StringResult;
   /** The state code of the document owner */
   stateCode?: StringResult;
   /** The state of the document owner */
   stateName?: StringResult;
+  /** The work restriction of the document owner */
+  workRestriction?: StringResult;
+
+  /** The parents info of the document owner */
+  parentsInfo?: ParentInfo[];
 };

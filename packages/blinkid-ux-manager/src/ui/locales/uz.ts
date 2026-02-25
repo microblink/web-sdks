@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Dastaklanadigan hujjatning old tomonini skanerlang",
   document_scanned: "Muvaffaqiyat! Hujjat skanerlandi",
-  document_too_close_to_edge: "Hujjatni chetidan siljiting",
+  document_too_close_to_edge: "Uzoqlashtiring",
   face_photo_not_fully_visible: "Yuz surati toʻliq koʻrinib tursin",
   flip_document: "Hujjatni boshqa tomonga aylantiring",
   flip_to_back_side: "Orqa tomonga aylantiring",
@@ -25,6 +25,11 @@ export default {
     "Akslanishni olib tashlash uchun hujjatni eging yoki siljiting",
   help_aria_label: "Yordam",
   help_modal_back_btn: "Ortga",
+  help_modal_blur_details_desktop:
+    "Skanerlash paytida qurilma va hujjatni imkon qadar qimirlatmang. Qimirlab ketish tasvirni xiralashtirishi va hujjatdagi ma’lumotlarni o‘qib bo‘lmaydigan qilib qo‘yishi mumkin.",
+  help_modal_camera_lens_details:
+    "Kamera linzasida dog‘ yoki chang yo‘qligini tekshiring. Kirlangan linza yakuniy tasvirni xiralashtiradi, bu hujjatdagi maʼlumotlarni o‘qib bo‘lmaydigan qiladi va ma’lumotlarni muvaffaqiyatli skanerlashga to‘sqinlik qiladi.",
+  help_modal_camera_lens_title: "Kamerangiz obyektivini tozalang",
   help_modal_details_1:
     "Barmogʻingiz hujjatning ayrim qismlarini, jumladan, pastki qatorlarni berkitib qoʻymasin. Hujjat maydoni boʻylab oʻtadigan gologramma aks etishiga ham diqqat qarating.",
   help_modal_details_2:
@@ -37,6 +42,8 @@ export default {
   help_modal_title_2: "Kuchli yorugʻlik tushmasin",
   help_modal_title_3: "Skanerlayotganda qimirlatmang",
   help_tooltip: "Yordam kerakmi?",
+  keep_document_parallel: "Hujjatni ekranga parallel ushlang",
+  keep_document_still: "Hujjat va qurilmani qimirlatmang",
   move_closer: "Yaqinlashtiring",
   move_farther: "Uzoqlashtiring",
   move_left: "Chapdagi sahifaga oʻting",
@@ -46,7 +53,11 @@ export default {
   onboarding_modal_btn: "Skanerlashni boshlash",
   onboarding_modal_details:
     "Hujjat yetarlicha yoritilganiga ishonch hosil qiling. Hujjatning barcha maydonlari kamera ekranida koʻrinishi kerak.",
+  onboarding_modal_details_desktop:
+    "Kamera linzasi tozaligiga, hujjat esa yaxshi yoritilganligiga ishonch hosil qiling. Kamera ekranida barcha hujjat satrlari ko‘rinib turishi kerak.",
   onboarding_modal_title: "Barcha tafsilotlar koʻrinib tursin",
+  onboarding_modal_title_desktop: "Skanerlashga tayyorlaning",
+  resume_scanning: "Skanerlashni davom etish",
   scan_data_page: "Hujjatning maʼlumotlar sahifasini skanerlang",
   scan_last_page_barcode: "Oxirgi sahifadan shtrix-kodni skanerlang",
   scan_left_page: "Chap sahifani skanerlang",
@@ -57,6 +68,9 @@ export default {
   scan_top_page: "Yuqori sahifani skanerlang",
   scan_unsuccessful: "Skanerlandi",
   scan_unsuccessful_details: "Hujjatni oʻqish imkonsiz. Qayta urining.",
+  scanning_help: "Skanerlashda yordam",
+  scanning_instructions: "Skanerlash yo‘riqnomasi",
+  scanning_screen: "Hujjat skanerlash ekrani",
   too_bright: "Yorugʻligi kamroq joyga oling",
   too_dark: "Yorugʻroq joyga oling",
   wrong_left: "Chap sahifaga oʻting",

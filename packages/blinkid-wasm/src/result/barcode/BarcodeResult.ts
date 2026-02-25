@@ -2,9 +2,9 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import { DateResult, DriverLicenceDetailedInfo } from "../../utils";
 import { BarcodeData } from "./BarcodeData";
 import { BarcodeElement } from "./BarcodeElement";
-import { DriverLicenceDetailedInfo, DateResult } from "../../utils";
 
 /** Contains detailed address information */
 export type AddressDetailedInfo = {
@@ -31,7 +31,10 @@ export type BarcodeResult = {
   /** The raw, unparsed barcode data. */
   barcodeData: BarcodeData;
 
-  /** Whether the raw barcode data was successfully parsed into structured information. */
+  /**
+   * Whether the raw barcode data was successfully parsed into structured
+   * information.
+   */
   parsed: boolean;
 
   /** The first name of the document owner. */

@@ -3,6 +3,7 @@
  */
 
 import { cameraManagerStore } from "@microblink/camera-manager";
+import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import type { Component } from "solid-js";
 import {
   createEffect,
@@ -15,8 +16,11 @@ import {
 } from "solid-js";
 import { createWithSignal } from "solid-zustand";
 import {
+  blinkCardPageTransitionKeys,
+  blinkCardUiIntroStateKeys,
   BlinkCardUiState,
-  firstSideCapturedUiStateKeys,
+  BlinkCardUiStateKey,
+  blinkCardUiSuccessKeys,
 } from "../core/blinkcard-ui-state";
 import {
   LocalizationProvider,
@@ -28,15 +32,12 @@ import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
 // this triggers extraction of CSS from the UnoCSS plugin
 import "virtual:uno.css";
 
-import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import DemoOverlay from "./assets/demo-overlay.svg?component-solid";
 import MicroblinkOverlay from "./assets/microblink.svg?component-solid";
 import { useBlinkCardUiStore } from "./BlinkCardUiStoreContext";
 import { ErrorModal } from "./dialogs/ErrorModal";
 import { HelpButton, HelpModal } from "./dialogs/HelpModal";
 import { OnboardingGuideModal } from "./dialogs/OnboardingGuideModal";
-
-import styles from "./styles.module.scss";
 
 /**
  * The BlinkCardFeedbackUi component. This is the main component that renders the
@@ -58,14 +59,11 @@ export const BlinkCardFeedbackUi: Component<{
   );
 
   // Handle errors during scanning
-  createEffect(() => {
-    const errorCallbackCleanup = store.blinkCardUxManager.addOnErrorCallback(
-      (errorState) => {
-        updateStore({ errorState });
-      },
-    );
-    onCleanup(() => errorCallbackCleanup());
-  });
+  const errorCallbackCleanup = store.blinkCardUxManager.addOnErrorCallback(
+    (errorState) => {
+      updateStore({ errorState });
+    },
+  );
 
   onMount(() => {
     const cleanupDismountCallback =
@@ -86,19 +84,49 @@ export const BlinkCardFeedbackUi: Component<{
     (s) => s.playbackState,
   );
 
+  const cameraErrorState = createWithSignal(cameraManagerStore)(
+    (s) => s.errorState,
+  );
+
   const isProcessing = () => playbackState() === "capturing";
+
+  /**
+   * These UI states pause frame processing, however we treat them as if we are
+   * still in processing state from a UX perspective
+   */
+  const pseudoProcessingKeys: BlinkCardUiStateKey[] = [
+    ...blinkCardUiIntroStateKeys,
+    ...blinkCardPageTransitionKeys,
+    ...blinkCardUiSuccessKeys,
+  ];
 
   // Processing is stopped, but we still want to show the feedback
   const shouldShowFeedback = () => {
-    return (
-      isProcessing() ||
-      firstSideCapturedUiStateKeys.includes(uiState().key) ||
-      uiState().key === "CARD_CAPTURED"
-    );
+    return isProcessing() || pseudoProcessingKeys.includes(uiState().key);
   };
 
   const displayTimeoutModal = () =>
-    store.showTimeoutModal && store.errorState === "timeout";
+    Boolean(store.showTimeoutModal) && store.errorState === "timeout";
+
+  const isModalOpen = () => {
+    return (
+      displayTimeoutModal() ||
+      Boolean(store.showOnboardingGuide) ||
+      Boolean(store.showHelpModal) ||
+      // camera manager
+      Boolean(cameraErrorState())
+    );
+  };
+
+  createEffect(() => {
+    if (!isModalOpen()) {
+      void store.blinkCardUxManager.cameraManager.startFrameCapture();
+      store.blinkCardUxManager.startUiUpdateLoop();
+    } else {
+      void store.blinkCardUxManager.cameraManager.stopFrameCapture();
+      store.blinkCardUxManager.stopUiUpdateLoop();
+    }
+  });
 
   const shouldShowDemoOverlay = () => {
     return store.blinkCardUxManager.getShowDemoOverlay();
@@ -108,15 +136,12 @@ export const BlinkCardFeedbackUi: Component<{
     return store.blinkCardUxManager.getShowProductionOverlay();
   };
 
-  const handleUiStateChange = (newUiState: BlinkCardUiState) => {
-    setUiState(newUiState);
-  };
+  const removeUiStateChangeCallback =
+    store.blinkCardUxManager.addOnUiStateChangedCallback(setUiState);
 
-  createEffect(() => {
-    const removeUiStateChangeCallback =
-      store.blinkCardUxManager.addOnUiStateChangedCallback(handleUiStateChange);
-
-    onCleanup(() => removeUiStateChangeCallback());
+  onCleanup(() => {
+    removeUiStateChangeCallback();
+    errorCallbackCleanup();
   });
 
   const isDesktop = () => {
@@ -146,6 +171,11 @@ export const BlinkCardFeedbackUi: Component<{
           {() => {
             const { t } = useLocalization();
 
+            // update camera manager dialog title localization
+            store.cameraManagerComponent.updateLocalization({
+              dialog_title: t.sdk_aria,
+            });
+
             return (
               <>
                 <Switch>
@@ -153,8 +183,6 @@ export const BlinkCardFeedbackUi: Component<{
                     <ErrorModal
                       header={t.timeout_modal.title}
                       text={t.timeout_modal.details}
-                      primaryButtonText={t.timeout_modal.retry_btn}
-                      secondaryButtonText={t.timeout_modal.cancel_btn}
                       shouldResetScanningSession={true}
                     />
                   </Match>
@@ -168,14 +196,20 @@ export const BlinkCardFeedbackUi: Component<{
                 </Show>
 
                 <Show when={shouldShowDemoOverlay()}>
-                  <div class={styles.demoOverlay}>
-                    <DemoOverlay width="250" aria-hidden />
+                  <div
+                    class="absolute top-[15%] flex justify-center items-center
+                      w-full"
+                  >
+                    <DemoOverlay width="250" aria-hidden="true" />
                   </div>
                 </Show>
 
                 <Show when={shouldShowProductionOverlay()}>
-                  <div class={styles.microblinkOverlay}>
-                    <MicroblinkOverlay width="100" aria-hidden />
+                  <div
+                    class="absolute bottom-4 flex justify-center items-center
+                      w-full"
+                  >
+                    <MicroblinkOverlay width="100" aria-hidden="true" />
                   </div>
                 </Show>
 

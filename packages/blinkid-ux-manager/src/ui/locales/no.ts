@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "Dokument ikke gjenkjent",
   document_not_recognized_details: "Skann forsiden av et støttet dokument.",
   document_scanned: "Skanning av dokument vellykket!",
-  document_too_close_to_edge: "Flytt dokumentet fra kanten",
+  document_too_close_to_edge: "Flytt lenger bort",
   face_photo_not_fully_visible: "La ansiktsfoto være helt synlig",
   flip_document: "Snu dokumentet",
   flip_to_back_side: "Snu til baksiden",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "Vipp eller flytt dokumentet for å fjerne refleksjon",
   help_aria_label: "Hjelp",
   help_modal_back_btn: "Tilbake",
+  help_modal_blur_details_desktop:
+    "Prøv å holde enheten og dokumentet i ro når du skanner. Bevegelse kan gjøre bildet uskarpt og føre til at dataene i dokumentet ikke kan leses.",
+  help_modal_camera_lens_details:
+    "Sjekk om det er støv eller flekker på kameralinsen. En skitten linse gjør at bildet blir uskarpt, noe som fører til at informasjonen i dokumentet blir uleselig og ikke skannes ordentlig.",
+  help_modal_camera_lens_title: "Rens kameralinsen din",
   help_modal_details_1:
     "Sørg for at du ikke dekker til deler av dokumentet med en finger, inkludert bunnlinjene. Se også etter hologramrefleksjoner som kan forstyrre feltene i dokumentet.",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "Se opp for hardt lys",
   help_modal_title_3: "Stå i ro under skanningen",
   help_tooltip: "Trenger du hjelp?",
+  keep_document_parallel: "Hold dokumentet parallelt med skjermen",
+  keep_document_still: "Hold dokumentet og enheten i ro",
   move_closer: "Flytt nærmere",
   move_farther: "Flytt lenger bort",
   move_left: "Flytt til siden til venstre",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "Start skanning",
   onboarding_modal_details:
     "Sørg for at dokumentet er godt opplyst. Alle feltene i dokumentet skal være synlige på kameraskjermen.",
+  onboarding_modal_details_desktop:
+    "Sørg for at kameralinsen er ren og at dokumentet er godt opplyst. Alle feltene i dokumentet skal være synlige på skjermen.",
   onboarding_modal_title: "La alle detaljene være synlige",
+  onboarding_modal_title_desktop: "Gjør deg klar til å skanne",
+  resume_scanning: "Fortsett å skanne",
   scan_data_page: "Skann datasiden av dokumentet",
   scan_last_page_barcode: "Skann strekkoden på siste side",
   scan_left_page: "Skann den venstre siden",
@@ -55,6 +66,9 @@ export default {
   scan_top_page: "Skann den øverste siden",
   scan_unsuccessful: "Skanning mislyktes",
   scan_unsuccessful_details: "Kunne ikke lese dokumentet. Prøv igjen.",
+  scanning_help: "Hjelp med skanning",
+  scanning_instructions: "Slik skanner du",
+  scanning_screen: "Dokumentskanningside",
   too_bright: "Flytt til et sted med mindre belysning",
   too_dark: "Flytt til et lysere sted",
   wrong_left: "Flytt til den venstre siden",

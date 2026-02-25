@@ -5,8 +5,8 @@
 import { BarcodeResult } from "./barcode";
 import { DetailedCroppedImageResult } from "./image";
 
-import { VizResult } from "./viz";
 import { MrzResult } from "./mrz";
+import { VizResult } from "./viz";
 
 /** Results of scanning a single side of a document */
 export type SingleSideScanningResult = {

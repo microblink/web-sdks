@@ -3,7 +3,10 @@
  */
 
 import type { EmscriptenModule } from "@microblink/wasm-common";
-import { LicenseUnlockResult, ServerPermissionSubmitError } from "@microblink/wasm-common";
+import {
+  LicenseUnlockResult,
+  ServerPermissionSubmitError,
+} from "@microblink/wasm-common";
 import { BlinkIdScanningSession, BlinkIdSessionSettings } from "./session";
 
 /**

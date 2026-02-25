@@ -10,6 +10,8 @@ This package provides user experience management and feedback UI for the BlinkID
 - **Document Filtering:** Advanced document class filtering capabilities
 - **Timeout Management:** Configurable scanning timeouts with automatic state management
 - **Localization Support:** Multi-language support with customizable strings
+- **Explicit Teardown:** `destroy()` method for deterministic resource cleanup
+- **UI State Inspection:** `uiStateKey` (stabilized, visible state) and `mappedUiStateKey` (latest raw candidate before stabilization) getters
 
 ## Overview
 
@@ -49,12 +51,12 @@ The UX Manager includes a comprehensive haptic feedback system that provides tac
 
 ```javascript
 import {
-  BlinkIdUxManager,
+  createBlinkIdUxManager,
   HapticFeedbackManager,
 } from "@microblink/blinkid-ux-manager";
 
 // Create UX Manager (haptic feedback enabled by default)
-const uxManager = new BlinkIdUxManager(cameraManager, scanningSession);
+const uxManager = await createBlinkIdUxManager(cameraManager, scanningSession);
 
 // Check if haptic feedback is supported
 if (uxManager.isHapticFeedbackSupported()) {
@@ -76,11 +78,54 @@ hapticManager.stop(); // Stop all vibration
 
 **⚠️ Important:** Haptic feedback uses the [Web Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API), which has **limited browser support**:
 
+| Browser | Support |
+| ------- | ------- |
+| Chrome for Android | ✅ Supported |
+| Firefox for Android | ✅ Supported |
+| Safari (iOS) | ❌ Not supported |
+| Desktop browsers | ❌ Not supported |
+
+The API is designed primarily for **Android devices using Chrome**, where it works reliably. On unsupported platforms `isHapticFeedbackSupported()` returns `false` and vibration calls are silently ignored.
+
 ## Usage
 
 You can use `@microblink/blinkid-ux-manager` directly in your project for advanced or custom integrations. For most use cases, use [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid) for a simpler setup.
 
-See the example apps in the `apps/examples` directory in the GitHub repository for usage details.
+### Creating the UX Manager
+
+Use the async `createBlinkIdUxManager` factory — direct constructor instantiation is not supported:
+
+```javascript
+import { createBlinkIdUxManager } from "@microblink/blinkid-ux-manager";
+
+const uxManager = await createBlinkIdUxManager(cameraManager, scanningSession);
+
+// When done, release resources explicitly
+uxManager.destroy();
+```
+
+### Inspecting UI State
+
+Two getters provide visibility into the current UI state:
+
+- `uxManager.uiStateKey` — the stabilized, visible state key (what the UI shows)
+- `uxManager.mappedUiStateKey` — the latest raw candidate key from the detector before stabilization (useful for debugging)
+
+> **Note:** Starting in v7.7.0, the manager automatically advances through intermediate transition states after `PAGE_CAPTURED` (e.g. `PAGE_CAPTURED → FLIP_CARD → INTRO_BACK_PAGE` for two-sided IDs). Integrations that depend on exact UI-state key sequences should account for these chained transitions.
+
+### Configuring Help Tooltip Delays
+
+Tooltip delays can be configured via `FeedbackUiOptions` when creating the feedback UI:
+
+```javascript
+createBlinkIdFeedbackUi(uxManager, cameraUi, {
+  showHelpTooltipTimeout: 15000, // ms before tooltip appears
+});
+```
+
+> **Deprecated:** The `setHelpTooltipShowDelay` and `setHelpTooltipHideDelay` methods on `BlinkIdUxManager` are deprecated. Prefer configuring delays through `FeedbackUiOptions` instead.
+
+See the example apps in the `apps/examples` directory in the GitHub repository for full usage details.
 
 ## Development
 

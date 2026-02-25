@@ -2,14 +2,14 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { describe, expect, it } from "vitest";
-import { extractSideInputImage } from "./utils";
 import type {
   BlinkCardScanningResult,
   CardAccountResult,
   DateResult,
   SingleSideScanningResult,
 } from "@microblink/blinkcard-wasm";
+import { describe, expect, it } from "vitest";
+import { extractSideInputImage } from "./utils";
 
 const createMockImageData = () => new ImageData(1, 1);
 

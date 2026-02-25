@@ -3,14 +3,15 @@
  */
 
 import {
+  DataMatchResult,
   DependentInfo,
   DocumentClassInfo,
+  ParentInfo,
   RecognitionMode,
   SingleSideScanningResult,
   StringResult,
-  DataMatchResult,
 } from "../result";
-import { DriverLicenceDetailedInfo, DateResult } from "../utils";
+import { DateResult, DriverLicenceDetailedInfo } from "../utils";
 
 /** Represents the final complete result of the scanning process. */
 export type BlinkIdScanningResult = {
@@ -47,6 +48,8 @@ export type BlinkIdScanningResult = {
   placeOfBirth?: StringResult;
   /** The nationality of the document owner */
   nationality?: StringResult;
+  /** The parents info */
+  parentsInfo?: ParentInfo[];
   /** The race of the document owner */
   race?: StringResult;
   /** The religion of the document owner */
@@ -101,7 +104,7 @@ export type BlinkIdScanningResult = {
   countryCode?: StringResult;
   /** The national insurance number of the document owner */
   nationalInsuranceNumber?: StringResult;
-  /**  The locality code of the document owner */
+  /** The locality code of the document owner */
   localityCode?: StringResult;
   /** The maiden name of the document owner */
   maidenName?: StringResult;
@@ -133,6 +136,16 @@ export type BlinkIdScanningResult = {
 
   /** The driver license detailed info */
   driverLicenseDetailedInfo?: DriverLicenceDetailedInfo<StringResult>;
+  /** The effective date of the document */
+  effectiveDate?: DateResult<StringResult>;
+  /** The husband name of the document owner */
+  husbandName?: StringResult;
+  /** The legal status of the document owner */
+  legalStatus?: StringResult;
+  /** The social security status of the document owner */
+  socialSecurityStatus?: StringResult;
+  /** The work restriction of the document owner */
+  workRestriction?: StringResult;
   /** The dependents info */
   dependentsInfo?: DependentInfo[];
 

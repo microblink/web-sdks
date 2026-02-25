@@ -19,7 +19,7 @@
     "@microblink/blinkcard-ux-manager": "workspace:^",
     "@microblink/camera-manager": "workspace:^",
     "@microblink/feedback-stabilizer": "workspace:^",
-    "solid-js": "^1.9.9",
+    "solid-js": "^1.9.11",
     "yy-fps": "^2.0.1"
   },
   "devDependencies": {
@@ -28,17 +28,17 @@
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
-    "eslint-config-prettier": "10.0.1",
+    "eslint-config-prettier": "10.1.8",
     "eslint-define-config": "^1.24.1",
     "eslint-plugin-solid": "0.14.5",
-    "prettier": "^3.6.2",
+    "prettier": "^3.8.1",
     "rimraf": "^6.0.1",
     "tsc-files": "^1.1.4",
     "typescript": "5.8.3",
     "vite": "^6.2.1",
-    "vite-plugin-mkcert": "^1.17.6",
-    "vite-plugin-qrcode": "^0.2.4",
-    "vite-plugin-solid": "^2.11.6",
+    "vite-plugin-mkcert": "^1.17.9",
+    "vite-plugin-qrcode": "0.3.0",
+    "vite-plugin-solid": "^2.11.10",
     "zx": "^8.8.5"
   },
   "license": "MIT"

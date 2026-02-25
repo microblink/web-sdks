@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Skanna framsidan på ett dokument som stöds.",
   document_scanned: "Lyckades! Skannat dokument",
-  document_too_close_to_edge: "Flytta dokumentet bort från kanten",
+  document_too_close_to_edge: "Flytta längre bort",
   face_photo_not_fully_visible: "Håll fotot fullt synligt",
   flip_document: "Vänd på dokumentet",
   flip_to_back_side: "Vänd till baksidan",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "Luta eller flytta dokumentet för att ta bort reflektionen",
   help_aria_label: "Hjälp",
   help_modal_back_btn: "Tillbaka",
+  help_modal_blur_details_desktop:
+    "Försök att hålla enheten och dokumentet stilla under skanningen. Om någonting rör sig kan bilden bli suddig och informationen på dokumentet oläslig.",
+  help_modal_camera_lens_details:
+    "Kontrollera om kameralinsen är smutsig eller dammig. Om linsen är smutsig blir den färdiga bilden suddig, vilket innebär att kortuppgifterna blir oläsliga och skanningen misslyckas.",
+  help_modal_camera_lens_title: "Rengör kameralinsen",
   help_modal_details_1:
     "Se till att du inte täcker delar av dokumentet med fingret, inklusive de nedre raderna. Se också upp för hologramreflektioner som löper över dokumentets fält.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "Se upp för skarpt ljus",
   help_modal_title_3: "Håll stilla medan du skannar",
   help_tooltip: "Behöver du hjälp?",
+  keep_document_parallel: "Håll dokumentet parallellt med skärmen",
+  keep_document_still: "Håll dokumentet och enheten stilla",
   move_closer: "Flytta närmare",
   move_farther: "Flytta längre bort",
   move_left: "Flytta till den vänstra sidan",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "Börja skanna",
   onboarding_modal_details:
     "Se till att dokumentet är väl belyst. Alla fält i dokumentet ska synas på kameraskärmen.",
+  onboarding_modal_details_desktop:
+    "Se till att hålla kameralinsen ren och dokumentet väl belyst. Alla fält i dokumentet ska synas på kameraskärmen.",
   onboarding_modal_title: "Håll alla uppgifter synliga",
+  onboarding_modal_title_desktop: "Förbered skanningen",
+  resume_scanning: "Återuppta skanning",
   scan_data_page: "Skanna dokumentets datasida",
   scan_last_page_barcode: "Läs av streckkoden från den sista sidan",
   scan_left_page: "Skanna den vänstra sidan",
@@ -56,6 +67,9 @@ export default {
   scan_top_page: "Skanna den översta sidan",
   scan_unsuccessful: "Skanningen misslyckades",
   scan_unsuccessful_details: "Det gick inte att läsa dokumentet. Försök igen.",
+  scanning_help: "Hjälp med skanning",
+  scanning_instructions: "Skanningsinstruktioner",
+  scanning_screen: "Skärm för dokumentskanning",
   too_bright: "Flytta till mindre belyst plats",
   too_dark: "Flytta till mer belyst plats",
   wrong_left: "Flytta till den vänstra sidan",

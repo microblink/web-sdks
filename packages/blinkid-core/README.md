@@ -23,7 +23,22 @@ pnpm add @microblink/blinkid-core
 
 ## Usage
 
-You can use `@microblink/blinkid-core` directly in your project for custom integrations. See the example apps in the `apps/examples` directory in the GitHub repository for usage details.
+You can use `@microblink/blinkid-core` directly in your project for custom integrations.
+
+### Creating a Scanning Session
+
+Use `createScanningSession` (available via the `BlinkIdCore` proxy) to start a session:
+
+```javascript
+import { loadBlinkIdCore } from "@microblink/blinkid-core";
+
+const core = await loadBlinkIdCore({ licenseKey: "your-license-key", resourcesLocation: "/resources" });
+const session = await core.createScanningSession();
+```
+
+> **Deprecated:** `createBlinkIdScanningSession` is a backward-compatible alias for `createScanningSession`. Prefer `createScanningSession` going forward.
+
+See the example apps in the `apps/examples` directory in the GitHub repository for full usage details.
 
 ## Environment & Setup
 

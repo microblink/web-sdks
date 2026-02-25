@@ -6,6 +6,6 @@
 
 # Type Alias: UiStateMap
 
-> **UiStateMap** = `Record`\<`string`, [`UiState`](UiState.md)\>
+> **UiStateMap** = `{ [K in string]: UiState<K> }`
 
 Maps state keys to their corresponding UI state configurations.

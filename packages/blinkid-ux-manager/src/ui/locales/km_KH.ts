@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "ឯកសារមិនត្រូវបានទទួលស្គាល់ទេ។",
   document_not_recognized_details: "ស្កេនផ្នែកខាងមុខនៃឯកសារដែលគាំទ្រ។",
   document_scanned: "ជោគជ័យ! ឯកសារត្រូវបានស្កេន",
-  document_too_close_to_edge: "ផ្លាស់ទីឯកសារពីគែម",
+  document_too_close_to_edge: "ផ្លាស់ទីទៅឆ្ងាយ",
   face_photo_not_fully_visible: "រក្សារូបថតមុខដែលអាចមើលឃើញយ៉ាងពេញលេញ",
   flip_document: "ត្រឡប់ឯកសារ",
   flip_to_back_side: "បង្វិលទៅផ្នែកខាងក្រោយ",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "ផ្អៀង ឬផ្លាស់ទីឯកសារ ដើម្បីលុបការឆ្លុះបញ្ចាំង",
   help_aria_label: "ជំនួយ",
   help_modal_back_btn: "ត្រឡប់មកវិញ",
+  help_modal_blur_details_desktop:
+    "ព្យាយាមរក្សាឧបករណ៍ និងឯកសារឲ្យនៅនឹងពេលកំពុងស្កេន។ ការចល័តអាចធ្វើឲ្យរូបភាពព្រាល និងធ្វើឲ្យទិន្នន័យនៅលើឯកសារមិនអាចអានបាន។",
+  help_modal_camera_lens_details:
+    "ពិនិត្យកញ្ចក់កាមេរ៉ារកមើលស្នាមប្រឡាក់ ឬធូលី។ កញ្ចក់ប្រឡាក់អាចបណ្ដាលឲ្យរូបភាពចុងក្រោយព្រាល ដែលធ្វើឲ្យមិនអាចអានព័ត៌មានលម្អិតនៅលើឯកសារ និងរារាំងមិនឲ្យស្កេនទិន្នន័យបានជោគជ័យ។",
+  help_modal_camera_lens_title: "សម្អាតកញ្ចក់កាមេរ៉ារបស់អ្នក។",
   help_modal_details_1:
     "ត្រូវប្រាកដថាអ្នកមិនគ្របដណ្តប់ផ្នែកនៃឯកសារដោយប្រើម្រាមដៃ រួមទាំងបន្ទាត់ខាងក្រោម។ ដូចគ្នានេះផងដែរ ប្រយ័ត្នចំពោះការឆ្លុះបញ្ចាំង hologram ដែលឆ្លងកាត់វាលឯកសារ។",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "ប្រយ័ត្នចំពោះពន្លឺខ្លាំង",
   help_modal_title_3: "រក្សាភាពស្ងៀមស្ងាត់ខណៈពេលកំពុងស្កេន",
   help_tooltip: "ត្រូវការជំនួយ?",
+  keep_document_parallel: "រក្សាឯកសារឲ្យស្របគ្នានឹងអេក្រង់",
+  keep_document_still: "រក្សាឯកសារ និងឧបករណ៍ឲ្យនៅនឹង",
   move_closer: "ផ្លាស់ទីទៅជិត",
   move_farther: "ផ្លាស់ទីទៅឆ្ងាយ",
   move_left: "ផ្លាស់ទីទៅទំព័រនៅខាងឆ្វេង",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "ចាប់ផ្តើមស្កេន",
   onboarding_modal_details:
     "ត្រូវប្រាកដថាអ្នករក្សាឯកសារឱ្យបានល្អ វាលឯកសារទាំងអស់គួរតែអាចមើលឃើញនៅលើអេក្រង់កាមេរ៉ា។",
+  onboarding_modal_details_desktop:
+    "ត្រូវប្រាកដថា អ្នករក្សាកញ្ចក់កាមេរ៉ារបស់អ្នកឲ្យនៅស្អាត ហើយឯកសារមានពន្លឺល្អ។ កន្លែងឯកសារទាំងអស់គួរតែអាចមើលឃើញច្បាស់នៅលើអេក្រង់កាមេរ៉ា។",
   onboarding_modal_title: "រក្សាព័ត៌មានលម្អិតទាំងអស់ដែលអាចមើលឃើញ",
+  onboarding_modal_title_desktop: "ត្រៀមរួចរាល់ដើម្បីស្កេនហើយ",
+  resume_scanning: "បន្តស្កេន",
   scan_data_page: "ស្កេនទំព័រទិន្នន័យនៃឯកសារ",
   scan_last_page_barcode: "ស្កេនបាកូដពីទំព័រចុងក្រោយ",
   scan_left_page: "ស្កេនទំព័រខាងឆ្វេង",
@@ -55,6 +66,9 @@ export default {
   scan_top_page: "ស្កេនទំព័រកំពូល",
   scan_unsuccessful: "ស្កេនមិនជោគជ័យ",
   scan_unsuccessful_details: "មិនអាចអានឯកសារបានទេ។ សូមព្យាយាមម្តងទៀត។",
+  scanning_help: "ជំនួយក្នុងការស្កេន",
+  scanning_instructions: "ការណែនាំអំពីការស្កេន",
+  scanning_screen: "អេក្រង់ស្កេនឯកសារ",
   too_bright: "ផ្លាស់ទីទៅកន្លែងដែលមានពន្លឺតិច",
   too_dark: "ផ្លាស់ទីទៅកន្លែងភ្លឺជាង",
   wrong_left: "ផ្លាស់ទីទៅទំព័រខាងឆ្វេង",

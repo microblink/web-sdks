@@ -1,0 +1,37 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "tags": ["-lintignore"],
+  "svgo": true,
+  "lint-staged": true,
+  "eslint": true,
+  "ignoreWorkspaces": [
+    // ".",
+    "apps/examples/*",
+    "apps/tests/*",
+    "packages/tsconfig"
+  ],
+  "workspaces": {
+    "packages/*": {
+      "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}", "!**/locales/**"]
+    },
+    "packages/utils/*": {
+      "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}", "!**/locales/**"]
+    },
+    "packages/analytics": {
+      "entry": ["scripts/*.mts"],
+      "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}", "!**/locales/**"]
+    },
+    "packages/blinkcard-ux-manager": {
+      "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}", "!**/locales/**"]
+    },
+    "packages/blinkid-ux-manager": {
+      "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}", "!**/locales/**"]
+    },
+    "packages/camera-manager": {
+      "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}", "!**/locales/**"]
+    },
+    "packages/blinkid": {
+      "project": ["**/*.{js,cjs,mjs,jsx,ts,cts,mts,tsx}", "!**/locales/**"]
+    }
+  }
+}

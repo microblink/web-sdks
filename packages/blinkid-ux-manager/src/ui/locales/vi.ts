@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "Không nhận dạng được tài liệu",
   document_not_recognized_details: "Quét mặt trước của tài liệu được hỗ trợ.",
   document_scanned: "Thành công! Đã quét tài liệu",
-  document_too_close_to_edge: "Di chuyển tài liệu từ cạnh",
+  document_too_close_to_edge: "Di chuyển xa hơn",
   face_photo_not_fully_visible: "Đảm bảo thấy đầy đủ ảnh khuôn mặt",
   flip_document: "Lật tài liệu",
   flip_to_back_side: "Lật tài liệu",
@@ -24,6 +24,11 @@ export default {
     "Nghiêng hoặc di chuyển tài liệu để loại bỏ hiệu ứng phản chiếu",
   help_aria_label: "Trợ giúp",
   help_modal_back_btn: "Quay lại",
+  help_modal_blur_details_desktop:
+    "Cố gắng giữ yên thiết bị và tài liệu trong khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên tài liệu không thể đọc được.",
+  help_modal_camera_lens_details:
+    "Kiểm tra ống kính camera xem có vết bẩn hoặc bụi không. Ống kính bẩn sẽ khiến hình ảnh cuối bị mờ, làm cho thông tin trên tài liệu không thể đọc được và ngăn cản việc quét dữ liệu thành công.",
+  help_modal_camera_lens_title: "Làm sạch ống kính camera",
   help_modal_details_1:
     "Đảm bảo rằng bạn không dùng ngón tay che các phần của tài liệu, kể cả các dòng dưới cùng. Ngoài ra, hãy để ý các phản xạ ảnh ba chiều đi qua các trường tài liệu.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "Đề phòng ánh sáng gay gắt",
   help_modal_title_3: "Giữ cố định trong khi quét",
   help_tooltip: "Bạn cần trợ giúp?",
+  keep_document_parallel: "Giữ tài liệu nằm song song với màn hình",
+  keep_document_still: "Giữ yên tài liệu và thiết bị",
   move_closer: "Di chuyển gần hơn",
   move_farther: "Di chuyển xa hơn",
   move_left: "Di chuyển đến trang bên trái",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "Bắt đầu quét",
   onboarding_modal_details:
     "Đảm bảo rằng bạn giữ cho tài liệu được chiếu sáng tốt. Tất cả các trường tài liệu sẽ hiển thị trên màn hình camera.",
+  onboarding_modal_details_desktop:
+    "Đảm bảo rằng bạn giữ ống kính camera sạch sẽ và tài liệu được chiếu sáng tốt. Tất cả các trường tài liệu sẽ hiển thị trên màn hình camera.",
   onboarding_modal_title: "Đảm bảo nhìn thấy rõ tất cả các chi tiết",
+  onboarding_modal_title_desktop: "Sẵn sàng quét",
+  resume_scanning: "Tiếp tục quét",
   scan_data_page: "Quét trang chứa dữ liệu của tài liệu",
   scan_last_page_barcode: "Quét mã vạch từ trang cuối cùng",
   scan_left_page: "Quét trang bên trái",
@@ -56,6 +67,9 @@ export default {
   scan_top_page: "Quét trang trên cùng",
   scan_unsuccessful: "Quét không thành công",
   scan_unsuccessful_details: "Không thể đọc tài liệu. Xin vui lòng thử lại.",
+  scanning_help: "Trợ giúp quét",
+  scanning_instructions: "Hướng dẫn quét",
+  scanning_screen: "Màn hình quét tài liệu",
   too_bright: "Di chuyển đến nơi ít sáng hơn",
   too_dark: "Di chuyển đến nơi sáng hơn",
   wrong_left: "Di chuyển đến trang bên trái",

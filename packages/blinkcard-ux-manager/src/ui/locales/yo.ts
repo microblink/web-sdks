@@ -26,6 +26,7 @@ export default {
   },
   help_button: { aria_label: "Ìrànlọ́wọ́", tooltip: "Ṣé o nílò ìrànlọ́wọ́?" },
   help_modal: {
+    aria: "Ìrànlọ́wọ́ láti ṣẹ̀dà àwòrán",
     back_btn: "Padà",
     blur: {
       details:
@@ -45,6 +46,7 @@ export default {
       title: "Níbo ni nọ́mbà káàdì wà?",
     },
     done_btn: "Parí",
+    done_btn_aria: "Padà sẹ́nu ṣíṣẹ́dà àwòrán",
     lighting: {
       details:
         "Yẹra fún ìmọ́lẹ̀ tó lágbára nítorí pé ó máa ń hàn nínú káàdì náà àti pé ó lè mú kí àwọn apá kan káàdì náà má ṣe é kà. Tí ọ kò bá lè ka àwọn ìsọfúnni tó wà lórí káàdì náà, kò ní hàn sí kámẹ́rà náà.",
@@ -58,6 +60,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Àwọn Ìtọ́nisọ́nà Ṣíṣẹ́dà àwòrán",
     btn: "Bẹ̀rẹ̀ ṣíṣẹ́dà àwòrán",
     details:
       "Nọ́mbà káàdì sábà máa ń jẹ́ dígítì 16. Ó gbọdọ̀ wà ní àtẹ̀jáde tàbí kí wọ́n fín ní gbọọrọ sórí káàdì náà ní àwọn nọ́mbà tí ọwọ́ lè rí. Ríi dájú pé ìmọ́lẹ̀ tàn sí káàdì náà dáadáa àti kí gbogbo ìsọfúnni ara rẹ̀ hàn.",
@@ -65,6 +68,7 @@ export default {
       "Nọ́mbà orí káàdì sábà máa ń jẹ́ dígítì 16. Ó gbọdọ̀ wà ní àtẹ̀jáde tàbí kí wọ́n fín ní gbọọrọ sórí káàdì náà ní àwọn nọ́mbà tí ọwọ́ lè rí. Ríi dájú pé awò ojú kámẹ́rà rẹ mọ́, ìmọ́lẹ̀ tàn sí káàdì náà dáadáa àti kí gbogbo ìsọfúnni ara rẹ̀ hàn kedere.",
     title: "Kọ́kọ́ ṣe ẹ̀dà àwòrán nọ́mbà káàdì náà",
   },
+  sdk_aria: "Ìbojú ṣíṣẹ́dà àwòrán káàdì",
   timeout_modal: {
     cancel_btn: "Fagi lée",
     details: "O kò rí káàdì náà kà. Jọ̀wọ́ tún un gbìyànjú.",

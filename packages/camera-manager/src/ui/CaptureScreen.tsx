@@ -30,14 +30,14 @@ import { cameraUiRefSignalStore } from "./zustandRefStore";
 
 import { makeResizeObserver } from "@solid-primitives/resize-observer";
 import { CameraErrorModal } from "./CameraErrorModal";
-import { debounce } from "./debounce";
+import { debounce } from "perfect-debounce";
 import { determineFitMode, FitMode } from "./determineFitMode";
 import { getVisibleVideoArea } from "./getVisibleVideoArea";
 
 /**
  * The capture screen shadow root host ID.
  */
-export const CAPTURE_SCREEN_SHADOW_ROOT_HOST_ID = "capture-screen-host";
+const CAPTURE_SCREEN_SHADOW_ROOT_HOST_ID = "capture-screen-host";
 
 /**
  * The CaptureScreen component.
@@ -106,7 +106,9 @@ export const CaptureScreen: Component = () => {
 
     const debouncedAdjustVideoFit = debounce(adjustVideoFit, 100);
 
-    const { observe, unobserve } = makeResizeObserver(debouncedAdjustVideoFit);
+    const { observe, unobserve } = makeResizeObserver(
+      () => void debouncedAdjustVideoFit(),
+    );
 
     observe(video);
 
@@ -118,6 +120,7 @@ export const CaptureScreen: Component = () => {
     video.addEventListener("loadedmetadata", adjustVideoFit);
 
     onCleanup(() => {
+      debouncedAdjustVideoFit.cancel();
       unobserve(video);
       video.removeEventListener("resize", adjustVideoFit);
       video.removeEventListener("loadedmetadata", adjustVideoFit);
@@ -194,6 +197,8 @@ export const CaptureScreen: Component = () => {
           style={{
             "object-fit": fitMode(),
           }}
+          aria-hidden="true"
+          tabindex="-1"
           ref={setVideoRef}
         />
 
@@ -234,7 +239,7 @@ export const CaptureScreenPortalled: Component = () => {
   // so we use the addOnDismountCallback which are run before dismounting
   // the SolidJS Camera Manager component
   const [isOpen, setIsOpen] = createSignal(true);
-  const { addOnDismountCallback } = useCameraUiStore();
+  const { addOnDismountCallback, zIndex } = useCameraUiStore();
 
   addOnDismountCallback(() => {
     setIsOpen(false);
@@ -244,37 +249,24 @@ export const CaptureScreenPortalled: Component = () => {
     <Portal
       useShadow={true}
       mount={document.getElementById(MOUNT_POINT_ID)!}
-      // TODO: see if there is a better way to handle this
       ref={(ref) => {
         ref.id = CAPTURE_SCREEN_SHADOW_ROOT_HOST_ID;
-        // TODO: this needs to be configurable by the user
-        ref.style.zIndex = "1000";
+        ref.style.zIndex =
+          zIndex !== undefined ? String(zIndex) : "calc(infinity)";
         ref.style.position = "fixed";
         ref.id = "mb-camera-host";
         return ref;
       }}
     >
       <SmartEnvironmentProvider>
-        {(rootNode) => (
-          <Dialog.Root
-            open={isOpen()}
-            lazyMount
-            unmountOnExit
-            initialFocusEl={() => {
-              const dialog: HTMLElement =
-                rootNode.querySelector('[role="dialog"]')!;
-              return dialog;
-            }}
-          >
+        {() => (
+          <Dialog.Root open={isOpen()}>
             <Dialog.Positioner>
               <Dialog.Content
-                aria-labelledby="dialog-title"
                 class="h-vh supports-[(height:100dvh)]:h-dvh top-0 left-0 w-full
                   fixed"
               >
-                <Dialog.Title class="sr-only" id="dialog-title">
-                  {t.scan_document}
-                </Dialog.Title>
+                <Dialog.Title class="sr-only">{t.dialog_title}</Dialog.Title>
                 <CaptureScreen />
               </Dialog.Content>
             </Dialog.Positioner>

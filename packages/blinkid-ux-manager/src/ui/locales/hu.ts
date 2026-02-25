@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Szkennelje be egy támogatott dokumentum elülső oldalát.",
   document_scanned: "Siker! Dokumentum beolvasva",
-  document_too_close_to_edge: "Mozdítsa el a dokumentumot a széltől",
+  document_too_close_to_edge: "Menjen távolabb",
   face_photo_not_fully_visible: "Tartsa az arcképet teljesen láthatóan",
   flip_document: "Fordítsa meg a dokumentumot",
   flip_to_back_side: "Fordítsa meg a dokumentumot",
@@ -25,6 +25,11 @@ export default {
     "Döntse meg vagy mozgassa a dokumentumot a tükröződés megszüntetéséhez",
   help_aria_label: "Súgó",
   help_modal_back_btn: "Vissza",
+  help_modal_blur_details_desktop:
+    "A szkennelés során próbálja mozdulatlanul tartani az eszközt és a dokumentumot. Mozgás hatására a kép elmosódhat, a dokumentumon lévő adatok pedig olvashatatlanná válhatnak.",
+  help_modal_camera_lens_details:
+    "Ellenőrizze, hogy nincs-e folt vagy por a kamera lencséjén. A piszkos lencse elhomályosítja a végső képet, így a dokumentum részletei olvashatatlanná válnak, ami megakadályozza az adatok sikeres beolvasását.",
+  help_modal_camera_lens_title: "Tisztítsa meg a kameralencsét",
   help_modal_details_1:
     "Ügyeljen arra, hogy ne takarja le az ujjával a dokumentum részeit (az alsó sorokat is beleértve). Ügyeljen továbbá a hologramokra is, amelyek visszatükröződnek a dokumentummezőkön.",
   help_modal_details_2:
@@ -37,6 +42,8 @@ export default {
   help_modal_title_2: "Ügyeljen az erős fényre",
   help_modal_title_3: "Maradjon mozdulatlan a szkennelés során",
   help_tooltip: "Segíthetünk bármiben?",
+  keep_document_parallel: "Tartsa a dokumentumot az eszközzel párhuzamosan",
+  keep_document_still: "Tartsa mozdulatlanul a dokumentumot és az eszközt",
   move_closer: "Menjen közelebb",
   move_farther: "Menjen távolabb",
   move_left: "Áthelyezés a bal oldali oldalra",
@@ -46,7 +53,11 @@ export default {
   onboarding_modal_btn: "Szkennelés megkezdése",
   onboarding_modal_details:
     "Ügyeljen a dokumentum megfelelő megvilágítására. Minden dokumentummezőnek láthatónak kell lennie a kameraképernyőn.",
+  onboarding_modal_details_desktop:
+    "Ügyeljen a kameralencse tisztán tartására és a dokumentum megfelelő megvilágítására. Minden dokumentummezőnek láthatónak kell lennie a kameraképernyőn.",
   onboarding_modal_title: "Az összes adat legyen látható",
+  onboarding_modal_title_desktop: "Készüljön fel a szkennelésre",
+  resume_scanning: "Szkennelés folytatása",
   scan_data_page: "A dokumentum adatlapjának beolvasása",
   scan_last_page_barcode: "Olvassa be a vonalkódot az utolsó oldalról",
   scan_left_page: "A bal oldali oldal beolvasása",
@@ -58,6 +69,9 @@ export default {
   scan_unsuccessful: "Sikertelen szkennelés",
   scan_unsuccessful_details:
     "Nem sikerült elolvasni a dokumentumot. Kérjük, próbálja újra.",
+  scanning_help: "Szkennelési súgó",
+  scanning_instructions: "Szkennelési utasítások",
+  scanning_screen: "Dokumentumszkennelés képernyő",
   too_bright: "Menjen egy kevésbé megvilágított helyre",
   too_dark: "Menjen jobban megvilágított helyre",
   wrong_left: "Áthelyezés a bal oldali oldalra",

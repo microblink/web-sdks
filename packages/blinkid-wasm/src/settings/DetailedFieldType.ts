@@ -2,8 +2,8 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { AlphabetType } from "../utils";
 import { FieldType } from "../result";
+import { AlphabetType } from "../utils";
 
 /** Represents the detailed field type. */
 export type DetailedFieldType = {

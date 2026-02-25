@@ -2,8 +2,8 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { describe, expect, beforeEach, test } from "vitest";
 import { BlinkIdSessionSettings } from "@microblink/blinkid-wasm";
+import { beforeEach, describe, expect, test } from "vitest";
 import {
   buildSessionSettings,
   PartialBlinkIdSessionSettings,

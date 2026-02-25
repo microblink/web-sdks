@@ -16,7 +16,7 @@ import type { BlinkCardUxManager } from "../core/BlinkCardUxManager";
 /**
  * The BlinkCardUiStore type.
  */
-export type BlinkCardUiStore = {
+type BlinkCardUiStore = {
   /**
    * The BlinkCardUxManager instance.
    */

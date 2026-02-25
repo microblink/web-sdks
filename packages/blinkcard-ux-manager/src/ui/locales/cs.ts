@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Nápověda", tooltip: "Potřebujete pomoct?" },
   help_modal: {
+    aria: "Nápověda pro skenování",
     back_btn: "Zpět",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Kde je číslo karty?",
     },
     done_btn: "Hotovo",
+    done_btn_aria: "Pokračovat ve skenování",
     lighting: {
       details:
         "Vyhněte se přímému ostrému světlu, protože se odráží od karty a může způsobit, že její části nebudou čitelné. Pokud nelze údaje na kartě přečíst, nebudou viditelné ani pro fotoaparát.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Pokyny pro skenování",
     btn: "Spustit skenování",
     details:
       "Číslo karty je obvykle 16místné. Mělo by být buď vytištěno, nebo vyraženo reliéfními číslicemi podél karty. Ujistěte se, že je karta dobře osvětlená a všechny údaje jsou viditelné.",
@@ -63,6 +66,7 @@ export default {
       "Číslo karty je obvykle 16místné. Mělo by být buď vytištěno, nebo vyraženo reliéfními číslicemi podél karty. Ujistěte se, že objektiv fotoaparátu je čistý, karta je dobře osvětlená a všechny údaje jsou viditelné.",
     title: "Nejprve naskenujte číslo karty",
   },
+  sdk_aria: "Obrazovka skenování karty",
   timeout_modal: {
     cancel_btn: "Storno",
     details: "Kartu nelze načíst. Zkuste to znovu.",

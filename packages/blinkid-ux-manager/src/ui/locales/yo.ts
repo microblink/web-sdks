@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "A kò rí ìdámọ̀ ìwé àkọsílẹ̀ ṣe",
   document_not_recognized_details: "Ṣe ẹ̀dà àwòrán iwájú ìwé àkọsílẹ̀ tó nílò.",
   document_scanned: "Àṣeyọrí! Ẹ̀dà àwòrán ìwé àkọsílẹ̀ ti parí",
-  document_too_close_to_edge: "Sún ìwé àkọsílẹ̀ náà kúrò ní eteetí",
+  document_too_close_to_edge: "Sún jìnnà síi",
   face_photo_not_fully_visible: "Jẹ́ kí àwòrán ojú rẹ hàn kedere",
   flip_document: "Yí ìwé àkọsílẹ̀ padà",
   flip_to_back_side: "Yí padà sí ẹ̀yìn",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "Tẹ̀ ẹ́ tàbí yí ìwé àkọsílẹ̀ náà láti yọ àgbéyọ kúrò",
   help_aria_label: "Ìrànlọ́wọ́",
   help_modal_back_btn: "Padà",
+  help_modal_blur_details_desktop:
+    "Gbìyànjú kó mú ẹ̀rọ aláàgbéká àti ìwé àkọsílẹ̀ dúró nígbà ṣíṣe ẹ̀dà àwòrán. Sí sún kiri lè fa bóyá kí àwòrán náà rí bàìbàì àti kí ó mú kí àwọn ìsọfúnni orí ìwé àkọsílẹ̀ má ṣe jẹ́ é kà.",
+  help_modal_camera_lens_details:
+    "Yẹ awò ojú kámẹ́rà wò fún àwọn àbàwọ́n tàbí eruku. Awò kámẹ́rà tó bá dọ̀tí lè ṣokùnfa kí àwòrán ìkẹyìn rí bàìbàì, tí ó lè fa kí àwon ìsọfúnni orí ìwé àkọsílẹ̀ náà má ṣe é kà tàbí ìdènà àṣeyọrí ṣíṣe ẹ̀dà àwòrán dátà náà.",
+  help_modal_camera_lens_title: "Nu awò ojú kámẹ́rà rẹ nù",
   help_modal_details_1:
     "Rí i dájú pé o kò fi ìka bo apá ibì kan lára ìwé àkọsílẹ̀ náà, títí kan àwọn ìlà ìsàlẹ̀. Bákan náà, ṣọ́ra fún àwọn ìtànyòò hologram tí wọ́n máa ń wa ní àwọn apá kan lórí ìwé àkọsílẹ̀ náà.",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "Ṣọ́ra fún ìmọ́lẹ̀ tó lágbára jù",
   help_modal_title_3: "Dúró sí ojú kan nígbà ṣíṣe ẹ̀dà àwòrán",
   help_tooltip: "Ṣé o nílò ìrànlọ́wọ́?",
+  keep_document_parallel: "Gbe ìwé àkọsílẹ̀ ní pẹrẹsẹ kó dọ́gba pẹ̀lú ìbojú",
+  keep_document_still: "Mú ìwé àkọsílẹ̀ àti ẹ̀rọ alágbèéká dúró",
   move_closer: "Sún mọ́ síi",
   move_farther: "Sún jìnnà síi",
   move_left: "Lọ sí ojú-ìwé tó wà ní òsì",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "Bẹ̀rẹ̀ ṣíṣẹ́dà àwòrán",
   onboarding_modal_details:
     "Ríi dájú pé ìmọ́lẹ̀ tàn sórí ìwé àkọsílẹ̀ náà dáadáa. Gbogbo ààyè orí ìwé àkọsílẹ̀ náà ni kó sí hàn kedere lórí àwo kámẹ́rà.",
+  onboarding_modal_details_desktop:
+    "Ríi dájú pé awò ojú kámẹ́rà rẹ mọ́ àti kí ìmọ́lẹ̀ tàn sórí ìwé àkọsílẹ̀ náà dáadáa. Gbogbo ààyè orí ìwé àkọsílẹ̀ náà ni kó sí hàn kedere lórí àwo kámẹ́rà.",
   onboarding_modal_title: "Jẹ́ kí gbogbo àwọn ìsọfúnni náà hàn kedere",
+  onboarding_modal_title_desktop: "Múra sílẹ̀ láti ṣe ẹ̀dà àwòrán",
+  resume_scanning: "Padà sẹ́nu ṣíṣẹ́dà àwòrán",
   scan_data_page: "Ṣe ẹ̀dà àwòrán ojú-ìwé ẹ̀gbà ìwé àkọsílẹ̀ náà",
   scan_last_page_barcode: "Ṣàyẹ̀wò kóòdù onílà láti ojú-ewé tó gbẹ̀yìn",
   scan_left_page: "Ṣe ẹ̀dà àwòrán ojú-ìwé òsì",
@@ -55,6 +66,9 @@ export default {
   scan_top_page: "Ṣe ẹ̀dà àwòrán ojú-ìwé òkè",
   scan_unsuccessful: "Ṣíṣe ẹ̀dà àwòrán kò yege",
   scan_unsuccessful_details: "A kò rí ìwé àkọsílẹ̀ náà kà. Jọ̀wọ́ tún gbìyànjú.",
+  scanning_help: "Ìrànlọ́wọ́ láti ṣẹ̀dà àwòrán",
+  scanning_instructions: "Àwọn Ìtọ́nisọ́nà Ṣíṣẹ́dà àwòrán",
+  scanning_screen: "Ìbojú ṣíṣẹ́dà àwòrán ìwé àkọsílẹ̀",
   too_bright: "Lọ sí ibi tí ìmọ́lẹ̀ ò fi bẹ́ẹ̀ sí",
   too_dark: "Lọ sí ibi tó mọ́lẹ̀ síi",
   wrong_left: "Lọ sí ojú-ìwé òsì",

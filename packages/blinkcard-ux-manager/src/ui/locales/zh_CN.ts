@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "帮助", tooltip: "需要帮助？" },
   help_modal: {
+    aria: "扫描帮助",
     back_btn: "返回",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "卡号在哪里？",
     },
     done_btn: "完成",
+    done_btn_aria: "恢复扫描",
     lighting: {
       details:
         "避免直接强光，因为它会从卡上反射，并可能使卡的一些部分不可读。如果您无法阅读卡上的数据，摄像头也无法识别。",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "扫描说明",
     btn: "开始扫描",
     details:
       "卡号通常是 16 位数。卡号应该是卡中打印或凸印的数字。确保卡的光照良好，所有细节清晰可见。",
@@ -63,6 +66,7 @@ export default {
       "卡号通常为 16 位数字，一般以印刷或凸起数字的形式显示在卡片表面。请确保摄像头镜头干净，卡片光线充足且所有信息清晰可见。",
     title: "首先扫描卡号",
   },
+  sdk_aria: "卡片扫描屏幕",
   timeout_modal: {
     cancel_btn: "取消",
     details: "无法读取卡片，请重试。",

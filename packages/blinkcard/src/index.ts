@@ -10,7 +10,6 @@
  */
 
 export * from "@microblink/blinkcard-core";
-export * from "@microblink/camera-manager";
 export * from "@microblink/blinkcard-ux-manager";
-
+export * from "@microblink/camera-manager";
 export * from "./createBlinkCard";

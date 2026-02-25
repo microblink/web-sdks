@@ -143,4 +143,13 @@ export type Region =
   | "sergipe"
   | "alagoas"
   | "bangsamoro"
-  | "telangana";
+  | "telangana"
+  | "acre"
+  | "espirito-santo"
+  | "mato-grosso-do-sul"
+  | "paraiba"
+  | "piaui"
+  | "rio-grande-do-norte"
+  | "tocantins"
+  | "odisha"
+  | "uttarakhand";

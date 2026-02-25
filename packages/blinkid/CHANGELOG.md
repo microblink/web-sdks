@@ -1,5 +1,16 @@
 # @microblink/blinkid
 
+## 7.7.0
+
+### Patch Changes
+
+- Fixes `feedbackUiOptions` being reassigned to an empty object and ignoring passed configuration.
+- Removed dead `feedbackLocalization` prop from `BlinkIdComponentOptions`. Localization strings should be passed via `feedbackUiOptions.localizationStrings` instead.
+- Updated dependencies
+  - @microblink/blinkid-core@7.7.0
+  - @microblink/blinkid-ux-manager@7.7.0
+  - @microblink/camera-manager@7.3.0
+
 ## 7.6.4
 
 ### Patch Changes

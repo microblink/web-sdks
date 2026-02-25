@@ -73,3 +73,20 @@ If set to `true`, the torch button will be shown.
 ```ts
 true
 ```
+
+***
+
+### zIndex?
+
+> `optional` **zIndex**: `number`
+
+The z-index of the camera UI when rendered as a full-screen overlay.
+Only applies when no target element is provided.
+
+If not provided, uses `calc(infinity)` to ensure the camera UI appears on top.
+
+#### Default Value
+
+```ts
+calc(infinity)
+```

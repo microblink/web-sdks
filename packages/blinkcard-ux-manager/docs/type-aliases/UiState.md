@@ -4,12 +4,20 @@
 
 [@microblink/blinkcard-ux-manager](../README.md) / UiState
 
-# Type Alias: UiState
+# Type Alias: UiState\<K\>
 
-> **UiState** = `object`
+> **UiState**\<`K`\> = `object`
 
 Represents a UI state configuration with timing and weight parameters.
 Used to define how different UI states should behave in the stabilization process.
+
+## Type Parameters
+
+### K
+
+`K` *extends* `string` = `string`
+
+The specific key type for this UI state
 
 ## Properties
 
@@ -24,7 +32,7 @@ Higher values give the state more influence in the averaging process.
 
 ### key
 
-> **key**: `string`
+> **key**: `K`
 
 Unique identifier for the UI state
 

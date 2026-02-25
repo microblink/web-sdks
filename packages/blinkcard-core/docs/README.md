@@ -40,6 +40,7 @@
 - [DetectionStatus](type-aliases/DetectionStatus.md)
 - [DeviceInfo](type-aliases/DeviceInfo.md)
 - [DeviceScreenInfo](type-aliases/DeviceScreenInfo.md)
+- [DownloadProgress](type-aliases/DownloadProgress.md)
 - [ExtractionSettings](type-aliases/ExtractionSettings.md)
 - [FieldExtractionStatus](type-aliases/FieldExtractionStatus.md)
 - [FormFactor](type-aliases/FormFactor.md)
@@ -80,7 +81,6 @@
 
 ## Functions
 
-- [createCustomImageData](functions/createCustomImageData.md)
 - [createDerivedDeviceInfo](functions/createDerivedDeviceInfo.md)
 - [createProxyWorker](functions/createProxyWorker.md)
 - [extractSideInputImage](functions/extractSideInputImage.md)

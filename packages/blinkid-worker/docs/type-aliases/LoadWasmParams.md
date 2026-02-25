@@ -12,6 +12,12 @@ The load Wasm params.
 
 ## Properties
 
+### featureVariant
+
+> **featureVariant**: `"full"` \| `"lightweight"`
+
+***
+
 ### initialMemory?
 
 > `optional` **initialMemory**: `number`
@@ -24,12 +30,6 @@ The load Wasm params.
 
 ***
 
-### useLightweightBuild
+### wasmVariant
 
-> **useLightweightBuild**: `boolean`
-
-***
-
-### variant?
-
-> `optional` **variant**: `WasmVariant`
+> **wasmVariant**: `WasmVariant`

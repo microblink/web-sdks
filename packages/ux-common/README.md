@@ -4,7 +4,7 @@ Shared UX utilities used by BlinkID and BlinkCard UX manager packages. It provid
 
 ## Overview
 
-- Exports: `hapticFeedback`, `utils`.
+- Exports: `hapticFeedback`, `utils`, `cameraAnalyticsMappers`, `RafLoop`.
 - Used internally by `@microblink/blinkid-ux-manager` and `@microblink/blinkcard-ux-manager`.
 - Private package; consumed via `workspace:*` within the monorepo.
 

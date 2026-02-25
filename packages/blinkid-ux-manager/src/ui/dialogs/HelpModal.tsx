@@ -6,172 +6,204 @@ import { Modal } from "@microblink/shared-components/Modal";
 import {
   type Component,
   createEffect,
+  createMemo,
   createSignal,
-  For,
+  createUniqueId,
+  Index,
+  on,
   onCleanup,
   ParentComponent,
 } from "solid-js";
 import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
 
-import { Carousel, DialogTitle, Tooltip } from "@ark-ui/solid";
-import HelpCorrectFraming from "../assets/help/help_fields_visible.svg?component-solid";
-import HelpHarshLight from "../assets/help/help_harsh_light.svg?component-solid";
-import HelpKeepStill from "../assets/help/help_keep_still.svg?component-solid";
+import { Tooltip } from "@ark-ui/solid";
+import HelpOcclusion from "../assets/help/help_occlusion.svg";
+import HelpCameraLens from "../assets/help/help_camera_lens.svg?component-solid";
+import HelpLighting from "../assets/help/help_lighting.svg?component-solid";
+import HelpBlur from "../assets/help/help_blur.svg?component-solid";
 import QuestionIcon from "../assets/icons/icon-question.svg?component-solid";
 
 import { Dynamic } from "solid-js/web";
 
-import { PingSdkUxEventImpl } from "../../shared/ping-implementations";
-import { LocalizationStrings, useLocalization } from "../LocalizationContext";
-import styles from "./styles.module.scss";
+import { useLocalization } from "../LocalizationContext";
 
 /**
  * The HelpModal component.
  *
  * @returns The HelpModal component.
  */
-export const HelpModal: Component = () => {
+export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
   const { t } = useLocalization();
 
   const { store, updateStore } = useBlinkIdUiStore();
-  const ping = store.blinkIdUxManager.scanningSession.ping;
 
-  const [currentStep, setCurrentStep] = createSignal(0);
+  const [step, setStep] = createSignal(0);
 
-  const modalVisible = () => store.showHelpModal;
+  const isModalOpen = () => store.showHelpModal;
+  const isLastStep = () => step() === steps().length - 1;
+  const closeModal = () => updateStore({ showHelpModal: false });
 
-  const hideModal = () => {
-    updateStore({ showHelpModal: false });
-    setCurrentStep(0);
-    void store.blinkIdUxManager.cameraManager.startFrameCapture();
-    void ping(
-      new PingSdkUxEventImpl({
-        eventType: "HelpClosed",
-        helpCloseType: isLastStep() ? "ContentFullyViewed" : "ContentSkipped",
-      }),
-    );
+  /**
+   * Fix for timing issue, array is created before `t` is updated.
+   */
+  const steps = createMemo(() => [
+    ...(props.isDesktop
+      ? [
+          {
+            title: t.help_modal_camera_lens_title,
+            img: HelpCameraLens,
+            description: t.help_modal_camera_lens_details,
+          },
+        ]
+      : []),
+    {
+      title: t.help_modal_title_1,
+      img: HelpOcclusion,
+      description: t.help_modal_details_1,
+    },
+    {
+      title: t.help_modal_title_2,
+      img: HelpLighting,
+      description: t.help_modal_details_2,
+    },
+    {
+      title: t.help_modal_title_3,
+      img: HelpBlur,
+      description: props.isDesktop
+        ? t.help_modal_blur_details_desktop
+        : t.help_modal_details_3,
+    },
+  ]);
+
+  const onClose = () => {
+    void store.blinkIdUxManager.analytics.logHelpClosedEvent(isLastStep());
+    setStep(0);
   };
 
-  const steps: {
-    title: keyof LocalizationStrings;
-    img: Component;
-    text: keyof LocalizationStrings;
-  }[] = [
-    {
-      title: "help_modal_title_1",
-      img: HelpCorrectFraming,
-      text: "help_modal_details_1",
-    },
-    {
-      title: "help_modal_title_2",
-      img: HelpHarshLight,
-      text: "help_modal_details_2",
-    },
-    {
-      title: "help_modal_title_3",
-      img: HelpKeepStill,
-      text: "help_modal_details_3",
-    },
-  ];
+  createEffect(
+    on(
+      () => isModalOpen(),
+      (open) => {
+        if (open) {
+          void store.blinkIdUxManager.analytics.logHelpOpenedEvent();
+        } else {
+          onClose();
+        }
+      },
+      { defer: true },
+    ),
+  );
 
-  const isLastStep = () => currentStep() === steps.length - 1;
-  const isFirstStep = () => currentStep() === 0;
-
-  let startScanningBtnRef!: HTMLButtonElement;
-
-  createEffect(() => {
-    if (modalVisible()) {
-      void ping(
-        new PingSdkUxEventImpl({
-          eventType: "HelpOpened",
-        }),
-      );
-    }
+  onCleanup(() => {
+    onClose();
   });
 
-  createEffect(() => {
-    const showHelpModal = store.showHelpModal;
-
-    if (showHelpModal === undefined) {
-      return;
-    }
-
-    if (showHelpModal) {
-      store.blinkIdUxManager.cameraManager.stopFrameCapture();
-    } else {
-      void store.blinkIdUxManager.cameraManager.startFrameCapture();
-    }
-  });
+  const firstHeadingId = createUniqueId();
+  const [nextButtonRef, setNextButtonRef] =
+    createSignal<HTMLButtonElement | null>(null);
 
   return (
     <Modal
       mountTarget={store.cameraManagerComponent.overlayLayerNode}
-      open={modalVisible()}
+      open={isModalOpen()}
       showCloseButton
-      onCloseClicked={() => hideModal()}
+      onEscapeKeyDown={() => closeModal()}
+      onCloseClicked={() => closeModal()}
+      initialFocusEl={() => nextButtonRef()}
+      aria-label={t.scanning_help}
+      scrollable={false}
+      actions={{
+        primary: {
+          "aria-label": isLastStep()
+            ? t.resume_scanning
+            : t.help_modal_next_btn,
+          label: isLastStep() ? t.help_modal_done_btn : t.help_modal_next_btn,
+          onClick: () => (isLastStep() ? closeModal() : setStep(step() + 1)),
+          ref: setNextButtonRef,
+        },
+        secondary: {
+          label: t.help_modal_back_btn,
+          onClick: () => setStep(step() - 1),
+          disabled: step() === 0,
+        },
+      }}
     >
-      <Carousel.Root
-        defaultPage={0}
-        slideCount={steps.length}
-        page={currentStep()}
-        onPageChange={(details) => setCurrentStep(details.page)}
-        class={styles.carousel}
-        onKeyDown={(e) => {
-          if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
-            e.stopPropagation();
-            e.preventDefault();
-          }
-        }}
+      <div
+        role="region"
+        class="h-full min-h-0 overflow-hidden grid
+          grid-rows-[minmax(0,1fr)_auto]"
       >
-        <Carousel.ItemGroup class={styles.itemGroup}>
-          <For each={steps}>
-            {(step, index) => (
-              <Carousel.Item class={styles.item} index={index()}>
-                <Dynamic component={step.img} aria-hidden />
-                <div class={styles.textContent}>
-                  <DialogTitle>{t[step.title]}</DialogTitle>
-                  <p>{t[step.text]}</p>
+        {/* Content Area */}
+        <div class="min-h-0 overflow-y-auto compact:overflow-hidden">
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            class="grid h-full min-h-0"
+          >
+            <Index each={steps()}>
+              {(stepItem, index) => (
+                <div
+                  class="grid-area-[1/1] min-h-0 compact:h-full"
+                  classList={{ invisible: step() !== index }}
+                >
+                  <article
+                    class="grid grid-cols-1 gap-2 min-h-0 compact:h-full
+                      compact:grid-cols-[minmax(7rem,11.25rem)_minmax(0,1fr)]
+                      compact:grid-rows-[minmax(0,1fr)]"
+                  >
+                    <div
+                      aria-hidden="true"
+                      class="compact:col-start-1 compact:self-start"
+                    >
+                      <Dynamic
+                        component={stepItem().img}
+                        class="w-full max-w-[17.5rem] m-x-auto
+                          compact:max-w-[11.25rem]"
+                      />
+                    </div>
+                    <div
+                      class="compact:col-start-2 compact:min-h-0 compact:h-full
+                        compact:overflow-y-auto"
+                    >
+                      <h2
+                        class="dialog-title compact:!text-left"
+                        id={index === 0 ? firstHeadingId : undefined}
+                        tabIndex={index === 0 ? -1 : undefined}
+                        // punctuation causes pause on screen reader
+                        aria-label={`${stepItem().title}.`}
+                      >
+                        {stepItem().title}
+                      </h2>
+                      <p class="dialog-description compact:!text-left">
+                        {stepItem().description}
+                      </p>
+                    </div>
+                  </article>
                 </div>
-              </Carousel.Item>
-            )}
-          </For>
-        </Carousel.ItemGroup>
-        <Carousel.IndicatorGroup class={styles.indicators}>
-          <For each={steps}>
-            {(_, i) => (
-              <Carousel.Indicator
-                index={i()}
-                readOnly
-                class={styles.indicator}
-                aria-hidden
-                tabIndex={-1}
+              )}
+            </Index>
+          </div>
+        </div>
+
+        {/* Progress Dots - purely visual */}
+        <div
+          class="relative z-10 bg-white flex items-center justify-center gap-3
+            py-3"
+          aria-hidden="true"
+        >
+          <Index each={steps()}>
+            {(_, index) => (
+              <div
+                class="size-[9px] rounded-full transition-colors"
+                classList={{
+                  "bg-primary": step() === index,
+                  "bg-gray-300": step() !== index,
+                }}
               />
             )}
-          </For>
-        </Carousel.IndicatorGroup>
-        <Carousel.Control class={styles.controls}>
-          <div class={styles.controlsInner}>
-            <Carousel.PrevTrigger
-              class={styles.buttonSecondary}
-              disabled={isFirstStep()}
-            >
-              {t.help_modal_back_btn}
-            </Carousel.PrevTrigger>
-            <Carousel.NextTrigger
-              ref={startScanningBtnRef}
-              class={styles.buttonPrimary}
-              onClick={() => {
-                if (currentStep() >= steps.length - 1) {
-                  hideModal();
-                }
-              }}
-              disabled={false}
-            >
-              {isLastStep() ? t.help_modal_done_btn : t.help_modal_next_btn}
-            </Carousel.NextTrigger>
-          </div>
-        </Carousel.Control>
-      </Carousel.Root>
+          </Index>
+        </div>
+      </div>
     </Modal>
   );
 };
@@ -187,7 +219,6 @@ export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
 ) => {
   const { t } = useLocalization();
   const { store, updateStore } = useBlinkIdUiStore();
-  const ping = store.blinkIdUxManager.scanningSession.ping;
 
   const [tooltipOpen, setTooltipOpen] = createSignal(false);
   const [wasAutoShown, setWasAutoShown] = createSignal(false);
@@ -207,7 +238,7 @@ export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
   };
 
   const scheduleAutoHide = () => {
-    const displayDuration = store.blinkIdUxManager.getHelpTooltipHideDelay();
+    const displayDuration = store.helpTooltipHideDelay;
     if (displayDuration && displayDuration > 0) {
       hideTooltipTimeoutId = window.setTimeout(() => {
         setTooltipOpen(false);
@@ -216,7 +247,7 @@ export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
   };
 
   const showTooltipAutomatically = () => {
-    const timeout = store.blinkIdUxManager.getHelpTooltipShowDelay();
+    const timeout = store.helpTooltipShowDelay;
     if (timeout && timeout > 0) {
       showTooltipTimeoutId = window.setTimeout(() => {
         setTooltipOpen(true);
@@ -247,11 +278,7 @@ export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
   // handle analytics
   createEffect(() => {
     if (tooltipOpen()) {
-      void ping(
-        new PingSdkUxEventImpl({
-          eventType: "HelpTooltipDisplayed",
-        }),
-      );
+      void store.blinkIdUxManager.analytics.logHelpTooltipDisplayedEvent();
     }
   });
 
@@ -266,15 +293,26 @@ export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
       <Tooltip.Trigger
         part="help-button-part"
         aria-label={t.help_aria_label}
-        class={styles.helpButton}
+        class="btn-focus rounded-full bg-white grid place-items-center size-9
+          appearance-none border-none hover:bg-gray-100 active:bg-gray-200
+          pos-absolute bottom-4 right-4 [&_svg]:size-7"
         onClick={() => updateStore({ showHelpModal: true })}
       >
-        <QuestionIcon />
+        <QuestionIcon aria-hidden="true" />
       </Tooltip.Trigger>
 
       <Tooltip.Positioner>
-        <Tooltip.Content part="help-button-tooltip-part" class={styles.tooltip}>
-          <Tooltip.Arrow class={styles.arrow}>
+        <Tooltip.Content
+          part="help-button-tooltip-part"
+          class="bg-primary color-white text-align-center p-2 rounded-md text-sm
+            drop-shadow-md"
+          // Prevent duplicate announcement
+          aria-hidden="true"
+        >
+          <Tooltip.Arrow
+            class="[--arrow-size:0.5rem]
+              [--arrow-background:rgb(var(--color-primary))]"
+          >
             <Tooltip.ArrowTip />
           </Tooltip.Arrow>
           {t.help_tooltip}

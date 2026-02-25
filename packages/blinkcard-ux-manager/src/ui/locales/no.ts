@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Hjelp", tooltip: "Trenger du hjelp?" },
   help_modal: {
+    aria: "Hjelp med skanning",
     back_btn: "Tilbake",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Hvor er kortnummeret?",
     },
     done_btn: "Ferdig",
+    done_btn_aria: "Fortsett å skanne",
     lighting: {
       details:
         "Unngå direkte hardt lys fordi det gjenspeiles i kortet og kan føre til at deler av kortet blir uleselig. Hvis du ikke kan lese det som står på kortet, er det heller ikke synlig for kamera.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Slik skanner du",
     btn: "Start skanning",
     details:
       "Kortnummeret er vanligvis et nummer på 16 siffer. Det skal enten være trykt eller preget i opphøyde tall på kortet. Sørg for at kortet er godt opplyst og at alle detaljene er synlige.",
@@ -63,6 +66,7 @@ export default {
       "Kortnummeret består vanligvis av 16 siffer. Det skal enten være trykt eller preget i opphøyde tall på tvers av kortet. Sørg for at kameralinsen er ren, at kortet er godt belyst, og at alle detaljer er synlige.",
     title: "Skann kortnummeret først",
   },
+  sdk_aria: "Kortskanningside",
   timeout_modal: {
     cancel_btn: "Avbryt",
     details: "Kan ikke lese kortet. Vennligst prøv igjen.",

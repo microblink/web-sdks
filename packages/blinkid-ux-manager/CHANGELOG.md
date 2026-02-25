@@ -1,5 +1,27 @@
 # @microblink/blinkid-ux-manager
 
+## 7.7.0
+
+### Minor Changes
+
+- Replaces the `BlinkIdUxManager` constructor with a `createBlinkIdUxManager` factory, fixing race conditions that could occur during construction. Constructor-based instantiation is no longer supported.
+- To migrate, replace `new BlinkIdUxManager(...)` with `await createBlinkIdUxManager(cameraManager, scanningSession, options?)`. The factory is async and returns `Promise<BlinkIdUxManager>`; the `BlinkIdUxManager` type remains exported for typing.
+- Exposes configurable help tooltip delays via `FeedbackUiOptions` and deprecates legacy tooltip timeout APIs in `BlinkIdUxManager`.
+- Removes the `safelyDeleteScanningSession()` method and the `deleteSession` parameter from `getSessionResult()`. `BlinkIdUxManager` no longer deletes the underlying WASM scanning session on your behalf. If your integration creates more than one `BlinkIdScanningSession` per SDK load, you are now responsible for calling `scanningSession.delete()` on the session object once you are finished with it to free WASM heap memory. Integrations that reuse a single session for the lifetime of the page are unaffected.
+
+### Patch Changes
+
+- Adds a proper screen-reader title to the dialog when the `camera-manager` component is rendered in a modal, ensuring assistive technologies announce a meaningful dialog title on the capture screen.
+- Improves the help dialog with device-specific on-screen messages, tailoring copy for desktop and mobile to provide better guidance on each platform.
+- Adds `"result_retrieval_failed"` to `BlinkIdProcessingError`.
+- Adds `destroy()` to `BlinkIdUxManager` for explicit teardown.
+- Deprecates `rawUiStateKey` and replaces it with two explicit getters: `uiStateKey` returns the stabilized, visible state key (what the UI shows); `mappedUiStateKey` returns the latest raw candidate key from the detector before stabilization (useful for debugging).
+- Introduces automatic chained UI state transitions after `PAGE_CAPTURED`: the manager advances through a document-type-specific transition state and into the appropriate intro state before resuming capture (e.g. `PAGE_CAPTURED → FLIP_CARD → INTRO_BACK_PAGE` for two-sided IDs, `PAGE_CAPTURED → MOVE_LAST_PAGE → INTRO_LAST_PAGE` for passports with barcode). Integrations that depend on exact UI-state keys or transition timing should account for these new intermediate states.
+- Renames several UI state keys (e.g. `SENSING_FRONT` is now `FRONT_PAGE_NOT_IN_FRAME`). Integrations that reference state keys by name should update accordingly.
+- Updated dependencies
+  - @microblink/blinkid-core@7.7.0
+  - @microblink/camera-manager@7.3.0
+
 ## 7.6.4
 
 ### Patch Changes

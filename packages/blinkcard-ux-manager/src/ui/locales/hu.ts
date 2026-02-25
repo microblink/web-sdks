@@ -25,6 +25,7 @@ export default {
   },
   help_button: { aria_label: "Súgó", tooltip: "Segíthetünk bármiben?" },
   help_modal: {
+    aria: "Szkennelési súgó",
     back_btn: "Vissza",
     blur: {
       details:
@@ -44,6 +45,7 @@ export default {
       title: "Hol található a kártyaszám?",
     },
     done_btn: "Kész",
+    done_btn_aria: "Szkennelés folytatása",
     lighting: {
       details:
         "Kerülje a közvetlen, erős fényt, mivel visszaverődik a kártyáról, és ennek hatására a kártya egyes részei olvashatatlanná válhatnak. Ha nem tudja leolvasni a kártyán lévő adatokat, akkor a kamera számára sem lesznek láthatók.",
@@ -57,6 +59,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Szkennelési utasítások",
     btn: "Szkennelés megkezdése",
     details:
       "A kártyaszám általában 16 számjegyből áll. A szám nyomtatva vagy kiemelkedő, dombornyomott formában látható a kártyán. Ügyeljen a kártya megfelelő megvilágítására, és hogy minden adat jól látható legyen.",
@@ -64,6 +67,7 @@ export default {
       "A kártyaszám általában 16 számjegyből áll. A szám nyomtatva vagy kiemelkedő, dombornyomott formában látható a kártyán. Ügyeljen a kameralencse tisztaságára, a kártya megfelelő megvilágítására, és arra, hogy minden adat jól látható legyen.",
     title: "Először a kártyaszámot szkennelje be",
   },
+  sdk_aria: "Kártyaszkennelés képernyő",
   timeout_modal: {
     cancel_btn: "Mégsem",
     details: "Nem sikerült a kártya olvasása. Kérjük, próbálja újra.",

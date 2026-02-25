@@ -9,8 +9,8 @@ import {
   loadBlinkIdCore,
 } from "@microblink/blinkid-core";
 import {
-  BlinkIdUxManager,
   createBlinkIdFeedbackUi,
+  createBlinkIdUxManager,
 } from "@microblink/blinkid-ux-manager";
 import {
   CameraManager,
@@ -28,7 +28,7 @@ const USE_PORTAL = true;
 /**
  * If the onboarding guide should be shown.
  */
-const SHOW_ONBOARDING = false;
+const SHOW_ONBOARDING = true;
 
 /**
  * This is the target node for the UI.
@@ -40,8 +40,6 @@ const targetNode = !USE_PORTAL ? document.getElementById("root")! : undefined;
  */
 export const App: Component = () => {
   const [result, setResult] = createSignal<BlinkIdScanningResult>();
-  const [blinkIdUxManager, setBlinkIdUxManager] =
-    createSignal<BlinkIdUxManager>();
   const [loadState, setLoadState] = createSignal<
     "not-loaded" | "loading" | "ready"
   >("not-loaded");
@@ -93,7 +91,8 @@ export const App: Component = () => {
        * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid-core/src/defaultSessionSettings.ts
        */
       scanningSettings: {
-        // scanPassportDataPageOnly: false,
+        scanPassportDataPageOnly: false,
+        scanUnsupportedBack: true,
       },
     });
 
@@ -105,11 +104,10 @@ export const App: Component = () => {
     /*
      * Create the UX manager.
      */
-    const uxManager = new BlinkIdUxManager(cameraManager, session);
+    const uxManager = await createBlinkIdUxManager(cameraManager, session);
     // set the timeout duration to null to disable the timeout.
-    uxManager.setTimeoutDuration(null);
-
-    setBlinkIdUxManager(uxManager);
+    // uxManager.setTimeoutDuration(null);
+    uxManager.setHapticFeedbackEnabled(false);
 
     /*
      * This creates the UI and attaches it to the DOM.
@@ -119,6 +117,7 @@ export const App: Component = () => {
      */
     const cameraUi = await createCameraManagerUi(cameraManager, targetNode, {
       showMirrorCameraButton: true,
+      zIndex: 100,
     });
 
     /*
@@ -127,7 +126,6 @@ export const App: Component = () => {
      */
     cameraUi.addOnDismountCallback(() => {
       void blinkIdCore.terminate();
-      setBlinkIdUxManager(undefined);
       setLoadState("not-loaded");
     });
 
@@ -198,7 +196,7 @@ export const App: Component = () => {
        */
       preferredCamera: (cameras) => {
         return cameras.find((camera) =>
-          camera.name.toLowerCase().includes("obs"),
+          camera.name.toLowerCase().includes("face"),
         );
       },
     });

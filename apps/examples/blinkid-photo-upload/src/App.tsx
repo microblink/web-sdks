@@ -196,8 +196,11 @@ const App: Component = () => {
 
       // Process the image
       const imageData = await createImageData(file);
-      const processResult: BlinkIdProcessResult =
-        await currentSession.process(imageData);
+      const processResult = await currentSession.process(imageData);
+
+      if ("error" in processResult) {
+        throw new Error("Error processing the frame.");
+      }
 
       const status = processResult.inputImageAnalysisResult.processingStatus;
 

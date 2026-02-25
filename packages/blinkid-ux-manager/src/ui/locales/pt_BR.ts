@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Digitalize a frente de um documento suportado.",
   document_scanned: "Sucesso! Documento digitalizado",
-  document_too_close_to_edge: "Mova o documento pela borda",
+  document_too_close_to_edge: "Afaste",
   face_photo_not_fully_visible: "Mantenha a foto do rosto totalmente visível",
   flip_document: "Vire o documento",
   flip_to_back_side: "Vire para o verso",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "Incline ou mova o documento para remover o reflexo",
   help_aria_label: "Ajuda",
   help_modal_back_btn: "Voltar",
+  help_modal_blur_details_desktop:
+    "Tente manter o dispositivo e o documento imóveis durante o escaneamento. Mover qualquer um deles pode desfocar a imagem e tornar os dados do documento ilegíveis.",
+  help_modal_camera_lens_details:
+    "Verifique se a lente da câmera está limpa e sem poeira. Uma lente suja pode desfocar a imagem final, tornando os detalhes do documento ilegíveis e impedindo o escaneamento correto dos dados.",
+  help_modal_camera_lens_title: "Limpe a lente da câmera",
   help_modal_details_1:
     "Certifique-se de não cobrir partes do documento com o dedo, incluindo as linhas inferiores. Além disso, fique atento aos reflexos do holograma que ultrapassam os campos do documento.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "Cuidado com a luz forte",
   help_modal_title_3: "Mantenha-se imóvel durante a digitalização",
   help_tooltip: "Precisa de ajuda?",
+  keep_document_parallel: "Mantenha o documento paralelo à tela",
+  keep_document_still: "Mantenha o documento e o dispositivo imóveis",
   move_closer: "Aproxime",
   move_farther: "Afaste",
   move_left: "Mova para a página à esquerda",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "Iniciar escaneamento",
   onboarding_modal_details:
     "Certifique-se de manter o documento bem iluminado. Todos os campos do documento devem estar visíveis na tela da câmera.",
+  onboarding_modal_details_desktop:
+    "Certifique-se de manter a lente da câmera limpa e o documento bem iluminado. Todos os campos do documento devem estar visíveis na tela da câmera.",
   onboarding_modal_title: "Mantenha todos os detalhes visíveis",
+  onboarding_modal_title_desktop: "Prepare-se para escanear",
+  resume_scanning: "Retomar escaneamento",
   scan_data_page: "Digitalize a página de dados do documento",
   scan_last_page_barcode: "Escaneie o código de barras da última página",
   scan_left_page: "Digitalize a página esquerda",
@@ -57,6 +68,9 @@ export default {
   scan_unsuccessful: "Falha na digitalização",
   scan_unsuccessful_details:
     "Não foi possível ler o documento. Tente novamente.",
+  scanning_help: "Ajuda para escaneamento",
+  scanning_instructions: "Instruções de escaneamento",
+  scanning_screen: "Tela de escaneamento de documento",
   too_bright: "Mova para um local com menos iluminação",
   too_dark: "Mova para um local mais claro",
   wrong_left: "Mova para a página esquerda",

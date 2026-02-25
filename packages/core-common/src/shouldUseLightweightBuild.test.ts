@@ -59,7 +59,11 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: 2.0,
-        derivedDeviceInfo: { formFactors: ["Mobile"], model: "Test Phone", platform: "Android" },
+        derivedDeviceInfo: {
+          formFactors: ["Mobile"],
+          model: "Test Phone",
+          platform: "Android",
+        },
       }),
     );
 
@@ -73,7 +77,11 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: 4.0,
-        derivedDeviceInfo: { formFactors: ["Mobile"], model: "Test Phone", platform: "Android" },
+        derivedDeviceInfo: {
+          formFactors: ["Mobile"],
+          model: "Test Phone",
+          platform: "Android",
+        },
       }),
     );
 
@@ -87,7 +95,11 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: 2,
-        derivedDeviceInfo: { formFactors: ["Mobile"], model: "Test Phone", platform: "Android" },
+        derivedDeviceInfo: {
+          formFactors: ["Mobile"],
+          model: "Test Phone",
+          platform: "Android",
+        },
       }),
     );
 
@@ -101,7 +113,11 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: 2.0,
-        derivedDeviceInfo: { formFactors: ["Tablet"], model: "Test Tablet", platform: "Android" },
+        derivedDeviceInfo: {
+          formFactors: ["Tablet"],
+          model: "Test Tablet",
+          platform: "Android",
+        },
       }),
     );
 
@@ -115,7 +131,12 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: undefined,
-        derivedDeviceInfo: { formFactors: ["Mobile"], model: "Test Phone", platform: "iOS", browser: { brand: "Safari", version: "17.0" } },
+        derivedDeviceInfo: {
+          formFactors: ["Mobile"],
+          model: "Test Phone",
+          platform: "iOS",
+          browser: { brand: "Safari", version: "17.0" },
+        },
       }),
     );
 
@@ -129,7 +150,11 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: 8.0,
-        derivedDeviceInfo: { formFactors: ["Desktop"], model: "Mac", platform: "macOS" },
+        derivedDeviceInfo: {
+          formFactors: ["Desktop"],
+          model: "Mac",
+          platform: "macOS",
+        },
       }),
     );
 
@@ -143,7 +168,12 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: undefined,
-        derivedDeviceInfo: { formFactors: ["Desktop"], model: "Mac", platform: "macOS", browser: { brand: "Safari", version: "17.0" } },
+        derivedDeviceInfo: {
+          formFactors: ["Desktop"],
+          model: "Mac",
+          platform: "macOS",
+          browser: { brand: "Safari", version: "17.0" },
+        },
       }),
     );
 
@@ -157,7 +187,11 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: 2.0,
-        derivedDeviceInfo: { formFactors: ["Mobile", "Tablet"], model: "Test Device", platform: "Android" },
+        derivedDeviceInfo: {
+          formFactors: ["Mobile", "Tablet"],
+          model: "Test Device",
+          platform: "Android",
+        },
       }),
     );
 
@@ -171,7 +205,11 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: 1,
-        derivedDeviceInfo: { formFactors: ["Mobile"], model: "Budget Phone", platform: "Android" },
+        derivedDeviceInfo: {
+          formFactors: ["Mobile"],
+          model: "Budget Phone",
+          platform: "Android",
+        },
       }),
     );
 
@@ -185,7 +223,11 @@ describe("shouldUseLightweightBuild", () => {
     vi.mocked(getDeviceInfo).mockResolvedValue(
       createMockDeviceInfo({
         memory: 8.0,
-        derivedDeviceInfo: { formFactors: ["Mobile"], model: "Flagship Phone", platform: "Android" },
+        derivedDeviceInfo: {
+          formFactors: ["Mobile"],
+          model: "Flagship Phone",
+          platform: "Android",
+        },
       }),
     );
 

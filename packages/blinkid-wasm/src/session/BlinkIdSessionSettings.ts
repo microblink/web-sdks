@@ -2,9 +2,9 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import { ScanningSettings } from "../settings";
 import { InputImageSource } from "./InputImageSource";
 import { ScanningMode } from "./ScanningMode";
-import { ScanningSettings } from "../settings";
 
 /**
  * Represents the configuration settings for a scanning session.

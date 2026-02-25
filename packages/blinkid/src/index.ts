@@ -10,7 +10,6 @@
  */
 
 export * from "@microblink/blinkid-core";
-export * from "@microblink/camera-manager";
 export * from "@microblink/blinkid-ux-manager";
-
+export * from "@microblink/camera-manager";
 export * from "./createBlinkIdUi";

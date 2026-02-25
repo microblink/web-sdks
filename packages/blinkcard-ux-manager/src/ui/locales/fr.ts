@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Aide", tooltip: "Besoin d'aide ?" },
   help_modal: {
+    aria: "Aide à la numérisation",
     back_btn: "Retour",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "À quel endroit le numéro de carte figure-t-il ?",
     },
     done_btn: "Terminé",
+    done_btn_aria: "Reprendre la numérisation",
     lighting: {
       details:
         "Évitez toute lumière directe et vive, car elle se reflète sur la carte et peut rendre certaines parties de la carte illisibles. Si les données ne sont pas lisibles sur la carte, elles ne le seront pas non plus pour la caméra.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instructions relatives à la numérisation",
     btn: "Commencer à numériser",
     details:
       "Le numéro de carte est généralement un numéro à 16 chiffres. En général, il est imprimé ou gravé en relief sur toute la surface de la carte. Assurez-vous que la carte est suffisamment éclairée et que tous les détails sont visibles.",
@@ -63,6 +66,7 @@ export default {
       "Le numéro de carte est généralement un numéro à 16 chiffres qui est imprimé ou gravé en relief sur toute la surface de la carte. Assurez-vous que l’objectif de votre appareil photo est propre, que la carte est suffisamment éclairée et que tous les détails sont visibles.",
     title: "Numérisez d'abord le numéro de carte",
   },
+  sdk_aria: "Écran de numérisation de la carte",
   timeout_modal: {
     cancel_btn: "Annuler",
     details: "Impossible de lire la carte. Veuillez réessayer.",

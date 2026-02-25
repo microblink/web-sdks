@@ -6,7 +6,7 @@
 
 # Function: createBlinkCardUxManager()
 
-> **createBlinkCardUxManager**(`cameraManager`, `scanningSession`): `Promise`\<[`BlinkCardUxManager`](../interfaces/BlinkCardUxManager.md)\>
+> **createBlinkCardUxManager**(`cameraManager`, `scanningSession`, `options`): `Promise`\<[`BlinkCardUxManager`](../interfaces/BlinkCardUxManager.md)\>
 
 Creates a BlinkCardUxManager.
 
@@ -23,6 +23,12 @@ The camera manager.
 `RemoteScanningSession`
 
 The scanning session.
+
+### options
+
+[`BlinkCardUxManagerOptions`](../type-aliases/BlinkCardUxManagerOptions.md) = `{}`
+
+Optional manager configuration.
 
 ## Returns
 

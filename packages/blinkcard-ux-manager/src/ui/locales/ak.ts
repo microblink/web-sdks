@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Mmoa", tooltip: "Wohia mmoa?" },
   help_modal: {
+    aria: "Skaane ho mmoa",
     back_btn: "Akyire",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Kaade nɔma no wɔ he?",
     },
     done_btn: "Awiei",
+    done_btn_aria: "Toa skaane no so",
     lighting: {
       details:
         "Mma kanea nhyerɛn wɔ kaade no so tee esiane sɛ ebetumi ama yenhu nsɛm a ɛwɔ so. Sɛ wuntumi nkenkan kaade no so nsɛm a, ɛrenna adi papa wɔ kamɛra no so nso.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Skaane ho akwankyerɛ",
     btn: "Fi ase skaane",
     details:
       "Mpɛn pii no, kaade nɔma no taa yɛ digit 16, ɛwom sɛ ebetumi ayɛ efi digit 12 kosi 19 de. Etumi yɛ nea wɔaprinte agu so anaa wɔakurukyerɛw agu so ma aba soro. Hwɛ sɛ kanea a ɛfata da so na wotumi hu nsɛm a ɛwɔ so nyinaa.",
@@ -63,6 +66,7 @@ export default {
       "Kaade nɔma no taa yɛ digit 16 nɔma. Ɛsɛ sɛ ɛyɛ nea wɔaprinte agu so anaasɛ wɔakurukyerɛw wɔ kaade no so. Hwɛ sɛ wo kamɛra lɛns no anim tew, kanea a ɛfata da kaade no so, na wohu nkyerɛw a ɛwɔ so nyinaa.",
     title: "Di kan skaane kaade nɔma no",
   },
+  sdk_aria: "Skriin a wɔde skaane kaade",
   timeout_modal: {
     cancel_btn: "Twam",
     details: "Sɛ wontumi nkenkan kaade no so nsɛm a, san yɛ bio.",

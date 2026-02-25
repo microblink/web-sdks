@@ -2,24 +2,53 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { beforeEach, describe, expect, test, vi, afterEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+// Mock the sleep utility to resolve immediately, preventing tests from hanging
+// when code awaits sleep() with fake timers enabled.
+const mockSleep = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
+
+vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
+  const actual =
+    await importOriginal<typeof import("@microblink/ux-common/utils")>();
+  return { ...actual, sleep: mockSleep };
+});
+
 import type {
-  BlinkCardScanningResult,
-  BlinkCardSessionSettings,
   ProcessResultWithBuffer,
-  RemoteScanningSession,
-  ScanningSettings,
+  BlinkCardSessionSettings,
+  DeviceInfo,
 } from "@microblink/blinkcard-core";
-import type {
-  CameraManager,
-  FrameCaptureCallback,
-  PlaybackState,
-} from "@microblink/camera-manager";
-import { BlinkCardUxManager } from "./BlinkCardUxManager";
+import type { CameraManager } from "@microblink/camera-manager";
+import {
+  createMockImageData,
+  enableRafAwareFakeTimers,
+  flushUiRaf,
+  setupDestroyableTeardown,
+  tickRaf,
+} from "@microblink/test-utils";
 import { blinkCardUiStateMap } from "./blinkcard-ui-state";
-import { blankProcessResult } from "./__testdata/blankProcessResult";
-import { merge } from "merge-anything";
-import type { DeviceInfo } from "@microblink/blinkcard-core";
+import { BlinkCardUxManager } from "./BlinkCardUxManager";
+import {
+  createBlinkCardCameraHarness,
+  createBlinkCardManager,
+  createBlinkCardUnitSessionMock,
+  type BlinkCardSessionMock,
+} from "./test-helpers.integration";
+import {
+  createDeviceInfo,
+  createProcessResult,
+  createScanningResult,
+} from "./__testdata/blinkcardTestFixtures";
+
+/**
+ * Test file role:
+ * - Verifies BlinkCardUxManager callback/lifecycle contracts.
+ * - Uses a small stabilizer seam helper when tests need to assert behavior
+ *   after a chosen UI state is applied.
+ * - Does not own processResult -> ui-state mapping coverage (see ui-state tests),
+ *   and does not own end-to-end scan flow coverage (see integration tests).
+ */
 
 type AnalyticServiceMock = {
   logDeviceInfo: ReturnType<typeof vi.fn>;
@@ -37,18 +66,6 @@ type AnalyticServiceMock = {
   logCloseButtonClickedEvent: ReturnType<typeof vi.fn>;
   logAlertDisplayedEvent: ReturnType<typeof vi.fn>;
   logOnboardingDisplayedEvent: ReturnType<typeof vi.fn>;
-};
-
-type PartialProcessResult = Partial<
-  Omit<
-    ProcessResultWithBuffer,
-    "inputImageAnalysisResult" | "resultCompleteness"
-  >
-> & {
-  inputImageAnalysisResult?: Partial<
-    ProcessResultWithBuffer["inputImageAnalysisResult"]
-  >;
-  resultCompleteness?: Partial<ProcessResultWithBuffer["resultCompleteness"]>;
 };
 
 const analyticsInstances: AnalyticServiceMock[] = [];
@@ -82,246 +99,34 @@ vi.mock("@microblink/analytics/AnalyticService", () => ({
   }),
 }));
 
-const createDeviceInfo = (): DeviceInfo =>
-  ({
-    userAgent: "test-agent",
-    threads: 4,
-    screen: {
-      screenWidth: 800,
-      screenHeight: 600,
-      devicePixelRatio: 2,
-      physicalScreenWidth: 1600,
-      physicalScreenHeight: 1200,
-      maxTouchPoints: 0,
-    },
-    browserStorageSupport: {
-      cookieEnabled: true,
-      localStorageEnabled: true,
-    },
-    derivedDeviceInfo: {
-      model: "test",
-      formFactors: [],
-      platform: "",
-      browser: {
-        brand: "test",
-        version: "1",
-      },
-    },
-  }) as DeviceInfo;
-
-const defaultScanningSettings: ScanningSettings = {
-  skipImagesWithBlur: true,
-  tiltDetectionLevel: "off",
-  inputImageMargin: 0.02,
-  extractionSettings: {
-    extractIban: true,
-    extractExpiryDate: true,
-    extractCardholderName: true,
-    extractCvv: true,
-    extractInvalidCardNumber: false,
-  },
-  croppedImageSettings: {
-    dotsPerInch: 300,
-    extensionFactor: 0,
-    returnCardImage: false,
-  },
-  livenessSettings: {
-    handToCardSizeRatio: 0,
-    handCardOverlapThreshold: 0,
-    enableCardHeldInHandCheck: false,
-    screenCheckStrictnessLevel: "disabled",
-    photocopyCheckStrictnessLevel: "disabled",
-  },
-  anonymizationSettings: {
-    cardNumberAnonymizationSettings: {
-      mode: "none",
-      prefixDigitsVisible: 0,
-      suffixDigitsVisible: 0,
-    },
-    cardNumberPrefixAnonymizationMode: "none",
-    cvvAnonymizationMode: "none",
-    ibanAnonymizationMode: "none",
-    cardholderNameAnonymizationMode: "none",
-  },
+type CreateManagerOptions = {
+  sessionSettings?: BlinkCardSessionSettings;
+  showDemoOverlay?: boolean;
+  showProductionOverlay?: boolean;
+  deviceInfo?: DeviceInfo;
 };
 
-const createScanningSettings = (
-  overrides: Partial<ScanningSettings> = {},
-): ScanningSettings => {
-  return merge(defaultScanningSettings, overrides);
+const trackManager = setupDestroyableTeardown<BlinkCardUxManager>();
+
+/**
+ * Unit-test seam: some tests in this file validate callback wiring once a state
+ * is selected, not state-selection itself (covered by ui-state + integration tests).
+ * We intentionally inject a stabilizer state and flush RAF to apply it.
+ */
+const applyStabilizedUiStateForContractTest = async (
+  manager: BlinkCardUxManager,
+  uiStateKey: keyof typeof blinkCardUiStateMap,
+) => {
+  manager.feedbackStabilizer.reset(uiStateKey);
+  await flushUiRaf();
 };
 
-const createProcessResult = (
-  overrides: PartialProcessResult = {},
-): ProcessResultWithBuffer => {
-  return merge(
-    blankProcessResult,
-    {
-      arrayBuffer: new ArrayBuffer(0),
-    },
-    overrides,
-  ) as ProcessResultWithBuffer;
-};
-
-const createSessionSettings = (
-  overrides: Partial<ScanningSettings> = {},
-): BlinkCardSessionSettings => ({
-  inputImageSource: "video",
-  scanningSettings: createScanningSettings(overrides),
-});
-
-const createScanningResult = (
-  overrides: Partial<BlinkCardScanningResult> = {},
-): BlinkCardScanningResult => ({
-  issuingNetwork: "test-network",
-  cardAccounts: [
-    {
-      cardNumber: "4111111111111111",
-      cardNumberValid: true,
-      cardNumberPrefix: undefined,
-      cvv: undefined,
-      expiryDate: {
-        day: undefined,
-        month: undefined,
-        year: 2030,
-        originalString: undefined,
-        filledByDomainKnowledge: undefined,
-        successfullyParsed: undefined,
-      },
-      fundingType: undefined,
-      cardCategory: undefined,
-      issuerName: undefined,
-      issuerCountryCode: undefined,
-      issuerCountry: undefined,
-    },
-  ],
-  iban: undefined,
-  cardholderName: undefined,
-  overallCardLivenessResult: "not-available",
-  firstSideResult: undefined,
-  secondSideResult: undefined,
-  ...overrides,
-});
-
-const createTestImageData = (): ImageData =>
-  ({
-    data: new Uint8ClampedArray(4),
-    width: 1,
-    height: 1,
-    colorSpace: "srgb",
-  }) as ImageData;
-
-type CameraInputState = {
-  selectedCamera?: {
-    name: string;
-    facingMode?: "front" | "back";
-  };
-  videoResolution?: {
-    width: number;
-    height: number;
-  };
-  extractionArea?: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
-};
-
-const createCameraManager = () => {
-  let playbackCallback:
-    | ((state: PlaybackState, previousState?: PlaybackState) => void)
-    | undefined;
-  let selectedCameraCallback: (() => void) | undefined;
-  let videoResolutionCallback: (() => void) | undefined;
-  let extractionAreaCallback: (() => void) | undefined;
-  let frameCaptureCallback: FrameCaptureCallback | undefined;
-  let subscribeCalls = 0;
-  let isActive = true;
-  const state: CameraInputState = {
-    selectedCamera: {
-      name: "default-camera",
-      facingMode: "back",
-    },
-    videoResolution: {
-      width: 1920,
-      height: 1080,
-    },
-  };
-
-  const addFrameCaptureCallback = vi.fn((callback: FrameCaptureCallback) => {
-    frameCaptureCallback = callback;
-    return vi.fn();
-  });
-
-  const stopFrameCapture = vi.fn();
-  const startFrameCapture = vi.fn().mockResolvedValue(undefined);
-  const startCameraStream = vi.fn().mockResolvedValue(undefined);
-
-  const subscribe = vi.fn((selectorOrListener: unknown, listener?: unknown) => {
-    subscribeCalls += 1;
-    const callback =
-      typeof listener === "function" ? listener : selectorOrListener;
-    if (subscribeCalls === 1) {
-      playbackCallback = callback as (
-        state: PlaybackState,
-        previousState?: PlaybackState,
-      ) => void;
-    }
-    if (subscribeCalls === 3) {
-      selectedCameraCallback = callback as () => void;
-    }
-    if (subscribeCalls === 4) {
-      videoResolutionCallback = callback as () => void;
-    }
-    if (subscribeCalls === 5) {
-      extractionAreaCallback = callback as () => void;
-    }
-    return vi.fn();
-  }) as unknown as CameraManager["subscribe"];
-
-  const cameraManager = {
-    addFrameCaptureCallback,
-    subscribe,
-    stopFrameCapture,
-    startFrameCapture,
-    startCameraStream,
-    getState: vi.fn(() => state),
-    get isActive() {
-      return isActive;
-    },
-  } as unknown as CameraManager;
-
-  return {
-    cameraManager,
-    getPlaybackCallback: () => playbackCallback!,
-    getFrameCaptureCallback: () => frameCaptureCallback!,
-    setIsActive: (value: boolean) => {
-      isActive = value;
-    },
-    setCameraState: (nextState: Partial<CameraInputState>) => {
-      Object.assign(state, nextState);
-    },
-    triggerSelectedCameraChange: () => selectedCameraCallback?.(),
-    triggerVideoResolutionChange: () => videoResolutionCallback?.(),
-    triggerExtractionAreaChange: () => extractionAreaCallback?.(),
-    stopFrameCapture,
-    startFrameCapture,
-    startCameraStream,
-  };
-};
-
-const createScanningSession = () =>
-  ({
-    process: vi.fn(),
-    getSettings: vi.fn().mockResolvedValue(createSessionSettings()),
-    showDemoOverlay: vi.fn().mockResolvedValue(false),
-    showProductionOverlay: vi.fn().mockResolvedValue(true),
-    getResult: vi.fn(),
-    reset: vi.fn().mockResolvedValue(undefined),
-    ping: vi.fn(),
-    sendPinglets: vi.fn(),
-  }) as unknown as RemoteScanningSession;
+const createBlinkCardUxManager = (
+  cameraManager: CameraManager,
+  scanningSession: BlinkCardSessionMock,
+  options: CreateManagerOptions = {},
+) =>
+  trackManager(createBlinkCardManager(cameraManager, scanningSession, options));
 
 const getAnalytics = () => analyticsInstances[analyticsInstances.length - 1];
 
@@ -333,24 +138,20 @@ describe("BlinkCardUxManager", () => {
         value: screenOrientationMock,
       });
     }
-
     analyticsInstances.length = 0;
     vi.clearAllMocks();
   });
 
-  describe("constructor and analytics", () => {
+  describe("construction and configuration", () => {
     test("logs device info and playback events", () => {
-      const { cameraManager, getPlaybackCallback } = createCameraManager();
-      const session = createScanningSession();
+      const { cameraManager, emitPlaybackState } =
+        createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
       const deviceInfo = createDeviceInfo();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        true,
+      const manager = createBlinkCardUxManager(cameraManager, session, {
+        showProductionOverlay: true,
         deviceInfo,
-      );
+      });
 
       expect(manager.getShowDemoOverlay()).toBe(false);
       expect(manager.getShowProductionOverlay()).toBe(true);
@@ -358,19 +159,18 @@ describe("BlinkCardUxManager", () => {
       const analytics = getAnalytics();
       expect(analytics.logDeviceInfo).toHaveBeenCalledWith(deviceInfo);
 
-      const playbackCallback = getPlaybackCallback();
-      playbackCallback("capturing", "idle");
+      emitPlaybackState("capturing");
       expect(analytics.logCameraStartedEvent).toHaveBeenCalledTimes(1);
       expect(analytics.sendPinglets).toHaveBeenCalled();
 
-      playbackCallback("idle", "capturing");
+      emitPlaybackState("idle");
       expect(analytics.logCameraClosedEvent).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe("camera input analytics", () => {
+  describe("package-specific: camera input analytics", () => {
     beforeEach(() => {
-      vi.useFakeTimers();
+      enableRafAwareFakeTimers();
     });
 
     afterEach(() => {
@@ -378,62 +178,25 @@ describe("BlinkCardUxManager", () => {
     });
 
     test("coalesces orientation-like updates into one camera input ping", async () => {
-      const {
-        cameraManager,
-        setCameraState,
-        triggerVideoResolutionChange,
-        triggerExtractionAreaChange,
-      } = createCameraManager();
-      const session = createScanningSession();
-      new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+      const { cameraManager, emitCameraState } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      createBlinkCardUxManager(cameraManager, session);
 
       const analytics = getAnalytics();
 
-      setCameraState({
-        videoResolution: {
-          width: 1080,
-          height: 1920,
-        },
-        extractionArea: {
-          x: 0,
-          y: 0,
-          width: 1080,
-          height: 1920,
-        },
+      emitCameraState({
+        videoResolution: { width: 1080, height: 1920 },
+        extractionArea: { x: 0, y: 0, width: 1080, height: 1920 },
       });
-      triggerVideoResolutionChange();
 
-      setCameraState({
-        videoResolution: {
-          width: 1920,
-          height: 1080,
-        },
-      });
-      triggerVideoResolutionChange();
+      emitCameraState({ videoResolution: { width: 1920, height: 1080 } });
 
-      setCameraState({
-        videoResolution: {
-          width: 1080,
-          height: 1920,
-        },
-        extractionArea: {
-          x: 0,
-          y: 5,
-          width: 1080,
-          height: 1910,
-        },
+      emitCameraState({
+        videoResolution: { width: 1080, height: 1920 },
+        extractionArea: { x: 0, y: 5, width: 1080, height: 1910 },
       });
-      triggerExtractionAreaChange();
 
       expect(analytics.logCameraInputInfo).not.toHaveBeenCalled();
-
       await vi.runOnlyPendingTimersAsync();
 
       expect(analytics.logCameraInputInfo).toHaveBeenCalledTimes(1);
@@ -449,138 +212,91 @@ describe("BlinkCardUxManager", () => {
     });
 
     test("sends immediate + debounced pings for separated updates", async () => {
-      const {
-        cameraManager,
-        setCameraState,
-        triggerSelectedCameraChange,
-        triggerExtractionAreaChange,
-      } = createCameraManager();
-      const session = createScanningSession();
-      new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+      const { cameraManager, emitCameraState } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      createBlinkCardUxManager(cameraManager, session);
 
       const analytics = getAnalytics();
 
-      triggerSelectedCameraChange();
-      expect(analytics.logCameraInputInfo).toHaveBeenCalledTimes(1);
-
-      setCameraState({
-        extractionArea: {
-          x: 0,
-          y: 5,
-          width: 1080,
-          height: 1910,
-        },
+      emitCameraState({
+        selectedCamera: { name: "default-camera", facingMode: "back" },
       });
-      triggerExtractionAreaChange();
-
       expect(analytics.logCameraInputInfo).toHaveBeenCalledTimes(1);
+
+      emitCameraState({
+        extractionArea: { x: 0, y: 5, width: 1080, height: 1910 },
+      });
+      expect(analytics.logCameraInputInfo).toHaveBeenCalledTimes(1);
+
       await vi.runOnlyPendingTimersAsync();
       expect(analytics.logCameraInputInfo).toHaveBeenCalledTimes(2);
     });
 
     test("does not send delayed camera input ping after reset", async () => {
-      const { cameraManager, triggerVideoResolutionChange } =
-        createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+      const { cameraManager, emitCameraState } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
-      const analytics = getAnalytics();
-
-      triggerVideoResolutionChange();
+      emitCameraState({ videoResolution: { width: 1000, height: 500 } });
       manager.reset();
       await vi.runOnlyPendingTimersAsync();
 
-      expect(analytics.logCameraInputInfo).not.toHaveBeenCalled();
+      expect(getAnalytics().logCameraInputInfo).not.toHaveBeenCalled();
     });
 
     test("does not send delayed camera input ping after observer cleanup", async () => {
-      const { cameraManager, triggerVideoResolutionChange } =
-        createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+      const { cameraManager, emitCameraState } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
-      const analytics = getAnalytics();
-
-      triggerVideoResolutionChange();
+      emitCameraState({ videoResolution: { width: 1000, height: 500 } });
       manager.cleanupAllObservers();
       await vi.runOnlyPendingTimersAsync();
 
-      expect(analytics.logCameraInputInfo).not.toHaveBeenCalled();
+      expect(getAnalytics().logCameraInputInfo).not.toHaveBeenCalled();
     });
   });
 
   describe("callbacks and public API", () => {
-    test("registers and cleans up UI state callbacks", async () => {
-      const { cameraManager, getFrameCaptureCallback } = createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+    beforeEach(() => {
+      enableRafAwareFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    test("registers and cleans up UI state callbacks via RAF loop", async () => {
+      const { cameraManager } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
       const uiStateSpy = vi.fn();
       const cleanup = manager.addOnUiStateChangedCallback(uiStateSpy);
 
-      const feedbackSpy = vi
-        .spyOn(manager.feedbackStabilizer, "getNewUiState")
-        .mockReturnValueOnce(blinkCardUiStateMap.BLUR_DETECTED)
-        .mockReturnValueOnce(blinkCardUiStateMap.SENSING_FRONT);
+      // Inject a deterministic UI state into the stabilizer to assert RAF callback wiring.
+      await applyStabilizedUiStateForContractTest(manager, "BLUR_DETECTED");
 
-      const processResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "image-preprocessing-failed",
-          blurDetectionStatus: "detected",
-        },
-      });
-      vi.mocked(session.process).mockResolvedValue(processResult);
-
-      const frameCaptureCallback = getFrameCaptureCallback();
-      await frameCaptureCallback(createTestImageData());
+      expect(uiStateSpy).toHaveBeenCalledWith(
+        blinkCardUiStateMap.BLUR_DETECTED,
+      );
       expect(uiStateSpy).toHaveBeenCalledTimes(1);
 
       cleanup();
-      await frameCaptureCallback(createTestImageData());
+
+      // Inject another UI state; cleanup should prevent further callback notifications.
+      await applyStabilizedUiStateForContractTest(
+        manager,
+        "CARD_NOT_IN_FRAME_FRONT",
+      );
 
       expect(uiStateSpy).toHaveBeenCalledTimes(1);
-      feedbackSpy.mockRestore();
     });
 
     test("forwards help/alert analytics events", () => {
-      const { cameraManager } = createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+      const { cameraManager } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
       const analytics = getAnalytics();
 
@@ -600,68 +316,87 @@ describe("BlinkCardUxManager", () => {
       );
       expect(analytics.logOnboardingDisplayedEvent).toHaveBeenCalledTimes(1);
     });
+
+    test("reset() clears all callbacks", async () => {
+      const { cameraManager, emitFrame } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
+
+      const uiStateSpy = vi.fn();
+      const resultSpy = vi.fn();
+      const frameProcessSpy = vi.fn();
+      const errorSpy = vi.fn();
+
+      manager.addOnUiStateChangedCallback(uiStateSpy);
+      manager.addOnResultCallback(resultSpy);
+      manager.addOnFrameProcessCallback(frameProcessSpy);
+      manager.addOnErrorCallback(errorSpy);
+
+      manager.reset();
+
+      vi.mocked(session.process).mockResolvedValue(
+        createProcessResult({
+          inputImageAnalysisResult: {
+            processingStatus: "awaiting-other-side",
+          },
+        }),
+      );
+
+      await emitFrame(createMockImageData());
+      await flushUiRaf();
+
+      expect(uiStateSpy).not.toHaveBeenCalled();
+      expect(resultSpy).not.toHaveBeenCalled();
+      expect(frameProcessSpy).not.toHaveBeenCalled();
+      expect(errorSpy).not.toHaveBeenCalled();
+    });
   });
 
-  describe("timeouts", () => {
+  describe("timeout behavior", () => {
     beforeEach(() => {
-      vi.useFakeTimers();
+      enableRafAwareFakeTimers();
     });
 
     afterEach(() => {
       vi.useRealTimers();
     });
 
-    test("triggers timeout on capturing and clears on idle", () => {
-      const { cameraManager, getPlaybackCallback, stopFrameCapture } =
-        createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+    test("triggers timeout on capturing and clears on idle", async () => {
+      const { cameraManager, emitPlaybackState, stopFrameCapture } =
+        createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
       const errorSpy = vi.fn();
       manager.addOnErrorCallback(errorSpy);
       manager.setTimeoutDuration(1000);
 
-      const playbackCallback = getPlaybackCallback();
-      playbackCallback("capturing", "idle");
-      vi.advanceTimersByTime(1000);
+      emitPlaybackState("capturing");
+      await vi.advanceTimersByTimeAsync(1000);
 
       expect(errorSpy).toHaveBeenCalledWith("timeout");
       expect(stopFrameCapture).toHaveBeenCalled();
       expect(getAnalytics().logStepTimeoutEvent).toHaveBeenCalled();
 
       errorSpy.mockClear();
-      playbackCallback("capturing", "idle");
-      playbackCallback("idle", "capturing");
-      vi.advanceTimersByTime(1000);
+      emitPlaybackState("capturing");
+      emitPlaybackState("idle");
+      await vi.advanceTimersByTimeAsync(1000);
       expect(errorSpy).not.toHaveBeenCalled();
     });
   });
 
-  describe("session reset", () => {
+  describe("session lifecycle: reset behavior", () => {
     test("starts camera stream when inactive", async () => {
       const {
         cameraManager,
         setIsActive,
         startCameraStream,
         startFrameCapture,
-      } = createCameraManager();
+      } = createBlinkCardCameraHarness();
       setIsActive(false);
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
       await manager.resetScanningSession(true);
 
@@ -670,51 +405,30 @@ describe("BlinkCardUxManager", () => {
     });
 
     test("skips frame capture when startFrameCapture is false", async () => {
-      const { cameraManager, startFrameCapture } = createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+      const { cameraManager, startFrameCapture } =
+        createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
       await manager.resetScanningSession(false);
       expect(startFrameCapture).not.toHaveBeenCalled();
     });
   });
 
-  describe("state-driven flows", () => {
+  describe("state transitions and capture flow", () => {
     beforeEach(() => {
-      vi.useFakeTimers();
+      enableRafAwareFakeTimers();
     });
 
     afterEach(() => {
       vi.useRealTimers();
     });
 
-    test("FLIP_CARD pauses capture then resumes after animation", async () => {
-      const {
-        cameraManager,
-        getFrameCaptureCallback,
-        stopFrameCapture,
-        startFrameCapture,
-      } = createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
-
-      const feedbackSpy = vi
-        .spyOn(manager.feedbackStabilizer, "getNewUiState")
-        .mockReturnValue(blinkCardUiStateMap.FLIP_CARD);
+    test("FIRST_SIDE_CAPTURED stops capture immediately and INTRO_BACK resumes capture", async () => {
+      const { cameraManager, emitFrame, stopFrameCapture, startFrameCapture } =
+        createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
       const processResult = createProcessResult({
         inputImageAnalysisResult: {
@@ -723,40 +437,26 @@ describe("BlinkCardUxManager", () => {
       });
       vi.mocked(session.process).mockResolvedValue(processResult);
 
-      const frameCaptureCallback = getFrameCaptureCallback();
-      await frameCaptureCallback(createTestImageData());
+      await emitFrame(createMockImageData());
 
+      // stopFrameCapture called immediately from frame processing side-effects
       expect(stopFrameCapture).toHaveBeenCalledTimes(1);
       expect(startFrameCapture).not.toHaveBeenCalled();
 
-      await vi.advanceTimersByTimeAsync(
-        blinkCardUiStateMap.FLIP_CARD.minDuration +
-          blinkCardUiStateMap.CARD_CAPTURED.minDuration,
-      );
+      // Intro states should resume frame capture when they become active.
+      await applyStabilizedUiStateForContractTest(manager, "INTRO_BACK");
 
-      expect(startFrameCapture).toHaveBeenCalledTimes(1);
-      feedbackSpy.mockRestore();
+      expect(startFrameCapture).toHaveBeenCalled();
     });
 
-    test("CARD_CAPTURED stops capture and emits result after animation", async () => {
-      const { cameraManager, getFrameCaptureCallback, stopFrameCapture } =
-        createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+    test("CARD_CAPTURED stops capture from frame processing and emits result when CARD_CAPTURED UI state is applied", async () => {
+      const { cameraManager, emitFrame, stopFrameCapture } =
+        createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
       const resultCallback = vi.fn();
       manager.addOnResultCallback(resultCallback);
-
-      const feedbackSpy = vi
-        .spyOn(manager.feedbackStabilizer, "getNewUiState")
-        .mockReturnValue(blinkCardUiStateMap.CARD_CAPTURED);
 
       const processResult = createProcessResult({
         resultCompleteness: { scanningStatus: "card-scanned" },
@@ -766,57 +466,100 @@ describe("BlinkCardUxManager", () => {
       vi.mocked(session.process).mockResolvedValue(processResult);
       vi.mocked(session.getResult).mockResolvedValue(scanResult);
 
-      const frameCaptureCallback = getFrameCaptureCallback();
-      await frameCaptureCallback(createTestImageData());
+      await emitFrame(createMockImageData());
 
+      // stopFrameCapture called immediately
       expect(stopFrameCapture).toHaveBeenCalledTimes(1);
 
-      await vi.advanceTimersByTimeAsync(
-        blinkCardUiStateMap.CARD_CAPTURED.minDuration,
-      );
+      // Inject CARD_CAPTURED directly to isolate result emission behavior.
+      // sleep(uiState.minDuration) is mocked to resolve immediately in this file.
+      await applyStabilizedUiStateForContractTest(manager, "CARD_CAPTURED");
 
       expect(resultCallback).toHaveBeenCalledWith(scanResult);
-      feedbackSpy.mockRestore();
     });
 
-    test("logs error message events and triggers haptics for error states", async () => {
-      const { cameraManager, getFrameCaptureCallback } = createCameraManager();
-      const session = createScanningSession();
-      const manager = new BlinkCardUxManager(
-        cameraManager,
-        session,
-        createSessionSettings(),
-        false,
-        false,
-        createDeviceInfo(),
-      );
+    test("logs error message events when UI state changes to an error state", async () => {
+      const { cameraManager } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
 
-      const hapticManager = manager.getHapticFeedbackManager();
-      const shortSpy = vi.spyOn(hapticManager, "triggerShort");
-
-      const feedbackSpy = vi
-        .spyOn(manager.feedbackStabilizer, "getNewUiState")
-        .mockReturnValue(blinkCardUiStateMap.BLUR_DETECTED);
-
-      const processResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "image-preprocessing-failed",
-          blurDetectionStatus: "detected",
-        },
-      });
-
-      vi.mocked(session.process).mockResolvedValue(processResult);
-
-      const frameCaptureCallback = getFrameCaptureCallback();
-      await frameCaptureCallback(createTestImageData());
+      // logErrorMessageEvent is called from #updateUiState when the RAF loop
+      // applies an error state, not from the processing loop.
+      await applyStabilizedUiStateForContractTest(manager, "BLUR_DETECTED");
 
       expect(getAnalytics().logErrorMessageEvent).toHaveBeenCalledWith(
         "EliminateBlur",
       );
-      expect(shortSpy).toHaveBeenCalled();
+    });
 
-      feedbackSpy.mockRestore();
-      shortSpy.mockRestore();
+    test("triggers short haptic feedback when the RAF loop transitions to an error state", async () => {
+      const { cameraManager } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
+
+      const hapticManager = manager.getHapticFeedbackManager();
+      const shortSpy = vi.spyOn(hapticManager, "triggerShort");
+
+      // Inject an error state directly to verify haptic behavior on RAF transition.
+      await applyStabilizedUiStateForContractTest(manager, "BLUR_DETECTED");
+
+      expect(shortSpy).toHaveBeenCalled();
+    });
+
+    test("fires result_retrieval_failed error and does not emit result when getResult rejects", async () => {
+      const { cameraManager } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      const manager = createBlinkCardUxManager(cameraManager, session);
+
+      const errorCallback = vi.fn();
+      const resultCallback = vi.fn();
+      manager.addOnErrorCallback(errorCallback);
+      manager.addOnResultCallback(resultCallback);
+
+      vi.mocked(session.getResult).mockRejectedValue(
+        new Error("Worker RPC failure"),
+      );
+
+      await applyStabilizedUiStateForContractTest(manager, "CARD_CAPTURED");
+
+      await vi.waitFor(() => {
+        expect(session.getResult).toHaveBeenCalled();
+        expect(errorCallback).toHaveBeenCalledWith("result_retrieval_failed");
+        expect(resultCallback).not.toHaveBeenCalled();
+      });
+    });
+
+    test("drops second frame while first is still processing (busy guard)", async () => {
+      const { cameraManager, emitFrame } = createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      createBlinkCardUxManager(cameraManager, session);
+
+      let resolveFirst!: (value: ProcessResultWithBuffer) => void;
+      const firstProcessPromise = new Promise<ProcessResultWithBuffer>(
+        (resolve) => {
+          resolveFirst = resolve;
+        },
+      );
+
+      vi.mocked(session.process).mockReturnValueOnce(firstProcessPromise);
+
+      const firstFramePromise = emitFrame(createMockImageData());
+      const secondFrameResult = await emitFrame(createMockImageData());
+
+      expect(secondFrameResult).toBeUndefined();
+      expect(session.process).toHaveBeenCalledTimes(1);
+
+      resolveFirst(
+        createProcessResult({
+          inputImageAnalysisResult: {
+            processingStatus: "detection-failed",
+          },
+        }),
+      );
+      await firstFramePromise;
+      await tickRaf();
+
+      expect(session.process).toHaveBeenCalledTimes(1);
     });
   });
 });

@@ -1,0 +1,6 @@
+.dropdown-content {
+  /* nested border offset */
+  border-radius: calc(var(--mb-size) * 1rem + 8px);
+  max-height: calc(var(--available-height) - 1rem);
+  overflow: auto;
+}

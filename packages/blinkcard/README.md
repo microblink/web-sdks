@@ -47,6 +47,7 @@ Full documentation, API reference, and integration guides are available at [docs
 ## Example Apps
 
 Explore example applications in the repository under `apps/examples`:
+
 - `apps/examples/blinkcard-simple` for a minimal integration.
 - `apps/examples/blinkcard-advanced-setup` for advanced low-level setup and customization.
 

@@ -25,6 +25,7 @@ export default {
   },
   help_button: { aria_label: "Pomoc", tooltip: "Potrzebujesz pomocy?" },
   help_modal: {
+    aria: "Pomoc dotycząca skanowania",
     back_btn: "Wstecz",
     blur: {
       details:
@@ -44,6 +45,7 @@ export default {
       title: "Gdzie jest numer karty?",
     },
     done_btn: "Gotowe",
+    done_btn_aria: "Wznów skanowanie",
     lighting: {
       details:
         "Unikaj bezpośredniego, ostrego światła, ponieważ odbija się ono od karty i może uniemożliwić jej odczytanie. Jeśli nie możesz odczytać danych z karty, nie będą one również widoczne dla aparatu.",
@@ -57,6 +59,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instrukcje skanowania",
     btn: "Rozpocznij skanowanie",
     details:
       "Numer karty to zazwyczaj numer składający się z 16 cyfr. Powinien być wydrukowany lub wytłoczony wypukłymi cyframi na karcie. Upewnij się, że karta jest dobrze oświetlona i wszystkie szczegóły są widoczne.",
@@ -64,6 +67,7 @@ export default {
       "Numer karty składa się zazwyczaj z 16 cyfr. Powinien być nadrukowany lub wytłoczony na jej powierzchni. Upewnij się, że obiektyw aparatu jest czysty, karta dobrze oświetlona, a wszystkie szczegóły są widoczne.",
     title: "Najpierw zeskanuj numer karty",
   },
+  sdk_aria: "Ekran skanowania karty",
   timeout_modal: {
     cancel_btn: "Anuluj",
     details: "Nie można odczytać karty. Spróbuj ponownie.",

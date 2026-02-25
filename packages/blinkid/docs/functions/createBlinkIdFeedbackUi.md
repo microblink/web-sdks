@@ -14,7 +14,7 @@ Creates the BlinkID feedback UI.
 
 ### blinkIdUxManager
 
-[`BlinkIdUxManager`](../classes/BlinkIdUxManager.md)
+[`BlinkIdUxManager`](../interfaces/BlinkIdUxManager.md)
 
 The BlinkID Ux Manager.
 
@@ -27,8 +27,6 @@ The Camera Manager Component.
 ### feedbackUiOptions
 
 `Partial`\<[`FeedbackUiOptions`](../type-aliases/FeedbackUiOptions.md)\>
-
-The feedback UI options for the createBlinkIdFeedbackUi function.
 
 ## Returns
 

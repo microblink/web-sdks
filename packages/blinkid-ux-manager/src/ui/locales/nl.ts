@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "Scan de voorzijde van een ondersteund document.",
   document_scanned: "Succes! Document gescand",
-  document_too_close_to_edge: "Verplaats het document weg van de rand",
+  document_too_close_to_edge: "Beweeg verder weg",
   face_photo_not_fully_visible: "Houd foto gezicht volledig zichtbaar",
   flip_document: "Draai het document om",
   flip_to_back_side: "Draai het document om",
@@ -25,6 +25,11 @@ export default {
     "Kantel of verplaats het document om de reflectie te verwijderen",
   help_aria_label: "Help",
   help_modal_back_btn: "Terug",
+  help_modal_blur_details_desktop:
+    "Probeer het toestel en het document tijdens het scannen stil te houden. Als u een van beide beweegt, kan de afbeelding wazig worden en kunnen gegevens op het document onleesbaar worden.",
+  help_modal_camera_lens_details:
+    "Controleer dat er geen vlekken of stof op de lens van uw camera zitten. Een vuile lens zorgt ervoor dat de uiteindelijke afbeelding wazig wordt, waardoor de documentgegevens onleesbaar worden en de gegevens niet goed kunnen worden gescand.",
+  help_modal_camera_lens_title: "Maak de lens van uw camera schoon",
   help_modal_details_1:
     "Zorg ervoor dat u onderdelen van het document niet afdekt met een vinger, dus ook niet de onderste regels. Waak ook voor hologramreflecties op de documentvelden.",
   help_modal_details_2:
@@ -37,6 +42,8 @@ export default {
   help_modal_title_2: "Pas op voor fel licht",
   help_modal_title_3: "Beweeg niet tijdens het scannen",
   help_tooltip: "Hulp nodig?",
+  keep_document_parallel: "Houd het document parallel aan het scherm",
+  keep_document_still: "Houd het document en het toestel stil",
   move_closer: "Beweeg dichterbij",
   move_farther: "Beweeg verder weg",
   move_left: "Ga naar de pagina links",
@@ -46,7 +53,11 @@ export default {
   onboarding_modal_btn: "Beginnen met scannen",
   onboarding_modal_details:
     "Zorg ervoor dat het document goed verlicht is. Alle velden op het document moeten onder het camerascherm zichtbaar zijn.",
+  onboarding_modal_details_desktop:
+    "Zorg ervoor dat de cameralens schoon is en het document goed verlicht is. Alle velden op het document moeten zichtbaar zijn op het camerascherm.",
   onboarding_modal_title: "Zorg ervoor dat alle gegevens zichtbaar zijn",
+  onboarding_modal_title_desktop: "Voorbereiden om te scannen",
+  resume_scanning: "Verder met scannen",
   scan_data_page: "Scan de pagina met gegevens van het document",
   scan_last_page_barcode: "Scan de barcode van de laatste pagina",
   scan_left_page: "Scan de linkerpagina",
@@ -58,6 +69,9 @@ export default {
   scan_unsuccessful: "Scan niet gelukt",
   scan_unsuccessful_details:
     "Kon het document niet lezen. Probeer het alstublieft opnieuw.",
+  scanning_help: "Hulp bij scannen",
+  scanning_instructions: "Instructies voor scannen",
+  scanning_screen: "Scherm voor documenten scannen",
   too_bright: "Ga na een plek met minder licht",
   too_dark: "Ga naar een lichtere plek",
   wrong_left: "Ga naar de linkerpagina",

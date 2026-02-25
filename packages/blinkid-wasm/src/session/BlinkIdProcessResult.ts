@@ -2,8 +2,7 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { InputImageAnalysisResult } from "../result";
-import { ResultCompleteness } from "../result";
+import { InputImageAnalysisResult, ResultCompleteness } from "../result";
 
 /**
  * Represents the overall result of the document processing pipeline.

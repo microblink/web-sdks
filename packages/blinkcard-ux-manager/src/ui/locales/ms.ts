@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Bantuan", tooltip: "Perlukan bantuan?" },
   help_modal: {
+    aria: "Bantuan mengimbas",
     back_btn: "Kembali",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Di manakah nombor kad?",
     },
     done_btn: "Siap",
+    done_btn_aria: "Sambung mengimbas",
     lighting: {
       details:
         "Jauhi cahaya yang boleh menyilaukan mata kerana cahaya tersebut dipantulkan daripada kad dan boleh membuatkan sebahagian daripada kad tersebut tidak dapat dibaca. Jika anda tidak dapat membaca data dalam kad, data tersebut juga tidak akan kelihatan pada kamera.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Arahan Mengimbas",
     btn: "Mula Mengimbas",
     details:
       "Nombor kad biasanya mempunyai nombor 16 digit. Ia hendaklah sama ada dicetak atau dicetak timbul dengan nombor berganda di sepanjang kad. Pastikan kad tersebut menerima pencahayaan yang cukup dan semua butiran dapat dilihat dengan jelas.",
@@ -63,6 +66,7 @@ export default {
       "Nombor pada kad lazimnya mempunyai 16 digit. Nombor ini hendaklah dicetak atau diembos sebagai nombor timbul pada permukaan kad. Pastikan lensa kamera anda bersih, pencahayaan yang mencukupi, dan semua butiran jelas kelihatan.",
     title: "Imbas nombor kad terlebih dahulu",
   },
+  sdk_aria: "Skrin mengimbas kad",
   timeout_modal: {
     cancel_btn: "Batal",
     details: "Tidak dapat membaca kad. Sila cuba semula.",

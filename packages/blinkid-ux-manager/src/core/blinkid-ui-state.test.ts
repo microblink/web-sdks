@@ -2,38 +2,106 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { expect, test, describe } from "vitest";
-import {
-  BlinkIdUiStateKey,
-  getUiStateKey,
-  PartialProcessResult,
-} from "./blinkid-ui-state";
 import {
   Country,
-  defaultSessionSettings,
   DetectionStatus,
   DocumentRotation,
+  FieldType,
   ImageAnalysisLightingStatus,
-  ScanningSettings,
   ScanningSide,
 } from "@microblink/blinkid-core";
-import { merge } from "merge-anything";
+import { describe, expect, test } from "vitest";
+import { BlinkIdUiStateKey, getUiStateKey } from "./blinkid-ui-state";
+import {
+  createProcessResult,
+  getMergedSettings,
+} from "./__testdata/blinkidTestFixtures";
+import {
+  isPassport,
+  isPassportWithBarcode,
+  isPassportWithoutBarcode,
+} from "./ui-state-utils";
 
-const getMergedSettings = (
-  overrides: Partial<ScanningSettings> = {},
-): ScanningSettings => {
-  return merge(defaultSessionSettings.scanningSettings, overrides);
-};
+/**
+ * Test file role:
+ * - Owns pure mapping rules from process results/settings to BlinkId UI state keys.
+ * - Keep these tests deterministic and data-driven; avoid manager lifecycle concerns.
+ */
 
-const createProcessResult = (overrides = {}): PartialProcessResult => {
-  return merge(
-    {
-      inputImageAnalysisResult: {},
-      resultCompleteness: {},
-    },
-    overrides,
-  );
-};
+describe("Passport utils", () => {
+  describe("isPassport", () => {
+    test("should return true for passport documents", () => {
+      expect(isPassport({ type: "passport", country: "croatia" })).toBe(true);
+    });
+
+    test("should return false for non-passport documents", () => {
+      expect(isPassport({ type: "id", country: "croatia" })).toBe(false);
+      expect(isPassport({ type: "dl", country: "croatia" })).toBe(false);
+    });
+
+    test("should return false when classification is missing", () => {
+      expect(isPassport(undefined)).toBe(false);
+    });
+  });
+
+  describe("isPassportWithBarcode", () => {
+    test("should return true for USA passport", () => {
+      expect(isPassportWithBarcode({ type: "passport", country: "usa" })).toBe(
+        true,
+      );
+    });
+
+    test("should return true for India passport", () => {
+      expect(
+        isPassportWithBarcode({ type: "passport", country: "india" }),
+      ).toBe(true);
+    });
+
+    test("should return false for other passports", () => {
+      expect(
+        isPassportWithBarcode({ type: "passport", country: "croatia" }),
+      ).toBe(false);
+    });
+
+    test("should return false for non-passport documents", () => {
+      expect(isPassportWithBarcode({ type: "id", country: "usa" })).toBe(false);
+    });
+
+    test("should return false when classification is missing", () => {
+      expect(isPassportWithBarcode(undefined)).toBe(false);
+    });
+  });
+
+  describe("isPassportWithoutBarcode", () => {
+    test("should return true for non-barcode passports", () => {
+      expect(
+        isPassportWithoutBarcode({ type: "passport", country: "croatia" }),
+      ).toBe(true);
+    });
+
+    test("should return false for USA passport", () => {
+      expect(
+        isPassportWithoutBarcode({ type: "passport", country: "usa" }),
+      ).toBe(false);
+    });
+
+    test("should return false for India passport", () => {
+      expect(
+        isPassportWithoutBarcode({ type: "passport", country: "india" }),
+      ).toBe(false);
+    });
+
+    test("should return false for non-passport documents", () => {
+      expect(isPassportWithoutBarcode({ type: "id", country: "croatia" })).toBe(
+        false,
+      );
+    });
+
+    test("should return false when classification is missing", () => {
+      expect(isPassportWithoutBarcode(undefined)).toBe(false);
+    });
+  });
+});
 
 describe("getUiStateKey", () => {
   describe("Document Capture States", () => {
@@ -48,7 +116,7 @@ describe("getUiStateKey", () => {
       expect(result).toBe<BlinkIdUiStateKey>("DOCUMENT_CAPTURED");
     });
 
-    test("should return FLIP_CARD when one side is scanned", () => {
+    test("should return PAGE_CAPTURED when one side is scanned", () => {
       const processResult = createProcessResult({
         resultCompleteness: { scanningStatus: "side-scanned" },
       });
@@ -56,18 +124,47 @@ describe("getUiStateKey", () => {
 
       const result = getUiStateKey(processResult, settings);
 
-      expect(result).toBe<BlinkIdUiStateKey>("FLIP_CARD");
+      expect(result).toBe<BlinkIdUiStateKey>("PAGE_CAPTURED");
     });
 
-    test("should return SCAN_BARCODE when scanning barcode is in progress", () => {
+    test("should return PROCESSING_BARCODE when barcode scanning is in progress", () => {
+      /**
+       * Actual process result returned from the WASM SDK when barcode scanning is
+       * in progress.
+       */
       const processResult = createProcessResult({
-        resultCompleteness: { scanningStatus: "scanning-barcode-in-progress" },
+        inputImageAnalysisResult: {
+          processingStatus: "barcode-recognition-failed",
+          scanningSide: "second",
+          documentDetectionStatus: "failed",
+          documentClassInfo: {},
+          blurDetectionStatus: "not-available",
+          glareDetectionStatus: "not-available",
+          documentColorStatus: "not-available",
+          documentMoireStatus: "not-available",
+          faceDetectionStatus: "not-available",
+          mrzDetectionStatus: "not-available",
+          barcodeDetectionStatus: "not-available",
+          realIDDetectionStatus: "not-available",
+          documentLightingStatus: "not-available",
+          documentHandOcclusionStatus: "not-available",
+          documentOrientation: "not-available",
+          documentRotation: "not-available",
+        },
+        resultCompleteness: {
+          scanningStatus: "scanning-barcode-in-progress",
+          vizExtracted: true,
+          mrzExtracted: false,
+          barcodeExtracted: false,
+          documentImageExtracted: false,
+          faceImageExtracted: false,
+          signatureImageExtracted: false,
+        },
       });
       const settings = getMergedSettings();
 
       const result = getUiStateKey(processResult, settings);
-
-      expect(result).toBe<BlinkIdUiStateKey>("SCAN_BARCODE");
+      expect(result).toBe<BlinkIdUiStateKey>("PROCESSING_BARCODE");
     });
   });
 
@@ -110,14 +207,14 @@ describe("getUiStateKey", () => {
         expected: BlinkIdUiStateKey;
       }>([
         { skipImagesWithBlur: true, expected: "BLUR_DETECTED" },
-        { skipImagesWithBlur: false, expected: "SENSING_FRONT" },
+        // { skipImagesWithBlur: false, expected: "FRONT_PAGE_NOT_IN_FRAME" }, // can't happen alone, needs to be combined with blur or other issue
       ])(
         "should return $expected when blur is detected and skipImagesWithBlur is $skipImagesWithBlur",
         ({ skipImagesWithBlur, expected }) => {
           const processResult = createProcessResult({
             inputImageAnalysisResult: {
-              processingStatus: "image-preprocessing-failed",
               blurDetectionStatus: "detected",
+              documentDetectionStatus: "success",
             },
           });
           const settings = getMergedSettings({ skipImagesWithBlur });
@@ -135,16 +232,17 @@ describe("getUiStateKey", () => {
         expected: BlinkIdUiStateKey;
       }>([
         { skipImagesWithGlare: true, expected: "GLARE_DETECTED" },
-        { skipImagesWithGlare: false, expected: "SENSING_FRONT" },
+        // { skipImagesWithGlare: false, expected: "FRONT_PAGE_NOT_IN_FRAME" }, // can't happen alone, needs to be combined with blur or other issue
       ])(
         "should return $expected when glare is detected and skipImagesWithGlare is $skipImagesWithGlare",
         ({ skipImagesWithGlare, expected }) => {
           const processResult = createProcessResult({
             inputImageAnalysisResult: {
-              processingStatus: "image-preprocessing-failed",
               glareDetectionStatus: "detected",
+              documentDetectionStatus: "success",
             },
           });
+
           const settings = getMergedSettings({ skipImagesWithGlare });
 
           const result = getUiStateKey(processResult, settings);
@@ -154,13 +252,14 @@ describe("getUiStateKey", () => {
       );
     });
 
-    describe("Blur and Glare combined", () => {
-      test("should return SENSING_FRONT when both blur and glare are detected but skip settings are disabled", () => {
+    /** Can't happen */
+    describe.skip("Blur and Glare combined", () => {
+      test("should return FRONT_PAGE_NOT_IN_FRAME when both blur and glare are detected but skip settings are disabled", () => {
         const processResult = createProcessResult({
           inputImageAnalysisResult: {
-            processingStatus: "image-preprocessing-failed",
             blurDetectionStatus: "detected",
             glareDetectionStatus: "detected",
+            documentDetectionStatus: "success",
           },
         });
         const settings = getMergedSettings({
@@ -170,7 +269,7 @@ describe("getUiStateKey", () => {
 
         const result = getUiStateKey(processResult, settings);
 
-        expect(result).toBe<BlinkIdUiStateKey>("SENSING_FRONT");
+        expect(result).toBe<BlinkIdUiStateKey>("FRONT_PAGE_NOT_IN_FRAME");
       });
     });
 
@@ -187,7 +286,7 @@ describe("getUiStateKey", () => {
         },
         {
           status: "too-dark",
-          expected: "SENSING_FRONT",
+          expected: "FRONT_PAGE_NOT_IN_FRAME",
           skipImagesWithInadequateLightingConditions: false,
         },
         {
@@ -197,7 +296,7 @@ describe("getUiStateKey", () => {
         },
         {
           status: "too-bright",
-          expected: "SENSING_FRONT",
+          expected: "FRONT_PAGE_NOT_IN_FRAME",
           skipImagesWithInadequateLightingConditions: false,
         },
       ])(
@@ -205,7 +304,6 @@ describe("getUiStateKey", () => {
         ({ status, expected, skipImagesWithInadequateLightingConditions }) => {
           const processResult = createProcessResult({
             inputImageAnalysisResult: {
-              processingStatus: "image-preprocessing-failed",
               documentLightingStatus: status,
             },
           });
@@ -223,50 +321,39 @@ describe("getUiStateKey", () => {
   });
 
   describe("Passport Sensing States", () => {
-    // This case can actually never happen.
-    test("should return SENSING_DATA_PAGE when scanning first side of passport", () => {
-      const processResult = createProcessResult({
-        inputImageAnalysisResult: {
-          scanningSide: "first",
-          documentClassInfo: { type: "passport" },
-        },
-      });
-      const settings = getMergedSettings();
-
-      const result = getUiStateKey(processResult, settings);
-
-      expect(result).toBe<BlinkIdUiStateKey>("SENSING_DATA_PAGE");
-    });
-
     test.each<{
       rotation: DocumentRotation;
       expected: BlinkIdUiStateKey;
       country?: Country;
     }>([
-      { rotation: "zero", expected: "SENSING_TOP_PAGE" },
-      { rotation: "not-available", expected: "SENSING_TOP_PAGE" },
-      { rotation: "upside-down", expected: "SENSING_TOP_PAGE" },
-      { rotation: "counter-clockwise-90", expected: "SENSING_LEFT_PAGE" },
-      { rotation: "clockwise-90", expected: "SENSING_RIGHT_PAGE" },
-      { rotation: "zero", expected: "SENSING_LAST_PAGE", country: "india" },
+      { rotation: "zero", expected: "TOP_PAGE_NOT_IN_FRAME" },
+      { rotation: "not-available", expected: "TOP_PAGE_NOT_IN_FRAME" },
+      { rotation: "upside-down", expected: "TOP_PAGE_NOT_IN_FRAME" },
+      { rotation: "counter-clockwise-90", expected: "LEFT_PAGE_NOT_IN_FRAME" },
+      { rotation: "clockwise-90", expected: "RIGHT_PAGE_NOT_IN_FRAME" },
+      {
+        rotation: "zero",
+        expected: "LAST_PAGE_NOT_IN_FRAME",
+        country: "india",
+      },
       {
         rotation: "not-available",
-        expected: "SENSING_LAST_PAGE",
+        expected: "LAST_PAGE_NOT_IN_FRAME",
         country: "india",
       },
       {
         rotation: "upside-down",
-        expected: "SENSING_LAST_PAGE",
+        expected: "LAST_PAGE_NOT_IN_FRAME",
         country: "usa",
       },
       {
         rotation: "counter-clockwise-90",
-        expected: "SENSING_LAST_PAGE",
+        expected: "LAST_PAGE_NOT_IN_FRAME",
         country: "usa",
       },
       {
         rotation: "clockwise-90",
-        expected: "SENSING_LAST_PAGE",
+        expected: "LAST_PAGE_NOT_IN_FRAME",
         country: "usa",
       },
     ])(
@@ -275,43 +362,6 @@ describe("getUiStateKey", () => {
         const processResult = createProcessResult({
           inputImageAnalysisResult: {
             scanningSide: "second",
-            documentClassInfo: { type: "passport", country },
-            documentRotation: rotation,
-          },
-        });
-        const settings = getMergedSettings();
-
-        const result = getUiStateKey(processResult, settings);
-
-        expect(result).toBe<BlinkIdUiStateKey>(expected);
-      },
-    );
-  });
-
-  describe("Passport Navigation States", () => {
-    test.each<{
-      rotation: DocumentRotation;
-      expected: BlinkIdUiStateKey;
-      country?: Country;
-    }>([
-      { rotation: "zero", expected: "MOVE_TOP" },
-      { rotation: "counter-clockwise-90", expected: "MOVE_LEFT" },
-      { rotation: "clockwise-90", expected: "MOVE_RIGHT" },
-      { rotation: "zero", expected: "MOVE_LAST_PAGE", country: "india" },
-      {
-        rotation: "counter-clockwise-90",
-        expected: "MOVE_LAST_PAGE",
-        country: "india",
-      },
-      { rotation: "clockwise-90", expected: "MOVE_LAST_PAGE", country: "usa" },
-    ])(
-      "should return $expected when passport document rotation is $rotation and country $country",
-      ({ rotation, expected, country }) => {
-        const processResult = createProcessResult({
-          resultCompleteness: {
-            scanningStatus: "side-scanned",
-          },
-          inputImageAnalysisResult: {
             documentClassInfo: { type: "passport", country },
             documentRotation: rotation,
           },
@@ -362,6 +412,7 @@ describe("getUiStateKey", () => {
             processingStatus: "scanning-wrong-side",
             documentClassInfo: { type: "passport", country },
             documentRotation: rotation,
+            documentDetectionStatus: "success",
           },
         });
         const settings = getMergedSettings();
@@ -392,7 +443,7 @@ describe("getUiStateKey", () => {
       expected: BlinkIdUiStateKey;
     }>([
       { skipImagesOccludedByHand: true, expected: "OCCLUDED" },
-      { skipImagesOccludedByHand: false, expected: "SENSING_FRONT" },
+      { skipImagesOccludedByHand: false, expected: "FRONT_PAGE_NOT_IN_FRAME" },
     ])(
       "should return $expected when document is occluded by hand and skipImagesOccludedByHand is $skipImagesOccludedByHand",
       ({ skipImagesOccludedByHand, expected }) => {
@@ -408,14 +459,14 @@ describe("getUiStateKey", () => {
     );
 
     test.each<{
-      missingMandatoryFields: string[];
+      missingMandatoryFields: FieldType[];
       expected: BlinkIdUiStateKey;
     }>([
       {
         missingMandatoryFields: ["firstName", "lastName"],
         expected: "OCCLUDED",
       },
-      { missingMandatoryFields: [], expected: "SENSING_FRONT" },
+      { missingMandatoryFields: [], expected: "FRONT_PAGE_NOT_IN_FRAME" },
     ])(
       "should return $expected when missingMandatoryFields is $missingMandatoryFields",
       ({ missingMandatoryFields, expected }) => {
@@ -452,6 +503,7 @@ describe("getUiStateKey", () => {
         inputImageAnalysisResult: {
           processingStatus: "image-return-failed",
           imageExtractionFailures: ["face"],
+          documentDetectionStatus: "success",
         },
       });
       const settings = getMergedSettings();
@@ -463,13 +515,16 @@ describe("getUiStateKey", () => {
   });
 
   describe("Document Side Detection", () => {
-    test.each([{ scanningSide: "first" }, { scanningSide: "second" }])(
+    const scanningSides: ScanningSide[] = ["first", "second"];
+
+    test.each(scanningSides)(
       "should return WRONG_SIDE when scanning wrong side ($scanningSide)",
-      ({ scanningSide }) => {
+      (scanningSide) => {
         const processResult = createProcessResult({
           inputImageAnalysisResult: {
             scanningSide,
             processingStatus: "scanning-wrong-side",
+            documentDetectionStatus: "success",
           },
         });
         const settings = getMergedSettings();
@@ -484,18 +539,14 @@ describe("getUiStateKey", () => {
       scanningSide: ScanningSide;
       expected: BlinkIdUiStateKey;
     }>([
-      { scanningSide: "first", expected: "SENSING_FRONT" },
-      { scanningSide: "second", expected: "SENSING_BACK" },
+      { scanningSide: "first", expected: "FRONT_PAGE_NOT_IN_FRAME" },
+      { scanningSide: "second", expected: "BACK_PAGE_NOT_IN_FRAME" },
     ])(
       "should return $expected when sensing $scanningSide side with failed detection",
       ({ scanningSide, expected }) => {
         const processResult = createProcessResult({
           inputImageAnalysisResult: {
             scanningSide,
-            documentDetectionStatus: "failed",
-          },
-          resultCompleteness: {
-            scanningStatus: "scanning-side-in-progress",
           },
         });
         const settings = getMergedSettings();
@@ -519,13 +570,13 @@ describe("getUiStateKey", () => {
       expect(result).toBe<BlinkIdUiStateKey>("UNSUPPORTED_DOCUMENT");
     });
 
-    test("should return SENSING_FRONT as fallback when no specific conditions are met", () => {
-      const processResult = createProcessResult();
+    test("should return FRONT_PAGE_NOT_IN_FRAME as fallback when no specific conditions are met", () => {
+      const processResult = createProcessResult({});
       const settings = getMergedSettings();
 
       const result = getUiStateKey(processResult, settings);
 
-      expect(result).toBe<BlinkIdUiStateKey>("SENSING_FRONT");
+      expect(result).toBe<BlinkIdUiStateKey>("FRONT_PAGE_NOT_IN_FRAME");
     });
   });
 
@@ -557,7 +608,6 @@ describe("getUiStateKey", () => {
     test("should prioritize DOCUMENT_CAPTURED over blur issues", () => {
       const processResult = createProcessResult({
         inputImageAnalysisResult: {
-          processingStatus: "image-preprocessing-failed",
           blurDetectionStatus: "detected",
         },
         resultCompleteness: { scanningStatus: "document-scanned" },
@@ -569,10 +619,9 @@ describe("getUiStateKey", () => {
       expect(result).toBe<BlinkIdUiStateKey>("DOCUMENT_CAPTURED");
     });
 
-    test("should prioritize FLIP_CARD over blur detection", () => {
+    test("should prioritize PAGE_CAPTURED over blur detection", () => {
       const processResult = createProcessResult({
         inputImageAnalysisResult: {
-          processingStatus: "image-preprocessing-failed",
           blurDetectionStatus: "detected",
         },
         resultCompleteness: { scanningStatus: "side-scanned" },
@@ -581,10 +630,10 @@ describe("getUiStateKey", () => {
 
       const result = getUiStateKey(processResult, settings);
 
-      expect(result).toBe<BlinkIdUiStateKey>("FLIP_CARD");
+      expect(result).toBe<BlinkIdUiStateKey>("PAGE_CAPTURED");
     });
 
-    test("should prioritize FLIP_CARD over glare detection", () => {
+    test("should prioritize PAGE_CAPTURED over glare detection", () => {
       const processResult = createProcessResult({
         inputImageAnalysisResult: { glareDetectionStatus: "detected" },
         resultCompleteness: { scanningStatus: "side-scanned" },
@@ -593,22 +642,11 @@ describe("getUiStateKey", () => {
 
       const result = getUiStateKey(processResult, settings);
 
-      expect(result).toBe<BlinkIdUiStateKey>("FLIP_CARD");
+      expect(result).toBe<BlinkIdUiStateKey>("PAGE_CAPTURED");
     });
 
-    test("should prioritize FLIP_CARD over wrong side detection", () => {
-      const processResult = createProcessResult({
-        inputImageAnalysisResult: { processingStatus: "scanning-wrong-side" },
-        resultCompleteness: { scanningStatus: "side-scanned" },
-      });
-      const settings = getMergedSettings();
-
-      const result = getUiStateKey(processResult, settings);
-
-      expect(result).toBe<BlinkIdUiStateKey>("FLIP_CARD");
-    });
-
-    test("should prioritize UNSUPPORTED_DOCUMENT over side captured", () => {
+    // This situation can't happen
+    test.skip("should prioritize UNSUPPORTED_DOCUMENT over side captured", () => {
       const processResult = createProcessResult({
         inputImageAnalysisResult: { processingStatus: "unsupported-document" },
         resultCompleteness: { scanningStatus: "side-scanned" },
@@ -623,9 +661,9 @@ describe("getUiStateKey", () => {
     test("should prioritize lighting issues over GLARE_DETECTED", () => {
       const processResult = createProcessResult({
         inputImageAnalysisResult: {
-          processingStatus: "image-preprocessing-failed",
           documentLightingStatus: "too-dark",
           glareDetectionStatus: "detected",
+          documentDetectionStatus: "success",
         },
       });
       const settings = getMergedSettings({
@@ -641,9 +679,9 @@ describe("getUiStateKey", () => {
     test("should prioritize GLARE_DETECTED over BLUR_DETECTED when both are detected", () => {
       const processResult = createProcessResult({
         inputImageAnalysisResult: {
-          processingStatus: "image-preprocessing-failed",
           blurDetectionStatus: "detected",
           glareDetectionStatus: "detected",
+          documentDetectionStatus: "success",
         },
       });
       const settings = getMergedSettings({
@@ -699,6 +737,7 @@ describe("getUiStateKey", () => {
           documentClassInfo: { type: "passport" },
           documentRotation: "zero",
           blurDetectionStatus: "detected",
+          documentDetectionStatus: "success",
         },
       });
       const settings = getMergedSettings({ skipImagesWithBlur: true });

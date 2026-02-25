@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Trợ giúp", tooltip: "Bạn cần trợ giúp?" },
   help_modal: {
+    aria: "Trợ giúp quét",
     back_btn: "Quay lại",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Số là nằm ở đâu?",
     },
     done_btn: "Đã xong",
+    done_btn_aria: "Tiếp tục quét",
     lighting: {
       details:
         "Tránh ánh sáng gay gắt trực tiếp vì thẻ sẽ phản sáng và có thể làm cho các phần của thẻ không đọc được. Nếu bạn không thể đọc dữ liệu trên thẻ, thì dữ liệu đó cũng sẽ không hiển thị với camera.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Hướng dẫn quét",
     btn: "Bắt đầu quét",
     details:
       "Số thẻ thường là một số gồm 16 chữ số. Các số đó phải được in hoặc dập nổi bằng các số nổi trên thẻ. Đảm bảo rằng thẻ được chiếu sáng tốt và tất cả các chi tiết đều có thể nhìn thấy được.",
@@ -63,6 +66,7 @@ export default {
       "Số thẻ thường gồm 16 chữ số. Số này có thể được in hoặc dập nổi trên mặt thẻ. Hãy đảm bảo ống kính camera sạch, thẻ được chiếu sáng đầy đủ và tất cả thông tin đều hiển thị rõ ràng.",
     title: "Trước tiên hãy quét số thẻ",
   },
+  sdk_aria: "Màn hình quét thẻ",
   timeout_modal: {
     cancel_btn: "Hủy bỏ",
     details: "Không thể đọc thẻ. Vui lòng thử lại.",

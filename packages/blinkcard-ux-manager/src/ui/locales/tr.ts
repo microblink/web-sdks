@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Yardım", tooltip: "Yardıma mı ihtiyacın var?" },
   help_modal: {
+    aria: "Tarama yardımı",
     back_btn: "Geri",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Kart numarası nerede?",
     },
     done_btn: "Bitti",
+    done_btn_aria: "Taramaya devam et",
     lighting: {
       details:
         "Doğrudan gelen sert ışık karttan yansıyarak kartın bazı kısımlarını okunmaz hâle getirebileceği için bu tür ışık kullanmaktan kaçın. Karttaki verileri okuyamıyorsan bu veriler kamerada da görünmeyecektir.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Tarama Talimatları",
     btn: "Taramayı Başlat",
     details:
       "Kart numarası, genellikle 16 haneli bir sayıdır. Kartın üzerinde kabartmalı rakamlarla basılı veya kabartmalı olmalıdır. Kartın iyi aydınlatılmış ve tüm bilgilerin görünür olduğundan emin ol.",
@@ -63,6 +66,7 @@ export default {
       "Kart numarası genellikle 16 haneli bir sayıdır. Kartın üzerinde basılı olarak ya da kabartmalı (yükseltilmiş) rakamlarla yer alır. Kamera lensinizin temiz olduğundan, kartın yeterince aydınlatıldığından ve tüm bilgilerin net şekilde göründüğünden emin olun.",
     title: "Önce kart numarasını tara",
   },
+  sdk_aria: "Kart tarama ekranı",
   timeout_modal: {
     cancel_btn: "İptal",
     details: "Kart okunamadı. Lütfen tekrar deneyin.",

@@ -2,8 +2,8 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { StringResult } from "./StringResult";
 import { DateResult } from "../utils";
+import { StringResult } from "./StringResult";
 
 /** The additional information on the document owner's dependents. */
 export type DependentInfo = {

@@ -2,14 +2,23 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+// TODO: fix linting to apply only to /ui
+/* eslint-disable solid/reactivity */
+
+import { AnalyticService } from "@microblink/analytics/AnalyticService";
+import type {
+  PingCameraInputInfoData,
+  PingScanningConditionsData,
+} from "@microblink/analytics/ping";
 import {
-  BlinkIdScanningResult,
-  BlinkIdSessionSettings,
-  DocumentClassInfo,
-  getDeviceInfo,
-  ProcessResultWithBuffer,
-  RemoteScanningSession,
-  SdkScanConditionsData,
+  DeviceInfo,
+  DocumentRotation,
+  type BlinkIdProcessResult,
+  type BlinkIdScanningResult,
+  type BlinkIdSessionSettings,
+  type DocumentClassInfo,
+  type ProcessResultWithBuffer,
+  type RemoteScanningSession,
 } from "@microblink/blinkid-core";
 import type {
   CameraManager,
@@ -17,30 +26,46 @@ import type {
 } from "@microblink/camera-manager";
 import { FeedbackStabilizer } from "@microblink/feedback-stabilizer";
 import {
-  PingBrowserDeviceInfoImpl,
-  PingHardwareCameraInfoImpl,
-  PingSdkCameraPermissionImpl,
-  PingSdkScanConditionsImpl,
-  PingSdkUxEventImpl,
-} from "../shared/ping-implementations";
-import { createErrorMessagePingFromUiState } from "../shared/uiEventFeedbackMapper";
-import { BlinkIdProcessingError } from "./BlinkIdProcessingError";
-import { DocumentClassFilter } from "./DocumentClassFilter";
+  buildCameraAnalyticsKey,
+  convertCameraInputToPingData,
+  convertCameraToPingCamera,
+  hasCameraListChanged,
+} from "@microblink/ux-common/cameraAnalyticsMappers";
 import { HapticFeedbackManager } from "@microblink/ux-common/hapticFeedback";
+import { RafLoop } from "@microblink/ux-common/RafLoop";
+import { invokeCallbacks, sleep } from "@microblink/ux-common/utils";
+import { debounce } from "perfect-debounce";
 import {
+  BlinkIdUiErrorStateKey,
+  blinkIdUiErrorStateKeys,
+  blinkIdUiIntroStateKeys,
   BlinkIdUiState,
   BlinkIdUiStateKey,
+  BlinkIdUiStateMap,
   blinkIdUiStateMap,
-  errorUiStateKeys,
-  firstSideCapturedUiStateKeys,
+  blinkIdUiStepSuccessKeys,
   getUiStateKey,
 } from "./blinkid-ui-state";
+import { BlinkIdProcessingError } from "./BlinkIdProcessingError";
+import { BlinkIdUxManagerOptions } from "./createBlinkIdUxManager";
+import { DocumentClassFilter } from "./DocumentClassFilter";
 import {
-  convertCameraToPingCamera,
-  createCameraInputInfo,
-  PingCamera,
-} from "./ping-camera-utils";
-import { sleep } from "@microblink/ux-common/utils";
+  ChainedUiStateProps,
+  getChainedUiStateKey,
+} from "./getChainedUiStateKey";
+import {
+  DocumentPagination,
+  extractDocumentClassInfo,
+  getDocumentPaginationType,
+  getDocumentRotation,
+  isDocumentClassified,
+} from "./ui-state-utils";
+import {
+  mapErrorStateKeyToAnalyticsType,
+  type PingableErrorUiStateKey,
+} from "./uxAnalyticsMappers";
+
+type ProcessingLifecycleState = "ready" | "busy" | "terminal";
 
 /**
  * The BlinkIdUxManager class. This is the main class that manages the UX of
@@ -49,35 +74,60 @@ import { sleep } from "@microblink/ux-common/utils";
  */
 export class BlinkIdUxManager {
   /** The camera manager. */
-  declare cameraManager: CameraManager;
+  readonly cameraManager: CameraManager;
   /** The scanning session. */
-  declare scanningSession: RemoteScanningSession;
-  /** Whether the demo overlay should be shown. */
-  declare showDemoOverlay: boolean;
-  /** Whether the production overlay should be shown. */
-  declare showProductionOverlay: boolean;
-  /** The current UI state. */
-  declare uiState: BlinkIdUiState;
-  /** The raw UI state key. */
-  declare rawUiStateKey: BlinkIdUiStateKey;
-  /** The feedback stabilizer. */
-  declare feedbackStabilizer: FeedbackStabilizer<typeof blinkIdUiStateMap>;
-  /** The session settings. */
-  declare sessionSettings: BlinkIdSessionSettings;
+  readonly scanningSession: RemoteScanningSession;
 
-  #isFirstFrame = true;
+  #uiState: BlinkIdUiState;
 
-  /** The success process result. */
-  #successProcessResult: ProcessResultWithBuffer | undefined;
-  /** Whether the thread is busy. */
-  #threadBusy = false;
+  /**
+   * The current UI state. Updated internally by the RAF update loop.
+   * Read externally once at UI mount to seed the initial Solid signal value;
+   * subsequent updates are delivered via {@link addOnUiStateChangedCallback}.
+   */
+  get uiState(): BlinkIdUiState {
+    return this.#uiState;
+  }
+
+  /** Latest mapped candidate key before stabilizer applies it to the UI. */
+  #mappedUiStateKey: BlinkIdUiStateKey;
+  /**
+   * The feedback stabilizer. Public to allow UI components to read scores,
+   * event queues, and call restartCurrentStateTimer() for help-tooltip resets.
+   */
+  readonly feedbackStabilizer: FeedbackStabilizer<BlinkIdUiStateMap>;
+  /** The session settings. Populated asynchronously from the scanning session. */
+  readonly sessionSettings: BlinkIdSessionSettings;
+  /** Whether the demo overlay should be shown. Populated asynchronously from the scanning session. */
+  readonly showDemoOverlay: boolean;
+  /** Whether the production overlay should be shown. Populated asynchronously from the scanning session. */
+  readonly showProductionOverlay: boolean;
+  /** The device info. */
+  readonly deviceInfo: DeviceInfo;
+
+  #documentPagination?: DocumentPagination;
+  #lastDocumentRotation?: DocumentRotation;
+  #pendingIntroAnchorKey?: BlinkIdUiStateKey;
+  #initialUiStateKey: BlinkIdUiStateKey = "INTRO_FRONT_PAGE";
+  #firstProcessedFrameAt?: number;
+
+  /** Protects worker message channel from concurrent/terminal process calls. */
+  #processingLifecycleState: ProcessingLifecycleState = "ready";
   /** The scanning session timeout ID. */
   #timeoutId?: number;
   /** Timeout duration in ms for the scanning session. If null, timeout won't be triggered ever. */
   #timeoutDuration: number | null = 10000; // 10s
-  /** Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown. */
+  /**
+   * Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
+   *
+   * @deprecated This option will be removed in a future release. Use `helpTooltipShowDelay` in `FeedbackUiOptions` instead.
+   */
   #helpTooltipShowDelay: number | null = 5000; // 5s
-  /** Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden. */
+  /**
+   * Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden.
+   *
+   * @deprecated This option will be removed in a future release. Use `helpTooltipHideDelay` in `FeedbackUiOptions` instead.
+   */
   #helpTooltipHideDelay: number | null = 5000; // 5s
 
   /** The callbacks for when the UI state changes. */
@@ -100,43 +150,64 @@ export class BlinkIdUxManager {
   #documentClassFilter?: DocumentClassFilter;
   /** The haptic feedback manager. */
   #hapticFeedbackManager = new HapticFeedbackManager();
+  /** The UX analytics service. */
+  #analytics: AnalyticService;
+  /** Tracks last reported camera hardware state. */
+  #reportedCameraKeys = new Set<string>();
+  /** Debounced wrapper around {@link #syncCameraInputToAnalytics} (300 ms). */
+  #debouncedCameraInputSyncToAnalytics = debounce(() => {
+    this.#syncCameraInputToAnalytics();
+  }, 300);
+  /** Throttled RAF loop that drives UI state updates at 30 FPS. */
+  #rafLoop = new RafLoop((timestamp) => {
+    this.feedbackStabilizer.tick();
+    void this.#updateUiState(this.feedbackStabilizer.currentState.key);
+  }, 1000 / 30);
 
   /**
    * The constructor for the BlinkIdUxManager class.
    *
    * @param cameraManager - The camera manager.
    * @param scanningSession - The scanning session.
+   * @param options - Optional manager configuration.
    */
   constructor(
     cameraManager: CameraManager,
     scanningSession: RemoteScanningSession,
+    options: BlinkIdUxManagerOptions = {},
+    sessionSettings: BlinkIdSessionSettings,
+    showDemoOverlay: boolean,
+    showProductionOverlay: boolean,
+    deviceInfo: DeviceInfo,
   ) {
     this.cameraManager = cameraManager;
     this.scanningSession = scanningSession;
+    this.sessionSettings = sessionSettings;
+    this.showDemoOverlay = showDemoOverlay;
+    this.showProductionOverlay = showProductionOverlay;
+    this.deviceInfo = deviceInfo;
+
+    if (options.initialUiStateKey) {
+      this.#initialUiStateKey = options.initialUiStateKey;
+    }
+
     this.feedbackStabilizer = new FeedbackStabilizer(
       blinkIdUiStateMap,
-      "SENSING_FRONT",
+      this.#initialUiStateKey,
     );
-    this.uiState = this.feedbackStabilizer.currentState;
-    void this.scanningSession.getSettings().then((settings) => {
-      this.sessionSettings = settings;
-    });
-    void this.scanningSession.showDemoOverlay().then((showDemoOverlay) => {
-      this.showDemoOverlay = showDemoOverlay;
-    });
-    void this.scanningSession
-      .showProductionOverlay()
-      .then((showProductionOverlay) => {
-        this.showProductionOverlay = showProductionOverlay;
-      });
 
-    // Device info ping
-    void getDeviceInfo().then(
-      (deviceInfo) =>
-        void this.scanningSession.ping(
-          new PingBrowserDeviceInfoImpl(deviceInfo),
-        ),
-    );
+    this.#uiState = this.feedbackStabilizer.currentState;
+
+    this.#mappedUiStateKey = this.feedbackStabilizer.currentState.key;
+    this.#pendingIntroAnchorKey = this.uiState.key;
+
+    // Initialize analytics service with the scanning session's ping function
+    this.#analytics = new AnalyticService({
+      pingFn: (ping) => this.scanningSession.ping(ping),
+      sendPingletsFn: () => this.scanningSession.sendPinglets(),
+    });
+
+    void this.#analytics.logDeviceInfo(this.deviceInfo);
 
     this.#setupObservers();
 
@@ -144,24 +215,73 @@ export class BlinkIdUxManager {
       this.cameraManager.addFrameCaptureCallback(this.#frameCaptureCallback);
 
     this.#cleanupCallbacks.add(removeFrameCaptureCallback);
+
+    this.startUiUpdateLoop();
+  }
+
+  /** The currently applied UI state key. */
+  get uiStateKey(): BlinkIdUiStateKey {
+    return this.uiState.key;
+  }
+
+  /** Latest mapped candidate key before stabilization. */
+  get mappedUiStateKey(): BlinkIdUiStateKey {
+    return this.#mappedUiStateKey;
+  }
+
+  /**
+   * @deprecated Use `mappedUiStateKey` (internal/debug) or `uiStateKey` (displayed state).
+   */
+  get rawUiStateKey(): BlinkIdUiStateKey {
+    return this.#mappedUiStateKey;
+  }
+
+  startUiUpdateLoop() {
+    this.#rafLoop.start();
+  }
+
+  stopUiUpdateLoop() {
+    this.#rafLoop.stop();
   }
 
   #setupObservers() {
+    let previousPlaybackState: "idle" | "playback" | "capturing" | undefined;
+
     // clear timeout when we stop processing and add one when we start
     const unsubscribeCaptureState = this.cameraManager.subscribe(
       (s) => s.playbackState,
       (playbackState) => {
         console.debug(`⏯️ ${playbackState}`);
+        const wasActive =
+          previousPlaybackState !== undefined &&
+          previousPlaybackState !== "idle";
+        const isActive = playbackState !== "idle";
+        const isCaptureTransition =
+          playbackState === "capturing" &&
+          previousPlaybackState !== "capturing";
 
-        // if timeout duration is null, we don't want to start a timeout
-        if (this.#timeoutDuration === null) {
-          return;
+        if (!wasActive && isActive) {
+          void this.#analytics.logCameraStartedEvent();
+          void this.#analytics.sendPinglets();
+        } else if (wasActive && !isActive) {
+          void this.#analytics.logCameraClosedEvent();
+          void this.#analytics.sendPinglets();
         }
+
+        if (
+          isCaptureTransition &&
+          this.#pendingIntroAnchorKey === this.uiState.key
+        ) {
+          this.feedbackStabilizer.restartCurrentStateTimer();
+          this.#pendingIntroAnchorKey = undefined;
+        }
+
+        previousPlaybackState = playbackState;
+        if (this.#timeoutDuration === null) return;
 
         if (playbackState !== "capturing") {
           this.clearScanTimeout();
         } else {
-          // Trigger for initial scan and pause/resume
           console.debug("🔁 continuing timeout");
           this.#setTimeout(this.uiState);
         }
@@ -169,40 +289,29 @@ export class BlinkIdUxManager {
     );
     this.#cleanupCallbacks.add(unsubscribeCaptureState);
 
-    const unsubscribeCameraActive = this.cameraManager.subscribe(
-      (s) => s.playbackState !== "idle",
-      (active) => {
-        if (active) {
-          void this.scanningSession.ping(
-            new PingSdkUxEventImpl({
-              eventType: "CameraStarted",
-            }),
-          );
-        } else {
-          void this.scanningSession.ping(
-            new PingSdkUxEventImpl({
-              eventType: "CameraClosed",
-            }),
-          );
-        }
-        void this.scanningSession.sendPinglets();
-      },
-    );
-
-    this.#cleanupCallbacks.add(unsubscribeCameraActive);
-
     const unsubscribeCameras = this.cameraManager.subscribe(
       (s) => s.cameras,
       (cameras) => {
-        const pingCameras: PingCamera[] = cameras.map((cam) =>
-          convertCameraToPingCamera(cam),
+        const nextCameraKeys = new Set(
+          cameras.map((camera) => buildCameraAnalyticsKey(camera)),
         );
 
-        void this.scanningSession.ping(
-          new PingHardwareCameraInfoImpl({
-            availableCameras: pingCameras,
-          }),
+        const state = this.cameraManager.getState();
+        if (cameras.length === 0 && !state.videoElement) {
+          // Camera manager is torn down; avoid sending empty hardware pings.
+          this.#reportedCameraKeys = nextCameraKeys;
+          return;
+        }
+
+        if (!hasCameraListChanged(nextCameraKeys, this.#reportedCameraKeys)) {
+          return;
+        }
+
+        this.#reportedCameraKeys = nextCameraKeys;
+        const pingCameras = cameras.map((camera) =>
+          convertCameraToPingCamera(camera),
         );
+        void this.#analytics.logHardwareCameraInfo(pingCameras);
       },
     );
 
@@ -210,13 +319,9 @@ export class BlinkIdUxManager {
 
     const visibilityChangeCallback = () => {
       if (document.visibilityState === "hidden") {
-        void this.scanningSession.ping(
-          new PingSdkUxEventImpl({
-            eventType: "AppMovedToBackground",
-          }),
-        );
+        void this.#analytics.logAppMovedToBackgroundEvent();
       }
-      void this.scanningSession.sendPinglets();
+      void this.#analytics.sendPinglets();
     };
 
     document.addEventListener("visibilitychange", visibilityChangeCallback);
@@ -230,76 +335,21 @@ export class BlinkIdUxManager {
 
     const unsubscribeSelectedCamera = this.cameraManager.subscribe(
       (s) => s.selectedCamera,
-      (selectedCamera) => {
-        if (!selectedCamera) {
-          return;
-        }
-
-        const state = this.cameraManager.getState();
-
-        // just selected, not active
-        if (!state.videoResolution) {
-          return;
-        }
-
-        void this.scanningSession.ping(
-          createCameraInputInfo({
-            extractionArea: state.extractionArea,
-            videoResolution: state.videoResolution,
-            selectedCamera,
-          }),
-        );
-      },
+      () => this.#syncCameraInputToAnalytics(),
     );
 
     this.#cleanupCallbacks.add(unsubscribeSelectedCamera);
 
     const unsubResizeVideo = this.cameraManager.subscribe(
       (s) => s.videoResolution,
-      (resolution) => {
-        if (!resolution) {
-          return;
-        }
-
-        const state = this.cameraManager.getState();
-
-        if (!state.selectedCamera) {
-          return;
-        }
-
-        void this.scanningSession.ping(
-          createCameraInputInfo({
-            extractionArea: state.extractionArea,
-            videoResolution: state.videoResolution!,
-            selectedCamera: state.selectedCamera,
-          }),
-        );
-      },
+      () => this.#scheduleCameraInputSyncToAnalytics(),
     );
 
     this.#cleanupCallbacks.add(unsubResizeVideo);
 
     const unsubExtractionArea = this.cameraManager.subscribe(
       (s) => s.extractionArea,
-      () => {
-        const state = this.cameraManager.getState();
-
-        if (!state.selectedCamera) {
-          return;
-        }
-
-        if (!state.videoResolution) {
-          return;
-        }
-
-        void this.scanningSession.ping(
-          createCameraInputInfo({
-            extractionArea: state.extractionArea,
-            videoResolution: state.videoResolution,
-            selectedCamera: state.selectedCamera,
-          }),
-        );
-      },
+      () => this.#scheduleCameraInputSyncToAnalytics(),
     );
 
     this.#cleanupCallbacks.add(unsubExtractionArea);
@@ -313,7 +363,7 @@ export class BlinkIdUxManager {
 
     // Orientation pings
     const reportOrientation = (orientation: ScreenOrientation) => {
-      let deviceOrientation: SdkScanConditionsData["deviceOrientation"];
+      let deviceOrientation: PingScanningConditionsData["deviceOrientation"];
 
       switch (orientation.type) {
         case "portrait-primary":
@@ -330,12 +380,7 @@ export class BlinkIdUxManager {
           break;
       }
 
-      void this.scanningSession.ping(
-        new PingSdkScanConditionsImpl({
-          updateType: "DeviceOrientation",
-          deviceOrientation,
-        }),
-      );
+      void this.#analytics.logDeviceOrientation(deviceOrientation);
     };
 
     const orientationChangeHandler = (event: Event) => {
@@ -355,39 +400,23 @@ export class BlinkIdUxManager {
       );
     });
 
-    // Torch ping
     const unsubTorch = this.cameraManager.subscribe(
       (state) => state.selectedCamera?.torchEnabled,
       (torchEnabled) => {
-        // no-op if torch is not supported or camera is changing
         if (torchEnabled === undefined) {
           return;
         }
 
-        void this.scanningSession.ping(
-          new PingSdkScanConditionsImpl({
-            updateType: "FlashlightState",
-            flashlightOn: torchEnabled,
-          }),
-        );
+        // trigger haptic feedback
+        if (torchEnabled === true) {
+          this.#hapticFeedbackManager.triggerShort();
+        }
+
+        void this.#analytics.logFlashlightState(torchEnabled);
       },
     );
 
     this.#cleanupCallbacks.add(unsubTorch);
-
-    // Subscribe to torch state changes for haptic feedback
-    const unsubscribeTorchState = this.cameraManager.subscribe(
-      (s) => s.selectedCamera?.torchEnabled,
-      (torchEnabled) => {
-        // Only trigger haptic feedback when torch is turned on
-        // (not when it's turned off or when camera changes)
-        if (torchEnabled === true) {
-          this.#hapticFeedbackManager.triggerShort();
-        }
-      },
-    );
-
-    this.#cleanupCallbacks.add(unsubscribeTorchState);
 
     // We unsubscribe the video observer when the video element is removed from the DOM
     const unsubscribeVideoObserver = this.cameraManager.subscribe(
@@ -395,13 +424,16 @@ export class BlinkIdUxManager {
       (videoElement) => {
         if (!videoElement) {
           console.debug("Removing camera manager subscriptions");
-          this.reset();
-          this.cleanupAllObservers();
+          this.destroy();
         }
       },
     );
 
     this.#cleanupCallbacks.add(unsubscribeVideoObserver);
+
+    this.#cleanupCallbacks.add(() => {
+      this.stopUiUpdateLoop();
+    });
   }
 
   #handleCameraPermissionChange = (
@@ -412,47 +444,23 @@ export class BlinkIdUxManager {
       // startup
       if (curr === "granted") {
         console.debug("previously granted");
-        void this.scanningSession.ping(
-          new PingSdkCameraPermissionImpl({
-            eventType: "CameraPermissionCheck",
-            cameraPermissionGranted: true,
-          }),
-        );
+        void this.#analytics.logCameraPermissionCheck(true);
       } else if (curr === "denied") {
         console.debug("previously blocked");
-        void this.scanningSession.ping(
-          new PingSdkCameraPermissionImpl({
-            eventType: "CameraPermissionCheck",
-            cameraPermissionGranted: false,
-          }),
-        );
+        void this.#analytics.logCameraPermissionCheck(false);
       } else if (curr === "prompt") {
         console.debug("Waiting for user response");
-        void this.scanningSession.ping(
-          new PingSdkCameraPermissionImpl({
-            eventType: "CameraPermissionRequest",
-          }),
-        );
+        void this.#analytics.logCameraPermissionRequest();
       }
     }
 
     if (prev === "prompt") {
       if (curr === "granted") {
         console.debug("user granted permission");
-        void this.scanningSession.ping(
-          new PingSdkCameraPermissionImpl({
-            eventType: "CameraPermissionUserResponse",
-            cameraPermissionGranted: true,
-          }),
-        );
+        void this.#analytics.logCameraPermissionUserResponse(true);
       } else if (curr === "denied") {
         console.debug("user denied permission");
-        void this.scanningSession.ping(
-          new PingSdkCameraPermissionImpl({
-            eventType: "CameraPermissionUserResponse",
-            cameraPermissionGranted: false,
-          }),
-        );
+        void this.#analytics.logCameraPermissionUserResponse(false);
       }
     }
 
@@ -461,12 +469,7 @@ export class BlinkIdUxManager {
         console.debug("user gave permission in browser settings");
       } else if (curr === "prompt") {
         console.debug("retrying for camera permission");
-        void this.scanningSession.ping(
-          new PingSdkCameraPermissionImpl({
-            eventType: "CameraPermissionRequest",
-            cameraPermissionGranted: true,
-          }),
-        );
+        void this.#analytics.logCameraPermissionRequest();
       } else if (curr === undefined) {
         console.debug("user reset permission");
       }
@@ -480,23 +483,35 @@ export class BlinkIdUxManager {
       }
     }
 
-    void this.scanningSession.sendPinglets();
+    void this.#analytics.sendPinglets();
   };
 
-  /**
-   * Indicates whether the UI should display the demo overlay. Controlled by the
-   * license property.
-   */
-  getShowDemoOverlay(): boolean {
-    return this.showDemoOverlay;
+  #syncCameraInputToAnalytics(): void {
+    const cameraInputInfo = this.#buildCameraInputPingData();
+    if (!cameraInputInfo) {
+      return;
+    }
+    void this.#analytics.logCameraInputInfo(cameraInputInfo);
   }
 
-  /**
-   * Indicates whether the UI should display the production overlay. Controlled by
-   * the license property.
-   */
-  getShowProductionOverlay(): boolean {
-    return this.showProductionOverlay;
+  #scheduleCameraInputSyncToAnalytics(): void {
+    void this.#debouncedCameraInputSyncToAnalytics();
+  }
+
+  #clearCameraInputAnalyticsSync(): void {
+    this.#debouncedCameraInputSyncToAnalytics.cancel();
+  }
+
+  #buildCameraInputPingData(): PingCameraInputInfoData | undefined {
+    const state = this.cameraManager.getState();
+    if (!state.selectedCamera || !state.videoResolution) {
+      return undefined;
+    }
+    return convertCameraInputToPingData(
+      state.selectedCamera,
+      state.videoResolution,
+      state.extractionArea,
+    );
   }
 
   /**
@@ -508,6 +523,8 @@ export class BlinkIdUxManager {
 
   /**
    * Returns the time in ms before the help tooltip is shown. Null if tooltip won't be auto shown.
+   *
+   * @deprecated This option will be removed in a future release. Use `helpTooltipShowDelay` in `FeedbackUiOptions` instead.
    */
   getHelpTooltipShowDelay(): number | null {
     return this.#helpTooltipShowDelay;
@@ -515,6 +532,8 @@ export class BlinkIdUxManager {
 
   /**
    * Returns the time in ms before the help tooltip is hidden. Null if tooltip won't be auto hidden.
+   *
+   * @deprecated This option will be removed in a future release. Use `helpTooltipHideDelay` in `FeedbackUiOptions` instead.
    */
   getHelpTooltipHideDelay(): number | null {
     return this.#helpTooltipHideDelay;
@@ -554,6 +573,15 @@ export class BlinkIdUxManager {
    */
   isHapticFeedbackSupported(): boolean {
     return this.#hapticFeedbackManager.isSupported();
+  }
+
+  /**
+   * Gets the analytics service for tracking UX events.
+   *
+   * @returns The UX analytics service
+   */
+  get analytics(): AnalyticService {
+    return this.#analytics;
   }
 
   /**
@@ -678,14 +706,7 @@ export class BlinkIdUxManager {
    */
   #invokeOnErrorCallbacks = (errorState: BlinkIdProcessingError) => {
     this.#hapticFeedbackManager.triggerLong();
-
-    for (const callback of this.#onErrorCallbacks) {
-      try {
-        callback(errorState);
-      } catch (e) {
-        console.error("Error in onError callback", e);
-      }
-    }
+    invokeCallbacks(this.#onErrorCallbacks, errorState, "onError");
   };
 
   /**
@@ -722,14 +743,11 @@ export class BlinkIdUxManager {
     documentClassInfo: DocumentClassInfo,
   ) => {
     this.#hapticFeedbackManager.triggerLong();
-
-    for (const callback of this.#onDocumentFilteredCallbacks) {
-      try {
-        callback(documentClassInfo);
-      } catch (e) {
-        console.error("Error in onDocumentFiltered callback", e);
-      }
-    }
+    invokeCallbacks(
+      this.#onDocumentFilteredCallbacks,
+      documentClassInfo,
+      "onDocumentFiltered",
+    );
   };
 
   /**
@@ -738,13 +756,7 @@ export class BlinkIdUxManager {
    * @param result - The scan result.
    */
   #invokeOnResultCallbacks = (result: BlinkIdScanningResult) => {
-    for (const callback of this.#onResultCallbacks) {
-      try {
-        callback(result);
-      } catch (e) {
-        console.error("Error in onResult callback", e);
-      }
-    }
+    invokeCallbacks(this.#onResultCallbacks, result, "onResult");
   };
 
   /**
@@ -753,13 +765,11 @@ export class BlinkIdUxManager {
    * @param frameResult - The frame result.
    */
   #invokeOnFrameProcessCallbacks = (frameResult: ProcessResultWithBuffer) => {
-    for (const callback of this.#onFrameProcessCallbacks) {
-      try {
-        callback(frameResult);
-      } catch (e) {
-        console.error("Error in onFrameProcess callback", e);
-      }
-    }
+    invokeCallbacks(
+      this.#onFrameProcessCallbacks,
+      frameResult,
+      "onFrameProcess",
+    );
   };
 
   /**
@@ -768,13 +778,11 @@ export class BlinkIdUxManager {
    * @param uiState - The UI state.
    */
   #invokeOnUiStateChangedCallbacks = (uiState: BlinkIdUiState) => {
-    for (const callback of this.#onUiStateChangedCallbacks) {
-      try {
-        callback(uiState);
-      } catch (e) {
-        console.error("Error in onUiStateChanged callback", e);
-      }
-    }
+    invokeCallbacks(
+      this.#onUiStateChangedCallbacks,
+      uiState,
+      "onUiStateChanged",
+    );
   };
 
   /**
@@ -792,11 +800,11 @@ export class BlinkIdUxManager {
       return true;
     }
 
-    const documentClassInfo = this.#extractDocumentClassInfo(processResult);
+    const documentClassInfo = extractDocumentClassInfo(processResult);
 
     // If document is not classified or passes the filter, continue processing
     if (
-      !this.#isDocumentClassified(documentClassInfo) ||
+      !isDocumentClassified(documentClassInfo) ||
       this.#documentClassFilter(documentClassInfo)
     ) {
       return true;
@@ -808,82 +816,8 @@ export class BlinkIdUxManager {
     // Notify relevant callbacks but skip UI updates since the document is rejected
     this.#invokeOnDocumentFilteredCallbacks(documentClassInfo);
 
-    // Still invoke frame process callbacks to maintain consistent callback flow
-    this.#invokeOnFrameProcessCallbacks(processResult);
-
     return false;
   }
-
-  /**
-   * The frame capture callback. This is the main function that is called when a
-   * new frame is captured. It is responsible for processing the frame and
-   * updating the UI state.
-   *
-   * @param imageData - The image data.
-   * @returns The processed frame's ArrayBuffer, or undefined if not applicable.
-   */
-  #frameCaptureCallback = async (
-    imageData: ImageData,
-  ): Promise<ArrayBuffer | void> => {
-    if (this.#threadBusy) {
-      console.debug("🚦🔴 Thread is busy, skipping frame capture");
-      return;
-    }
-
-    this.#threadBusy = true;
-
-    try {
-      // https://issues.chromium.org/issues/379999322
-      const imageDataLike = {
-        data: imageData.data,
-        width: imageData.width,
-        height: imageData.height,
-        colorSpace: "srgb",
-      } satisfies ImageData;
-
-      /**
-       * `scanningSession.process()` errors on calls after the document is captured and
-       * the success state is placed on the queue to be shown after the current message's
-       * minimum duration is reached.
-       *
-       * However, we still need to call `#handleUiStateChange()` to update the UI state, so
-       * we stop the loop here by not setting `this.#threadBusy` to `true` and manually
-       * calling `#handleUiStateChange()` with the `DOCUMENT_CAPTURED` state after the
-       * minimum duration of the state is reached.
-       */
-      if (this.#successProcessResult) {
-        window.setTimeout(() => {
-          if (!this.#successProcessResult) {
-            console.error("No success process result, should not happen");
-            return;
-          }
-          this.#updateUiStateFromProcessResult(this.#successProcessResult);
-        }, blinkIdUiStateMap.DOCUMENT_CAPTURED.minDuration);
-        return;
-      }
-
-      const processResult = await this.scanningSession.process(imageDataLike);
-
-      if (this.#isFirstFrame) {
-        this.#isFirstFrame = false;
-        void this.scanningSession.sendPinglets();
-      }
-
-      // Check if document should be processed or filtered out
-      if (!this.#handleDocumentClassFiltering(processResult)) {
-        return processResult.arrayBuffer;
-      }
-
-      // Document passed filtering or no filtering was configured
-      // Update UI state based on recognition results and notify callbacks
-      this.#updateUiStateFromProcessResult(processResult);
-      this.#invokeOnFrameProcessCallbacks(processResult);
-
-      return processResult.arrayBuffer;
-    } finally {
-      this.#threadBusy = false;
-    }
-  };
 
   /**
    * Sets the duration after which the scanning session will timeout. The
@@ -917,6 +851,8 @@ export class BlinkIdUxManager {
    * shown. If null, tooltip won't be auto shown.
    * @throws {Error} Throws an error if duration is less than or equal to 0 when
    * not null.
+   *
+   * @deprecated This option will be removed in a future release. Use `helpTooltipShowDelay` in `FeedbackUiOptions` instead.
    */
   setHelpTooltipShowDelay(duration: number | null) {
     if (duration !== null && duration <= 0) {
@@ -934,6 +870,8 @@ export class BlinkIdUxManager {
    * hidden. If null, tooltip won't be auto hidden.
    * @throws {Error} Throws an error if duration is less than or equal to 0 when
    * not null.
+   *
+   * @deprecated This option will be removed in a future release. Use `helpTooltipHideDelay` in `FeedbackUiOptions` instead.
    */
   setHelpTooltipHideDelay(duration: number | null) {
     if (duration !== null && duration <= 0) {
@@ -963,16 +901,11 @@ export class BlinkIdUxManager {
 
       this.#invokeOnErrorCallbacks("timeout");
 
-      void this.scanningSession.ping(
-        new PingSdkUxEventImpl({
-          eventType: "StepTimeout",
-        }),
-      );
-      void this.scanningSession.sendPinglets();
+      void this.#analytics.logStepTimeoutEvent();
+      void this.#analytics.sendPinglets();
 
-      // Reset the feedback stabilizer to clear the state
-      // We handle this as a new scan attempt
-      this.#resetUiState();
+      // reset the scanning session, but don't continue
+      void this.resetScanningSession(false);
     }, this.#timeoutDuration);
   };
 
@@ -982,8 +915,7 @@ export class BlinkIdUxManager {
    * @param uiStateKey - The new UI state key
    */
   #handleHapticFeedback = (uiStateKey: BlinkIdUiStateKey) => {
-    // First side success states (before barcode scanning)
-    if (firstSideCapturedUiStateKeys.includes(uiStateKey)) {
+    if (uiStateKey === "PAGE_CAPTURED") {
       this.#hapticFeedbackManager.triggerShort();
       return;
     }
@@ -997,7 +929,7 @@ export class BlinkIdUxManager {
     // Error states (excluding unsupported document which is handled separately)
     if (
       uiStateKey !== "UNSUPPORTED_DOCUMENT" &&
-      errorUiStateKeys.includes(uiStateKey)
+      blinkIdUiErrorStateKeys.includes(uiStateKey as BlinkIdUiErrorStateKey)
     ) {
       this.#hapticFeedbackManager.triggerShort();
       return;
@@ -1005,140 +937,266 @@ export class BlinkIdUxManager {
   };
 
   /**
-   * Updates the UI state based on the process result. This is called after a frame has been processed
-   * to update the UI state according to the recognition results.
+   * The frame capture callback. This is the main function that is called when a
+   * new frame is captured. It is responsible for processing the frame and
+   * updating the UI state.
    *
-   * @param processResult - The process result from frame processing.
+   * @param imageData - The image data.
+   * @returns The processed frame's ArrayBuffer, or undefined if not applicable.
    */
-  #updateUiStateFromProcessResult = (
-    processResult: ProcessResultWithBuffer,
-  ) => {
-    const uiStateKeyCandidate = getUiStateKey(
-      processResult,
-      this.sessionSettings.scanningSettings,
-    );
-
-    // first side captured
-    if (firstSideCapturedUiStateKeys.includes(uiStateKeyCandidate)) {
-      void this.scanningSession.sendPinglets();
-    }
-
-    if (uiStateKeyCandidate === "DOCUMENT_CAPTURED") {
-      // TODO: check if the buffer is still reachable
-      this.#successProcessResult = processResult;
-      void this.scanningSession.sendPinglets();
-    }
-
-    this.rawUiStateKey = uiStateKeyCandidate;
-
-    const newUiState =
-      this.feedbackStabilizer.getNewUiState(uiStateKeyCandidate);
-
-    // Skip if the state is the same
-    if (newUiState.key === this.uiState.key) {
+  #frameCaptureCallback = async (
+    imageData: ImageData,
+  ): Promise<ArrayBuffer | void> => {
+    if (this.#processingLifecycleState === "terminal") {
       return;
+    }
+
+    if (this.#processingLifecycleState === "busy") {
+      console.debug("🚦🔴 Thread is busy, skipping frame capture");
+      return;
+    }
+
+    this.#processingLifecycleState = "busy";
+
+    try {
+      const processResult = await this.scanningSession.process(imageData);
+
+      if (processResult.arrayBuffer.byteLength === 0) {
+        console.warn(
+          "scanningSession.process did not return ownership of the array buffer!",
+        );
+      }
+
+      /**
+       * This should not happen. The processing should stop after the document has been
+       * captured, or after the result has been retrieved.
+       * @see BlinkIdSessionErrorType
+       */
+      if ("error" in processResult) {
+        console.warn("session process error:", processResult.error);
+        return processResult.arrayBuffer;
+      }
+
+      if (!this.#firstProcessedFrameAt) {
+        this.#firstProcessedFrameAt = performance.now();
+        void this.#analytics.sendPinglets();
+      }
+
+      this.#lastDocumentRotation = getDocumentRotation(processResult);
+      this.#documentPagination = getDocumentPaginationType(
+        extractDocumentClassInfo(processResult),
+      );
+
+      const mappedUiStateKey = this.#getMappedUiStateKey(processResult);
+
+      // stop/resume side-effects remain on frame processing path
+      this.#handleProcessResultSideEffects(mappedUiStateKey);
+
+      // invoke user callbacks
+      this.#invokeOnFrameProcessCallbacks(processResult);
+
+      // Check if document should be processed or filtered out
+      if (!this.#handleDocumentClassFiltering(processResult)) {
+        return processResult.arrayBuffer;
+      }
+
+      // fills the stabilizer event queue on the video frame, RAF handles updates
+      // Ingest immediately to avoid an extra manager queue layer.
+      if (mappedUiStateKey) {
+        this.#mappedUiStateKey = mappedUiStateKey;
+        this.feedbackStabilizer.ingest(mappedUiStateKey);
+      }
+
+      return processResult.arrayBuffer;
+    } finally {
+      if (this.#processingLifecycleState === "busy") {
+        this.#processingLifecycleState = "ready";
+      }
+    }
+  };
+
+  #handleProcessResultSideEffects = (
+    mappedUiStateKey?: BlinkIdUiStateKey,
+  ): void => {
+    if (!mappedUiStateKey) {
+      return;
+    }
+
+    // stop frame processing on success states
+    if (
+      (blinkIdUiStepSuccessKeys as readonly BlinkIdUiStateKey[]).includes(
+        mappedUiStateKey,
+      )
+    ) {
+      console.debug("🛑 stop processing", mappedUiStateKey);
+      this.cameraManager.stopFrameCapture();
+      void this.#analytics.sendPinglets();
+      if (mappedUiStateKey === "DOCUMENT_CAPTURED") {
+        this.#processingLifecycleState = "terminal";
+      }
+    }
+  };
+
+  #getMappedUiStateKey = (processResult: BlinkIdProcessResult) => {
+    if (!this.sessionSettings) {
+      return undefined;
+    }
+    return getUiStateKey(processResult, this.sessionSettings.scanningSettings);
+  };
+
+  /**
+   * Updates the UI state from the uiStateKey
+   */
+  #updateUiState = async (uiStateKey: BlinkIdUiStateKey) => {
+    // Skip UI update if the state is the same
+    if (uiStateKey === this.uiState.key) {
+      return;
+    }
+
+    console.debug(`🔄 UI State changed: ${this.uiState.key} -> ${uiStateKey}`);
+
+    const newUiState = blinkIdUiStateMap[uiStateKey];
+
+    this.#uiState = newUiState;
+
+    // Log error analytics when UI state changes to an error state (not in processing loop)
+    if (
+      uiStateKey !== "UNSUPPORTED_DOCUMENT" &&
+      blinkIdUiErrorStateKeys.includes(uiStateKey as BlinkIdUiErrorStateKey)
+    ) {
+      const errorKey = uiStateKey as PingableErrorUiStateKey;
+      void this.#analytics.logErrorMessageEvent(
+        mapErrorStateKeyToAnalyticsType(errorKey),
+      );
     }
 
     // Trigger haptic feedback based on UI state changes
     this.#handleHapticFeedback(newUiState.key);
 
-    this.uiState = newUiState;
-
-    this.#invokeOnUiStateChangedCallbacks(newUiState);
-    void this.#handleUiStateChange(newUiState);
-  };
-
-  /**
-   * Handles the UI state change. This is the main function that is called
-   * when a new UI state is set. It is responsible for handling the timeout,
-   * handling the first side captured states, and handling the UNSUPPORTED_DOCUMENT
-   * state.
-   *
-   * @param uiState - The UI state.
-   */
-  #handleUiStateChange = async (uiState: BlinkIdUiState) => {
-    if (this.#timeoutDuration !== null) {
-      this.#setTimeout(uiState);
-    }
-
-    // queue error ping if applicable
-    const errorPing = createErrorMessagePingFromUiState(uiState.key);
-    if (errorPing) {
-      void this.scanningSession.ping(errorPing);
-    }
-
-    // Handle all first side captured states to display both the
-    // animation to reposition the document and the success animation
-    if (firstSideCapturedUiStateKeys.includes(uiState.key)) {
-      this.cameraManager.stopFrameCapture();
-      // we need to wait for the compound duration
-      // The DOCUMENT_CAPTURED state is the checkbox animation
-
-      await sleep(
-        uiState.minDuration + blinkIdUiStateMap.DOCUMENT_CAPTURED.minDuration,
-      );
-      await this.cameraManager.startFrameCapture();
-      return;
-    }
-
-    // handle UNSUPPORTED_DOCUMENT
-    if (uiState.key === "UNSUPPORTED_DOCUMENT") {
+    // Unsupported document is stabilized on purpose to prevent one-off errors.
+    // This state should not update the spinner + user guidance message, only
+    // open the unsupported-document modal via the error callback.
+    if (uiStateKey === "UNSUPPORTED_DOCUMENT") {
+      // handle UNSUPPORTED_DOCUMENT
       console.debug("🔴 Unsupported document");
-
-      this.cameraManager.stopFrameCapture();
       this.#invokeOnErrorCallbacks("unsupported_document");
       return;
     }
 
+    this.#invokeOnUiStateChangedCallbacks(newUiState);
+    await this.#handleUiStateUpdates(newUiState);
+    this.#queueNextChainedUiState(newUiState.key);
+  };
+
+  #queueNextChainedUiState = (previousUiStateKey: BlinkIdUiStateKey) => {
+    if (!this.#documentPagination) {
+      return;
+    }
+
+    const chainedUiProps: ChainedUiStateProps = {
+      previousUiStateKey,
+      paginationType: this.#documentPagination,
+      rotation: this.#lastDocumentRotation,
+    };
+
+    const chainedUiStateKey = getChainedUiStateKey(chainedUiProps);
+
+    if (!chainedUiStateKey) {
+      return;
+    }
+
+    this.feedbackStabilizer.ingest(chainedUiStateKey);
+  };
+
+  /**
+   * Handles side effects triggered by a UI state transition: restarts the
+   * scan timeout, resumes frame capture on intro states, and orchestrates
+   * result retrieval on DOCUMENT_CAPTURED.
+   *
+   * @param uiState - The UI state.
+   */
+  #handleUiStateUpdates = async (uiState: BlinkIdUiState) => {
+    if (this.#timeoutDuration !== null && uiState.key !== "DOCUMENT_CAPTURED") {
+      this.#setTimeout(uiState);
+    }
+
+    // handle resuming processing on intro states
+    if (
+      (blinkIdUiIntroStateKeys as readonly BlinkIdUiStateKey[]).includes(
+        uiState.key,
+      )
+    ) {
+      this.#pendingIntroAnchorKey = uiState.key;
+      void this.cameraManager.startFrameCapture();
+    }
+
     // handle DOCUMENT_CAPTURED
     if (uiState.key === "DOCUMENT_CAPTURED") {
-      this.cameraManager.stopFrameCapture();
-      await sleep(uiState.minDuration); // allow animation to play out
+      console.debug(
+        "Handling DOCUMENT_CAPTURED state from #handleUiStateChange",
+      );
+      // Scanning is complete — cancel any running timeout before the animation sleep
+      // to prevent it from firing and triggering a spurious reset during result retrieval.
+      this.clearScanTimeout();
+      try {
+        await sleep(uiState.minDuration); // allow checkbox success animation to play out
 
-      // get the result and delete the session object
-      const result = await this.getSessionResult(true);
+        const result = await this.getSessionResult();
 
-      this.#invokeOnResultCallbacks(result);
-      return;
+        this.#invokeOnResultCallbacks(result);
+      } catch (err) {
+        console.error(
+          "Failed to retrieve scan result after document capture:",
+          err,
+        );
+        this.#invokeOnErrorCallbacks("result_retrieval_failed");
+        void this.#analytics.sendPinglets();
+      } finally {
+        this.#processingLifecycleState = "terminal";
+      }
     }
   };
 
   /**
-   * Extracts the document class info from the process result.
-   *
-   * @param processResult - The process result.
-   * @returns The document class info.
+   * Returns the initial UI state key used when resetting UX state.
    */
-  #extractDocumentClassInfo(processResult: ProcessResultWithBuffer) {
-    return processResult.inputImageAnalysisResult.documentClassInfo;
+  getInitialUiStateKey() {
+    return this.#initialUiStateKey;
   }
 
   /**
-   * Checks if the document class is classified.
+   * Overrides the initial UI state key.
    *
-   * @param documentClassInfo - The document class info.
-   * @returns Whether the document class is classified.
+   * @param uiStateKey - The UI state key to use as manager initial state.
+   * @param applyImmediately - If true, immediately applies and emits this state.
    */
-  #isDocumentClassified(documentClassInfo: DocumentClassInfo): boolean {
-    return (
-      documentClassInfo?.country !== undefined &&
-      documentClassInfo?.type !== undefined
-    );
+  setInitialUiStateKey(
+    uiStateKey: BlinkIdUiStateKey,
+    applyImmediately = false,
+  ) {
+    this.#initialUiStateKey = uiStateKey;
+    if (applyImmediately) {
+      this.#resetUiState(uiStateKey);
+    }
   }
 
   /**
    * Resets the feedback stabilizer and invokes the onUiStateChanged callbacks.
    */
-  #resetUiState = () => {
-    this.feedbackStabilizer.reset();
-    this.uiState = this.feedbackStabilizer.currentState;
+  #resetUiState = (uiStateKey: BlinkIdUiStateKey = this.#initialUiStateKey) => {
+    this.feedbackStabilizer.reset(uiStateKey);
+    this.#uiState = this.feedbackStabilizer.currentState;
+    this.#mappedUiStateKey = this.uiState.key;
+    this.#processingLifecycleState = "ready";
+    this.#pendingIntroAnchorKey = uiStateKey;
+    this.#firstProcessedFrameAt = undefined;
     this.#invokeOnUiStateChangedCallbacks(this.uiState);
   };
 
   /**
    * Clears the scanning session timeout.
    */
-  clearScanTimeout = () => {
+  clearScanTimeout() {
     if (!this.#timeoutId) {
       return;
     }
@@ -1146,39 +1204,15 @@ export class BlinkIdUxManager {
     console.debug("⏳🔴 clearing timeout");
     window.clearTimeout(this.#timeoutId);
     this.#timeoutId = undefined;
-  };
+  }
 
   /**
    * Gets the result from the scanning session.
    *
-   * @param deleteSession - Whether to delete the session after getting the result. Note that
-   * it is not possible to get the result a second time after the document has been fully captured,
-   * so in this case we should delete the scanning session since it is no longer needed.
    * @returns The result.
    */
-  async getSessionResult(
-    deleteSession = false,
-  ): Promise<BlinkIdScanningResult> {
-    const result = await this.scanningSession.getResult();
-
-    // cleanup memory, as session cannot be reused for another scan
-    if (deleteSession) {
-      await this.safelyDeleteScanningSession();
-    }
-
-    return result;
-  }
-
-  /**
-   * Safely deletes the scanning session.
-   */
-  async safelyDeleteScanningSession() {
-    // we need to check if the session is deleted, as it might be deleted already
-    const isScanningSessionDeleted = await this.scanningSession.isDeleted();
-
-    if (!isScanningSessionDeleted) {
-      await this.scanningSession.delete();
-    }
+  async getSessionResult(): Promise<BlinkIdScanningResult> {
+    return this.scanningSession.getResult();
   }
 
   /**
@@ -1189,10 +1223,7 @@ export class BlinkIdUxManager {
   async resetScanningSession(startFrameCapture = true) {
     console.debug("🔁 Resetting scanning session");
     this.clearScanTimeout();
-    this.#threadBusy = false;
-    this.#successProcessResult = undefined;
     this.#resetUiState();
-    this.#documentClassFilter = undefined;
 
     await this.scanningSession.reset();
 
@@ -1217,6 +1248,7 @@ export class BlinkIdUxManager {
 
   cleanupAllObservers() {
     console.debug("🧹 Removing all BlinkIdUxManager observers");
+    this.#clearCameraInputAnalyticsSync();
     this.#cleanupCallbacks.forEach((cleanup) => cleanup());
     this.#cleanupCallbacks.clear();
   }
@@ -1229,8 +1261,24 @@ export class BlinkIdUxManager {
   reset() {
     console.debug("🔁 Resetting BlinkIdUxManager");
     this.clearScanTimeout();
-    this.#threadBusy = false;
-    this.#successProcessResult = undefined;
+    this.#clearCameraInputAnalyticsSync();
+    this.#processingLifecycleState = "ready";
+    this.clearUserCallbacks();
+    this.#documentClassFilter = undefined;
+  }
+
+  /**
+   * Fully tears down the BlinkIdUxManager. Stops frame processing, cancels the
+   * scan timeout, removes all subscriptions and the RAF loop, and clears all
+   * registered callbacks. Should be called when the manager is no longer needed.
+   *
+   * Does not stop the camera stream or delete the scanning session.
+   */
+  destroy() {
+    console.debug("💥 Destroying BlinkIdUxManager");
+    this.#processingLifecycleState = "terminal";
+    this.clearScanTimeout();
+    this.cleanupAllObservers();
     this.clearUserCallbacks();
     this.#documentClassFilter = undefined;
   }

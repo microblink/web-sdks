@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Hjálp", tooltip: "Þarftu aðstoð?" },
   help_modal: {
+    aria: "Skönnunarhjálp",
     back_btn: "Til baka",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Hvar er kortanúmerið?",
     },
     done_btn: "Lokið",
+    done_btn_aria: "Halda áfram að skanna",
     lighting: {
       details:
         "Forðist beint, skarpt ljós því það endurkastast frá kortinu og getur gert hluta kortsins ólæsilegan. Ef þú getur ekki lesið gögn á kortinu, þá verða þau heldur ekki sýnileg myndavélinni.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Skönnunarleiðbeiningar",
     btn: "Byrja að skanna",
     details:
       "Kortanúmer er venjulega 16 stafa tala. Það ætti annaðhvort að vera prentað eða upphleypt í upphækkuðum tölum þvert yfir kortið. Gangið úr skugga um að kortið sé vel upplýst og að allar upplýsingar séu sýnilegar.",
@@ -63,6 +66,7 @@ export default {
       "Kortanúmer er venjulega 16 stafa tala. Það ætti annaðhvort að vera prentað eða upphleypt í upphækkuðum tölum þvert yfir kortið. Gangið úr skugga um að myndavélalinsan sé hrein, kortið sé vel upplýst og að allar upplýsingar séu sýnilegar.",
     title: "Skannið kortanúmerið fyrst",
   },
+  sdk_aria: "Kortaskönnunarskjár",
   timeout_modal: {
     cancel_btn: "Hætta við",
     details: "Ekki tókst að lesa kortið. Reynið aftur.",

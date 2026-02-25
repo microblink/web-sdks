@@ -11,7 +11,6 @@ import {
 import {
   createBlinkCardFeedbackUi,
   createBlinkCardUxManager,
-  type BlinkCardUxManager,
 } from "@microblink/blinkcard-ux-manager";
 import {
   CameraManager,
@@ -40,8 +39,6 @@ const targetNode = !USE_PORTAL ? document.getElementById("root")! : undefined;
  */
 export const App: Component = () => {
   const [result, setResult] = createSignal<BlinkCardScanningResult>();
-  const [blinkCardUxManager, setBlinkCardUxManager] =
-    createSignal<BlinkCardUxManager>();
   const [loadState, setLoadState] = createSignal<
     "not-loaded" | "loading" | "ready"
   >("not-loaded");
@@ -79,7 +76,6 @@ export const App: Component = () => {
     const cameraManager = new CameraManager();
     const uxManager = await createBlinkCardUxManager(cameraManager, session);
     uxManager.setTimeoutDuration(null);
-    setBlinkCardUxManager(uxManager);
 
     const cameraUi = await createCameraManagerUi(cameraManager, targetNode, {
       showMirrorCameraButton: true,
@@ -87,7 +83,6 @@ export const App: Component = () => {
 
     cameraUi.addOnDismountCallback(() => {
       void blinkCardCore.terminate();
-      setBlinkCardUxManager(undefined);
       setLoadState("not-loaded");
     });
 

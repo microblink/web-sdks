@@ -60,9 +60,7 @@ function normalizeDocumentFilter(
  * @param rule - The document rule.
  * @returns The normalized document rule.
  */
-export const normalizeDocumentRule = (
-  rule: Partial<DocumentRules>,
-): DocumentRules => {
+const normalizeDocumentRule = (rule: Partial<DocumentRules>): DocumentRules => {
   return {
     documentFilter: normalizeDocumentFilter(rule.documentFilter),
     fields: rule.fields ?? [],
@@ -75,7 +73,7 @@ export const normalizeDocumentRule = (
  * @param settings - The document anonymization settings.
  * @returns The normalized document anonymization settings.
  */
-export const normalizeDocumentAnonymizationSettings = (
+const normalizeDocumentAnonymizationSettings = (
   settings: DocumentAnonymizationSettings,
 ): DocumentAnonymizationSettings => {
   return {

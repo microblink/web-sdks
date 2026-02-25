@@ -92,6 +92,15 @@ export type CameraManagerUiOptions = {
    * @defaultValue true
    */
   showCameraErrorModal?: boolean;
+  /**
+   * The z-index of the camera UI when rendered as a full-screen overlay.
+   * Only applies when no target element is provided.
+   *
+   * If not provided, uses `calc(infinity)` to ensure the camera UI appears on top.
+   *
+   * @defaultValue calc(infinity)
+   */
+  zIndex?: number;
 };
 
 /**
@@ -111,6 +120,7 @@ export function createCameraManagerUi(
     showTorchButton = true,
     showCloseButton = true,
     showCameraErrorModal = true,
+    zIndex,
   }: CameraManagerUiOptions = {},
 ): Promise<CameraManagerComponent> {
   // The mountable HTML element.
@@ -221,6 +231,7 @@ export function createCameraManagerUi(
           showTorchButton={showTorchButton}
           showCloseButton={showCloseButton}
           showCameraErrorModal={showCameraErrorModal}
+          zIndex={zIndex}
           mountTarget={mountTarget}
         >
           <RootComponent />

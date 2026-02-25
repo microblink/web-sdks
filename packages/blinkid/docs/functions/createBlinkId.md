@@ -33,13 +33,6 @@ Configuration options for the BlinkID component
 Customization options for the camera manager UI.
 Controls camera-related UI elements like the video feed container and camera selection.
 
-#### feedbackLocalization?
-
-`Partial`\<[`LocalizationStrings`](../type-aliases/LocalizationStrings.md)\>
-
-Custom localization strings for the feedback UI.
-Allows overriding default text messages shown during scanning.
-
 #### feedbackUiOptions?
 
 `Partial`\<[`FeedbackUiOptions`](../type-aliases/FeedbackUiOptions.md)\>

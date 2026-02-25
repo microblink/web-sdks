@@ -2,8 +2,8 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { VehicleClassInfo } from "./VehicleClassInfo";
 import { StringResult } from "../result";
+import { VehicleClassInfo } from "./VehicleClassInfo";
 
 /**
  * Represents detailed information from a driver's license.

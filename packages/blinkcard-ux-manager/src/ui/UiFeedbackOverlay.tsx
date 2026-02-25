@@ -3,23 +3,13 @@
  */
 
 import { Rerun } from "@solid-primitives/keyed";
-import {
-  Component,
-  createEffect,
-  createSignal,
-  Match,
-  onCleanup,
-  ParentComponent,
-  Show,
-  Switch,
-} from "solid-js";
+import { Component, Match, ParentComponent, Show, Switch } from "solid-js";
 import { Motion, Presence } from "solid-motionone";
 
 import { clsx } from "clsx";
 import {
   BlinkCardUiState,
   blinkCardUiStateMap,
-  firstSideCapturedUiStateKeys,
 } from "../core/blinkcard-ui-state";
 import { LocalizationStrings, useLocalization } from "./LocalizationContext";
 import { feedbackMessages } from "./feedbackMessages";
@@ -42,32 +32,6 @@ export const UiFeedbackOverlay: Component<{
   uiState: BlinkCardUiState;
   isDesktop: boolean;
 }> = (props) => {
-  /**
-   * This is a hack since we don't have a discrete state for both a successful
-   * scan and a card flip.
-   */
-  const [showSuccessOnly, setShowSuccessOnly] = createSignal(false);
-  let timeout: number;
-
-  /**
-   * Handles showing the success feedback before other states defined in `firstSideCapturedStates`
-   */
-  createEffect(() => {
-    if (firstSideCapturedUiStateKeys.includes(props.uiState.key)) {
-      setShowSuccessOnly(true);
-
-      timeout = window.setTimeout(
-        () => setShowSuccessOnly(false),
-        blinkCardUiStateMap.CARD_CAPTURED.minDuration,
-      );
-    } else {
-      setShowSuccessOnly(false);
-      window.clearTimeout(timeout!);
-    }
-
-    onCleanup(() => clearTimeout(timeout!));
-  });
-
   return (
     <>
       <div
@@ -83,7 +47,6 @@ export const UiFeedbackOverlay: Component<{
            */}
           <div class="size-24">
             <div class="relative size-full grid place-items-center" aria-hidden>
-              {/* default spinners */}
               <Switch>
                 <Match when={props.uiState.reticleType === "searching"}>
                   <SearchReticle />
@@ -94,22 +57,10 @@ export const UiFeedbackOverlay: Component<{
                 <Match when={props.uiState.reticleType === "error"}>
                   <ErrorReticle />
                 </Match>
-
-                {/* Success – reused between multiple states */}
-                <Match
-                  when={
-                    props.uiState.reticleType === "done" || showSuccessOnly()
-                  }
-                >
+                <Match when={props.uiState.reticleType === "done"}>
                   <SuccessFeedback />
                 </Match>
-
-                {/* flip card */}
-                <Match
-                  when={
-                    props.uiState.reticleType === "flip" && !showSuccessOnly()
-                  }
-                >
+                <Match when={props.uiState.reticleType === "flip"}>
                   <FlipCardFeedback />
                 </Match>
               </Switch>
@@ -117,12 +68,10 @@ export const UiFeedbackOverlay: Component<{
           </div>
 
           {/* feedback message */}
-          <Show when={!showSuccessOnly()}>
-            <UiFeedbackMessage
-              uiState={props.uiState}
-              isDesktop={props.isDesktop}
-            />
-          </Show>
+          <UiFeedbackMessage
+            uiState={props.uiState}
+            isDesktop={props.isDesktop}
+          />
         </div>
       </div>
     </>

@@ -8,10 +8,10 @@ import type {
   ProgressStatusCallback,
 } from "@microblink/blinkid-worker";
 import { createProxyWorker } from "@microblink/core-common/createProxyWorker";
-import { shouldUseLightweightBuild } from "@microblink/core-common/shouldUseLightweightBuild";
-import type { SetOptional, Simplify } from "type-fest";
 import { getUserId } from "@microblink/core-common/getUserId";
+import { shouldUseLightweightBuild } from "@microblink/core-common/shouldUseLightweightBuild";
 import { proxy, Remote } from "comlink";
+import type { SetOptional, Simplify } from "type-fest";
 import { defaultSessionSettings } from "./defaultSessionSettings";
 
 /**

@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "قسمت جلوی یک سند پشتیبانی شده را اسکن کنید.",
   document_scanned: "با موفقیت اسکن شد! سند اسکن شد",
-  document_too_close_to_edge: "سند را از لبه حرکت دهید",
+  document_too_close_to_edge: "دورتر حرکت کن",
   face_photo_not_fully_visible: "عکس چهره را کاملاً قابل مشاهده نگه دارید",
   flip_document: "سند را ورق بزنید",
   flip_to_back_side: "به سمت عقب برگردانید",
@@ -24,6 +24,11 @@ export default {
   glare_detected: "برای حذف انعکاس، سند را کج یا جابجا کنید",
   help_aria_label: "کمک",
   help_modal_back_btn: "برگشت",
+  help_modal_blur_details_desktop:
+    "سعی کنید هنگام اسکن، دستگاه و سند را ثابت نگه دارید. حرکت دادن هر یک از آنها می‌تواند تصویر را تار کند و داده‌های روی سند را غیرقابل خواندن کند.",
+  help_modal_camera_lens_details:
+    "لنز دوربین خود را از نظر لکه یا گرد و غبار بررسی کنید. لنز کثیف باعث تار شدن تصویر نهایی می‌شود و جزئیات سند را غیرقابل خواندن می‌کند و مانع از اسکن موفقیت‌آمیز داده‌ها می‌شود.",
+  help_modal_camera_lens_title: "لنز دوربین خود را تمیز کنید",
   help_modal_details_1:
     "مطمئن شوید که بخش‌هایی از سند، از جمله خطوط پایین، را با انگشت خود نمی‌پوشانید. همچنین، مراقب بازتاب‌های هولوگرام باشید که از روی قسمت‌های سند عبور می‌کنند.",
   help_modal_details_2:
@@ -36,6 +41,8 @@ export default {
   help_modal_title_2: "مراقب نور شدید باشید",
   help_modal_title_3: "هنگام اسکن کردن بی‌حرکت بمانید",
   help_tooltip: "به کمک نیاز دارید؟",
+  keep_document_parallel: "سند را موازی با صفحه نمایش نگه دارید",
+  keep_document_still: "سند و دستگاه را ثابت نگه دارید",
   move_closer: "نزدیکتر حرکت کن",
   move_farther: "دورتر حرکت کن",
   move_left: "به صفحه سمت چپ منتقل شوید",
@@ -45,7 +52,11 @@ export default {
   onboarding_modal_btn: "شروع اسکن",
   onboarding_modal_details:
     "مطمئن شوید که سند را به خوبی روشن نگه داشته‌اید. تمام فیلدهای سند باید روی صفحه دوربین قابل مشاهده باشند.",
+  onboarding_modal_details_desktop:
+    "مطمئن شوید که لنز دوربین خود را تمیز نگه داشته‌اید و سند به خوبی روشن است. تمام فیلدهای سند باید روی صفحه دوربین قابل مشاهده باشند.",
   onboarding_modal_title: "تمام جزئیات را قابل مشاهده نگه دارید",
+  onboarding_modal_title_desktop: "آماده اسکن شوید",
+  resume_scanning: "اسکن را از سر بگیرید",
   scan_data_page: "صفحه داده سند را اسکن کنید",
   scan_last_page_barcode: "اسکن بارکد از آخرین صفحه",
   scan_left_page: "صفحه سمت چپ را اسکن کنید",
@@ -57,6 +68,9 @@ export default {
   scan_unsuccessful: "اسکن ناموفق بود",
   scan_unsuccessful_details:
     "قادر به خواندن سند نیست. لطفاً دوباره امتحان کنید.",
+  scanning_help: "کمک در اسکن",
+  scanning_instructions: "دستورالعمل‌های اسکن",
+  scanning_screen: "صفحه اسکن اسناد",
   too_bright: "به نقطه‌ای با نور کمتر بروید",
   too_dark: "به نقطه روشن‌تر نقل مکان کنید",
   wrong_left: "انتقال به صفحه سمت چپ",

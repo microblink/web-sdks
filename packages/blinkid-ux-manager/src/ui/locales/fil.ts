@@ -16,7 +16,7 @@ export default {
   document_not_recognized_details:
     "I-scan ang unahang bahagi ng isang suportadong dokumento.",
   document_scanned: "Tagumpay! Na-scan ang dokumento",
-  document_too_close_to_edge: "Iurong ang dokumento mula sa gilid",
+  document_too_close_to_edge: "Ilayo pa",
   face_photo_not_fully_visible:
     "Panatilihing ganap na nakikita ang larawan sa mukha",
   flip_document: "Baligtarin ang dokumento",
@@ -25,6 +25,11 @@ export default {
   glare_detected: "I-tilt o iusog ang dokumento para maalis ang reflection",
   help_aria_label: "Tulong",
   help_modal_back_btn: "Bumalik",
+  help_modal_blur_details_desktop:
+    "Panatilihing hindi gumagalaw ang device at dokumento habang nag-i-scan. Puwedeng maging malabo at hindi nababasa ang data sa dokumento kapag gumalaw.",
+  help_modal_camera_lens_details:
+    "Suriin kung may mga mantsa o alikabok ang lens ng camera mo. Nagdudulot ng paglabo ng pinal na larawan ang maruruming lens, na dahilan para hindi mabasa ang mga detalye ng dokumento at hindi pag-scan sa data.",
+  help_modal_camera_lens_title: "Linisin ang mga lens ng camera mo",
   help_modal_details_1:
     "Siguraduhin na hindi natatakpak ng iyong daliri ang mga bahagi ng dokumento, pati na ang pinakababang mga linya. Gayon rin, tingnan rin kung may mga hologram reflection na maaaring makatakip sa mga field ng dokumento.",
   help_modal_details_2:
@@ -37,6 +42,8 @@ export default {
   help_modal_title_2: "Tingnan kung may nakakasilaw na liwanag",
   help_modal_title_3: "Panatilihing hindi gumagalaw habang nag-i-scan",
   help_tooltip: "Kailangan ng tulong?",
+  keep_document_parallel: "Panatilihing nakatapat ang dokumento sa screen",
+  keep_document_still: "Panatilihing hindi gumagalaw ang dokumento at device",
   move_closer: "Ilapit pa",
   move_farther: "Ilayo pa",
   move_left: "Umusog sa page pakaliwa",
@@ -46,7 +53,11 @@ export default {
   onboarding_modal_btn: "Simulan ang Pag-scan",
   onboarding_modal_details:
     "Tiyaki na lubos na naiilawan ang dokumento. Dapat nakikita sa screen ng camera ang lahat ng field ng dokumento.",
+  onboarding_modal_details_desktop:
+    "Tiyaking malinis ang lens ng camera mo at lubos na naiilawan ang dokumento. Dapat nakikita sa screen ng camera ang lahat ng field ng dokumento.",
   onboarding_modal_title: "Panatilihing nakikita ang lahat ng detalye",
+  onboarding_modal_title_desktop: "Maghandang mag-scan",
+  resume_scanning: "I-resume ang pag-scan",
   scan_data_page: "I-scan ang pahina ng data ng dokumento",
   scan_last_page_barcode: "I-scan ang barcode sa huling pahina",
   scan_left_page: "I-scan ang kaliwang page",
@@ -57,6 +68,9 @@ export default {
   scan_top_page: "I-scan ang itaas ng page",
   scan_unsuccessful: "Hindi matagumpay ang pag-scan",
   scan_unsuccessful_details: "Hindi mabasa ang dokumento. Pakisubukan ulit.",
+  scanning_help: "Tulong sa pag-scan",
+  scanning_instructions: "Mga Tagubilin sa Pag-scan",
+  scanning_screen: "Screen ng pag-scan ng dokumento",
   too_bright: "Iusog sa bahaging hindi masyadong maliwanag",
   too_dark: "Iusog sa bahaging mas malinawag",
   wrong_left: "Pumunta sa kaliwang page",

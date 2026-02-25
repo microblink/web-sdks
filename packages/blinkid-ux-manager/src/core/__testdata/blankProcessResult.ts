@@ -2,9 +2,9 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { BlinkIdProcessResult } from "@microblink/blinkid-core";
+import { ProcessResultWithBuffer } from "@microblink/blinkid-core";
 
-export const blankProcessResult: BlinkIdProcessResult = {
+export const blankProcessResult: ProcessResultWithBuffer = {
   inputImageAnalysisResult: {
     processingStatus: "detection-failed",
     missingMandatoryFields: [],
@@ -19,6 +19,9 @@ export const blankProcessResult: BlinkIdProcessResult = {
       isoNumericCountryCode: "",
       isoAlpha2CountryCode: "",
       isoAlpha3CountryCode: "",
+      type: undefined,
+      country: undefined,
+      region: undefined,
     },
     blurDetectionStatus: "not-available",
     glareDetectionStatus: "not-available",
@@ -42,4 +45,5 @@ export const blankProcessResult: BlinkIdProcessResult = {
     faceImageExtracted: false,
     signatureImageExtracted: false,
   },
+  arrayBuffer: new ArrayBuffer(0),
 };

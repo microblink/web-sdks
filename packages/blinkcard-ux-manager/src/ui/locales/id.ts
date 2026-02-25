@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Bantuan", tooltip: "Perlu bantuan?" },
   help_modal: {
+    aria: "Bantuan pemindaian",
     back_btn: "Kembali",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Di mana letak nomor kartu?",
     },
     done_btn: "Selesai",
+    done_btn_aria: "Lanjutkan pemindaian",
     lighting: {
       details:
         "Hindari cahaya silau yang langsung karena memantul dari kartu dan akibatnya bagian kartu tidak terbaca. Jika Anda tidak dapat membaca data pada kartu, data juga tidak akan terlihat oleh kamera.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Petunjuk Pemindaian",
     btn: "Mulai Pemindaian",
     details:
       "Nomor kartu biasanya berupa angka 16 digit. Nomor itu mestinya dicetak atau diembos dengan angka timbul di kartu. Pastikan kartu cukup terang dan semua detail terlihat.",
@@ -63,6 +66,7 @@ export default {
       "Nomor kartu biasanya berupa 16 digit angka cetak atau embos dengan angka timbul pada kartu. Pastikan lensa kamera bersih, kartu cukup terang, dan semua detailnya terlihat.",
     title: "Pindai nomor kartu terlebih dahulu",
   },
+  sdk_aria: "Layar pemindaian kartu",
   timeout_modal: {
     cancel_btn: "Batal",
     details: "Kartu tidak dapat terbaca. Coba lagi.",

@@ -11,6 +11,9 @@ export type BlinkIdProcessingError =
   | "timeout"
   | "unsupported_document"
 
+  // result retrieval failed after successful document capture
+  | "result_retrieval_failed"
+
   // other
   | "unknown";
 

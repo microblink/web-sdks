@@ -71,6 +71,7 @@ CMakeSettings.json
 conanbuildinfo.*
 conaninfo.txt
 graph_info.json
+conan-info*.json
 
 ## Various built-in generators
 # cmake_find_package generator https://docs.conan.io/en/latest/reference/generators/cmake_find_package.html
@@ -269,6 +270,7 @@ dist
 !.vscode/launch.json
 !.vscode/extensions.json
 !.vscode/*.code-snippets
+!.vscode/mcp.json
 
 # Local History for Visual Studio Code
 .history/

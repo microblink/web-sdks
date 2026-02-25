@@ -15,7 +15,7 @@ export default {
   document_not_recognized: "ডকুমেন্ট সনাক্ত করা যায়নি",
   document_not_recognized_details: "সমর্থিত ডকুমেন্টের সামনের দিক স্ক্যান করুন",
   document_scanned: "সফল! ডকুমেন্ট স্ক্যান সম্পন্ন",
-  document_too_close_to_edge: "ডকুমেন্টটি প্রান্ত থেকে সরান",
+  document_too_close_to_edge: "আরও দূরে যান",
   face_photo_not_fully_visible: "ফেস ফটো সম্পূর্ণ দৃশ্যমান রাখুন",
   flip_document: "ডকুমেন্ট উল্টান",
   flip_to_back_side: "পিছনের দিকে উল্টান",
@@ -23,6 +23,11 @@ export default {
   glare_detected: "প্রতিফলন দূর করতে ডকুমেন্টটি বাঁকান বা সরান",
   help_aria_label: "সহায়তা",
   help_modal_back_btn: "পেছনে",
+  help_modal_blur_details_desktop:
+    "স্ক্যান করার সময় ডিভাইস এবং ডকুমেন্ট উভয়ই স্থির রাখার চেষ্টা করুন। যেকোনো একটি নাড়াচাড়া করলে ছবি ঝাপসা হয়ে যাবে এবং ডকুমেন্টের তথ্য পড়া যাবে না।",
+  help_modal_camera_lens_details:
+    "আপনার ক্যামেরার লেন্সে ময়লা বা দাগ আছে কিনা পরীক্ষা করুন। লেন্স নোংরা হলে ছবিটি ঝাপসা হয়ে যায়, ফলে ডকুমেন্টের তথ্য পড়া যায় না এবং ডেটা সফলভাবে স্ক্যান করা সম্ভব হয় না।",
+  help_modal_camera_lens_title: "আপনার ক্যামেরার লেন্স পরিষ্কার করুন",
   help_modal_details_1:
     "নিশ্চিত করুন যে আপনি আঙুল দিয়ে ডকুমেন্টের কোনো অংশ ঢাকছেন না, বিশেষ করে নিচের লাইনগুলো। এছাড়াও, ডকুমেন্ট ফিল্ডের উপর থাকা হোলোগ্রাম প্রতিফলনের দিকে খেয়াল রাখুন।",
   help_modal_details_2:
@@ -35,6 +40,8 @@ export default {
   help_modal_title_2: "তীব্র আলো এড়িয়ে চলুন",
   help_modal_title_3: "স্ক্যান করার সময় স্থির থাকুন",
   help_tooltip: "সাহায্য দরকার?",
+  keep_document_parallel: "ডকুমেন্টটি স্ক্রীনের সাথে সমান্তরাল রাখুন",
+  keep_document_still: "ডকুমেন্ট এবং ডিভাইস স্থির রাখুন",
   move_closer: "আরও কাছে যান",
   move_farther: "আরও দূরে যান",
   move_left: "বাম পৃষ্ঠায় যান",
@@ -44,7 +51,11 @@ export default {
   onboarding_modal_btn: "স্ক্যান শুরু করুন",
   onboarding_modal_details:
     "নিশ্চিত করুন যে আপনার ডকুমেন্টটি ভালোভাবে আলোকিত আছে। ক্যামেরার স্ক্রিনে ডকুমেন্টের সমস্ত তথ্য স্পষ্টভাবে দৃশ্যমান হবে।",
+  onboarding_modal_details_desktop:
+    "ক্যামেরার লেন্স পরিষ্কার রাখুন এবং নিশ্চিত করুন যে আপনার ডকুমেন্টটি ভালোভাবে আলোকিত আছে। ক্যামেরার স্ক্রিনে ডকুমেন্টের সমস্ত তথ্য স্পষ্টভাবে দৃশ্যমান হবে।",
   onboarding_modal_title: "সমস্ত বিবরণ দৃশ্যমান রাখুন",
+  onboarding_modal_title_desktop: "স্ক্যান করার জন্য প্রস্তুত হন",
+  resume_scanning: "স্ক্যানিং পুনরায় শুরু করুন",
   scan_data_page: "ডকুমেন্টের ডেটা পৃষ্ঠা স্ক্যান করুন",
   scan_last_page_barcode: "শেষ পাতার বারকোডটি স্ক্যান করুন",
   scan_left_page: "বাম পৃষ্ঠা স্ক্যান করুন",
@@ -56,6 +67,9 @@ export default {
   scan_unsuccessful: "স্ক্যান ব্যর্থ হয়েছে",
   scan_unsuccessful_details:
     "ডকুমেন্টটি পড়া যাচ্ছে না। অনুগ্রহ করে পুনরায় চেষ্টা করুন।",
+  scanning_help: "স্ক্যান করতে সাহায্য",
+  scanning_instructions: "স্ক্যান করার নির্দেশাবলী",
+  scanning_screen: "ডকুমেন্ট স্ক্যান করার স্ক্রীন",
   too_bright: "কম আলোযুক্ত স্থানে যান",
   too_dark: "উজ্জ্বল স্থানে যান",
   wrong_left: "বাম পৃষ্ঠায় যান",

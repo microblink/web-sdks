@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Aiuto", tooltip: "Ti serve aiuto?" },
   help_modal: {
+    aria: "Aiuto per la scansione",
     back_btn: "Indietro",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Dov'è il numero della carta?",
     },
     done_btn: "Fatto",
+    done_btn_aria: "Riprendi scansione",
     lighting: {
       details:
         "Evita la luce intensa diretta, perché questa si riflette sulla scheda e può rendere illeggibili alcune sue parti. Se non riesci a leggere i dati sulla scheda, neanche la fotocamera potrà vederli.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Istruzioni per la scansione",
     btn: "Avvia scansione",
     details:
       "Il numero della carta è in genere un numero di 16 cifre. Dovrebbe essere stampato o impresso in rilievo sulla carta. Assicurati che la carta sia ben illuminata e che tutti i dati siano visibili.",
@@ -63,6 +66,7 @@ export default {
       "Il numero della carta è in genere un numero di 16 cifre. Dovrebbe essere stampato o impresso in rilievo sulla carta. Assicurati che la lente della fotocamera sia pulita, che carta sia ben illuminata e che tutte le informazioni siano visibili.",
     title: "Prima scansiona il numero della carta",
   },
+  sdk_aria: "Schermata di scansione della carta",
   timeout_modal: {
     cancel_btn: "Annulla",
     details: "Impossibile leggere la carta. Riprova.",

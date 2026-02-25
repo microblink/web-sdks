@@ -9,6 +9,7 @@
 export type BlinkCardProcessingError =
   // processing
   | "timeout"
+  | "result_retrieval_failed"
 
   // other
   | "unknown";

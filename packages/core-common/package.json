@@ -12,10 +12,6 @@
   },
   "type": "module",
   "exports": {
-    "./createCustomImageData": {
-      "types": "./types/createCustomImageData.d.ts",
-      "import": "./dist/createCustomImageData.js"
-    },
     "./createProxyWorker": {
       "types": "./types/createProxyWorker.d.ts",
       "import": "./dist/createProxyWorker.js"

@@ -6,7 +6,7 @@
 
 # Function: getUiStateKey()
 
-> **getUiStateKey**(`frameProcessResult`, `settings?`): [`BlinkIdUiStateKey`](../type-aliases/BlinkIdUiStateKey.md)
+> **getUiStateKey**(`frameProcessResult`, `settings?`): `undefined` \| [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md)
 
 Determines the appropriate UI state key based on the current frame processing
 result and scanning settings.
@@ -33,6 +33,6 @@ selection.
 
 ## Returns
 
-[`BlinkIdUiStateKey`](../type-aliases/BlinkIdUiStateKey.md)
+`undefined` \| [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md)
 
 The UI state key representing what should be shown to the user.

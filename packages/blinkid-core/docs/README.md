@@ -10,7 +10,6 @@
 
 ## Interfaces
 
-- [PingBase](interfaces/PingBase.md)
 - [UADataValues](interfaces/UADataValues.md)
 
 ## Type Aliases
@@ -31,6 +30,7 @@
 - [BlinkIdScanningSession](type-aliases/BlinkIdScanningSession.md)
 - [BlinkIdSessionError](type-aliases/BlinkIdSessionError.md)
 - [BlinkIdSessionErrorType](type-aliases/BlinkIdSessionErrorType.md)
+- [BlinkIdSessionErrorWithBuffer](type-aliases/BlinkIdSessionErrorWithBuffer.md)
 - [BlinkIdSessionSettings](type-aliases/BlinkIdSessionSettings.md)
 - [BlinkIdWorkerInitSettings](type-aliases/BlinkIdWorkerInitSettings.md)
 - [BlinkIdWorkerProxy](type-aliases/BlinkIdWorkerProxy.md)
@@ -59,12 +59,11 @@
 - [DocumentRotation](type-aliases/DocumentRotation.md)
 - [DocumentRules](type-aliases/DocumentRules.md)
 - [DocumentType](type-aliases/DocumentType.md)
+- [DownloadProgress](type-aliases/DownloadProgress.md)
 - [DriverLicenceDetailedInfo](type-aliases/DriverLicenceDetailedInfo.md)
-- [ErrorData](type-aliases/ErrorData.md)
 - [FieldType](type-aliases/FieldType.md)
 - [FormFactor](type-aliases/FormFactor.md)
 - [GpuInfo](type-aliases/GpuInfo.md)
-- [HardwareCameraInfoData](type-aliases/HardwareCameraInfoData.md)
 - [ImageAnalysisDetectionStatus](type-aliases/ImageAnalysisDetectionStatus.md)
 - [ImageAnalysisLightingStatus](type-aliases/ImageAnalysisLightingStatus.md)
 - [ImageExtractionType](type-aliases/ImageExtractionType.md)
@@ -75,20 +74,9 @@
 - [LicenseTokenState](type-aliases/LicenseTokenState.md)
 - [LicenseUnlockResult](type-aliases/LicenseUnlockResult.md)
 - [LoadWasmParams](type-aliases/LoadWasmParams.md)
-- [LogData](type-aliases/LogData.md)
 - [MrzDocumentType](type-aliases/MrzDocumentType.md)
 - [MrzResult](type-aliases/MrzResult.md)
-- [Ping](type-aliases/Ping.md)
-- [PingBrowserDeviceInfo](type-aliases/PingBrowserDeviceInfo.md)
-- [PingError](type-aliases/PingError.md)
-- [PingHardwareCameraInfo](type-aliases/PingHardwareCameraInfo.md)
-- [PingLog](type-aliases/PingLog.md)
-- [PingSdkCameraInputInfo](type-aliases/PingSdkCameraInputInfo.md)
-- [PingSdkCameraPermission](type-aliases/PingSdkCameraPermission.md)
-- [PingSdkInitStart](type-aliases/PingSdkInitStart.md)
-- [PingSdkScanConditions](type-aliases/PingSdkScanConditions.md)
-- [PingSdkUxEvent](type-aliases/PingSdkUxEvent.md)
-- [PingSdkWrapperProduct](type-aliases/PingSdkWrapperProduct.md)
+- [ParentInfo](type-aliases/ParentInfo.md)
 - [Point](type-aliases/Point.md)
 - [ProcessingStatus](type-aliases/ProcessingStatus.md)
 - [ProcessResultWithBuffer](type-aliases/ProcessResultWithBuffer.md)
@@ -105,13 +93,6 @@
 - [ScanningSettings](type-aliases/ScanningSettings.md)
 - [ScanningSide](type-aliases/ScanningSide.md)
 - [ScanningStatus](type-aliases/ScanningStatus.md)
-- [SchemaName](type-aliases/SchemaName.md)
-- [SdkCameraInputInfoData](type-aliases/SdkCameraInputInfoData.md)
-- [SdkCameraPermissionData](type-aliases/SdkCameraPermissionData.md)
-- [SdkInitStartData](type-aliases/SdkInitStartData.md)
-- [SdkScanConditionsData](type-aliases/SdkScanConditionsData.md)
-- [SdkUxEventData](type-aliases/SdkUxEventData.md)
-- [SdkWrapperProductData](type-aliases/SdkWrapperProductData.md)
 - [ServerPermissionErrorReason](type-aliases/ServerPermissionErrorReason.md)
 - [ServerPermissionSubmitError](type-aliases/ServerPermissionSubmitError.md)
 - [SingleSideScanningResult](type-aliases/SingleSideScanningResult.md)
@@ -132,7 +113,6 @@
 
 ## Functions
 
-- [createCustomImageData](functions/createCustomImageData.md)
 - [createDerivedDeviceInfo](functions/createDerivedDeviceInfo.md)
 - [createProxyWorker](functions/createProxyWorker.md)
 - [extractBarcodeImage](functions/extractBarcodeImage.md)

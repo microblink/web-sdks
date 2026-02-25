@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Hilfe", tooltip: "Brauchen Sie Hilfe?" },
   help_modal: {
+    aria: "Hilfe beim Scannen",
     back_btn: "Zurück",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Wo finde ich die Kartennummer?",
     },
     done_btn: "Fertig",
+    done_btn_aria: "Scannen fortsetzen",
     lighting: {
       details:
         "Meiden Sie direktes, grelles Licht, da dieses von der Karte reflektiert wird und so Teile der Karte unkenntlich machen kann. Wenn Sie keine Daten auf der Karte lesen können, sind diese auch für die Kamera nicht sichtbar.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Anweisungen zum Scannen",
     btn: "Scannen beginnen",
     details:
       "Die Kartennummer besteht in der Regel aus einer 16-stelligen Zahl. Die Nummer sollte entweder aufgedruckt oder in erhabenen Ziffern auf der Karte eingeprägt sein. Versichern Sie sich, dass die Karte gut beleuchtet ist und alle Details sichtbar sind.",
@@ -63,6 +66,7 @@ export default {
       "Die Kartennummer besteht in der Regel aus einer 16-stelligen Zahl. Die Nummer sollte entweder aufgedruckt oder in erhabenen Ziffern auf der Karte eingeprägt sein. Versichern Sie sich, dass das Kameraobjektiv sauber ist, die Karte gut beleuchtet ist und alle Details sichtbar sind.",
     title: "Scannen Sie zuerst die Kartennummer",
   },
+  sdk_aria: "Kartenscanner-Bildschirm",
   timeout_modal: {
     cancel_btn: "Abbrechen",
     details:

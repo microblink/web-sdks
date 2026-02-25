@@ -2,14 +2,23 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { describe, expect, test } from "vitest";
-import { merge } from "merge-anything";
 import type {
   BlinkCardProcessResult,
   ScanningSettings,
 } from "@microblink/blinkcard-core";
-import { getUiStateKey, type BlinkCardUiStateKey } from "./blinkcard-ui-state";
+import { merge } from "merge-anything";
+import { describe, expect, test } from "vitest";
+import {
+  getUiStateKey,
+  type BlinkCardUiMappableKey,
+} from "./blinkcard-ui-state";
 import { blankProcessResult } from "./__testdata/blankProcessResult";
+
+/**
+ * Test file role:
+ * - Owns pure mapping rules from process results/settings to BlinkCard UI state keys.
+ * - Keep these tests deterministic and data-driven; avoid manager lifecycle concerns.
+ */
 
 type PartialProcessResult = Partial<
   Omit<
@@ -79,25 +88,25 @@ describe("getUiStateKey", () => {
     });
     const settings = getMergedSettings();
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
       "CARD_CAPTURED",
     );
   });
 
-  test("returns FLIP_CARD when awaiting other side", () => {
+  test("returns FIRST_SIDE_CAPTURED when awaiting other side", () => {
     const processResult = createProcessResult({
       inputImageAnalysisResult: { processingStatus: "awaiting-other-side" },
     });
     const settings = getMergedSettings();
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
-      "FLIP_CARD",
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
+      "FIRST_SIDE_CAPTURED",
     );
   });
 
   test.each<{
     detectionStatus: BlinkCardProcessResult["inputImageAnalysisResult"]["detectionStatus"];
-    expected: BlinkCardUiStateKey;
+    expected: BlinkCardUiMappableKey;
   }>([
     {
       detectionStatus: "camera-too-far",
@@ -123,9 +132,9 @@ describe("getUiStateKey", () => {
       });
       const settings = getMergedSettings();
 
-      expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
-        expected,
-      );
+      expect(
+        getUiStateKey(processResult, settings),
+      ).toBe<BlinkCardUiMappableKey>(expected);
     },
   );
 
@@ -140,7 +149,7 @@ describe("getUiStateKey", () => {
     });
     const settings = getMergedSettings();
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
       "OCCLUDED",
     );
   });
@@ -153,7 +162,7 @@ describe("getUiStateKey", () => {
     });
     const settings = getMergedSettings();
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
       "OCCLUDED",
     );
   });
@@ -167,12 +176,12 @@ describe("getUiStateKey", () => {
       },
     });
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
       "BLUR_DETECTED",
     );
   });
 
-  test("falls back to SENSING_FRONT when blur skip disabled", () => {
+  test("falls back to CARD_NOT_IN_FRAME_FRONT when blur skip disabled", () => {
     const settings = getMergedSettings({ skipImagesWithBlur: false });
     const processResult = createProcessResult({
       inputImageAnalysisResult: {
@@ -181,8 +190,8 @@ describe("getUiStateKey", () => {
       },
     });
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
-      "SENSING_FRONT",
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
+      "CARD_NOT_IN_FRAME_FRONT",
     );
   });
 
@@ -192,29 +201,29 @@ describe("getUiStateKey", () => {
     });
     const settings = getMergedSettings();
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
       "WRONG_SIDE",
     );
   });
 
-  test("maps scanning-side-in-progress for second side to SENSING_BACK", () => {
+  test("maps scanning-side-in-progress for second side to CARD_NOT_IN_FRAME_BACK", () => {
     const processResult = createProcessResult({
       inputImageAnalysisResult: { scanningSide: "second" },
       resultCompleteness: { scanningStatus: "scanning-side-in-progress" },
     });
     const settings = getMergedSettings();
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
-      "SENSING_BACK",
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
+      "CARD_NOT_IN_FRAME_BACK",
     );
   });
 
-  test("falls back to SENSING_FRONT", () => {
+  test("falls back to CARD_NOT_IN_FRAME_FRONT", () => {
     const processResult = createProcessResult();
     const settings = getMergedSettings();
 
-    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiStateKey>(
-      "SENSING_FRONT",
+    expect(getUiStateKey(processResult, settings)).toBe<BlinkCardUiMappableKey>(
+      "CARD_NOT_IN_FRAME_FRONT",
     );
   });
 });

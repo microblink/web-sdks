@@ -44,6 +44,14 @@
       "types": "./types/errors.d.ts",
       "import": "./dist/errors.js"
     },
+    "./getWasmFileSize": {
+      "types": "./types/getWasmFileSize.d.ts",
+      "import": "./dist/getWasmFileSize.js"
+    },
+    "./downloadResourceBuffer": {
+      "types": "./types/downloadResourceBuffer.d.ts",
+      "import": "./dist/downloadResourceBuffer.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [

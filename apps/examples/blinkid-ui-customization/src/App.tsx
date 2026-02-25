@@ -12,7 +12,8 @@ import {
   DocumentClassInfo,
 } from "@microblink/blinkid-core";
 import {
-  BlinkIdUxManager,
+  type BlinkIdUxManager,
+  createBlinkIdUxManager,
   createBlinkIdFeedbackUi,
   BlinkIdProcessingError,
   BlinkIdUiState,
@@ -244,7 +245,10 @@ export const App: Component = () => {
     try {
       // Initialize camera manager and UX manager
       cameraManager = new CameraManager();
-      blinkIdUxManager = new BlinkIdUxManager(cameraManager, scanningSession);
+      blinkIdUxManager = await createBlinkIdUxManager(
+        cameraManager,
+        scanningSession,
+      );
       blinkIdUxManager.setTimeoutDuration(15000); // 15 seconds timeout
 
       // Create and configure camera UI
@@ -418,7 +422,7 @@ export const App: Component = () => {
 
     if (blinkIdUxManager) {
       // example of getting the result before session is closed
-      const result = await blinkIdUxManager.getSessionResult(true);
+      const result = await blinkIdUxManager.getSessionResult();
       setBlinkIdScanningResult(result);
     }
 

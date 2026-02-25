@@ -20,14 +20,27 @@
       "types": "./types/utils.d.ts",
       "import": "./dist/utils.js"
     },
+    "./cameraAnalyticsMappers": {
+      "types": "./types/cameraAnalyticsMappers.d.ts",
+      "import": "./dist/cameraAnalyticsMappers.js"
+    },
+    "./RafLoop": {
+      "types": "./types/RafLoop.d.ts",
+      "import": "./dist/RafLoop.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
     "types"
   ],
+  "dependencies": {
+    "@microblink/analytics": "workspace:^",
+    "@microblink/camera-manager": "workspace:^"
+  },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
+    "@vitest/browser": "^3.0.8",
     "rimraf": "^6.0.1",
     "typescript": "5.8.3",
     "vitest": "^3.0.8"

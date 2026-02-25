@@ -13,6 +13,8 @@ import IconChevronDown from "./assets/general-c-chevron-down.svg?component-solid
 import { useCameraUiStore } from "./CameraUiStoreContext";
 import { useLocalization } from "./LocalizationContext";
 
+import "./styles/camera-selector.css";
+
 /**
  * The CameraSelector component.
  */
@@ -112,7 +114,7 @@ export const CameraSelector: Component = () => {
                     border-none disabled:opacity-50 disabled:cursor-not-allowed
                     max-w-[100%] btn-focus`}
                   >
-                    <IconCamera class="size-6 shrink-0" aria-hidden />
+                    <IconCamera class="size-6 shrink-0" aria-hidden="true" />
                     <Select.ValueText
                       class="truncate"
                       placeholder={
@@ -131,28 +133,28 @@ export const CameraSelector: Component = () => {
               }}
             />
             {/* Dropdown */}
-            <Select.Positioner class="focus-visible:outline-none">
-              <Select.Content class="focus-visible:outline-none outline-none">
+            <Select.Positioner>
+              <Select.Content
+                class="dropdown-content focus-visible:outline
+                  focus-visible:outline-2px focus-visible:outline-solid
+                  focus-visible:outline-primary
+                  focus-visible:outline-offset-4px"
+              >
                 <Select.ItemGroup
-                  class="rounded-4 overflow-hidden text-base color-white
-                    focus-visible:outline-none flex flex-col gap-[1px]"
+                  class="rounded-4 overflow-hidden text-base color-white flex
+                    flex-col"
                 >
                   <Index each={cameraCollection().items}>
-                    {(camera, index) => {
-                      const isFirst = index === 0;
-                      const isLast =
-                        index === cameraCollection().items.length - 1;
-
+                    {(camera) => {
                       return (
                         <Select.Item
                           item={camera()}
                           class={`flex py-3 pl-4 pr-12 cursor-pointer
                           select-none bg-gray-550/50 backdrop-blur-xl
-                          focus-visible:outline-none outline-none border-2
-                          border-solid border-transparent
-                          data-[highlighted]:border-primary relative
-                          ${isFirst ? "rounded-t-6" : ""}
-                          ${isLast ? "rounded-b-6" : ""}`}
+                          data-[highlighted]:bg-gray-550/100 relative
+                          first-of-type-rounded-t-6 last-of-type-rounded-b-6
+                          not-first-of-type-b-t-gray-300/50
+                          not-first-of-type-b-t-1 not-first-of-type-b-t-solid`}
                         >
                           <Select.ItemText class="truncate">
                             {camera().label}

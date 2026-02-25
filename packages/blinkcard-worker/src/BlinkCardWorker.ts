@@ -2,13 +2,18 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { expose, finalizer, proxy, ProxyMarked, transfer } from "comlink";
+import sizeManifest from "@microblink/blinkcard-wasm/size-manifest.json";
 import { buildResourcePath } from "@microblink/worker-common/buildResourcePath";
+import {
+  downloadResourceBuffer,
+  type DownloadProgress,
+} from "@microblink/worker-common/downloadResourceBuffer";
 import {
   LicenseError,
   ServerPermissionError,
 } from "@microblink/worker-common/errors";
 import { getCrossOriginWorkerURL } from "@microblink/worker-common/getCrossOriginWorkerURL";
+import { getWasmFileSize } from "@microblink/worker-common/getWasmFileSize";
 import { isIOS } from "@microblink/worker-common/isSafari";
 import { obtainNewServerPermission } from "@microblink/worker-common/licencing";
 import { mbToWasmPages } from "@microblink/worker-common/mbToWasmPages";
@@ -18,7 +23,9 @@ import {
   type SanitizedProxyUrls,
 } from "@microblink/worker-common/proxy-url-validator";
 import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
+import { expose, finalizer, proxy, ProxyMarked, transfer } from "comlink";
 
+import type { Ping } from "@microblink/analytics/ping";
 import type {
   BlinkCardProcessResult,
   BlinkCardScanningResult,
@@ -29,13 +36,9 @@ import type {
   EmscriptenModuleFactory,
   WasmVariant,
 } from "@microblink/blinkcard-wasm";
-import type { Ping } from "@microblink/analytics/ping";
 import { OverrideProperties } from "type-fest";
 
-import {
-  DownloadProgress,
-  downloadResourceBuffer,
-} from "./downloadResourceBuffer";
+export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 /**
  * The BlinkCard worker.
@@ -170,19 +173,30 @@ export class BlinkCardWorker {
       void throttledCombinedProgress();
     };
 
+    const getExpectedSize = (params: {
+      fileType: "wasm" | "data";
+      variant: WasmVariant;
+    }) => getWasmFileSize(params, sizeManifest);
+
     // Replace simple fetch with progress tracking for both wasm and data downloads
     const [preloadedWasm, preloadedData] = await Promise.all([
       downloadResourceBuffer(
-        wasmUrl,
-        "wasm",
-        wasmVariant,
-        wasmProgressCallback,
+        {
+          url: wasmUrl,
+          fileType: "wasm",
+          variant: wasmVariant,
+          progressCallback: wasmProgressCallback,
+        },
+        getExpectedSize,
       ),
       downloadResourceBuffer(
-        dataUrl,
-        "data",
-        wasmVariant,
-        dataProgressCallback,
+        {
+          url: dataUrl,
+          fileType: "data",
+          variant: wasmVariant,
+          progressCallback: dataProgressCallback,
+        },
+        getExpectedSize,
       ),
     ]);
 

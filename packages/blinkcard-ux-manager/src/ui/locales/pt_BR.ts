@@ -24,6 +24,7 @@ export default {
   },
   help_button: { aria_label: "Ajuda", tooltip: "Precisa de ajuda?" },
   help_modal: {
+    aria: "Ajuda para escaneamento",
     back_btn: "Voltar",
     blur: {
       details:
@@ -43,6 +44,7 @@ export default {
       title: "Onde está o número do cartão?",
     },
     done_btn: "Concluído",
+    done_btn_aria: "Retomar escaneamento",
     lighting: {
       details:
         "Evite luz forte e direta, pois ela reflete no cartão e pode tornar partes dele ilegíveis. Se você não conseguir ler os dados no cartão, eles também não serão visíveis para a câmera.",
@@ -56,6 +58,7 @@ export default {
     },
   },
   onboarding_modal: {
+    aria: "Instruções de escaneamento",
     btn: "Iniciar escaneamento",
     details:
       "O número do cartão geralmente tem 16 dígitos. Ele deve estar impresso ou gravado em alto relevo em todo o cartão. Certifique-se de que o cartão esteja bem iluminado e que todos os detalhes estejam visíveis.",
@@ -63,6 +66,7 @@ export default {
       "O número do cartão geralmente tem 16 dígitos. Ele deve estar impresso ou em alto-relevo no cartão. Certifique-se de que a lente da câmera esteja limpa, o cartão esteja bem iluminado e todos os detalhes estejam visíveis.",
     title: "Escaneie o número do cartão primeiro",
   },
+  sdk_aria: "Tela de escaneamento de cartão",
   timeout_modal: {
     cancel_btn: "Cancelar",
     details: "Não foi possível ler o cartão. Tente novamente.",

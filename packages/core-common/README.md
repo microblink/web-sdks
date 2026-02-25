@@ -1,10 +1,10 @@
 # @microblink/core-common
 
-Shared utilities and helpers used by BlinkID and BlinkCard core packages. It provides worker proxying, cross-origin worker URL resolution, device info, custom image data creation, and build-variant detection.
+Shared utilities and helpers used by BlinkID and BlinkCard core packages. It provides worker proxying, cross-origin worker URL resolution, device info, and build-variant detection.
 
 ## Overview
 
-- Exports: `createProxyWorker`, `getCrossOriginWorkerURL`, `createCustomImageData`, `getUserId`, `shouldUseLightweightBuild`, `deviceInfo`.
+- Exports: `createProxyWorker`, `getCrossOriginWorkerURL`, `getUserId`, `shouldUseLightweightBuild`, `deviceInfo`.
 - Used internally by `@microblink/blinkid-core`, `@microblink/blinkcard-core`, and related packages.
 - Private package; consumed via `workspace:*` within the monorepo.
 
