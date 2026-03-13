@@ -4,7 +4,7 @@
 
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import {
-  createMockImageData,
+  createFakeImageData,
   enableRafAwareFakeTimers,
   setupDestroyableTeardown,
 } from "@microblink/test-utils";
@@ -77,7 +77,7 @@ describe("BlinkCardUxManager integration smoke", () => {
     manager.addOnResultCallback(resultSpy);
 
     context.fakeCameraManager.emitPlaybackState("capturing");
-    await context.fakeCameraManager.emitFrame(createMockImageData());
+    await context.fakeCameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(blinkCardUiStateMap.INTRO_FRONT.minDuration + 100);
 
     await vi.waitFor(() => {
@@ -108,7 +108,7 @@ describe("BlinkCardUxManager integration smoke", () => {
     });
 
     context.fakeCameraManager.emitPlaybackState("capturing");
-    await context.fakeCameraManager.emitFrame(createMockImageData());
+    await context.fakeCameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(
       blinkCardUiStateMap.INTRO_FRONT.minDuration +
         blinkCardUiStateMap.FIRST_SIDE_CAPTURED.minDuration +
@@ -161,10 +161,10 @@ describe("BlinkCardUxManager integration smoke", () => {
     const manager = trackManager(context.manager);
 
     const firstFramePromise = context.fakeCameraManager.emitFrame(
-      createMockImageData(),
+      createFakeImageData(),
     );
     const secondFrameResult = await context.fakeCameraManager.emitFrame(
-      createMockImageData(),
+      createFakeImageData(),
     );
 
     expect(secondFrameResult).toBeUndefined();
@@ -200,7 +200,7 @@ describe("BlinkCardUxManager integration smoke", () => {
     manager.addOnErrorCallback(errorSpy);
 
     context.fakeCameraManager.emitPlaybackState("capturing");
-    await context.fakeCameraManager.emitFrame(createMockImageData());
+    await context.fakeCameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(blinkCardUiStateMap.INTRO_FRONT.minDuration + 100);
 
     await vi.waitFor(() => {

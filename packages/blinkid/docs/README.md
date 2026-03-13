@@ -6,18 +6,20 @@
 
 ## Classes
 
+- [BlinkIdWorker](classes/BlinkIdWorker.md)
 - [Camera](classes/Camera.md)
 - [CameraError](classes/CameraError.md)
 - [CameraManager](classes/CameraManager.md)
 - [FeedbackStabilizer](classes/FeedbackStabilizer.md)
 - [HapticFeedbackManager](classes/HapticFeedbackManager.md)
-- [LicenseError](classes/LicenseError.md)
 - [VideoFrameProcessor](classes/VideoFrameProcessor.md)
 
 ## Interfaces
 
 - [BlinkIdUxManager](interfaces/BlinkIdUxManager.md)
 - [UADataValues](interfaces/UADataValues.md)
+- [WasmBindings](interfaces/WasmBindings.md)
+- [WasmModule](interfaces/WasmModule.md)
 
 ## Type Aliases
 
@@ -109,7 +111,6 @@
 - [ImageSource](type-aliases/ImageSource.md)
 - [InputImageAnalysisResult](type-aliases/InputImageAnalysisResult.md)
 - [InputImageSource](type-aliases/InputImageSource.md)
-- [LicenseErrorCode](type-aliases/LicenseErrorCode.md)
 - [LicenseRequest](type-aliases/LicenseRequest.md)
 - [LicenseTokenState](type-aliases/LicenseTokenState.md)
 - [LicenseUnlockResult](type-aliases/LicenseUnlockResult.md)

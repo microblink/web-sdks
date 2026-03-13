@@ -8,10 +8,9 @@ import type {
   DateResult,
   SingleSideScanningResult,
 } from "@microblink/blinkcard-wasm";
+import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
 import { describe, expect, it } from "vitest";
 import { extractSideInputImage } from "./utils";
-
-const createMockImageData = () => new ImageData(1, 1);
 
 const createMockDateResult = (): DateResult => ({
   day: 1,
@@ -76,7 +75,7 @@ const createMockBlinkCardScanningResult = (
 
 describe("extractSideInputImage", () => {
   it("returns first side input image", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkCardScanningResult({
       firstSideResult: createMockSingleSideResult({
         cardImage: { image: expectedImage },
@@ -89,7 +88,7 @@ describe("extractSideInputImage", () => {
   });
 
   it("returns second side input image", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkCardScanningResult({
       secondSideResult: createMockSingleSideResult({
         cardImage: { image: expectedImage },

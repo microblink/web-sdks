@@ -3,3 +3,6 @@
  */
 
 export * from "./imageData";
+export * from "./licensing";
+export * from "./scanningSession";
+export * from "./wasmModuleFactory";

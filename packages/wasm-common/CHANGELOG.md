@@ -1,5 +1,11 @@
 # @microblink/wasm-common
 
+## 1.0.1
+
+### Patch Changes
+
+- Added shared `EmscriptenModule` and `WasmBindings` types.
+
 ## 1.0.0
 
 ### Major Changes

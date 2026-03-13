@@ -421,6 +421,7 @@ export class BlinkCardUxManager {
         void this.#analytics.logCameraPermissionCheck(false);
       } else if (curr === "prompt") {
         console.debug("Waiting for user response");
+        void this.#analytics.logCameraPermissionCheck(false);
         void this.#analytics.logCameraPermissionRequest();
       }
     }
@@ -440,6 +441,7 @@ export class BlinkCardUxManager {
         console.debug("user gave permission in browser settings");
       } else if (curr === "prompt") {
         console.debug("retrying for camera permission");
+        void this.#analytics.logCameraPermissionCheck(false);
         void this.#analytics.logCameraPermissionRequest();
       } else if (curr === undefined) {
         console.debug("user reset permission");

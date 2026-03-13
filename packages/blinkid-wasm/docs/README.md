@@ -4,6 +4,11 @@
 
 # @microblink/blinkid-wasm
 
+## Interfaces
+
+- [WasmBindings](interfaces/WasmBindings.md)
+- [WasmModule](interfaces/WasmModule.md)
+
 ## Type Aliases
 
 - [AddressDetailedInfo](type-aliases/AddressDetailedInfo.md)

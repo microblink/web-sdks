@@ -26,11 +26,11 @@ The settings.
 
 ### ping
 
-> **ping**: `BlinkIdWorker`\[`"reportPinglet"`\]
+> **ping**: [`BlinkIdWorker`](../classes/BlinkIdWorker.md)\[`"reportPinglet"`\]
 
 ### sendPinglets
 
-> **sendPinglets**: `BlinkIdWorker`\[`"sendPinglets"`\]
+> **sendPinglets**: [`BlinkIdWorker`](../classes/BlinkIdWorker.md)\[`"sendPinglets"`\]
 
 ### showDemoOverlay()
 

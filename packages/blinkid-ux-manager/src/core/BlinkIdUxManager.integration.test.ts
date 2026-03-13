@@ -3,9 +3,8 @@
  */
 
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import type { BlinkIdScanningResult } from "@microblink/blinkid-core";
 import {
-  createMockImageData,
+  createFakeImageData,
   enableRafAwareFakeTimers,
   setupDestroyableTeardown,
 } from "@microblink/test-utils";
@@ -83,7 +82,7 @@ describe("BlinkIdUxManager integration smoke", () => {
     manager.addOnResultCallback(resultSpy);
 
     context.fakeCameraManager.emitPlaybackState("capturing");
-    await context.fakeCameraManager.emitFrame(createMockImageData());
+    await context.fakeCameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(
       blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100,
     );
@@ -119,7 +118,7 @@ describe("BlinkIdUxManager integration smoke", () => {
     });
 
     context.fakeCameraManager.emitPlaybackState("capturing");
-    await context.fakeCameraManager.emitFrame(createMockImageData());
+    await context.fakeCameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(
       blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration +
         blinkIdUiStateMap.PAGE_CAPTURED.minDuration +
@@ -172,10 +171,10 @@ describe("BlinkIdUxManager integration smoke", () => {
     const manager = trackManager(context.manager);
 
     const firstFramePromise = context.fakeCameraManager.emitFrame(
-      createMockImageData(),
+      createFakeImageData(),
     );
     const secondFrameResult = await context.fakeCameraManager.emitFrame(
-      createMockImageData(),
+      createFakeImageData(),
     );
 
     expect(secondFrameResult).toBeUndefined();
@@ -214,7 +213,7 @@ describe("BlinkIdUxManager integration smoke", () => {
     manager.addOnErrorCallback(errorSpy);
 
     context.fakeCameraManager.emitPlaybackState("capturing");
-    await context.fakeCameraManager.emitFrame(createMockImageData());
+    await context.fakeCameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(
       blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100,
     );

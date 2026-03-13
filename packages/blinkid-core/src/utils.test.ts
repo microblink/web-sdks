@@ -4,6 +4,7 @@
 
 import { BlinkIdScanningResult } from "@microblink/blinkid-wasm";
 import { describe, expect, it } from "vitest";
+import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
 import {
   extractBarcodeImage,
   extractFaceImage,
@@ -12,16 +13,13 @@ import {
   extractSignatureImage,
 } from "./utils";
 
-// Mock ImageData for testing
-const createMockImageData = () => new ImageData(1, 1);
-
 // Mock factory for SingleSideScanningResult
 const createMockSingleSideScanningResult = (overrides = {}) => ({
-  inputImage: createMockImageData(),
-  documentImage: createMockImageData(),
-  faceImage: { image: createMockImageData() },
-  signatureImage: { image: createMockImageData() },
-  barcodeInputImage: createMockImageData(),
+  inputImage: createFakeImageData(),
+  documentImage: createFakeImageData(),
+  faceImage: { image: createFakeImageData() },
+  signatureImage: { image: createFakeImageData() },
+  barcodeInputImage: createFakeImageData(),
   ...overrides,
 });
 
@@ -43,7 +41,7 @@ const createMockBlinkIdScanningResult = (
 
 describe("extractSideInputImage", () => {
   it("should extract first side input image", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult({ inputImage: expectedImage }),
@@ -57,7 +55,7 @@ describe("extractSideInputImage", () => {
   });
 
   it("should extract second side input image", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult(),
@@ -95,7 +93,7 @@ describe("extractSideInputImage", () => {
 
 describe("extractBarcodeImage", () => {
   it("should extract barcode image from first side", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult({
@@ -111,7 +109,7 @@ describe("extractBarcodeImage", () => {
   });
 
   it("should extract barcode image from second side", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult({ barcodeInputImage: undefined }),
@@ -142,7 +140,7 @@ describe("extractBarcodeImage", () => {
 
 describe("extractSideDocumentImage", () => {
   it("should extract first side document image", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult({ documentImage: expectedImage }),
@@ -156,7 +154,7 @@ describe("extractSideDocumentImage", () => {
   });
 
   it("should extract second side document image", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult(),
@@ -194,7 +192,7 @@ describe("extractSideDocumentImage", () => {
 
 describe("extractFaceImage", () => {
   it("should extract face image from first side", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult({
@@ -210,7 +208,7 @@ describe("extractFaceImage", () => {
   });
 
   it("should extract face image from second side", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult({ faceImage: undefined }),
@@ -241,7 +239,7 @@ describe("extractFaceImage", () => {
 
 describe("extractSignatureImage", () => {
   it("should extract signature image from first side", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult({
@@ -257,7 +255,7 @@ describe("extractSignatureImage", () => {
   });
 
   it("should extract signature image from second side", () => {
-    const expectedImage = createMockImageData();
+    const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
       subResults: [
         createMockSingleSideScanningResult({ signatureImage: undefined }),

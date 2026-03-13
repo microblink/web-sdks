@@ -12,11 +12,9 @@ import type { BlinkCardInitSettings } from "./loadBlinkCardCore";
 const { createProxyWorkerMock, getUserIdMock, proxyMock, remoteWorker } =
   vi.hoisted(() => {
     const initBlinkCard = vi.fn();
-    const reportPinglet = vi.fn();
     const sendPinglets = vi.fn();
     const createProxyWorkerMock = vi.fn().mockResolvedValue({
       initBlinkCard,
-      reportPinglet,
       sendPinglets,
     });
     const getUserIdMock = vi.fn(() => "user-123");
@@ -28,7 +26,6 @@ const { createProxyWorkerMock, getUserIdMock, proxyMock, remoteWorker } =
       proxyMock,
       remoteWorker: {
         initBlinkCard,
-        reportPinglet,
         sendPinglets,
       },
     };
@@ -89,29 +86,5 @@ describe("loadBlinkCardCore", () => {
       settings as BlinkCardWorkerInitSettings,
       progressCallback,
     );
-  });
-
-  it("reports pinglet and throws when init fails", async () => {
-    const settings: BlinkCardInitSettings = { licenseKey: "test-key" };
-    const initError = new Error("boom");
-    remoteWorker.initBlinkCard.mockRejectedValueOnce(initError);
-
-    const caught = await loadBlinkCardCore(settings).catch(
-      (err) => err as Error,
-    );
-
-    expect(caught).toBeInstanceOf(Error);
-    expect((caught as Error).message).toBe("Failed to initialize BlinkCard");
-    expect((caught as Error).cause).toBe(initError);
-    expect(remoteWorker.reportPinglet).toHaveBeenCalledWith({
-      schemaName: "ping.error",
-      schemaVersion: "1.0.0",
-      data: {
-        errorType: "Crash",
-        errorMessage: initError.message,
-        stackTrace: initError.stack,
-      },
-    });
-    expect(remoteWorker.sendPinglets).toHaveBeenCalled();
   });
 });

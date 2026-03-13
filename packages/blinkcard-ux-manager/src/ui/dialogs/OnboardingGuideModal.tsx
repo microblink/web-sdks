@@ -38,7 +38,6 @@ export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
           void store.blinkCardUxManager.logOnboardingDisplayed();
         }
       },
-      { defer: true },
     ),
   );
 

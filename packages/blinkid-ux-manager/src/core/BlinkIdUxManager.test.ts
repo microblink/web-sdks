@@ -32,7 +32,7 @@ import type {
   PlaybackState,
 } from "@microblink/camera-manager";
 import {
-  createMockImageData,
+  createFakeImageData,
   enableRafAwareFakeTimers,
   flushUiRaf,
   jumpTime,
@@ -44,6 +44,7 @@ import { blinkIdUiStateMap } from "./blinkid-ui-state";
 import type { BlinkIdUxManager } from "./BlinkIdUxManager";
 import type { BlinkIdUxManagerOptions } from "./createBlinkIdUxManager";
 import {
+  createBlinkIdCameraHarness,
   createBlinkIdManager,
   createBlinkIdUnitSessionMock,
   type BlinkIdUnitSessionMock,
@@ -127,6 +128,115 @@ const createBlinkIdUxManager = async (
     ),
   );
 
+const createBlinkIdUxManagerWithFakeCamera = async (
+  initialCameraPermission?: "prompt" | "granted" | "denied" | "blocked",
+) => {
+  const cameraHarness = createBlinkIdCameraHarness(
+    initialCameraPermission
+      ? { initialState: { cameraPermission: initialCameraPermission } }
+      : undefined,
+  );
+  const session = createBlinkIdUnitSessionMock();
+  const manager = trackManager(
+    await createBlinkIdManager(cameraHarness.cameraManager, session),
+  );
+
+  return {
+    manager,
+    fakeCameraManager: cameraHarness.fakeCameraManager,
+  };
+};
+
+describe("BlinkIdUxManager - package-specific: camera permission analytics", () => {
+  type PermissionTransitionCase = {
+    name: string;
+    initialCameraPermission?: "prompt" | "granted" | "denied" | "blocked";
+    nextCameraPermission: "prompt" | "granted" | "denied";
+    expectedCheck?: boolean;
+    expectedRequest: boolean;
+    expectedResponse?: boolean;
+  };
+
+  const permissionTransitionCases: PermissionTransitionCase[] = [
+    {
+      name: "logs permission check and request for undefined -> prompt",
+      nextCameraPermission: "prompt",
+      expectedCheck: false,
+      expectedRequest: true,
+    },
+    {
+      name: "logs permission check and request for denied -> prompt",
+      initialCameraPermission: "denied",
+      nextCameraPermission: "prompt",
+      expectedCheck: false,
+      expectedRequest: true,
+    },
+    {
+      name: "logs user response for prompt -> granted",
+      initialCameraPermission: "prompt",
+      nextCameraPermission: "granted",
+      expectedRequest: false,
+      expectedResponse: true,
+    },
+    {
+      name: "logs user response for prompt -> denied",
+      initialCameraPermission: "prompt",
+      nextCameraPermission: "denied",
+      expectedRequest: false,
+      expectedResponse: false,
+    },
+  ];
+
+  test.each(permissionTransitionCases)("$name", async (testCase) => {
+    const { manager, fakeCameraManager } =
+      await createBlinkIdUxManagerWithFakeCamera(
+        testCase.initialCameraPermission,
+      );
+
+    const checkSpy = vi.spyOn(manager.analytics, "logCameraPermissionCheck");
+    const requestSpy = vi.spyOn(
+      manager.analytics,
+      "logCameraPermissionRequest",
+    );
+    const responseSpy = vi.spyOn(
+      manager.analytics,
+      "logCameraPermissionUserResponse",
+    );
+    const sendSpy = vi.spyOn(manager.analytics, "sendPinglets");
+
+    checkSpy.mockClear();
+    requestSpy.mockClear();
+    responseSpy.mockClear();
+    sendSpy.mockClear();
+
+    fakeCameraManager.emitState({
+      cameraPermission: testCase.nextCameraPermission,
+    });
+
+    if (testCase.expectedCheck === undefined) {
+      expect(checkSpy).not.toHaveBeenCalled();
+    } else {
+      expect(checkSpy).toHaveBeenCalledTimes(1);
+      expect(checkSpy).toHaveBeenCalledWith(testCase.expectedCheck);
+    }
+
+    if (testCase.expectedRequest) {
+      expect(requestSpy).toHaveBeenCalledTimes(1);
+    } else {
+      expect(requestSpy).not.toHaveBeenCalled();
+    }
+
+    if (testCase.expectedResponse === undefined) {
+      expect(responseSpy).not.toHaveBeenCalled();
+    } else {
+      expect(responseSpy).toHaveBeenCalledTimes(1);
+      expect(responseSpy).toHaveBeenCalledWith(testCase.expectedResponse);
+    }
+
+    expect(sendSpy).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe("BlinkIdUxManager - package-specific: document class filtering", () => {
   let mockCameraManager: MockCameraManager;
   let mockScanningSession: MockScanningSession;
@@ -178,7 +288,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
       return docInfo.country !== "usa";
     });
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Verify callback was invoked with the document class info
     expect(documentFilteredSpy).toHaveBeenCalledWith(
@@ -214,7 +324,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
       return docInfo.country === "usa";
     });
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Verify callback was invoked with the document class info
     expect(documentFilteredSpy).not.toHaveBeenCalledWith(mockDocumentClassInfo);
@@ -241,7 +351,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     // Add filter that would reject all documents
     const filterCleanup = manager.addDocumentClassFilter(() => false);
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Filter shouldn't be applied because document info is incomplete
     expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe(
@@ -262,7 +372,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     // Add filter that would reject all documents
     const filterCleanup = manager.addDocumentClassFilter(() => false);
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Filter shouldn't be applied because document info is undefined
     expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe(
@@ -287,7 +397,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     mockScanningSession.process.mockResolvedValue(mockProcessResult);
 
     // No filter added
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe(
       "success",
@@ -316,7 +426,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     mockScanningSession.process.mockResolvedValue(mockProcessResult);
     const filterCleanup = manager.addDocumentClassFilter(() => false);
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     expect(documentFilteredSpy).toHaveBeenCalledTimes(1);
 
@@ -326,7 +436,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     // Remove the filter and run again
     filterCleanup();
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Should not invoke callback when filter is removed
     expect(documentFilteredSpy).not.toHaveBeenCalled();
@@ -355,7 +465,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     // Add second filter that accepts all documents
     const secondFilterCleanup = manager.addDocumentClassFilter(() => true);
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Second filter should take precedence
     expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe(
@@ -396,7 +506,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
       resultsReceived.push(result);
     });
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Verify document filtered callback was called
     expect(documentFilteredSpy).toHaveBeenCalledWith(
@@ -438,7 +548,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     const cleanupFrameProcessCallback =
       manager.addOnFrameProcessCallback(frameProcessSpy);
 
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Verify frame process callback was called with the process result
     expect(frameProcessSpy).toHaveBeenCalledWith(mockProcessResult);
@@ -469,7 +579,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     // Add filter that rejects all documents
     const filterCleanup = manager.addDocumentClassFilter(() => false);
 
-    const result = await frameCaptureCallback(createMockImageData());
+    const result = await frameCaptureCallback(createFakeImageData());
 
     // Verify the arrayBuffer is returned from the callback
     expect(result).toBe(mockArrayBuffer);
@@ -501,7 +611,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     // Add filter that accepts all documents
     const filterCleanup = manager.addDocumentClassFilter(() => true);
 
-    const result = await frameCaptureCallback(createMockImageData());
+    const result = await frameCaptureCallback(createFakeImageData());
 
     // Verify the arrayBuffer is returned and mapped candidate was captured
     expect(result).toBe(mockArrayBuffer);
@@ -638,7 +748,7 @@ describe("BlinkIdUxManager - session lifecycle: reset behavior", () => {
     mockScanningSession.process.mockResolvedValue(mockProcessResult);
 
     // Process a frame to trigger potential callbacks
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Simulate timeout to trigger error callback
     const timeoutDuration = 5000;
@@ -779,7 +889,7 @@ describe("BlinkIdUxManager - timeout behavior", () => {
 
     // Start capture and process a frame
     playbackStateCallback("capturing");
-    await frameCaptureCallback(createMockImageData());
+    await frameCaptureCallback(createFakeImageData());
 
     // Advance timer but not enough to trigger timeout
     vi.advanceTimersByTime(timeoutDuration / 2);
@@ -860,14 +970,14 @@ describe(
       vi.setSystemTime(Date.now() + 10_000);
 
       playbackStateCallback("capturing");
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       // Intro should still be active immediately after first captured frame.
       expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
 
       await jumpTime(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
       expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
     });
@@ -892,7 +1002,7 @@ describe(
 
       // Process first frame at 100ms
       await jumpTime(100);
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       // UI state should still be INTRO_FRONT_PAGE
@@ -900,7 +1010,7 @@ describe(
 
       // Process another frame at 500ms
       await jumpTime(400);
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       // UI state should still be INTRO_FRONT_PAGE
@@ -908,7 +1018,7 @@ describe(
 
       // Process another frame at 1500ms (still within intro duration)
       await jumpTime(1000);
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       // UI state should still be INTRO_FRONT_PAGE
@@ -932,7 +1042,7 @@ describe(
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
 
       // Process first frame during intro period (before minDuration elapses)
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       // First frame is processed without asserting eventual mapped output timing.
@@ -942,7 +1052,7 @@ describe(
       await jumpTime(introDuration + 100);
 
       // Process another frame after intro duration
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       // Candidate state should now be mapped from process result.
@@ -970,7 +1080,7 @@ describe(
 
       // Process a frame during intro duration (before minDuration elapses)
       // The FeedbackStabilizer should block state changes until minDuration passes
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       // Should still be INTRO_FRONT_PAGE because minDuration hasn't elapsed yet
@@ -991,7 +1101,7 @@ describe(
       mockScanningSession.process.mockResolvedValue(mockSuccessResult);
 
       // Process a frame after mapping produces PAGE_CAPTURED.
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       // PAGE_CAPTURED should be the mapped candidate
@@ -1016,7 +1126,7 @@ describe(
 
       // First capture transition consumes pending intro anchor.
       playbackStateCallback("capturing");
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
       expect(restartStateTimerSpy).toHaveBeenCalledTimes(1);
       expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
@@ -1029,7 +1139,7 @@ describe(
       playbackStateCallback("idle");
       playbackStateCallback("capturing");
       await jumpTime(150);
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       expect(restartStateTimerSpy).toHaveBeenCalledTimes(1);
@@ -1123,7 +1233,7 @@ describe(
       playbackStateCallback("capturing");
 
       // Simulate frame capture
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
 
       // Flush RAF-driven state update
       await tickRaf();
@@ -1216,7 +1326,7 @@ describe(
         mockScanningSession.process.mockResolvedValue(mockProcessResult);
 
         // Simulate frame capture
-        await frameCaptureCallback(createMockImageData());
+        await frameCaptureCallback(createFakeImageData());
 
         // Wait for PAGE_CAPTURED state (SUCCESS_DURATION = 800ms)
         await jumpTime(blinkIdUiStateMap.PAGE_CAPTURED.minDuration + 100);
@@ -1254,7 +1364,7 @@ describe(
       manager.setInitialUiStateKey("INTRO_BACK_PAGE", true);
 
       playbackStateCallback("capturing");
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
       expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
 
@@ -1283,7 +1393,7 @@ describe(
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
       mockScanningSession.getResult.mockResolvedValue({ someData: "test" });
 
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
       await jumpTime(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
       await tickRaf();
@@ -1308,7 +1418,7 @@ describe(
       mockScanningSession.getResult.mockResolvedValue({ someData: "test" });
 
       // Simulate frame capture
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
 
       expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
 
@@ -1332,7 +1442,7 @@ describe(
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
 
       // Simulate frame capture
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
 
       await tickRaf();
 
@@ -1353,8 +1463,8 @@ describe(
       });
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
 
-      await frameCaptureCallback(createMockImageData());
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
 
       const pageCapturedQueueEntries = manager.feedbackStabilizer
@@ -1389,9 +1499,9 @@ describe(
         async () => pendingProcessResult,
       );
 
-      const firstFramePromise = frameCaptureCallback(createMockImageData());
+      const firstFramePromise = frameCaptureCallback(createFakeImageData());
       const secondFrameResult = await frameCaptureCallback(
-        createMockImageData(),
+        createFakeImageData(),
       );
 
       // Second frame should be dropped by busy guard while first frame is in flight.
@@ -1418,9 +1528,9 @@ describe(
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
       mockScanningSession.getResult.mockResolvedValue({ someData: "done" });
 
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
       await tickRaf();
-      await frameCaptureCallback(createMockImageData());
+      await frameCaptureCallback(createFakeImageData());
 
       expect(mockScanningSession.process).toHaveBeenCalledTimes(1);
     });

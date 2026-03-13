@@ -298,6 +298,7 @@ export class BlinkCardWorker {
     });
 
     if (!this.#wasmModule) {
+      // we do not flush pinglets here because we don't know if license allows it
       throw new Error("Wasm module not loaded");
     }
 
@@ -307,6 +308,27 @@ export class BlinkCardWorker {
       settings.userId,
       false,
     );
+
+    // Queue init pinglet before remote license check; flush only after full flow
+    this.reportPinglet({
+      schemaName: "ping.sdk.init.start",
+      schemaVersion: "1.1.0",
+      sessionNumber: 0,
+      data: {
+        packageName: self.location.hostname,
+        platform: "Emscripten",
+        platformDetails: wasmVariant,
+        product: "BlinkCard",
+        userId: this.#userId,
+      },
+    });
+
+    if (licenseUnlockResult.licenseError) {
+      // we do not flush pinglets here because we don't know if license allows it
+      throw new LicenseError(
+        "License unlock error: " + licenseUnlockResult.licenseError,
+      );
+    }
 
     if (settings.microblinkProxyUrl) {
       // Validate the proxy URL permissions
@@ -322,26 +344,6 @@ export class BlinkCardWorker {
         console.debug(`Using ping proxy URL: ${this.#proxyUrls.ping}`);
       }
     }
-    this.reportPinglet({
-      schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.1.0",
-      sessionNumber: 0,
-      data: {
-        packageName: self.location.hostname,
-        platform: "Emscripten",
-        platformDetails: wasmVariant,
-        product: "BlinkCard",
-        userId: this.#userId,
-      },
-    });
-
-    this.sendPinglets();
-
-    if (licenseUnlockResult.licenseError) {
-      throw new LicenseError(
-        "License unlock error: " + licenseUnlockResult.licenseError,
-      );
-    }
 
     // Check if we need to obtain a server permission
     if (licenseUnlockResult.unlockResult === "requires-server-permission") {
@@ -349,7 +351,8 @@ export class BlinkCardWorker {
         this.#proxyUrls?.baltazar && licenseUnlockResult.allowBaltazarProxy;
 
       const baltazarProxyUrl = shouldUseBaltazarProxy
-        ? this.#proxyUrls!.baltazar
+        ? // shouldUseBaltazarProxy implies this.#proxyUrls.baltazar is defined
+          this.#proxyUrls!.baltazar
         : undefined;
 
       if (baltazarProxyUrl) {
@@ -371,13 +374,30 @@ export class BlinkCardWorker {
       }
     }
 
-    console.debug(`BlinkCard SDK ${licenseUnlockResult.sdkVersion} unlocked`);
+    try {
+      console.debug(`BlinkCard SDK ${licenseUnlockResult.sdkVersion} unlocked`);
 
-    this.#showDemoOverlay = licenseUnlockResult.showDemoOverlay;
-    this.#showProductionOverlay = licenseUnlockResult.showProductionOverlay;
+      this.#showDemoOverlay = licenseUnlockResult.showDemoOverlay;
+      this.#showProductionOverlay = licenseUnlockResult.showProductionOverlay;
 
-    this.#wasmModule.initializeSdk(settings.userId);
-    this.sendPinglets();
+      this.#wasmModule.initializeSdk(settings.userId);
+    } catch (error) {
+      console.warn("Failed to initialize BlinkCard SDK:", error);
+      this.reportPinglet({
+        schemaName: "ping.error",
+        schemaVersion: "1.0.0",
+        sessionNumber: 0,
+        data: {
+          errorType: "Crash",
+          errorMessage: error instanceof Error ? error.message : String(error),
+          stackTrace: error instanceof Error ? error.stack : undefined,
+        },
+      });
+      throw error;
+    } finally {
+      // flush pinglets after initializing the SDK
+      this.sendPinglets();
+    }
   }
 
   /**

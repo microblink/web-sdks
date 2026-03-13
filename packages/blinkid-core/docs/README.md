@@ -6,11 +6,13 @@
 
 ## Classes
 
-- [LicenseError](classes/LicenseError.md)
+- [BlinkIdWorker](classes/BlinkIdWorker.md)
 
 ## Interfaces
 
 - [UADataValues](interfaces/UADataValues.md)
+- [WasmBindings](interfaces/WasmBindings.md)
+- [WasmModule](interfaces/WasmModule.md)
 
 ## Type Aliases
 
@@ -69,7 +71,6 @@
 - [ImageExtractionType](type-aliases/ImageExtractionType.md)
 - [InputImageAnalysisResult](type-aliases/InputImageAnalysisResult.md)
 - [InputImageSource](type-aliases/InputImageSource.md)
-- [LicenseErrorCode](type-aliases/LicenseErrorCode.md)
 - [LicenseRequest](type-aliases/LicenseRequest.md)
 - [LicenseTokenState](type-aliases/LicenseTokenState.md)
 - [LicenseUnlockResult](type-aliases/LicenseUnlockResult.md)

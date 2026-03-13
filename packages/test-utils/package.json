@@ -1,7 +1,7 @@
 {
   "name": "@microblink/test-utils",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "scripts": {
     "lint": "tsc --noEmit"
@@ -19,6 +19,18 @@
       "types": "./src/mocks/imageData.ts",
       "default": "./src/mocks/imageData.ts"
     },
+    "./mocks/licensing": {
+      "types": "./src/mocks/licensing.ts",
+      "default": "./src/mocks/licensing.ts"
+    },
+    "./mocks/scanningSession": {
+      "types": "./src/mocks/scanningSession.ts",
+      "default": "./src/mocks/scanningSession.ts"
+    },
+    "./mocks/wasmModuleFactory": {
+      "types": "./src/mocks/wasmModuleFactory.ts",
+      "default": "./src/mocks/wasmModuleFactory.ts"
+    },
     "./vitest": {
       "types": "./src/vitest/index.ts",
       "default": "./src/vitest/index.ts"
@@ -31,6 +43,7 @@
   },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
+    "@microblink/wasm-common": "workspace:*",
     "typescript": "5.8.3",
     "vitest": "^3.0.8"
   }

@@ -1,5 +1,14 @@
 # @microblink/blinkcard-core
 
+## 3000.0.2
+
+### Patch Changes
+
+- Fixed missing analytics events for crashes during SDK and Wasm initialization.
+- Updated dependencies
+  - @microblink/blinkcard-worker@3000.0.2
+  - @microblink/blinkcard-wasm@3000.0.2
+
 ## 3000.0.1
 
 ### Patch Changes
