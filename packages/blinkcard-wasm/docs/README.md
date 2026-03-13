@@ -4,6 +4,11 @@
 
 # @microblink/blinkcard-wasm
 
+## Interfaces
+
+- [WasmBindings](interfaces/WasmBindings.md)
+- [WasmModule](interfaces/WasmModule.md)
+
 ## Type Aliases
 
 - [AnonymizationMode](type-aliases/AnonymizationMode.md)

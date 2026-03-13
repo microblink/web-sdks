@@ -909,6 +909,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../repo-utils
+      '@microblink/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -1180,6 +1183,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../repo-utils
+      '@microblink/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -1339,6 +1345,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../repo-utils
+      '@microblink/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -1619,6 +1628,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../repo-utils
+      '@microblink/test-utils':
+        specifier: workspace:*
+        version: link:../test-utils
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
@@ -1928,6 +1940,9 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@microblink/wasm-common':
+        specifier: workspace:*
+        version: link:../wasm-common
       typescript:
         specifier: 5.8.3
         version: 5.8.3

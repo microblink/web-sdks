@@ -72,16 +72,6 @@ export async function loadBlinkCardCore(
 
     return remoteWorker;
   } catch (error) {
-    void remoteWorker.reportPinglet({
-      schemaName: "ping.error",
-      schemaVersion: "1.0.0",
-      data: {
-        errorType: "Crash",
-        errorMessage: error instanceof Error ? error.message : String(error),
-        stackTrace: error instanceof Error ? error.stack : undefined,
-      },
-    });
-    void remoteWorker.sendPinglets();
     throw new Error("Failed to initialize BlinkCard", {
       cause: error,
     });

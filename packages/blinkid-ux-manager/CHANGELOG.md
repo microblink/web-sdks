@@ -1,5 +1,15 @@
 # @microblink/blinkid-ux-manager
 
+## 7.7.1
+
+### Patch Changes
+
+- Fixed a missing analytics event for the onboarding dialog.
+- Fixed missing analytics events for camera permission checks in some cases.
+- Updated dependencies
+  - @microblink/blinkid-core@7.7.1
+  - @microblink/camera-manager@7.3.0
+
 ## 7.7.0
 
 ### Minor Changes

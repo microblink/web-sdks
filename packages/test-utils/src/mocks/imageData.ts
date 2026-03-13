@@ -2,7 +2,7 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-type CreateMockImageDataOptions = {
+type CreateFakeImageDataOptions = {
   width?: number;
   height?: number;
 };
@@ -10,8 +10,8 @@ type CreateMockImageDataOptions = {
 /**
  * Creates an ImageData-like object for tests.
  */
-export const createMockImageData = (
-  options: CreateMockImageDataOptions = {},
+export const createFakeImageData = (
+  options: CreateFakeImageDataOptions = {},
 ): ImageData => {
   const width = options.width ?? 1;
   const height = options.height ?? 1;

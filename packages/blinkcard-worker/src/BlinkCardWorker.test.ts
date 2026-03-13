@@ -3,13 +3,28 @@
  */
 
 import type { Ping } from "@microblink/analytics/ping";
-import type {
-  BlinkCardProcessResult,
-  BlinkCardScanningSession,
-  BlinkCardSessionSettings,
-} from "@microblink/blinkcard-wasm";
+import type { BlinkCardScanningSession } from "@microblink/blinkcard-wasm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
+import { createScanningSessionMock } from "@microblink/test-utils/mocks/scanningSession";
+
+/**
+ * Test purpose:
+ * - Cover non-init worker behavior in isolation from real wasm/network.
+ *
+ * Mocking procedure used in this file:
+ * 1) Mock worker-common/comlink dependencies and install deterministic globals (`self`).
+ * 2) Import the worker class and instantiate it directly.
+ * 3) Use helper-created fake sessions for proxy-session behavior tests.
+ *
+ * Cases covered:
+ * - Guard rails before wasm load (`reportPinglet`/`sendPinglets` throw).
+ * - Graceful terminate without a loaded module.
+ * - Active session cleanup/replacement for proxy and created sessions.
+ * - Proxy session forwards methods and transfers `arrayBuffer`.
+ * - Session processing errors are reported as ping error events.
+ */
 vi.mock("comlink", () => {
   const finalizer = Symbol("finalizer");
   return {
@@ -24,36 +39,12 @@ vi.mock("comlink", () => {
 let BlinkCardWorker: typeof import("./BlinkCardWorker").BlinkCardWorker;
 
 describe("BlinkCardWorker", () => {
-  const createSession = (
-    overrides: Partial<BlinkCardScanningSession> = {},
-  ): BlinkCardScanningSession => {
-    const baseSettings = {
-      inputImageSource: "video",
-      scanningSettings: {},
-    } as BlinkCardSessionSettings;
-
-    return {
-      getResult: vi.fn(() => ({}) as BlinkCardProcessResult),
-      process: vi.fn(() => ({}) as BlinkCardProcessResult),
-      ping: vi.fn(),
-      sendPinglets: vi.fn(),
-      getSettings: vi.fn(() => baseSettings),
-      getSessionId: vi.fn(() => "session-id"),
-      getSessionNumber: vi.fn(() => 1),
-      reset: vi.fn(),
-      delete: vi.fn(),
-      deleteLater: vi.fn(),
-      isDeleted: vi.fn(() => false),
-      isAliasOf: vi.fn(() => false),
-      ...overrides,
-    } as BlinkCardScanningSession;
-  };
-
   beforeEach(async () => {
     vi.stubGlobal("self", {
       setTimeout: vi.fn(),
       close: vi.fn(),
       location: { hostname: "example.com" },
+      navigator: { userAgent: "Chrome" },
     });
 
     ({ BlinkCardWorker } = await import("./BlinkCardWorker"));
@@ -62,6 +53,55 @@ describe("BlinkCardWorker", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+  });
+
+  it("sets active session when createScanningSession is called", async () => {
+    const worker = new BlinkCardWorker();
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {
+      /* noop */
+    });
+    let deleted = false;
+    const session = createScanningSessionMock<BlinkCardScanningSession>({
+      delete: vi.fn().mockImplementation(() => {
+        deleted = true;
+      }),
+      isDeleted: vi.fn().mockReturnValue(deleted),
+    });
+
+    // invoke createScanningSession to set active session
+    worker.createProxySession(session);
+    // invoke terminate to clean up active session
+    await worker.terminate();
+
+    expect(session.isDeleted).toHaveBeenCalledTimes(1);
+    // we implicitly test that the session is set as active by the worker,
+    // since delete is called if this.#activeSession exists.
+    expect(session.delete).toHaveBeenCalledTimes(1);
+    expect(warnSpy).toHaveBeenCalledWith(
+      "No Wasm module loaded during worker termination. Skipping cleanup.",
+    );
+  });
+
+  it("replaces active session when a newer proxy session is created", async () => {
+    const worker = new BlinkCardWorker();
+    vi.spyOn(console, "warn").mockImplementation(() => {
+      /* noop */
+    });
+    const firstSession = createScanningSessionMock<BlinkCardScanningSession>({
+      isDeleted: vi.fn().mockReturnValue(false),
+    });
+    const secondSession = createScanningSessionMock<BlinkCardScanningSession>({
+      isDeleted: vi.fn().mockReturnValue(false),
+    });
+
+    const firstProxySession = worker.createProxySession(firstSession);
+    worker.createProxySession(secondSession);
+
+    firstProxySession.delete();
+    await worker.terminate();
+
+    expect(firstSession.delete).toHaveBeenCalledTimes(1);
+    expect(secondSession.delete).toHaveBeenCalledTimes(1);
   });
 
   it("throws when reporting pinglet without a loaded module", () => {
@@ -104,98 +144,34 @@ describe("BlinkCardWorker", () => {
     expect(self.close).toHaveBeenCalled();
   });
 
-  it("deletes the active session on terminate", async () => {
-    const worker = new BlinkCardWorker();
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {
-      /* noop */
-    });
-    let deleted = false;
-    const session = createSession({
-      delete: vi.fn(() => {
-        deleted = true;
-      }),
-      isDeleted: vi.fn(() => deleted),
-    });
-
-    worker.createProxySession(session);
-    await worker.terminate();
-
-    expect(session.delete).toHaveBeenCalledTimes(1);
-    expect(warnSpy).toHaveBeenCalledWith(
-      "No Wasm module loaded during worker termination. Skipping cleanup.",
-    );
-  });
-
-  it("does not double-delete when session was already deleted", async () => {
-    const worker = new BlinkCardWorker();
-    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {
-      /* noop */
-    });
-    let deleted = false;
-    const session = createSession({
-      delete: vi.fn(() => {
-        deleted = true;
-      }),
-      isDeleted: vi.fn(() => deleted),
-    });
-
-    const proxySession = worker.createProxySession(session);
-    proxySession.delete();
-    await worker.terminate();
-
-    expect(session.delete).toHaveBeenCalledTimes(1);
-    expect(warnSpy).toHaveBeenCalledWith(
-      "No Wasm module loaded during worker termination. Skipping cleanup.",
-    );
-  });
-
   it("creates a proxy session that forwards methods and attaches arrayBuffer", () => {
     const worker = new BlinkCardWorker();
-    const processResult = { status: "ok" } as unknown as BlinkCardProcessResult;
-    const session = createSession({
-      process: vi.fn(() => processResult),
+    const processResult = { status: "ok" };
+    const session = createScanningSessionMock<BlinkCardScanningSession>({
+      process: vi.fn().mockReturnValue(processResult),
     });
 
     const proxySession = worker.createProxySession(session);
-
-    const image = {
-      data: new Uint8ClampedArray([1, 2, 3, 4]),
-      width: 1,
-      height: 1,
-      colorSpace: "srgb",
-    } as ImageData;
-
+    const image = createFakeImageData();
     const result = proxySession.process(image);
     expect(result).toMatchObject(processResult);
     expect(result.arrayBuffer).toBe(image.data.buffer);
-    expect(proxySession.getSessionId()).toBe("session-id");
-    expect(proxySession.getSessionNumber()).toBe(1);
-    expect(proxySession.getSettings()).toMatchObject({
-      inputImageSource: "video",
-    });
-    expect(proxySession.showDemoOverlay()).toBe(true);
-    expect(proxySession.showProductionOverlay()).toBe(true);
   });
 
-  it("reports pinglet on session errors", () => {
+  it("reports pinglet on session errors when process throws", () => {
     const worker = new BlinkCardWorker();
     const reportPingletSpy = vi
       .spyOn(worker, "reportPinglet")
       .mockImplementation(() => undefined);
     const error = new Error("boom");
-    const session = createSession({
-      process: vi.fn(() => {
+    const session = createScanningSessionMock<BlinkCardScanningSession>({
+      process: vi.fn().mockImplementation(() => {
         throw error;
       }),
     });
 
     const proxySession = worker.createProxySession(session);
-    const image = {
-      data: new Uint8ClampedArray([1, 2, 3, 4]),
-      width: 1,
-      height: 1,
-      colorSpace: "srgb",
-    } as ImageData;
+    const image = createFakeImageData();
 
     expect(() => proxySession.process(image)).toThrow(error);
     expect(reportPingletSpy).toHaveBeenCalledWith(

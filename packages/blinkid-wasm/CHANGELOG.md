@@ -1,5 +1,11 @@
 # @microblink/blinkid-wasm
 
+## 7.7.1
+
+### Patch Changes
+
+- Added shared `EmscriptenModule` and `WasmBindings` types.
+
 ## 7.7.0
 
 ### Patch Changes

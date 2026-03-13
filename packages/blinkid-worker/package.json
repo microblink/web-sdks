@@ -2,7 +2,7 @@
   "name": "@microblink/blinkid-worker",
   "description": "Provides a worker which runs the BlinkID WebAssembly in separate thread",
   "private": true,
-  "version": "7.7.0",
+  "version": "7.7.1",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
     "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
@@ -43,6 +43,7 @@
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
     "@microblink/repo-utils": "workspace:*",
+    "@microblink/test-utils": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "concurrently": "^9.1.2",

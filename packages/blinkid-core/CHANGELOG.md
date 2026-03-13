@@ -1,5 +1,14 @@
 # @microblink/blinkid-core
 
+## 7.7.1
+
+### Patch Changes
+
+- Fixed missing analytics events for crashes during SDK and Wasm initialization.
+- Updated dependencies
+  - @microblink/blinkid-worker@7.7.1
+  - @microblink/blinkid-wasm@7.7.1
+
 ## 7.7.0
 
 ### Patch Changes

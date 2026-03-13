@@ -6,7 +6,7 @@
 
 ## Classes
 
-- [LicenseError](classes/LicenseError.md)
+- [BlinkIdWorker](classes/BlinkIdWorker.md)
 
 ## Type Aliases
 
@@ -14,7 +14,6 @@
 - [BlinkIdWorkerInitSettings](type-aliases/BlinkIdWorkerInitSettings.md)
 - [BlinkIdWorkerProxy](type-aliases/BlinkIdWorkerProxy.md)
 - [DownloadProgress](type-aliases/DownloadProgress.md)
-- [LicenseErrorCode](type-aliases/LicenseErrorCode.md)
 - [LoadWasmParams](type-aliases/LoadWasmParams.md)
 - [ProcessResultWithBuffer](type-aliases/ProcessResultWithBuffer.md)
 - [ProgressStatusCallback](type-aliases/ProgressStatusCallback.md)

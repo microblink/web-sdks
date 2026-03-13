@@ -18,12 +18,7 @@ import type {
 } from "@microblink/blinkid-wasm";
 import { OverrideProperties } from "type-fest";
 
-import type {
-  Ping,
-  PingError,
-  PingSdkInitStart,
-  PingSdkInitStartData,
-} from "@microblink/analytics/ping";
+import type { Ping } from "@microblink/analytics/ping";
 import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
 
 import sizeManifest from "@microblink/blinkid-wasm/size-manifest.json";
@@ -46,17 +41,25 @@ import {
   buildSessionSettings,
   PartialBlinkIdSessionSettings,
 } from "./buildSessionSettings";
+import {
+  LicenseError,
+  ServerPermissionError,
+} from "@microblink/worker-common/errors";
 
 export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 /**
  * The BlinkID worker.
  */
-class BlinkIdWorker {
+export class BlinkIdWorker {
   /**
    * The Wasm module.
    */
   #wasmModule?: BlinkIdWasmModule;
+  /**
+   * Active scanning session created by this worker.
+   */
+  #activeSession?: BlinkIdScanningSession;
   /**
    * The default session settings.
    *
@@ -77,9 +80,9 @@ class BlinkIdWorker {
   #showProductionOverlay = true;
 
   /**
-   * Current session number.
+   * The current session number.
    */
-  #sessionCount = 0;
+  #currentSessionNumber = 0;
 
   /**
    * Sanitized proxy URLs for Microblink services.
@@ -259,7 +262,7 @@ class BlinkIdWorker {
     }
   }
 
-  reportPinglet(pinglet: Ping) {
+  reportPinglet({ data, schemaName, schemaVersion, sessionNumber }: Ping) {
     if (!this.#wasmModule) {
       throw new Error("Cannot report pinglet: Wasm module not loaded");
     }
@@ -271,15 +274,18 @@ class BlinkIdWorker {
 
     try {
       this.#wasmModule.queuePinglet(
-        JSON.stringify(pinglet.data),
-        pinglet.schemaName,
-        pinglet.schemaVersion,
-        // session number can be overriden by pinglet, otherwise use current
-        // session count
-        pinglet.sessionNumber ?? this.#sessionCount,
+        JSON.stringify(data),
+        schemaName,
+        schemaVersion,
+        sessionNumber!, // we know sesion number is provided because we're using proxy function
       );
     } catch (error) {
-      console.warn("Failed to queue pinglet:", error, pinglet);
+      console.warn("Failed to queue pinglet:", error, {
+        data,
+        schemaName,
+        schemaVersion,
+        sessionNumber,
+      });
     }
   }
 
@@ -294,42 +300,6 @@ class BlinkIdWorker {
       console.warn("Failed to send pinglets:", error);
     }
   }
-
-  /**
-   * Creates standardized ping events for common worker operations
-   */
-  #createPingEvent = {
-    sdkInit: (
-      packageName: string,
-      platform: "Emscripten",
-      platformDetails: PingSdkInitStartData["platformDetails"],
-      product: "BlinkID",
-      userId: string,
-    ): PingSdkInitStart => ({
-      schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.1.0",
-      sessionNumber: 0,
-      data: {
-        packageName,
-        platform,
-        product,
-        platformDetails,
-        userId,
-      },
-    }),
-
-    error: (
-      errorType: "Crash" | "NonFatal",
-      errorMessage: string,
-    ): PingError => ({
-      schemaName: "ping.error",
-      schemaVersion: "1.0.0",
-      data: {
-        errorType,
-        errorMessage,
-      },
-    }),
-  };
 
   /**
    * This method initializes everything.
@@ -361,6 +331,7 @@ class BlinkIdWorker {
     });
 
     if (!this.#wasmModule) {
+      // we do not flush pinglets here because we don't know if license allows it
       throw new Error("Wasm module not loaded");
     }
 
@@ -370,6 +341,26 @@ class BlinkIdWorker {
       settings.userId,
       false,
     );
+
+    // Queue init pinglet before remote license check; flush only after full flow
+    this.reportPinglet({
+      schemaName: "ping.sdk.init.start",
+      schemaVersion: "1.1.0",
+      sessionNumber: 0,
+      data: {
+        packageName: self.location.hostname,
+        platform: "Emscripten",
+        platformDetails: `${featureVariant}-${wasmVariant}`,
+        product: "BlinkID",
+        userId: this.#userId,
+      },
+    });
+
+    if (licenseUnlockResult.licenseError) {
+      throw new LicenseError(
+        "License unlock error: " + licenseUnlockResult.licenseError,
+      );
+    }
 
     if (settings.microblinkProxyUrl) {
       // Validate the proxy URL permissions
@@ -384,29 +375,6 @@ class BlinkIdWorker {
         this.#wasmModule.setPingProxyUrl(this.#proxyUrls.ping);
         console.debug(`Using ping proxy URL: ${this.#proxyUrls.ping}`);
       }
-    }
-
-    const sdkInitPing = this.#createPingEvent.sdkInit(
-      self.location.hostname,
-      "Emscripten",
-      `${featureVariant}-${wasmVariant}`,
-      "BlinkID",
-      this.#userId,
-    );
-
-    this.reportPinglet(sdkInitPing);
-    this.sendPinglets();
-
-    if (licenseUnlockResult.licenseError) {
-      this.#reportErrorPing({
-        errorType: "Crash",
-        errorMessage: licenseUnlockResult.licenseError,
-      });
-      this.sendPinglets();
-      throw new LicenseError(
-        "License unlock error: " + licenseUnlockResult.licenseError,
-        "LICENSE_ERROR",
-      );
     }
 
     // Check if we need to obtain a server permission
@@ -431,22 +399,36 @@ class BlinkIdWorker {
       );
 
       if (serverPermissionResult?.error) {
-        this.#reportErrorPing({
-          errorType: "Crash",
-          errorMessage: serverPermissionResult.error,
-        });
-        this.sendPinglets();
-        throw new Error("Server unlock error: " + serverPermissionResult.error);
+        throw new ServerPermissionError(
+          "Server unlock error: " + serverPermissionResult.error,
+        );
       }
     }
 
-    console.debug(`BlinkID SDK ${licenseUnlockResult.sdkVersion} unlocked`);
+    try {
+      console.debug(`BlinkID SDK ${licenseUnlockResult.sdkVersion} unlocked`);
 
-    this.#showDemoOverlay = licenseUnlockResult.showDemoOverlay;
-    this.#showProductionOverlay = licenseUnlockResult.showProductionOverlay;
+      this.#showDemoOverlay = licenseUnlockResult.showDemoOverlay;
+      this.#showProductionOverlay = licenseUnlockResult.showProductionOverlay;
 
-    this.#wasmModule.initializeSdk(settings.userId);
-    this.sendPinglets();
+      this.#wasmModule.initializeSdk(settings.userId);
+    } catch (error) {
+      console.warn("Failed to initialize BlinkID SDK:", error);
+      this.reportPinglet({
+        schemaName: "ping.error",
+        schemaVersion: "1.0.0",
+        sessionNumber: 0,
+        data: {
+          errorType: "Crash",
+          errorMessage: error instanceof Error ? error.message : String(error),
+          stackTrace: error instanceof Error ? error.stack : undefined,
+        },
+      });
+      throw error;
+    } finally {
+      // flush pinglets after initializing the SDK
+      this.sendPinglets();
+    }
   }
 
   /**
@@ -470,13 +452,11 @@ class BlinkIdWorker {
       this.#userId,
     );
 
+    this.#currentSessionNumber++;
+
     this.sendPinglets();
 
-    // increment the session count
-    this.#sessionCount++;
-
-    const proxySession = this.createProxySession(session, sessionSettings);
-    return proxySession;
+    return this.createProxySession(session, sessionSettings);
   }
 
   /**
@@ -499,6 +479,8 @@ class BlinkIdWorker {
     session: BlinkIdScanningSession,
     sessionSettings: BlinkIdSessionSettings,
   ): WorkerScanningSession & ProxyMarked {
+    this.#activeSession = session;
+
     /**
      * Cache for document class info and rotation, since it's cleared on each process call,
      * however the classification is immutable across the session lifecycle.
@@ -511,15 +493,36 @@ class BlinkIdWorker {
      * it handles the transfer of the image data buffer
      */
     const customSession: WorkerScanningSession = {
-      getResult: () => session.getResult(),
+      getResult: () => {
+        try {
+          return session.getResult();
+        } catch (error) {
+          this.reportPinglet({
+            schemaName: "ping.error",
+            schemaVersion: "1.0.0",
+            sessionNumber: this.#currentSessionNumber,
+            data: {
+              errorType: "NonFatal",
+              errorMessage:
+                error instanceof Error ? error.message : String(error),
+            },
+          });
+          throw error;
+        }
+      },
       process: (image) => {
         const processResult = session.process(image);
 
         if ("error" in processResult) {
           // processResult is BlinkIdSessionErrorWithBuffer
-          this.#reportErrorPing({
-            errorType: "NonFatal",
-            errorMessage: processResult.error,
+          this.reportPinglet({
+            schemaName: "ping.error",
+            schemaVersion: "1.0.0",
+            sessionNumber: this.#currentSessionNumber,
+            data: {
+              errorType: "NonFatal",
+              errorMessage: processResult.error,
+            },
           });
 
           // not an error: processResult is ProcessResultWithBuffer
@@ -578,16 +581,50 @@ class BlinkIdWorker {
 
         return transferPackage;
       },
-      ping: (ping) => this.reportPinglet(ping),
+      ping: (ping: Ping) => {
+        this.reportPinglet({
+          ...ping,
+          sessionNumber: ping.sessionNumber ?? this.#currentSessionNumber,
+        });
+      },
       sendPinglets: () => this.sendPinglets(),
       getSettings: () => sessionSettings,
       reset: () => {
-        session.reset();
-        cachedClassInfo = null;
-        cachedRotation = null;
+        try {
+          session.reset();
+          cachedClassInfo = null;
+          cachedRotation = null;
+        } catch (error) {
+          this.reportPinglet({
+            schemaName: "ping.error",
+            schemaVersion: "1.0.0",
+            sessionNumber: this.#currentSessionNumber,
+            data: {
+              errorType: "NonFatal",
+              errorMessage:
+                error instanceof Error ? error.message : String(error),
+              stackTrace: error instanceof Error ? error.stack : undefined,
+            },
+          });
+          throw error;
+        }
       },
-      delete: () => session.delete(),
-      deleteLater: () => session.deleteLater(),
+      delete: () => {
+        if (!session.isDeleted()) {
+          session.delete();
+        }
+        if (this.#activeSession === session) {
+          this.#activeSession = undefined;
+        }
+      },
+      deleteLater: () => {
+        if (!session.isDeleted()) {
+          session.deleteLater();
+        }
+        if (this.#activeSession === session) {
+          this.#activeSession = undefined;
+        }
+      },
       isDeleted: () => session.isDeleted(),
       isAliasOf: (other) => session.isAliasOf(other),
       showDemoOverlay: () => this.#showDemoOverlay,
@@ -595,14 +632,6 @@ class BlinkIdWorker {
     };
 
     return proxy(customSession);
-  }
-
-  #reportErrorPing(data: PingError["data"]) {
-    const errorPing = this.#createPingEvent.error(
-      data.errorType,
-      data.errorMessage,
-    );
-    this.reportPinglet(errorPing);
   }
 
   /**
@@ -621,6 +650,23 @@ class BlinkIdWorker {
     const gracePeriod = 5000;
 
     self.setTimeout(() => self.close, gracePeriod);
+
+    // ensure session deconstructed before we terminate to ensure pinglets are reported
+    if (this.#activeSession) {
+      try {
+        if (!this.#activeSession.isDeleted()) {
+          console.debug("Deleting BlinkId session during terminate");
+          this.#activeSession.delete();
+        }
+      } catch (error) {
+        console.warn(
+          "Failed to delete BlinkId session during terminate:",
+          error,
+        );
+      } finally {
+        this.#activeSession = undefined;
+      }
+    }
 
     if (!this.#wasmModule) {
       console.warn(
@@ -801,18 +847,3 @@ export type LoadWasmParams = {
  * The progress status callback.
  */
 export type ProgressStatusCallback = (progress: DownloadProgress) => void;
-
-export type LicenseErrorCode = "LICENSE_ERROR";
-
-/**
- * Error thrown when license unlock fails
- */
-export class LicenseError extends Error {
-  code: LicenseErrorCode;
-
-  constructor(message: string, code: LicenseErrorCode) {
-    super(message);
-    this.name = "LicenseError";
-    this.code = code;
-  }
-}

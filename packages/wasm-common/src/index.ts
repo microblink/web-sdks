@@ -8,4 +8,4 @@ export type * from "./licensing";
 
 export type * from "./wasm-constants";
 
-export type * from "./licensing";
+export type * from "./wasm-module";

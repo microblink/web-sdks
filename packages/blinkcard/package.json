@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkcard",
   "description": "All-in-one BlinkCard browser SDK for fast and accurate debit and credit card scanning and recognition in web applications.",
-  "version": "3000.0.1",
+  "version": "3000.0.2",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",

@@ -20,6 +20,8 @@
 
 - [BlinkCardUxManager](interfaces/BlinkCardUxManager.md)
 - [UADataValues](interfaces/UADataValues.md)
+- [WasmBindings](interfaces/WasmBindings.md)
+- [WasmModule](interfaces/WasmModule.md)
 
 ## Type Aliases
 

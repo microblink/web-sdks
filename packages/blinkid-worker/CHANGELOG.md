@@ -1,5 +1,17 @@
 # @microblink/blinkid-worker
 
+## 7.7.1
+
+### Patch Changes
+
+- Removed unused analytics flushing points and aligned analytics flushing behavior across workers.
+- Fixed a missing analytics event when a session ends.
+- Added comprehensive tests for licensing analytics.
+- Fixed missing analytics events for crashes during SDK and Wasm initialization.
+- Updated dependencies
+  - @microblink/blinkid-wasm@7.7.1
+  - @microblink/worker-common@1.0.1
+
 ## 7.7.0
 
 ### Patch Changes

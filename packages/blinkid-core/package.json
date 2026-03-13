@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-core",
   "description": "BlinkID Core SDK",
-  "version": "7.7.0",
+  "version": "7.7.1",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -57,6 +57,7 @@
     "@vitest/browser": "^3.0.8",
     "@microblink/tsconfig": "workspace:*",
     "@microblink/repo-utils": "workspace:*",
+    "@microblink/test-utils": "workspace:*",
     "@microsoft/api-extractor": "^7.52.4",
     "@types/common-tags": "^1.8.3",
     "@typescript-eslint/eslint-plugin": "^6.9.0",

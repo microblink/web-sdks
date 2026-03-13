@@ -21,7 +21,7 @@ import type {
 } from "@microblink/blinkcard-core";
 import type { CameraManager } from "@microblink/camera-manager";
 import {
-  createMockImageData,
+  createFakeImageData,
   enableRafAwareFakeTimers,
   flushUiRaf,
   setupDestroyableTeardown,
@@ -55,6 +55,9 @@ type AnalyticServiceMock = {
   logDeviceOrientation: ReturnType<typeof vi.fn>;
   logCameraStartedEvent: ReturnType<typeof vi.fn>;
   logCameraClosedEvent: ReturnType<typeof vi.fn>;
+  logCameraPermissionCheck: ReturnType<typeof vi.fn>;
+  logCameraPermissionRequest: ReturnType<typeof vi.fn>;
+  logCameraPermissionUserResponse: ReturnType<typeof vi.fn>;
   logCameraInputInfo: ReturnType<typeof vi.fn>;
   sendPinglets: ReturnType<typeof vi.fn>;
   logErrorMessageEvent: ReturnType<typeof vi.fn>;
@@ -82,6 +85,9 @@ vi.mock("@microblink/analytics/AnalyticService", () => ({
       logDeviceOrientation: vi.fn(),
       logCameraStartedEvent: vi.fn(),
       logCameraClosedEvent: vi.fn(),
+      logCameraPermissionCheck: vi.fn(),
+      logCameraPermissionRequest: vi.fn(),
+      logCameraPermissionUserResponse: vi.fn(),
       logCameraInputInfo: vi.fn(),
       sendPinglets: vi.fn(),
       logErrorMessageEvent: vi.fn(),
@@ -165,6 +171,109 @@ describe("BlinkCardUxManager", () => {
 
       emitPlaybackState("idle");
       expect(analytics.logCameraClosedEvent).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("package-specific: camera permission analytics", () => {
+    test("logs permission check and request for undefined -> prompt", () => {
+      const { cameraManager, fakeCameraManager } =
+        createBlinkCardCameraHarness();
+      const session = createBlinkCardUnitSessionMock();
+      createBlinkCardUxManager(cameraManager, session);
+
+      const analytics = getAnalytics();
+      analytics.logCameraPermissionCheck.mockClear();
+      analytics.logCameraPermissionRequest.mockClear();
+      analytics.logCameraPermissionUserResponse.mockClear();
+      analytics.sendPinglets.mockClear();
+
+      fakeCameraManager.emitState({ cameraPermission: "prompt" });
+
+      expect(analytics.logCameraPermissionCheck).toHaveBeenCalledTimes(1);
+      expect(analytics.logCameraPermissionCheck).toHaveBeenCalledWith(false);
+      expect(analytics.logCameraPermissionRequest).toHaveBeenCalledTimes(1);
+      expect(analytics.logCameraPermissionUserResponse).not.toHaveBeenCalled();
+      expect(analytics.sendPinglets).toHaveBeenCalledTimes(1);
+    });
+
+    test("logs permission check and request for denied -> prompt", () => {
+      const { cameraManager, fakeCameraManager } = createBlinkCardCameraHarness(
+        {
+          initialState: { cameraPermission: "denied" },
+        },
+      );
+      const session = createBlinkCardUnitSessionMock();
+      createBlinkCardUxManager(cameraManager, session);
+
+      const analytics = getAnalytics();
+      analytics.logCameraPermissionCheck.mockClear();
+      analytics.logCameraPermissionRequest.mockClear();
+      analytics.logCameraPermissionUserResponse.mockClear();
+      analytics.sendPinglets.mockClear();
+
+      fakeCameraManager.emitState({ cameraPermission: "prompt" });
+
+      expect(analytics.logCameraPermissionCheck).toHaveBeenCalledTimes(1);
+      expect(analytics.logCameraPermissionCheck).toHaveBeenCalledWith(false);
+      expect(analytics.logCameraPermissionRequest).toHaveBeenCalledTimes(1);
+      expect(analytics.logCameraPermissionUserResponse).not.toHaveBeenCalled();
+      expect(analytics.sendPinglets).toHaveBeenCalledTimes(1);
+    });
+
+    test("logs user response for prompt -> granted", () => {
+      const { cameraManager, fakeCameraManager } = createBlinkCardCameraHarness(
+        {
+          initialState: { cameraPermission: "prompt" },
+        },
+      );
+      const session = createBlinkCardUnitSessionMock();
+      createBlinkCardUxManager(cameraManager, session);
+
+      const analytics = getAnalytics();
+      analytics.logCameraPermissionCheck.mockClear();
+      analytics.logCameraPermissionRequest.mockClear();
+      analytics.logCameraPermissionUserResponse.mockClear();
+      analytics.sendPinglets.mockClear();
+
+      fakeCameraManager.emitState({ cameraPermission: "granted" });
+
+      expect(analytics.logCameraPermissionCheck).not.toHaveBeenCalled();
+      expect(analytics.logCameraPermissionRequest).not.toHaveBeenCalled();
+      expect(analytics.logCameraPermissionUserResponse).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(analytics.logCameraPermissionUserResponse).toHaveBeenCalledWith(
+        true,
+      );
+      expect(analytics.sendPinglets).toHaveBeenCalledTimes(1);
+    });
+
+    test("logs user response for prompt -> denied", () => {
+      const { cameraManager, fakeCameraManager } = createBlinkCardCameraHarness(
+        {
+          initialState: { cameraPermission: "prompt" },
+        },
+      );
+      const session = createBlinkCardUnitSessionMock();
+      createBlinkCardUxManager(cameraManager, session);
+
+      const analytics = getAnalytics();
+      analytics.logCameraPermissionCheck.mockClear();
+      analytics.logCameraPermissionRequest.mockClear();
+      analytics.logCameraPermissionUserResponse.mockClear();
+      analytics.sendPinglets.mockClear();
+
+      fakeCameraManager.emitState({ cameraPermission: "denied" });
+
+      expect(analytics.logCameraPermissionCheck).not.toHaveBeenCalled();
+      expect(analytics.logCameraPermissionRequest).not.toHaveBeenCalled();
+      expect(analytics.logCameraPermissionUserResponse).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(analytics.logCameraPermissionUserResponse).toHaveBeenCalledWith(
+        false,
+      );
+      expect(analytics.sendPinglets).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -342,7 +451,7 @@ describe("BlinkCardUxManager", () => {
         }),
       );
 
-      await emitFrame(createMockImageData());
+      await emitFrame(createFakeImageData());
       await flushUiRaf();
 
       expect(uiStateSpy).not.toHaveBeenCalled();
@@ -437,7 +546,7 @@ describe("BlinkCardUxManager", () => {
       });
       vi.mocked(session.process).mockResolvedValue(processResult);
 
-      await emitFrame(createMockImageData());
+      await emitFrame(createFakeImageData());
 
       // stopFrameCapture called immediately from frame processing side-effects
       expect(stopFrameCapture).toHaveBeenCalledTimes(1);
@@ -466,7 +575,7 @@ describe("BlinkCardUxManager", () => {
       vi.mocked(session.process).mockResolvedValue(processResult);
       vi.mocked(session.getResult).mockResolvedValue(scanResult);
 
-      await emitFrame(createMockImageData());
+      await emitFrame(createFakeImageData());
 
       // stopFrameCapture called immediately
       expect(stopFrameCapture).toHaveBeenCalledTimes(1);
@@ -543,8 +652,8 @@ describe("BlinkCardUxManager", () => {
 
       vi.mocked(session.process).mockReturnValueOnce(firstProcessPromise);
 
-      const firstFramePromise = emitFrame(createMockImageData());
-      const secondFrameResult = await emitFrame(createMockImageData());
+      const firstFramePromise = emitFrame(createFakeImageData());
+      const secondFrameResult = await emitFrame(createFakeImageData());
 
       expect(secondFrameResult).toBeUndefined();
       expect(session.process).toHaveBeenCalledTimes(1);
