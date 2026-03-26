@@ -140,84 +140,124 @@ export const createBlinkId = async ({
   scanningMode,
   feedbackUiOptions,
 }: BlinkIdComponentOptions) => {
-  // we first initialize the direct API. This loads the WASM module and initializes the engine
-  const blinkIdCore = await loadBlinkIdCore({
-    licenseKey,
-    microblinkProxyUrl,
-    initialMemory,
-    resourcesLocation,
-    useLightweightBuild,
-    wasmVariant,
-  });
+  let blinkIdCore: BlinkIdCore | undefined;
+  let scanningSession:
+    | Awaited<ReturnType<BlinkIdCore["createScanningSession"]>>
+    | undefined;
 
-  const scanningSession = await blinkIdCore.createScanningSession({
-    scanningMode,
-    scanningSettings,
-  });
+  try {
+    // we first initialize the direct API. This loads the WASM module and initializes the engine
+    blinkIdCore = await loadBlinkIdCore({
+      licenseKey,
+      microblinkProxyUrl,
+      initialMemory,
+      resourcesLocation,
+      useLightweightBuild,
+      wasmVariant,
+    });
 
-  // we create the camera manager
-  const cameraManager = new CameraManager();
+    scanningSession = await blinkIdCore.createScanningSession({
+      scanningMode,
+      scanningSettings,
+    });
 
-  // we create the UX manager
-  const blinkIdUxManager = await createBlinkIdUxManager(
-    cameraManager,
-    scanningSession,
-  );
+    // we create the camera manager
+    const cameraManager = new CameraManager();
 
-  // this creates the UI and attaches it to the DOM
-  const cameraUi = await createCameraManagerUi(
-    cameraManager,
-    targetNode,
-    cameraManagerUiOptions,
-  );
+    // we create the UX manager
+    const blinkIdUxManager = await createBlinkIdUxManager(
+      cameraManager,
+      scanningSession,
+    );
 
-  const unsub = cameraManager.subscribe(
-    (s) => s.playbackState,
-    (state) => {
-      if (state === "playback") {
-        // this creates the feedback UI and attaches it to the camera UI
-        createBlinkIdFeedbackUi(
-          blinkIdUxManager,
-          cameraUi,
-          feedbackUiOptions ?? {},
-        );
+    // this creates the UI and attaches it to the DOM
+    const cameraUi = await createCameraManagerUi(
+      cameraManager,
+      targetNode,
+      cameraManagerUiOptions,
+    );
 
-        if (feedbackUiOptions?.showOnboardingGuide === false) {
-          void cameraManager.startFrameCapture();
+    const unsub = cameraManager.subscribe(
+      (s) => s.playbackState,
+      (state) => {
+        if (state === "playback") {
+          // this creates the feedback UI and attaches it to the camera UI
+          createBlinkIdFeedbackUi(
+            blinkIdUxManager,
+            cameraUi,
+            feedbackUiOptions ?? {},
+          );
+
+          if (feedbackUiOptions?.showOnboardingGuide === false) {
+            void cameraManager.startFrameCapture();
+          }
+
+          unsub(); // unsubscribe from the playback state
         }
+      },
+    );
 
-        unsub(); // unsubscribe from the playback state
-      }
-    },
-  );
+    // selects the camera and starts the stream
+    await cameraManager.startCameraStream();
 
-  // selects the camera and starts the stream
-  await cameraManager.startCameraStream();
-
-  const destroy = async () => {
-    cameraUi.dismount();
-    try {
-      await blinkIdCore.terminate();
-    } catch (error) {
-      console.warn(error);
+    if (!blinkIdCore) {
+      throw new Error("BlinkID core not initialized");
     }
-  };
 
-  const returnObject: BlinkIdComponent = {
-    blinkIdCore,
-    cameraManager,
-    blinkIdUxManager,
-    cameraUi,
-    destroy,
-    addOnErrorCallback:
-      blinkIdUxManager.addOnErrorCallback.bind(blinkIdUxManager),
-    addOnResultCallback:
-      blinkIdUxManager.addOnResultCallback.bind(blinkIdUxManager),
-    addOnDocumentFilteredCallback:
-      blinkIdUxManager.addOnDocumentFilteredCallback.bind(blinkIdUxManager),
-    addDocumentClassFilter:
-      blinkIdUxManager.addDocumentClassFilter.bind(blinkIdUxManager),
-  };
+    const loadedBlinkIdCore = blinkIdCore;
 
-  return returnObject;
+    const destroy = async () => {
+      cameraUi.dismount();
+      try {
+        await loadedBlinkIdCore.terminate();
+      } catch (error) {
+        console.warn(error);
+      }
+    };
+
+    const returnObject: BlinkIdComponent = {
+      blinkIdCore: loadedBlinkIdCore,
+      cameraManager,
+      blinkIdUxManager,
+      cameraUi,
+      destroy,
+      addOnErrorCallback:
+        blinkIdUxManager.addOnErrorCallback.bind(blinkIdUxManager),
+      addOnResultCallback:
+        blinkIdUxManager.addOnResultCallback.bind(blinkIdUxManager),
+      addOnDocumentFilteredCallback:
+        blinkIdUxManager.addOnDocumentFilteredCallback.bind(blinkIdUxManager),
+      addDocumentClassFilter:
+        blinkIdUxManager.addDocumentClassFilter.bind(blinkIdUxManager),
+    };
+
+    return returnObject;
+  } catch (error) {
+    if (blinkIdCore) {
+      const data = {
+        errorType: "Crash" as const,
+        errorMessage:
+          "sdk.createBlinkId: " +
+          (error instanceof Error ? error.message : String(error)),
+        stackTrace: error instanceof Error ? error.stack : undefined,
+      };
+
+      try {
+        await blinkIdCore.reportPinglet({
+          schemaName: "ping.error",
+          schemaVersion: "1.0.0",
+          sessionNumber: 0,
+          data,
+        });
+        await blinkIdCore.sendPinglets();
+      } catch (reportError) {
+        console.warn(
+          "Failed to report BlinkID SDK crash pinglet:",
+          reportError,
+        );
+      }
+    }
+
+    throw error;
+  }
 };

@@ -3,7 +3,11 @@
  */
 
 import { describe, expect, test, vi } from "vitest";
-import { FakeCameraManager, type FakeCameraManagerState } from "./cameraManager";
+import {
+  createFakeCameraHarness,
+  FakeCameraManager,
+  type FakeCameraManagerState,
+} from "./cameraManager";
 
 describe("FakeCameraManager", () => {
   const imageData = {} as ImageData;
@@ -40,11 +44,7 @@ describe("FakeCameraManager", () => {
     expect(rootListener).toHaveBeenCalledTimes(3);
     // fireImmediately + capturing + idle (second capturing should be filtered by Object.is)
     expect(selectorListener).toHaveBeenCalledTimes(3);
-    expect(selectorListener).toHaveBeenNthCalledWith(
-      2,
-      "capturing",
-      "idle",
-    );
+    expect(selectorListener).toHaveBeenNthCalledWith(2, "capturing", "idle");
   });
 
   test("supports custom selector equality function", () => {
@@ -74,5 +74,41 @@ describe("FakeCameraManager", () => {
     const result = await manager.emitFrame(imageData);
 
     expect(result).toBeUndefined();
+  });
+
+  test("registers and unregisters frame-capture error callback", () => {
+    const manager = new FakeCameraManager();
+    const callback = vi.fn();
+    const error = new Error("frame capture failed");
+
+    const cleanup = manager.addErrorCallback(callback);
+    manager.emitError(error);
+    expect(callback).toHaveBeenCalledWith(error);
+    // Explicit count before cleanup so the post-cleanup assertion only verifies unregistration.
+    expect(callback).toHaveBeenCalledTimes(1);
+
+    expect(cleanup()).toBe(true);
+    manager.emitError(error);
+    expect(callback).toHaveBeenCalledTimes(1);
+  });
+
+  test("creates a reusable camera harness around the fake camera manager", async () => {
+    const harness = createFakeCameraHarness<{ tag: "camera-manager" }>({
+      initialState: {
+        playbackState: "idle",
+      },
+    });
+    const callback = vi.fn();
+
+    harness.fakeCameraManager.addFrameCaptureCallback(callback);
+    harness.emitPlaybackState("capturing");
+    await harness.emitFrame(imageData);
+    harness.setIsActive(false);
+
+    expect(callback).toHaveBeenCalledTimes(1);
+    expect(harness.fakeCameraManager.getCurrentState().playbackState).toBe(
+      "capturing",
+    );
+    expect(harness.fakeCameraManager.isActive).toBe(false);
   });
 });

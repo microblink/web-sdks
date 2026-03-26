@@ -2,39 +2,33 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import type { RemoteScanningSession } from "@microblink/blinkcard-core";
-import { getDeviceInfo } from "@microblink/blinkcard-core";
+import type { RemoteScanningSession } from "@microblink/blinkid-core";
+import { getDeviceInfo } from "@microblink/blinkid-core";
 import type { CameraManager } from "@microblink/camera-manager";
 import { createFakeScanningSession } from "@microblink/test-utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { BlinkCardUxManager } from "./BlinkCardUxManager";
-import { createBlinkCardUxManager } from "./createBlinkCardUxManager";
+import { BlinkIdUxManager } from "./BlinkIdUxManager";
+import { createBlinkIdUxManager } from "./createBlinkIdUxManager";
 
-/**
- * Test file role:
- * - Verifies constructor wiring for createBlinkCardUxManager().
- * - Focuses on dependency forwarding/default setup, not scan flow behavior.
- */
-
-vi.mock("./BlinkCardUxManager", () => ({
-  BlinkCardUxManager: vi.fn(),
+vi.mock("./BlinkIdUxManager", () => ({
+  BlinkIdUxManager: vi.fn(),
 }));
 
-vi.mock("@microblink/blinkcard-core", async (importOriginal) => {
+vi.mock("@microblink/blinkid-core", async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import("@microblink/blinkcard-core")>();
+    await importOriginal<typeof import("@microblink/blinkid-core")>();
   return {
     ...actual,
     getDeviceInfo: vi.fn(),
   };
 });
 
-describe("createBlinkCardUxManager", () => {
+describe("createBlinkIdUxManager", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  test("wires async dependencies into the BlinkCardUxManager constructor", async () => {
+  test("wires async dependencies into the BlinkIdUxManager constructor", async () => {
     const SHOW_DEMO_OVERLAY = true;
     const SHOW_PRODUCTION_OVERLAY = false;
 
@@ -51,17 +45,17 @@ describe("createBlinkCardUxManager", () => {
     >;
     vi.mocked(getDeviceInfo).mockResolvedValue(deviceInfo);
 
-    const instance = {} as BlinkCardUxManager;
-    vi.mocked(BlinkCardUxManager).mockImplementation(() => instance);
+    const instance = {} as BlinkIdUxManager;
+    vi.mocked(BlinkIdUxManager).mockImplementation(() => instance);
 
-    const result = await createBlinkCardUxManager(
+    const result = await createBlinkIdUxManager(
       cameraManager,
       scanningSession as unknown as RemoteScanningSession,
     );
 
     expect(result).toBe(instance);
     expect(getDeviceInfo).toHaveBeenCalledTimes(1);
-    expect(BlinkCardUxManager).toHaveBeenCalledWith(
+    expect(BlinkIdUxManager).toHaveBeenCalledWith(
       cameraManager,
       scanningSession,
       {},
@@ -81,7 +75,7 @@ describe("createBlinkCardUxManager", () => {
     });
 
     await expect(
-      createBlinkCardUxManager(
+      createBlinkIdUxManager(
         cameraManager,
         scanningSession as unknown as RemoteScanningSession,
       ),
@@ -92,7 +86,7 @@ describe("createBlinkCardUxManager", () => {
         schemaName: "ping.error",
         data: expect.objectContaining({
           errorType: "Crash",
-          errorMessage: "ux.createBlinkCardUxManager: rpc failed",
+          errorMessage: "ux.createBlinkIdUxManager: rpc failed",
         }),
       }),
     );

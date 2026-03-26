@@ -45,6 +45,8 @@ describe("BlinkCardWorker", () => {
       close: vi.fn(),
       location: { hostname: "example.com" },
       navigator: { userAgent: "Chrome" },
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     });
 
     ({ BlinkCardWorker } = await import("./BlinkCardWorker"));
@@ -158,11 +160,8 @@ describe("BlinkCardWorker", () => {
     expect(result.arrayBuffer).toBe(image.data.buffer);
   });
 
-  it("reports pinglet on session errors when process throws", () => {
+  it("rethrows session process errors without a loaded wasm module", () => {
     const worker = new BlinkCardWorker();
-    const reportPingletSpy = vi
-      .spyOn(worker, "reportPinglet")
-      .mockImplementation(() => undefined);
     const error = new Error("boom");
     const session = createScanningSessionMock<BlinkCardScanningSession>({
       process: vi.fn().mockImplementation(() => {
@@ -174,10 +173,5 @@ describe("BlinkCardWorker", () => {
     const image = createFakeImageData();
 
     expect(() => proxySession.process(image)).toThrow(error);
-    expect(reportPingletSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        schemaName: "ping.error",
-      }),
-    );
   });
 });

@@ -302,3 +302,6 @@ Session.vim
 
 #mise local
 mise.local.toml
+
+# npmrc
+.npmrc

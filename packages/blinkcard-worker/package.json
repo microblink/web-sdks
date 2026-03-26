@@ -2,7 +2,7 @@
   "name": "@microblink/blinkcard-worker",
   "description": "Provides a worker which runs the BlinkCard WebAssembly in separate thread",
   "private": true,
-  "version": "3000.0.2",
+  "version": "3000.0.3",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
     "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",

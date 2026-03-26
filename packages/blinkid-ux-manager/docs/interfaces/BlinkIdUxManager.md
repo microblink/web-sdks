@@ -508,6 +508,22 @@ Returns the timeout duration in ms. Null if timeout won't be triggered ever.
 
 ***
 
+### handleCameraManagerError()
+
+> **handleCameraManagerError**(`error`): `void`
+
+#### Parameters
+
+##### error
+
+`Error`
+
+#### Returns
+
+`void`
+
+***
+
 ### isHapticFeedbackEnabled()
 
 > **isHapticFeedbackEnabled**(): `boolean`

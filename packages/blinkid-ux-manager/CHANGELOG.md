@@ -1,5 +1,16 @@
 # @microblink/blinkid-ux-manager
 
+## 7.7.2
+
+### Patch Changes
+
+- Keeps the feedback overlay visible whenever no SDK modal is open, preventing it from disappearing during intro, transition, and success states.
+- Added non-fatal analytics reporting for UX-manager creation failures, frame-capture failures, `CameraManager` frame-loop errors, and session result retrieval failures.
+- Updated dependencies
+  - @microblink/camera-manager@7.3.1
+  - @microblink/analytics@1.0.1
+  - @microblink/blinkid-core@7.7.2
+
 ## 7.7.1
 
 ### Patch Changes
@@ -27,7 +38,17 @@
 - Adds `destroy()` to `BlinkIdUxManager` for explicit teardown.
 - Deprecates `rawUiStateKey` and replaces it with two explicit getters: `uiStateKey` returns the stabilized, visible state key (what the UI shows); `mappedUiStateKey` returns the latest raw candidate key from the detector before stabilization (useful for debugging).
 - Introduces automatic chained UI state transitions after `PAGE_CAPTURED`: the manager advances through a document-type-specific transition state and into the appropriate intro state before resuming capture (e.g. `PAGE_CAPTURED → FLIP_CARD → INTRO_BACK_PAGE` for two-sided IDs, `PAGE_CAPTURED → MOVE_LAST_PAGE → INTRO_LAST_PAGE` for passports with barcode). Integrations that depend on exact UI-state keys or transition timing should account for these new intermediate states.
-- Renames several UI state keys (e.g. `SENSING_FRONT` is now `FRONT_PAGE_NOT_IN_FRAME`). Integrations that reference state keys by name should update accordingly.
+- Renames several UI state keys. Integrations that reference state keys by name should update accordingly. Each `SENSING_*` state has been split into a framing-feedback state (`*_NOT_IN_FRAME`) and a new intro guidance state (`INTRO_*`):
+  | Old key | New key(s) |
+  |---|---|
+  | `SENSING_FRONT` | `FRONT_PAGE_NOT_IN_FRAME`, `INTRO_FRONT_PAGE` |
+  | `SENSING_BACK` | `BACK_PAGE_NOT_IN_FRAME`, `INTRO_BACK_PAGE` |
+  | `SENSING_DATA_PAGE` | `DATA_PAGE_NOT_IN_FRAME`, `INTRO_DATA_PAGE` |
+  | `SENSING_TOP_PAGE` | `TOP_PAGE_NOT_IN_FRAME`, `INTRO_TOP_PAGE` |
+  | `SENSING_LEFT_PAGE` | `LEFT_PAGE_NOT_IN_FRAME`, `INTRO_LEFT_PAGE` |
+  | `SENSING_RIGHT_PAGE` | `RIGHT_PAGE_NOT_IN_FRAME`, `INTRO_RIGHT_PAGE` |
+  | `SENSING_LAST_PAGE` | `LAST_PAGE_NOT_IN_FRAME`, `INTRO_LAST_PAGE` |
+  | `SCAN_BARCODE` | `PROCESSING_BARCODE` |
 - Updated dependencies
   - @microblink/blinkid-core@7.7.0
   - @microblink/camera-manager@7.3.0

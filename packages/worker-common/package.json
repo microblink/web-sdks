@@ -1,7 +1,7 @@
 {
   "name": "@microblink/worker-common",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",
@@ -51,6 +51,10 @@
     "./downloadResourceBuffer": {
       "types": "./types/downloadResourceBuffer.d.ts",
       "import": "./dist/downloadResourceBuffer.js"
+    },
+    "./workerCrashReporter": {
+      "types": "./types/workerCrashReporter.d.ts",
+      "import": "./dist/workerCrashReporter.js"
     },
     "./package.json": "./package.json"
   },

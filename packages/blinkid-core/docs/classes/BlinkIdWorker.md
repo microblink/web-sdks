@@ -208,11 +208,11 @@ This method initializes everything.
 
 ### reportPinglet()
 
-> **reportPinglet**(`__namedParameters`): `void`
+> **reportPinglet**(`pinglet`): `void`
 
 #### Parameters
 
-##### \_\_namedParameters
+##### pinglet
 
 `Ping`
 

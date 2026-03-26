@@ -11,11 +11,20 @@ import { vi } from "vitest";
 
 
 let wasmModuleMock: WasmModule<any, any> | null = null;
+let lastModuleOverrides: Record<string, unknown> | undefined;
 
 export function setWasmModuleMock<T extends WasmModule<any, any>>(
   module: T | null,
 ): void {
   wasmModuleMock = module;
+}
+
+export function getLastModuleOverrides() {
+  return lastModuleOverrides;
+}
+
+export function resetLastModuleOverrides() {
+  lastModuleOverrides = undefined;
 }
 
 type WasmModuleSpies<T extends WasmModule<any, any>> = {
@@ -67,9 +76,12 @@ export function getWasmModuleMock(): Promise<WasmModule<any, any>> {
  * Default runtime factory for dynamic worker imports in tests.
  * Extra arguments are ignored (worker code passes Emscripten module options).
  */
-export default function createMockModule(): Promise<
+export default function createMockModule(
+  moduleOverrides?: Record<string, unknown>,
+): Promise<
   WasmModule<any, any>
 > {
+  lastModuleOverrides = moduleOverrides;
   if (!wasmModuleMock) {
     throw new Error(
       "Mock WASM module not set. Call setWasmModuleMock in test.",

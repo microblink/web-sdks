@@ -76,6 +76,7 @@
 - [DeviceScreenInfo](type-aliases/DeviceScreenInfo.md)
 - [DismountCallback](type-aliases/DismountCallback.md)
 - [DownloadProgress](type-aliases/DownloadProgress.md)
+- [ErrorCallback](type-aliases/ErrorCallback.md)
 - [ExtractionArea](type-aliases/ExtractionArea.md)
 - [ExtractionSettings](type-aliases/ExtractionSettings.md)
 - [FacingMode](type-aliases/FacingMode.md)

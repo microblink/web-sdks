@@ -1,7 +1,7 @@
 {
   "name": "@microblink/analytics",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",

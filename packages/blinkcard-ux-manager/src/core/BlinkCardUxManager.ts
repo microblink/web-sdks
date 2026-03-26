@@ -197,8 +197,11 @@ export class BlinkCardUxManager {
 
     const removeFrameCaptureCallback =
       this.cameraManager.addFrameCaptureCallback(this.#frameCaptureCallback);
+    const removeCameraManagerErrorCallback =
+      this.cameraManager.addErrorCallback(this.#handleCameraManagerError);
 
     this.#cleanupCallbacks.add(removeFrameCaptureCallback);
+    this.#cleanupCallbacks.add(removeCameraManagerErrorCallback);
 
     this.startUiUpdateLoop();
   }
@@ -712,11 +715,28 @@ export class BlinkCardUxManager {
       }
 
       return processResult.arrayBuffer;
+    } catch (error) {
+      await this.#analytics.logErrorEvent({
+        origin: "ux.frameCapture",
+        error,
+        errorType: "NonFatal",
+      });
+      await this.#analytics.sendPinglets();
+      throw error;
     } finally {
       if (this.#processingLifecycleState === "busy") {
         this.#processingLifecycleState = "ready";
       }
     }
+  };
+
+  #handleCameraManagerError = (error: Error) => {
+    void this.#analytics.logErrorEvent({
+      origin: "cameraManager.error",
+      error,
+      errorType: "NonFatal",
+    });
+    void this.#analytics.sendPinglets();
   };
 
   /**
@@ -854,7 +874,6 @@ export class BlinkCardUxManager {
           "result_retrieval_failed",
           "onError",
         );
-        void this.#analytics.sendPinglets();
       }
     }
   };
@@ -956,7 +975,17 @@ export class BlinkCardUxManager {
    * @returns The result.
    */
   async getSessionResult(): Promise<BlinkCardScanningResult> {
-    return this.scanningSession.getResult();
+    try {
+      return await this.scanningSession.getResult();
+    } catch (error) {
+      await this.#analytics.logErrorEvent({
+        origin: "ux.getSessionResult",
+        error,
+        errorType: "NonFatal",
+      });
+      await this.#analytics.sendPinglets();
+      throw error;
+    }
   }
 
   /**

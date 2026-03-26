@@ -53,6 +53,49 @@ describe("AnalyticsService", () => {
     });
   });
 
+  describe("logErrorEvent", () => {
+    it("queues error pinglets with origin-prefixed messages", async () => {
+      const error = new Error("aborted");
+
+      await analyticsService.logErrorEvent({
+        origin: "worker.onAbort",
+        error,
+        errorType: "Crash",
+        sessionNumber: 7,
+      });
+
+      expect(mockPingFn).toHaveBeenCalledWith({
+        schemaName: "ping.error",
+        schemaVersion: "1.0.0",
+        sessionNumber: 7,
+        data: {
+          errorType: "Crash",
+          errorMessage: "worker.onAbort: aborted",
+          stackTrace: error.stack,
+        },
+      });
+    });
+
+    it("serializes non-Error objects to JSON", async () => {
+      await analyticsService.logErrorEvent({
+        origin: "worker.onerror",
+        error: { code: "E_FAIL" },
+        errorType: "NonFatal",
+      });
+
+      expect(mockPingFn).toHaveBeenCalledWith({
+        schemaName: "ping.error",
+        schemaVersion: "1.0.0",
+        sessionNumber: undefined,
+        data: {
+          errorType: "NonFatal",
+          errorMessage: 'worker.onerror: {"code":"E_FAIL"}',
+          stackTrace: undefined,
+        },
+      });
+    });
+  });
+
   describe("camera events", () => {
     it("should log camera started event", async () => {
       await analyticsService.logCameraStartedEvent();

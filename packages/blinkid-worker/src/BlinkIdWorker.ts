@@ -45,8 +45,24 @@ import {
   LicenseError,
   ServerPermissionError,
 } from "@microblink/worker-common/errors";
+import { installWorkerCrashReporter } from "@microblink/worker-common/workerCrashReporter";
 
 export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
+
+const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
+
+const createFrameTransferError = (message: string, error: unknown) => {
+  const causeMessage =
+    error instanceof Error && error.message ? `: ${error.message}` : "";
+
+  const frameTransferError = new Error(
+    `${message}${causeMessage}`,
+    error instanceof Error ? { cause: error } : undefined,
+  );
+  frameTransferError.name = FRAME_TRANSFER_ERROR_NAME;
+
+  return frameTransferError;
+};
 
 /**
  * The BlinkID worker.
@@ -90,6 +106,32 @@ export class BlinkIdWorker {
   #proxyUrls?: SanitizedProxyUrls;
 
   #userId!: string;
+
+  #cleanupCrashReporter: (() => void) | undefined;
+
+  constructor() {
+    this.#cleanupCrashReporter = installWorkerCrashReporter({
+      getSessionNumber: () => this.#currentSessionNumber,
+      onError: ({ error, sessionNumber }) => {
+        if (!this.#wasmModule) {
+          return;
+        }
+
+        this.reportPinglet({
+          schemaName: "ping.error",
+          schemaVersion: "1.0.0",
+          sessionNumber,
+          data: {
+            errorType: "Crash",
+            errorMessage:
+              error instanceof Error ? error.message : String(error),
+            stackTrace: error instanceof Error ? error.stack : undefined,
+          },
+        });
+        this.sendPinglets();
+      },
+    });
+  }
 
   /**
    * This method loads the Wasm module.
@@ -246,6 +288,44 @@ export class BlinkIdWorker {
       locateFile: (path) => {
         return `${variantUrl}/${wasmVariant}/${path}`;
       },
+      onAbort: (what) => {
+        if (!this.#wasmModule) {
+          return;
+        }
+
+        this.reportPinglet({
+          schemaName: "ping.error",
+          schemaVersion: "1.0.0",
+          sessionNumber: this.#currentSessionNumber,
+          data: {
+            errorType: "Crash",
+            errorMessage: what instanceof Error ? what.message : String(what),
+            stackTrace: what instanceof Error ? what.stack : undefined,
+          },
+        });
+        this.sendPinglets();
+      },
+      printErr: (message) => {
+        console.error(message);
+
+        if (/\babort(ed)?\b/i.test(message)) {
+          if (!this.#wasmModule) {
+            return;
+          }
+
+          this.reportPinglet({
+            schemaName: "ping.error",
+            schemaVersion: "1.0.0",
+            sessionNumber: this.#currentSessionNumber,
+            data: {
+              errorType: "Crash",
+              errorMessage: String(message),
+              stackTrace: undefined,
+            },
+          });
+          this.sendPinglets();
+        }
+      },
       // pthreads build breaks without this:
       // "Failed to execute 'createObjectURL' on 'URL': Overload resolution failed."
       mainScriptUrlOrBlob: crossOriginWorkerUrl,
@@ -262,30 +342,20 @@ export class BlinkIdWorker {
     }
   }
 
-  reportPinglet({ data, schemaName, schemaVersion, sessionNumber }: Ping) {
+  reportPinglet(pinglet: Ping) {
     if (!this.#wasmModule) {
       throw new Error("Cannot report pinglet: Wasm module not loaded");
     }
 
-    if (!this.#wasmModule.isPingEnabled()) {
-      // Ping is not enabled, do nothing
-      return;
-    }
-
     try {
       this.#wasmModule.queuePinglet(
-        JSON.stringify(data),
-        schemaName,
-        schemaVersion,
-        sessionNumber!, // we know sesion number is provided because we're using proxy function
+        JSON.stringify(pinglet.data),
+        pinglet.schemaName,
+        pinglet.schemaVersion,
+        pinglet.sessionNumber ?? this.#currentSessionNumber,
       );
     } catch (error) {
-      console.warn("Failed to queue pinglet:", error, {
-        data,
-        schemaName,
-        schemaVersion,
-        sessionNumber,
-      });
+      console.warn("Failed to queue pinglet:", error, pinglet);
     }
   }
 
@@ -342,7 +412,7 @@ export class BlinkIdWorker {
       false,
     );
 
-    // Queue init pinglet before remote license check; flush only after full flow
+    // Queue init pinglet before remote license check; flush only if init fails.
     this.reportPinglet({
       schemaName: "ping.sdk.init.start",
       schemaVersion: "1.1.0",
@@ -424,10 +494,9 @@ export class BlinkIdWorker {
           stackTrace: error instanceof Error ? error.stack : undefined,
         },
       });
-      throw error;
-    } finally {
-      // flush pinglets after initializing the SDK
+      // Flush only for failed SDK initialization.
       this.sendPinglets();
+      throw error;
     }
   }
 
@@ -442,21 +511,36 @@ export class BlinkIdWorker {
       throw new Error("Wasm module not loaded");
     }
 
-    const sessionSettings = buildSessionSettings(
-      options,
-      this.#defaultSessionSettings,
-    );
+    try {
+      const sessionSettings = buildSessionSettings(
+        options,
+        this.#defaultSessionSettings,
+      );
 
-    const session = this.#wasmModule.createScanningSession(
-      sessionSettings,
-      this.#userId,
-    );
+      const session = this.#wasmModule.createScanningSession(
+        sessionSettings,
+        this.#userId,
+      );
 
-    this.#currentSessionNumber++;
+      this.#currentSessionNumber++;
 
-    this.sendPinglets();
+      this.sendPinglets();
 
-    return this.createProxySession(session, sessionSettings);
+      return this.createProxySession(session, sessionSettings);
+    } catch (error) {
+      this.reportPinglet({
+        schemaName: "ping.error",
+        schemaVersion: "1.0.0",
+        sessionNumber: this.#currentSessionNumber,
+        data: {
+          errorType: "Crash",
+          errorMessage: error instanceof Error ? error.message : String(error),
+          stackTrace: error instanceof Error ? error.stack : undefined,
+        },
+      });
+      this.sendPinglets();
+      throw error;
+    }
   }
 
   /**
@@ -497,6 +581,10 @@ export class BlinkIdWorker {
         try {
           return session.getResult();
         } catch (error) {
+          if (!this.#wasmModule) {
+            throw error;
+          }
+
           this.reportPinglet({
             schemaName: "ping.error",
             schemaVersion: "1.0.0",
@@ -505,81 +593,140 @@ export class BlinkIdWorker {
               errorType: "NonFatal",
               errorMessage:
                 error instanceof Error ? error.message : String(error),
+              stackTrace: error instanceof Error ? error.stack : undefined,
             },
           });
+          this.sendPinglets();
           throw error;
         }
       },
       process: (image) => {
-        const processResult = session.process(image);
+        try {
+          const processResult = session.process(image);
 
-        if ("error" in processResult) {
-          // processResult is BlinkIdSessionErrorWithBuffer
+          if ("error" in processResult) {
+            // processResult is BlinkIdSessionErrorWithBuffer
+            if (this.#wasmModule) {
+              this.reportPinglet({
+                schemaName: "ping.error",
+                schemaVersion: "1.0.0",
+                sessionNumber: this.#currentSessionNumber,
+                data: {
+                  errorType: "NonFatal",
+                  errorMessage: String(processResult.error),
+                  stackTrace: undefined,
+                },
+              });
+              this.sendPinglets();
+            }
+
+            // not an error: processResult is ProcessResultWithBuffer
+          } else {
+            /**
+             * As documentClassInfo is not an optional property, assume that `type` being
+             * defined means the whole object is defined and can be cached.
+             */
+            if (processResult.inputImageAnalysisResult.documentClassInfo.type) {
+              // cache class info for future use
+              cachedClassInfo =
+                processResult.inputImageAnalysisResult.documentClassInfo;
+            }
+
+            /**
+             * Cache rotation, assume that rotation remains the same if document is not detected,
+             * i.e. rotation is only updated when detection is successful.
+             */
+            if (
+              processResult.inputImageAnalysisResult.documentRotation !==
+              "not-available"
+            ) {
+              // cache rotation for future use
+              cachedRotation =
+                processResult.inputImageAnalysisResult.documentRotation;
+            }
+
+            if (
+              cachedClassInfo &&
+              cachedClassInfo?.type !==
+                processResult.inputImageAnalysisResult.documentClassInfo.type
+            ) {
+              processResult.inputImageAnalysisResult.documentClassInfo =
+                cachedClassInfo;
+            }
+
+            if (
+              cachedRotation &&
+              cachedRotation !==
+                processResult.inputImageAnalysisResult.documentRotation
+            ) {
+              processResult.inputImageAnalysisResult.documentRotation =
+                cachedRotation;
+            }
+          }
+
+          let transferPackage:
+            | ProcessResultWithBuffer
+            | BlinkIdSessionErrorWithBuffer;
+
+          try {
+            transferPackage = transfer(
+              {
+                ...processResult,
+                arrayBuffer: image.data.buffer,
+              },
+              [image.data.buffer],
+            );
+          } catch (error) {
+            const frameTransferError = createFrameTransferError(
+              "Failed to transfer frame from worker",
+              error,
+            );
+
+            if (!this.#wasmModule) {
+              throw frameTransferError;
+            }
+
+            this.reportPinglet({
+              schemaName: "ping.error",
+              schemaVersion: "1.0.0",
+              sessionNumber: this.#currentSessionNumber,
+              data: {
+                errorType: "Crash",
+                errorMessage: frameTransferError.message,
+                stackTrace: frameTransferError.stack,
+              },
+            });
+            this.sendPinglets();
+            throw frameTransferError;
+          }
+
+          return transferPackage;
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            error.name === FRAME_TRANSFER_ERROR_NAME
+          ) {
+            throw error;
+          }
+
+          if (!this.#wasmModule) {
+            throw error;
+          }
+
           this.reportPinglet({
             schemaName: "ping.error",
             schemaVersion: "1.0.0",
             sessionNumber: this.#currentSessionNumber,
             data: {
               errorType: "NonFatal",
-              errorMessage: processResult.error,
+              errorMessage:
+                error instanceof Error ? error.message : String(error),
+              stackTrace: error instanceof Error ? error.stack : undefined,
             },
           });
-
-          // not an error: processResult is ProcessResultWithBuffer
-        } else {
-          /**
-           * As documentClassInfo is not an optional property, assume that `type` being
-           * defined means the whole object is defined and can be cached.
-           */
-          if (processResult.inputImageAnalysisResult.documentClassInfo.type) {
-            // cache class info for future use
-            cachedClassInfo =
-              processResult.inputImageAnalysisResult.documentClassInfo;
-          }
-
-          /**
-           * Cache rotation, assume that rotation remains the same if document is not detected,
-           * i.e. rotation is only updated when detection is successful.
-           */
-          if (
-            processResult.inputImageAnalysisResult.documentRotation !==
-            "not-available"
-          ) {
-            // cache rotation for future use
-            cachedRotation =
-              processResult.inputImageAnalysisResult.documentRotation;
-          }
-
-          if (
-            cachedClassInfo &&
-            cachedClassInfo?.type !==
-              processResult.inputImageAnalysisResult.documentClassInfo.type
-          ) {
-            processResult.inputImageAnalysisResult.documentClassInfo =
-              cachedClassInfo;
-          }
-
-          if (
-            cachedRotation &&
-            cachedRotation !==
-              processResult.inputImageAnalysisResult.documentRotation
-          ) {
-            processResult.inputImageAnalysisResult.documentRotation =
-              cachedRotation;
-          }
+          this.sendPinglets();
+          throw error;
         }
-
-        const transferPackage:
-          | ProcessResultWithBuffer
-          | BlinkIdSessionErrorWithBuffer = transfer(
-          {
-            ...processResult,
-            arrayBuffer: image.data.buffer,
-          },
-          [image.data.buffer],
-        );
-
-        return transferPackage;
       },
       ping: (ping: Ping) => {
         this.reportPinglet({
@@ -595,6 +742,10 @@ export class BlinkIdWorker {
           cachedClassInfo = null;
           cachedRotation = null;
         } catch (error) {
+          if (!this.#wasmModule) {
+            throw error;
+          }
+
           this.reportPinglet({
             schemaName: "ping.error",
             schemaVersion: "1.0.0",
@@ -606,6 +757,7 @@ export class BlinkIdWorker {
               stackTrace: error instanceof Error ? error.stack : undefined,
             },
           });
+          this.sendPinglets();
           throw error;
         }
       },
@@ -663,12 +815,30 @@ export class BlinkIdWorker {
           "Failed to delete BlinkId session during terminate:",
           error,
         );
+        if (!this.#wasmModule) {
+          return;
+        }
+
+        this.reportPinglet({
+          schemaName: "ping.error",
+          schemaVersion: "1.0.0",
+          sessionNumber: this.#currentSessionNumber,
+          data: {
+            errorType: "NonFatal",
+            errorMessage:
+              error instanceof Error ? error.message : String(error),
+            stackTrace: error instanceof Error ? error.stack : undefined,
+          },
+        });
+        this.sendPinglets();
       } finally {
         this.#activeSession = undefined;
       }
     }
 
     if (!this.#wasmModule) {
+      this.#cleanupCrashReporter?.();
+      this.#cleanupCrashReporter = undefined;
       console.warn(
         "No Wasm module loaded during worker termination. Skipping cleanup.",
       );
@@ -696,6 +866,8 @@ export class BlinkIdWorker {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
     this.#wasmModule = undefined;
+    this.#cleanupCrashReporter?.();
+    this.#cleanupCrashReporter = undefined;
 
     console.debug("BlinkIdWorker terminated 🔴");
     self.close();

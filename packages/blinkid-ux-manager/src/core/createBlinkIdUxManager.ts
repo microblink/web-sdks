@@ -30,21 +30,52 @@ export const createBlinkIdUxManager = async (
   scanningSession: RemoteScanningSession,
   options: BlinkIdUxManagerOptions = {},
 ): Promise<BlinkIdUxManager> => {
-  const [sessionSettings, showDemoOverlay, showProductionOverlay, deviceInfo] =
-    await Promise.all([
+  try {
+    const [
+      sessionSettings,
+      showDemoOverlay,
+      showProductionOverlay,
+      deviceInfo,
+    ] = await Promise.all([
       scanningSession.getSettings(),
       scanningSession.showDemoOverlay(),
       scanningSession.showProductionOverlay(),
       getDeviceInfo(),
     ]);
 
-  return new BlinkIdUxManager(
-    cameraManager,
-    scanningSession,
-    options,
-    sessionSettings,
-    showDemoOverlay,
-    showProductionOverlay,
-    deviceInfo,
-  );
+    return new BlinkIdUxManager(
+      cameraManager,
+      scanningSession,
+      options,
+      sessionSettings,
+      showDemoOverlay,
+      showProductionOverlay,
+      deviceInfo,
+    );
+  } catch (error) {
+    try {
+      await scanningSession.ping({
+        schemaName: "ping.error",
+        schemaVersion: "1.0.0",
+        data: {
+          errorType: "Crash",
+          errorMessage: `ux.createBlinkIdUxManager: ${
+            error instanceof Error ? error.message : String(error)
+          }`,
+          stackTrace: error instanceof Error ? error.stack : undefined,
+        },
+      });
+    } catch (pingError) {
+      console.warn("Failed to report error pinglet:", pingError);
+      throw error;
+    }
+
+    try {
+      await scanningSession.sendPinglets();
+    } catch (sendError) {
+      console.warn("Failed to flush error pinglets:", sendError);
+    }
+
+    throw error;
+  }
 };

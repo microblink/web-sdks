@@ -1,5 +1,15 @@
 # @microblink/blinkcard
 
+## 3000.0.3
+
+### Patch Changes
+
+- Added crash reporting for failures during `createBlinkCard(...)`, including SDK initialization, scanning-session creation, UX-manager setup, and UI startup.
+- Updated dependencies
+  - @microblink/camera-manager@7.3.1
+  - @microblink/blinkcard-ux-manager@3000.0.3
+  - @microblink/blinkcard-core@3000.0.3
+
 ## 3000.0.2
 
 ### Patch Changes
