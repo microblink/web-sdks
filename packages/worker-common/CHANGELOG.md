@@ -1,5 +1,11 @@
 # @microblink/worker-common
 
+## 1.0.2
+
+### Patch Changes
+
+- Added the `workerCrashReporter` entry point with `installWorkerCrashReporter(...)` for reporting `error` and `unhandledrejection` events from worker scope.
+
 ## 1.0.1
 
 ### Patch Changes

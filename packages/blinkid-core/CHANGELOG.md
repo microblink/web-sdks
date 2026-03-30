@@ -1,5 +1,15 @@
 # @microblink/blinkid-core
 
+## 7.7.2
+
+### Patch Changes
+
+- Surfaces worker frame-transfer failures as explicit `FrameTransferError`s through the proxy-worker layer, improving diagnostics for invalid or detached frame buffers.
+- Updated dependencies
+  - @microblink/core-common@1.0.1
+  - @microblink/blinkid-worker@7.7.2
+  - @microblink/blinkid-wasm@7.7.2
+
 ## 7.7.1
 
 ### Patch Changes

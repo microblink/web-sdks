@@ -18,6 +18,8 @@ const fakeCameraManagerRef = vi.hoisted(() => ({
 const {
   mockCreateSession,
   mockTerminate,
+  mockReportPinglet,
+  mockSendPinglets,
   mockCreateBlinkIdUxManager,
   mockCreateBlinkIdFeedbackUi,
   mockAddOnResultCallback,
@@ -30,6 +32,8 @@ const {
 } = vi.hoisted(() => {
   const mockTerminate = vi.fn().mockResolvedValue(undefined);
   const mockCreateSession = vi.fn();
+  const mockReportPinglet = vi.fn().mockResolvedValue(undefined);
+  const mockSendPinglets = vi.fn().mockResolvedValue(undefined);
   const mockAddOnResultCallback = vi.fn();
   const mockAddOnErrorCallback = vi.fn();
   const mockAddOnDocumentFilteredCallback = vi.fn();
@@ -48,6 +52,8 @@ const {
   return {
     mockTerminate,
     mockCreateSession,
+    mockReportPinglet,
+    mockSendPinglets,
     mockCreateBlinkIdUxManager,
     mockCreateBlinkIdFeedbackUi,
     mockAddOnResultCallback,
@@ -68,6 +74,8 @@ vi.mock("@microblink/blinkid-core", () => ({
   loadBlinkIdCore: vi.fn().mockResolvedValue({
     createScanningSession: mockCreateSession,
     terminate: mockTerminate,
+    reportPinglet: mockReportPinglet,
+    sendPinglets: mockSendPinglets,
   }),
   BlinkIdSessionSettings: class {},
 }));
@@ -306,6 +314,55 @@ describe("createBlinkId", () => {
     expect(
       fakeCameraManagerRef.current!.startCameraStream,
     ).toHaveBeenCalledTimes(1);
+  });
+
+  test("best-effort reports crashes through the core before a session exists", async () => {
+    mockCreateSession.mockRejectedValueOnce(new Error("session failed"));
+
+    await expect(createBlinkId({ licenseKey: "test-key" })).rejects.toThrow(
+      "session failed",
+    );
+
+    expect(mockReportPinglet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        schemaName: "ping.error",
+        sessionNumber: 0,
+        data: expect.objectContaining({
+          errorType: "Crash",
+          errorMessage: "sdk.createBlinkId: session failed",
+        }),
+      }),
+    );
+    expect(mockSendPinglets).toHaveBeenCalledTimes(1);
+  });
+
+  test("best-effort reports crashes through the core after session creation", async () => {
+    const scanningSession = createFakeScanningSession();
+    mockCreateSession.mockResolvedValueOnce(scanningSession);
+    mockCreateBlinkIdUxManager.mockRejectedValueOnce(new Error("ux failed"));
+
+    await expect(createBlinkId({ licenseKey: "test-key" })).rejects.toThrow(
+      "ux failed",
+    );
+
+    expect(mockReportPinglet).toHaveBeenCalledWith(
+      expect.objectContaining({
+        schemaName: "ping.error",
+        sessionNumber: 0,
+        data: expect.objectContaining({
+          errorType: "Crash",
+          errorMessage: "sdk.createBlinkId: ux failed",
+        }),
+      }),
+    );
+    const firstPinglet = mockReportPinglet.mock.calls[0]?.[0] as
+      | { sessionNumber?: number }
+      | undefined;
+
+    expect(firstPinglet?.sessionNumber).toBe(0);
+    expect(mockSendPinglets).toHaveBeenCalledTimes(1);
+    expect(scanningSession.ping).not.toHaveBeenCalled();
+    expect(scanningSession.sendPinglets).not.toHaveBeenCalled();
   });
 
   test("creates feedback UI only once even if playbackState fires multiple times", async () => {

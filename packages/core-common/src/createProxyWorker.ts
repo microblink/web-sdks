@@ -7,6 +7,28 @@ import { releaseProxy, transfer, wrap } from "comlink";
 import { oneLineTrim } from "common-tags";
 import { getCrossOriginWorkerURL } from "./getCrossOriginWorkerURL";
 
+export const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
+
+export class FrameTransferError extends Error {
+  constructor(message: string, options?: ErrorOptions) {
+    super(message, options);
+    this.name = FRAME_TRANSFER_ERROR_NAME;
+  }
+}
+
+const createFrameTransferError = (message: string, error: unknown) => {
+  const causeMessage =
+    error instanceof Error && error.message ? `: ${error.message}` : "";
+
+  if (error instanceof Error) {
+    return new FrameTransferError(`${message}${causeMessage}`, {
+      cause: error,
+    });
+  }
+
+  return new FrameTransferError(`${message}${causeMessage}`);
+};
+
 /**
  * Checks if a URL is a data URL
  * @param url URL to check
@@ -167,8 +189,21 @@ export async function createProxyWorker<T extends BaseSdkWorkerProxy>(
                     colorSpace: imageData.colorSpace ?? "srgb",
                   } satisfies ImageData;
 
+                  let transferredImageData: ImageData;
+
+                  try {
+                    transferredImageData = transfer(imageDataLike, [
+                      imageData.data.buffer,
+                    ]);
+                  } catch (error) {
+                    throw createFrameTransferError(
+                      "Failed to transfer frame to worker",
+                      error,
+                    );
+                  }
+
                   return (sessionTarget as BaseScanningSession).process(
-                    transfer(imageDataLike, [imageData.data.buffer]),
+                    transferredImageData,
                   );
                 };
               }

@@ -25,6 +25,7 @@
 - [CameraUiRefs](type-aliases/CameraUiRefs.md)
 - [CanvasRenderingMode](type-aliases/CanvasRenderingMode.md)
 - [DismountCallback](type-aliases/DismountCallback.md)
+- [ErrorCallback](type-aliases/ErrorCallback.md)
 - [ExtractionArea](type-aliases/ExtractionArea.md)
 - [FacingMode](type-aliases/FacingMode.md)
 - [FrameCaptureCallback](type-aliases/FrameCaptureCallback.md)

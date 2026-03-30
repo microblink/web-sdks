@@ -212,6 +212,26 @@ CameraManager from throwing errors when the user interrupts the process.
 
 ## Methods
 
+### addErrorCallback()
+
+> **addErrorCallback**(`errorCallback`): () => `boolean`
+
+#### Parameters
+
+##### errorCallback
+
+[`ErrorCallback`](../type-aliases/ErrorCallback.md)
+
+#### Returns
+
+> (): `boolean`
+
+##### Returns
+
+`boolean`
+
+***
+
 ### addFrameCaptureCallback()
 
 > **addFrameCaptureCallback**(`frameCaptureCallback`): () => `boolean`

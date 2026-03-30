@@ -12,6 +12,7 @@ import type {
   PingBrowserDeviceInfoData,
   PingCameraPermissionData,
   PingCameraPermission,
+  PingErrorData,
 } from "./ping";
 
 /**
@@ -85,6 +86,22 @@ export class AnalyticService {
       schemaVersion: "1.0.0",
       data: pingData,
     };
+  }
+
+  #formatErrorMessage(error: unknown): string {
+    if (error instanceof Error) {
+      return error.message;
+    }
+
+    if (typeof error === "object" && error !== null) {
+      try {
+        return JSON.stringify(error);
+      } catch {
+        return String(error);
+      }
+    }
+
+    return String(error);
   }
 
   logCameraStartedEvent() {
@@ -255,6 +272,29 @@ export class AnalyticService {
       schemaName: "ping.browser.device.info",
       schemaVersion: "1.0.0",
       data: pingData,
+    });
+  }
+
+  logErrorEvent({
+    origin,
+    error,
+    errorType,
+    sessionNumber,
+  }: {
+    origin: string;
+    error: unknown;
+    errorType: PingErrorData["errorType"];
+    sessionNumber?: number;
+  }) {
+    return this.#safePing({
+      schemaName: "ping.error",
+      schemaVersion: "1.0.0",
+      sessionNumber,
+      data: {
+        errorType,
+        errorMessage: `${origin}: ${this.#formatErrorMessage(error)}`,
+        stackTrace: error instanceof Error ? error.stack : undefined,
+      },
     });
   }
 }

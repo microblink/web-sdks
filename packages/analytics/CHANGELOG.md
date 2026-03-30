@@ -1,5 +1,11 @@
 # @microblink/analytics
 
+## 1.0.1
+
+### Patch Changes
+
+- Added `logErrorEvent(...)` to standardize error and crash pinglets with formatted error messages and optional stack traces.
+
 ## 1.0.0
 
 ### Major Changes

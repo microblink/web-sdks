@@ -1,5 +1,16 @@
 # @microblink/blinkid-worker
 
+## 7.7.2
+
+### Patch Changes
+
+- Added crash reporting for worker runtime failures, unhandled promise rejections, Wasm aborts, session creation failures, session method failures, and frame-transfer failures.
+- Flushes init-time pinglets only when BlinkID SDK initialization fails, preventing successful initialization from sending queued analytics prematurely.
+- Updated dependencies
+  - @microblink/worker-common@1.0.2
+  - @microblink/analytics@1.0.1
+  - @microblink/blinkid-wasm@7.7.2
+
 ## 7.7.1
 
 ### Patch Changes

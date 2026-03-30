@@ -128,6 +128,7 @@ export class CameraManager {
    * "capturing".
    */
   #frameCaptureCallbacks = new Set<FrameCaptureCallback>();
+  #errorCallbacks = new Set<ErrorCallback>();
 
   /**
    * Creates a new CameraManager instance.
@@ -361,6 +362,11 @@ export class CameraManager {
   addFrameCaptureCallback(frameCaptureCallback: FrameCaptureCallback) {
     this.#frameCaptureCallbacks.add(frameCaptureCallback);
     return () => this.#frameCaptureCallbacks.delete(frameCaptureCallback);
+  }
+
+  addErrorCallback(errorCallback: ErrorCallback) {
+    this.#errorCallbacks.add(errorCallback);
+    return () => this.#errorCallbacks.delete(errorCallback);
   }
 
   /**
@@ -923,71 +929,83 @@ export class CameraManager {
    * The main recognition loop. Do not call this method directly, use `#queueFrame` instead.
    */
   async #loop() {
-    const state = store.getState();
+    try {
+      const state = store.getState();
 
-    if (this.#videoFrameRequestId === undefined) {
-      console.error("Missing request ID");
-      return;
-    }
-
-    if (!state.videoElement) {
-      // shouldn't happen as disconnecting is handled by an observer which will
-      // pause the loop
-      console.warn("Missing video element, should not happen");
-      return;
-    }
-
-    if (!state.extractionArea) {
-      console.warn(
-        "Stream started before extraction area was set, skipping frame.",
-      );
-      return;
-    }
-
-    const isSameOrientation =
-      state.videoElement.videoHeight >= state.videoElement.videoWidth ===
-      state.extractionArea.height >= state.extractionArea.width;
-
-    if (!isSameOrientation) {
-      // elements not in sync, wait for next frame
-      return this.#queueFrame();
-    }
-
-    if (this.#frameCaptureCallbacks.size !== 0) {
-      const capturedFrame = this.#videoFrameProcessor.getImageData(
-        state.videoElement,
-        state.extractionArea,
-      );
-
-      // Iterate over all frame capture callbacks
-      for (const callback of this.#frameCaptureCallbacks) {
-        const workingFrame = isBufferDetached(capturedFrame.data.buffer)
-          ? this.#videoFrameProcessor.getCurrentImageData()
-          : capturedFrame;
-
-        // Process the frame and potentially get a new buffer back
-        const returnedBuffer = await callback(workingFrame);
-
-        // Exit current iteration if we didn't get a buffer back
-        if (!returnedBuffer) {
-          continue;
-        }
-
-        if (!(returnedBuffer instanceof ArrayBuffer)) {
-          throw new Error(
-            stripIndents`
-              Frame capture callback did not return an ArrayBuffer.
-              Make sure to return the underlying buffer, not the view.
-            `,
-          );
-        }
-
-        // Return the buffer to the processor
-        this.#videoFrameProcessor.reattachArrayBuffer(returnedBuffer);
+      if (this.#videoFrameRequestId === undefined) {
+        console.error("Missing request ID");
+        return;
       }
-    }
 
-    this.#queueFrame();
+      if (!state.videoElement) {
+        // shouldn't happen as disconnecting is handled by an observer which will
+        // pause the loop
+        console.warn("Missing video element, should not happen");
+        return;
+      }
+
+      if (!state.extractionArea) {
+        console.warn(
+          "Stream started before extraction area was set, skipping frame.",
+        );
+        return;
+      }
+
+      const isSameOrientation =
+        state.videoElement.videoHeight >= state.videoElement.videoWidth ===
+        state.extractionArea.height >= state.extractionArea.width;
+
+      if (!isSameOrientation) {
+        // elements not in sync, wait for next frame
+        return this.#queueFrame();
+      }
+
+      if (this.#frameCaptureCallbacks.size !== 0) {
+        const capturedFrame = this.#videoFrameProcessor.getImageData(
+          state.videoElement,
+          state.extractionArea,
+        );
+
+        // Iterate over all frame capture callbacks
+        for (const callback of this.#frameCaptureCallbacks) {
+          const workingFrame = isBufferDetached(capturedFrame.data.buffer)
+            ? this.#videoFrameProcessor.getCurrentImageData()
+            : capturedFrame;
+
+          // Process the frame and potentially get a new buffer back
+          const returnedBuffer = await callback(workingFrame);
+
+          // Exit current iteration if we didn't get a buffer back
+          if (!returnedBuffer) {
+            continue;
+          }
+
+          if (!(returnedBuffer instanceof ArrayBuffer)) {
+            if (ArrayBuffer.isView(returnedBuffer)) {
+              this.#videoFrameProcessor.reattachArrayBuffer(
+                returnedBuffer.buffer,
+              );
+            }
+
+            throw new Error(
+              stripIndents`
+                Frame capture callback did not return an ArrayBuffer.
+                Make sure to return the underlying buffer, not the view.
+              `,
+            );
+          }
+
+          // Return the buffer to the processor
+          this.#videoFrameProcessor.reattachArrayBuffer(returnedBuffer);
+        }
+      }
+
+      this.#queueFrame();
+    } catch (error) {
+      const frameCaptureError = asError(error);
+      this.#invokeErrorCallbacks(frameCaptureError);
+      throw frameCaptureError;
+    }
   }
 
   /**
@@ -1103,9 +1121,20 @@ export class CameraManager {
   reset() {
     console.debug("Resetting camera manager");
     this.#frameCaptureCallbacks.clear();
+    this.#errorCallbacks.clear();
     this.userInitiatedAbort = false;
     this.stopStream();
     resetStore();
+  }
+
+  #invokeErrorCallbacks(error: Error) {
+    for (const callback of this.#errorCallbacks) {
+      try {
+        callback(error);
+      } catch (callbackError) {
+        console.error("Error in error callback", callbackError);
+      }
+    }
   }
 }
 
@@ -1119,6 +1148,8 @@ export class CameraManager {
 export type FrameCaptureCallback = (
   frame: ImageData,
 ) => Promisable<ArrayBufferLike | void>;
+
+export type ErrorCallback = (error: Error) => void;
 
 /**
  * A camera getter.

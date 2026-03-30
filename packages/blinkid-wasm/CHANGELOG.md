@@ -1,5 +1,7 @@
 # @microblink/blinkid-wasm
 
+## 7.7.2
+
 ## 7.7.1
 
 ### Patch Changes

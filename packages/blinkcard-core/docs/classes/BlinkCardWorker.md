@@ -116,11 +116,11 @@ This method initializes the BlinkCard Wasm module.
 
 ### reportPinglet()
 
-> **reportPinglet**(`__namedParameters`): `void`
+> **reportPinglet**(`pinglet`): `void`
 
 #### Parameters
 
-##### \_\_namedParameters
+##### pinglet
 
 `Ping`
 

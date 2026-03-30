@@ -130,78 +130,118 @@ export const createBlinkCard = async ({
   wasmVariant,
   feedbackUiOptions,
 }: BlinkCardComponentOptions) => {
-  // we first initialize the direct API. This loads the WASM module and initializes the engine
-  const blinkCardCore = await loadBlinkCardCore({
-    licenseKey,
-    microblinkProxyUrl,
-    initialMemory,
-    resourcesLocation,
-    wasmVariant,
-  });
+  let blinkCardCore: BlinkCardCore | undefined;
+  let scanningSession:
+    | Awaited<ReturnType<BlinkCardCore["createScanningSession"]>>
+    | undefined;
 
-  const scanningSession = await blinkCardCore.createScanningSession({
-    scanningSettings,
-  });
+  try {
+    // we first initialize the direct API. This loads the WASM module and initializes the engine
+    blinkCardCore = await loadBlinkCardCore({
+      licenseKey,
+      microblinkProxyUrl,
+      initialMemory,
+      resourcesLocation,
+      wasmVariant,
+    });
 
-  // we create the camera manager
-  const cameraManager = new CameraManager();
+    scanningSession = await blinkCardCore.createScanningSession({
+      scanningSettings,
+    });
 
-  // we create the UX manager
-  const blinkCardUxManager = await createBlinkCardUxManager(
-    cameraManager,
-    scanningSession,
-  );
+    // we create the camera manager
+    const cameraManager = new CameraManager();
 
-  // this creates the UI and attaches it to the DOM
-  const cameraUi = await createCameraManagerUi(
-    cameraManager,
-    targetNode,
-    cameraManagerUiOptions,
-  );
+    // we create the UX manager
+    const blinkCardUxManager = await createBlinkCardUxManager(
+      cameraManager,
+      scanningSession,
+    );
 
-  const unsub = cameraManager.subscribe(
-    (s) => s.playbackState,
-    (state) => {
-      if (state === "playback") {
-        // this creates the feedback UI and attaches it to the camera UI
-        createBlinkCardFeedbackUi(
-          blinkCardUxManager,
-          cameraUi,
-          feedbackUiOptions ?? {},
-        );
+    // this creates the UI and attaches it to the DOM
+    const cameraUi = await createCameraManagerUi(
+      cameraManager,
+      targetNode,
+      cameraManagerUiOptions,
+    );
 
-        if (feedbackUiOptions?.showOnboardingGuide === false) {
-          void cameraManager.startFrameCapture();
+    const unsub = cameraManager.subscribe(
+      (s) => s.playbackState,
+      (state) => {
+        if (state === "playback") {
+          // this creates the feedback UI and attaches it to the camera UI
+          createBlinkCardFeedbackUi(
+            blinkCardUxManager,
+            cameraUi,
+            feedbackUiOptions ?? {},
+          );
+
+          if (feedbackUiOptions?.showOnboardingGuide === false) {
+            void cameraManager.startFrameCapture();
+          }
+
+          unsub(); // unsubscribe from the playback state
         }
+      },
+    );
 
-        unsub(); // unsubscribe from the playback state
-      }
-    },
-  );
+    // selects the camera and starts the stream
+    await cameraManager.startCameraStream();
 
-  // selects the camera and starts the stream
-  await cameraManager.startCameraStream();
-
-  const destroy = async () => {
-    cameraUi.dismount();
-    try {
-      await blinkCardCore.terminate();
-    } catch (error) {
-      console.warn(error);
+    if (!blinkCardCore) {
+      throw new Error("BlinkCard core not initialized");
     }
-  };
 
-  const returnObject: BlinkCardComponent = {
-    blinkCardCore,
-    cameraManager,
-    blinkCardUxManager,
-    cameraUi,
-    destroy,
-    addOnErrorCallback:
-      blinkCardUxManager.addOnErrorCallback.bind(blinkCardUxManager),
-    addOnResultCallback:
-      blinkCardUxManager.addOnResultCallback.bind(blinkCardUxManager),
-  };
+    const loadedBlinkCardCore = blinkCardCore;
 
-  return returnObject;
+    const destroy = async () => {
+      cameraUi.dismount();
+      try {
+        await loadedBlinkCardCore.terminate();
+      } catch (error) {
+        console.warn(error);
+      }
+    };
+
+    const returnObject: BlinkCardComponent = {
+      blinkCardCore: loadedBlinkCardCore,
+      cameraManager,
+      blinkCardUxManager,
+      cameraUi,
+      destroy,
+      addOnErrorCallback:
+        blinkCardUxManager.addOnErrorCallback.bind(blinkCardUxManager),
+      addOnResultCallback:
+        blinkCardUxManager.addOnResultCallback.bind(blinkCardUxManager),
+    };
+
+    return returnObject;
+  } catch (error) {
+    if (blinkCardCore) {
+      const data = {
+        errorType: "Crash" as const,
+        errorMessage:
+          "sdk.createBlinkCard: " +
+          (error instanceof Error ? error.message : String(error)),
+        stackTrace: error instanceof Error ? error.stack : undefined,
+      };
+
+      try {
+        await blinkCardCore.reportPinglet({
+          schemaName: "ping.error",
+          schemaVersion: "1.0.0",
+          sessionNumber: 0,
+          data,
+        });
+        await blinkCardCore.sendPinglets();
+      } catch (reportError) {
+        console.warn(
+          "Failed to report BlinkCard SDK crash pinglet:",
+          reportError,
+        );
+      }
+    }
+
+    throw error;
+  }
 };

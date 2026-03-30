@@ -15,13 +15,7 @@ import {
   Switch,
 } from "solid-js";
 import { createWithSignal } from "solid-zustand";
-import {
-  blinkIdPageTransitionKeys,
-  blinkIdUiIntroStateKeys,
-  BlinkIdUiState,
-  BlinkIdUiStateKey,
-  blinkIdUiStepSuccessKeys,
-} from "../core/blinkid-ui-state";
+import { BlinkIdUiState } from "../core/blinkid-ui-state";
 import {
   LocalizationProvider,
   LocalizationStrings,
@@ -102,25 +96,8 @@ export const BlinkIdFeedbackUi: Component<{
 
   const isProcessing = () => playbackState() === "capturing";
 
-  /**
-   * These UI states pause frame processing, however we treat them as if we are
-   * still in processing state from a UX perspective
-   */
-  const pseudoProcessingKeys: BlinkIdUiStateKey[] = [
-    ...blinkIdUiIntroStateKeys,
-    ...blinkIdPageTransitionKeys,
-    ...blinkIdUiStepSuccessKeys,
-  ];
-
-  // Processing is stopped, but we still want to show the feedback
-  const shouldShowFeedback = () => {
-    return (
-      // processing + pseudo-processing
-      (isProcessing() || pseudoProcessingKeys.includes(uiState().key)) &&
-      // never show while modal is open
-      !isModalOpen()
-    );
-  };
+  // TODO: Cover cases where frame processing is paused by 3rd party modal dialogs
+  const shouldShowFeedback = () => !isModalOpen();
 
   const displayTimeoutModal = () =>
     Boolean(store.showTimeoutModal) && store.errorState === "timeout";

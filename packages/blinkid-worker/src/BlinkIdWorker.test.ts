@@ -49,6 +49,8 @@ describe("BlinkIdWorker", () => {
       close: vi.fn(),
       location: { hostname: "example.com" },
       navigator: { userAgent: "Chrome" },
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
     });
 
     ({ BlinkIdWorker } = await import("./BlinkIdWorker"));
@@ -181,11 +183,8 @@ describe("BlinkIdWorker", () => {
     expect(proxySession.showProductionOverlay()).toBe(true);
   });
 
-  it("reports pinglet on session errors when process returns error result", () => {
+  it("returns session error results without a loaded wasm module", () => {
     const worker = new BlinkIdWorker();
-    const reportPingletSpy = vi
-      .spyOn(worker, "reportPinglet")
-      .mockImplementation(() => undefined);
     const sessionSettings = {} as BlinkIdSessionSettings;
     const session = createScanningSessionMock<BlinkIdScanningSession>({
       process: vi.fn(() => ({ error: "document-scanned" as const })),
@@ -197,10 +196,5 @@ describe("BlinkIdWorker", () => {
     const result = proxySession.process(image);
     expect(result).toMatchObject({ error: "document-scanned" });
     expect(result.arrayBuffer).toBe(image.data.buffer);
-    expect(reportPingletSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        schemaName: "ping.error",
-      }),
-    );
   });
 });

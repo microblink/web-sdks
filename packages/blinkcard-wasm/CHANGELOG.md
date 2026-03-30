@@ -1,5 +1,7 @@
 # @microblink/blinkcard-wasm
 
+## 3000.0.3
+
 ## 3000.0.2
 
 ### Patch Changes

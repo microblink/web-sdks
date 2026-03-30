@@ -3,9 +3,11 @@
  */
 
 import { vi } from "vitest";
+
 type FrameCaptureCallback = (
   frame: ImageData,
 ) => Promise<ArrayBufferLike | void> | ArrayBufferLike | void;
+type ErrorCallback = (error: Error) => void;
 type PlaybackState = "idle" | "playback" | "capturing";
 
 type CameraPermission = "prompt" | "granted" | "denied" | "blocked" | undefined;
@@ -27,9 +29,21 @@ export type FakeCameraManagerState = {
   cameraPermission?: CameraPermission;
 };
 
-type CreateFakeCameraManagerOptions = {
+export type CreateFakeCameraManagerOptions = {
   initialState?: Partial<FakeCameraManagerState>;
   isActive?: boolean;
+};
+
+export type FakeCameraHarness<TCameraManager = FakeCameraManager> = {
+  cameraManager: TCameraManager;
+  fakeCameraManager: FakeCameraManager;
+  emitPlaybackState: (playbackState: PlaybackState) => void;
+  emitFrame: (imageData: ImageData) => Promise<ArrayBufferLike | void>;
+  emitCameraState: (nextState: Partial<FakeCameraManagerState>) => void;
+  setIsActive: (value: boolean) => void;
+  stopFrameCapture: FakeCameraManager["stopFrameCapture"];
+  startFrameCapture: FakeCameraManager["startFrameCapture"];
+  startCameraStream: FakeCameraManager["startCameraStream"];
 };
 
 type SelectorSubscription = {
@@ -60,6 +74,7 @@ const defaultState: FakeCameraManagerState = {
 export class FakeCameraManager {
   #state: FakeCameraManagerState;
   #frameCaptureCallback: FrameCaptureCallback | undefined;
+  #errorCallbacks = new Set<ErrorCallback>();
   #isActive: boolean;
   #rootSubscriptions = new Set<RootSubscription>();
   #selectorSubscriptions = new Set<SelectorSubscription>();
@@ -94,6 +109,11 @@ export class FakeCameraManager {
       }
       return false;
     };
+  });
+
+  addErrorCallback = vi.fn((callback: ErrorCallback) => {
+    this.#errorCallbacks.add(callback);
+    return () => this.#errorCallbacks.delete(callback);
   });
 
   subscribe = vi.fn(
@@ -161,8 +181,34 @@ export class FakeCameraManager {
     return this.#frameCaptureCallback?.(imageData);
   }
 
+  emitError(error: Error) {
+    for (const callback of this.#errorCallbacks) {
+      callback(error);
+    }
+  }
+
   getCurrentState() {
     return this.#state;
   }
 }
 
+export const createFakeCameraHarness = <TCameraManager = FakeCameraManager>(
+  fakeCameraOptions?: CreateFakeCameraManagerOptions,
+): FakeCameraHarness<TCameraManager> => {
+  const fakeCameraManager = new FakeCameraManager(fakeCameraOptions);
+
+  return {
+    cameraManager: fakeCameraManager as unknown as TCameraManager,
+    fakeCameraManager,
+    emitPlaybackState: (playbackState) =>
+      fakeCameraManager.emitPlaybackState(playbackState),
+    emitFrame: (imageData) => fakeCameraManager.emitFrame(imageData),
+    emitCameraState: (nextState) => fakeCameraManager.emitState(nextState),
+    setIsActive: (value) => {
+      fakeCameraManager.isActive = value;
+    },
+    stopFrameCapture: fakeCameraManager.stopFrameCapture,
+    startFrameCapture: fakeCameraManager.startFrameCapture,
+    startCameraStream: fakeCameraManager.startCameraStream,
+  };
+};

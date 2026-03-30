@@ -97,6 +97,7 @@
 - [DocumentType](type-aliases/DocumentType.md)
 - [DownloadProgress](type-aliases/DownloadProgress.md)
 - [DriverLicenceDetailedInfo](type-aliases/DriverLicenceDetailedInfo.md)
+- [ErrorCallback](type-aliases/ErrorCallback.md)
 - [ExtractionArea](type-aliases/ExtractionArea.md)
 - [FacingMode](type-aliases/FacingMode.md)
 - [FeedbackUiOptions](type-aliases/FeedbackUiOptions.md)

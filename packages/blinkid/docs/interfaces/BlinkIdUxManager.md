@@ -37,6 +37,22 @@ event queues, and call restartCurrentStateTimer() for help-tooltip resets.
 
 ***
 
+### handleCameraManagerError()
+
+> **handleCameraManagerError**: (`error`) => `void`
+
+#### Parameters
+
+##### error
+
+`Error`
+
+#### Returns
+
+`void`
+
+***
+
 ### scanningSession
 
 > `readonly` **scanningSession**: [`RemoteScanningSession`](../type-aliases/RemoteScanningSession.md)

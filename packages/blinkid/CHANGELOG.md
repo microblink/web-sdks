@@ -1,5 +1,15 @@
 # @microblink/blinkid
 
+## 7.7.2
+
+### Patch Changes
+
+- Added crash reporting for failures during `createBlinkId(...)`, including SDK initialization, scanning-session creation, UX-manager setup, and UI startup.
+- Updated dependencies
+  - @microblink/camera-manager@7.3.1
+  - @microblink/blinkid-core@7.7.2
+  - @microblink/blinkid-ux-manager@7.7.2
+
 ## 7.7.1
 
 ### Patch Changes

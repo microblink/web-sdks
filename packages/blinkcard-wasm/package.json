@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkcard-wasm",
   "private": true,
-  "version": "3000.0.2",
+  "version": "3000.0.3",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",

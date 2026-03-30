@@ -1,5 +1,11 @@
 # @microblink/core-common
 
+## 1.0.1
+
+### Patch Changes
+
+- `createProxyWorker(...)` now throws an explicit `FrameTransferError` when transferring a frame to the worker fails, making frame-transfer failures easier to detect and report.
+
 ## 1.0.0
 
 ### Major Changes

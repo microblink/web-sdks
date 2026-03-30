@@ -1,5 +1,12 @@
 # @microblink/camera-manager
 
+## 7.3.1
+
+### Patch Changes
+
+- Added `addErrorCallback(...)` so consumers can observe frame-loop failures from `CameraManager`.
+- Reattaches returned `ArrayBufferView` buffers before throwing when a frame callback returns a view instead of the underlying `ArrayBuffer`, avoiding detached-buffer fallout in subsequent captures.
+
 ## 7.3.0
 
 ### Minor Changes

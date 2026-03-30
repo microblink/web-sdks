@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkcard-core",
   "description": "BlinkCard Core SDK",
-  "version": "3000.0.2",
+  "version": "3000.0.3",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
