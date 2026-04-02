@@ -48,18 +48,13 @@ export async function loadBlinkIdCore(
   settings: BlinkIdInitSettings,
   progressCallback?: ProgressStatusCallback,
 ): Promise<BlinkIdCore> {
+  settings.resourcesLocation ??= window.location.href;
   const remoteWorker = await createProxyWorker<BlinkIdWorkerProxy>(
-    settings.resourcesLocation ?? window.location.href,
+    settings.resourcesLocation,
     "blinkid-worker.js",
   );
 
-  if (!settings.userId) {
-    settings.userId = getUserId(STORAGE_KEY);
-  }
-
-  if (!settings.resourcesLocation) {
-    settings.resourcesLocation = window.location.href;
-  }
+  settings.userId ??= getUserId(STORAGE_KEY);
 
   if (settings.useLightweightBuild === undefined) {
     settings.useLightweightBuild = await shouldUseLightweightBuild();

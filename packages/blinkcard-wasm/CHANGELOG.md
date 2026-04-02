@@ -1,5 +1,12 @@
 # @microblink/blinkcard-wasm
 
+## 3000.0.4
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/wasm-common@2.0.0
+
 ## 3000.0.3
 
 ## 3000.0.2

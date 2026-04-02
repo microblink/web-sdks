@@ -14,6 +14,8 @@ import { Remote } from "comlink";
 
 export type * from "@microblink/blinkid-wasm";
 export type * from "@microblink/blinkid-worker";
+export { AnalyticService } from "@microblink/analytics/AnalyticService";
+export type * from "@microblink/analytics/ping";
 export { createProxyWorker } from "@microblink/core-common/createProxyWorker";
 export {
   createDerivedDeviceInfo,

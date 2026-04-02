@@ -5,11 +5,13 @@ import { $, fs, path } from "zx";
  * Returns the path to the resources directory of the package.
  */
 export function getResourcesPath(sdk: string) {
-  const sdkPath = getPackagePath(sdk);
-
-  const src = `${sdkPath}/dist/resources`;
-
-  return src;
+  const dist_path = `/dist/resources`;
+  if (sdk === "") {
+    return dist_path;
+  } else {
+    const sdkPath = getPackagePath(sdk);
+    return `${sdkPath}${dist_path}`;
+  }
 }
 
 /**
@@ -19,7 +21,6 @@ export function getResourcesPath(sdk: string) {
  */
 export function getPackagePath(packageName: string) {
   const packagePath = $.sync`pnpm -F "${packageName}" exec pwd`.text().trim();
-
   return packagePath;
 }
 

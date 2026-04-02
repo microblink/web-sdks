@@ -80,10 +80,12 @@
 - [VehicleClassInfo](type-aliases/VehicleClassInfo.md)
 - [VizResult](type-aliases/VizResult.md)
 - [WasmBuildType](type-aliases/WasmBuildType.md)
+- [WasmSimdVariant](type-aliases/WasmSimdVariant.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 
 ## Variables
 
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
+- [wasmSimdVariants](variables/wasmSimdVariants.md)
 - [wasmVariants](variables/wasmVariants.md)

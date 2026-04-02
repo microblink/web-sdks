@@ -2,7 +2,7 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import type { PingUxEventData } from "@microblink/analytics/ping";
+import type { PingUxEventData } from "@microblink/blinkid-core";
 import { match } from "ts-pattern";
 import type { BlinkIdUiErrorStateKey } from "./blinkid-ui-state";
 

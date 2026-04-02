@@ -1,6 +1,6 @@
 # @microblink/analytics
 
-Internal package for SDK analytics and telemetry. It provides services and ping types for collecting and sending analytics events (e.g. SDK init, scan events, camera info, errors) used by BlinkID and BlinkCard browser SDK packages.
+Internal package for SDK analytics and telemetry. It provides services and ping types for collecting and sending analytics events (e.g. SDK init, scan events, camera info, errors) used by BlinkID, BlinkCard, and BlinkID Verify browser SDK packages.
 
 ## Overview
 

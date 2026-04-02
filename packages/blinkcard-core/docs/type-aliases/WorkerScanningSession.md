@@ -6,7 +6,7 @@
 
 # Type Alias: WorkerScanningSession
 
-> **WorkerScanningSession** = `OverrideProperties`\<[`BlinkCardScanningSession`](BlinkCardScanningSession.md), \{ `process`: (`image`) => [`ProcessResultWithBuffer`](ProcessResultWithBuffer.md); \}\> & `object`
+> **WorkerScanningSession** = `Omit`\<[`BlinkCardScanningSession`](BlinkCardScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"`\> & `object`
 
 The worker scanning session.
 
@@ -51,6 +51,20 @@ The settings.
 ### ping
 
 > **ping**: [`BlinkCardWorker`](../classes/BlinkCardWorker.md)\[`"reportPinglet"`\]
+
+### process()
+
+> **process**: (`image`) => [`ProcessResultWithBuffer`](ProcessResultWithBuffer.md)
+
+#### Parameters
+
+##### image
+
+`ImageData`
+
+#### Returns
+
+[`ProcessResultWithBuffer`](ProcessResultWithBuffer.md)
 
 ### sendPinglets
 

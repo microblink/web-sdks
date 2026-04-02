@@ -1,6 +1,6 @@
-# BlinkID and BlinkCard Example Applications
+# BlinkID, BlinkCard, and BlinkID Verify Example Applications
 
-This directory contains example applications demonstrating the capabilities of the BlinkID and BlinkCard SDKs.
+This directory contains example applications demonstrating the capabilities of the BlinkID, BlinkCard, and BlinkID Verify SDKs.
 
 ## Available Examples
 
@@ -22,6 +22,11 @@ This directory contains example applications demonstrating the capabilities of t
 
 - [Camera Manager](./camera-manager/): An example of how to use the camera manager.
 - [Camera Selection](./camera-selection/): An example of how to use the camera selection feature.
+
+### BlinkID Verify
+
+- [BlinkID Verify Simple](./blinkid-verify-simple/): A simple example of how to use the BlinkID Verify SDK.
+- [BlinkID Verify Advanced Setup](./blinkid-verify-advanced-setup/): Demonstrates advanced setup and customization of the BlinkID Verify SDK.
 
 ## Getting Started
 
@@ -45,11 +50,11 @@ pnpm build:packages
 
 ### 3. Set up the License Key
 
-BlinkID and BlinkCard example applications require a license key to run. You can obtain a free trial license key by registering on the [Microblink Developer Hub](https://developer.microblink.com/license/new).
+BlinkID, BlinkCard, and BlinkID Verify example applications require a license key to run. You can obtain a free trial license key by registering on the [Microblink Developer Hub](https://developer.microblink.com/license/new).
 
 After obtaining the license key, create a `.env.local` file in the root of the specific example application you want to run (e.g., `apps/examples/blinkid-simple/.env.local`) and add the following line:
 
-```
+```env
 VITE_LICENCE_KEY=your-license-key
 ```
 

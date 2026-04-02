@@ -38,7 +38,7 @@ await fs.copy("README.md", path.join(publishPath, "README.md"));
 
 // These dependencies are bundled into the main types file, so we don't need to
 // include them in the dependencies.
-const bundleDependencies = ["@microblink/analytics", "@microblink/ux-common"];
+const bundleDependencies = ["@microblink/ux-common"];
 
 const microblinkDependencies = Object.keys(packageJson.dependencies).filter(
   (key) => key.startsWith("@microblink") && !bundleDependencies.includes(key),

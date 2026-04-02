@@ -40,29 +40,9 @@ This method is called when the worker is terminated.
 
 ***
 
-### createProxySession()
-
-> **createProxySession**(`session`): `object` & `object` & `ProxyMarked`
-
-This method creates a proxy session.
-
-#### Parameters
-
-##### session
-
-[`BlinkCardScanningSession`](../type-aliases/BlinkCardScanningSession.md)
-
-The BlinkCard scanning session.
-
-#### Returns
-
-The proxy session.
-
-***
-
 ### createScanningSession()
 
-> **createScanningSession**(`sessionSettings?`): `object` & `object` & `ProxyMarked`
+> **createScanningSession**(`sessionSettings?`): `Omit`\<[`BlinkCardScanningSession`](../type-aliases/BlinkCardScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"`\> & `object` & `ProxyMarked`
 
 This method creates a BlinkCard scanning session.
 
@@ -122,7 +102,7 @@ This method initializes the BlinkCard Wasm module.
 
 ##### pinglet
 
-`Ping`
+[`Ping`](../type-aliases/Ping.md)
 
 #### Returns
 

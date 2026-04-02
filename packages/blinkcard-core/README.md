@@ -47,7 +47,7 @@ You must host the `dist/resources` directory from this package without modificat
 - Must be served in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts).
 - For multithreaded builds, your site must be [cross-origin isolated](https://web.dev/articles/why-coop-coep):
 
-  ```
+  ```http
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Opener-Policy: same-origin
   ```

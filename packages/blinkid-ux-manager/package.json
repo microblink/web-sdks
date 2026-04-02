@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-ux-manager",
   "description": "BlinkID UX Manager provides user feedback based on the blinkid process results.",
-  "version": "7.7.2",
+  "version": "7.7.3",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -45,7 +45,6 @@
     "types"
   ],
   "dependencies": {
-    "@microblink/analytics": "workspace:^",
     "@microblink/blinkid-core": "workspace:^",
     "@microblink/camera-manager": "workspace:^",
     "@microblink/ux-common": "workspace:^",
@@ -68,8 +67,8 @@
     "@microsoft/api-extractor": "^7.52.4",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
-    "@unocss/eslint-config": "^65.5.0",
-    "@unocss/preset-uno": "^65.5.0",
+    "@unocss/eslint-config": "^66.6.5",
+    "@unocss/preset-uno": "^66.6.5",
     "@vitest/browser": "^3.0.8",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
@@ -84,7 +83,7 @@
     "typedoc": "^0.28.7",
     "typedoc-plugin-markdown": "^4.7.0",
     "typescript": "5.8.3",
-    "unocss": "^66.5.7",
+    "unocss": "^66.6.5",
     "vite": "^6.2.1",
     "vite-plugin-css-injected-by-js": "^3.5.2",
     "vite-plugin-externalize-dependencies": "1.0.1",

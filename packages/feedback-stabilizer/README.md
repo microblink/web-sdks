@@ -5,7 +5,7 @@ Stabilizes UI feedback state by averaging and debouncing state events before the
 ## Overview
 
 - Provides a feedback stabilizer that smooths transient state changes.
-- Used internally by `@microblink/blinkid-ux-manager` and `@microblink/blinkcard-ux-manager` (and their example apps).
+- Used internally by `@microblink/blinkid-ux-manager`, `@microblink/blinkid-verify-ux-manager` and `@microblink/blinkcard-ux-manager` (and their example apps).
 - Can be used directly for custom integrations that need stabilized feedback (consumed via `workspace:*` in the monorepo).
 
 ## Development

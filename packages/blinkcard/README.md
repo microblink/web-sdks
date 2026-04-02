@@ -57,7 +57,7 @@ Explore example applications in the repository under `apps/examples`:
 - Must be served in a [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts).
 - For multithreaded builds, your site must be [cross-origin isolated](https://web.dev/articles/why-coop-coep):
 
-  ```
+  ```http
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Opener-Policy: same-origin
   ```

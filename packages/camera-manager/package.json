@@ -1,7 +1,7 @@
 {
   "name": "@microblink/camera-manager",
   "description": "Manages cameras and stream, provides both a headless component and a UI component",
-  "version": "7.3.1",
+  "version": "7.3.2",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -85,7 +85,7 @@
     "typedoc": "^0.28.7",
     "typedoc-plugin-markdown": "^4.7.0",
     "typescript": "5.8.3",
-    "unocss": "^66.5.7",
+    "unocss": "^66.6.5",
     "unplugin-icons": "^22.0.0",
     "vite": "^6.2.1",
     "vite-plugin-css-injected-by-js": "^3.5.2",

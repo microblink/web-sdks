@@ -1,5 +1,14 @@
 # @microblink/wasm-common
 
+## 2.0.0
+
+### Major Changes
+
+- Typescript:
+- - Added `WasmSimdVariant` type for all products
+- Cplusplus:
+- - Updated internal imporevements for cleaner binding of types
+
 ## 1.0.1
 
 ### Patch Changes

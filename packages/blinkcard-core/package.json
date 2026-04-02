@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkcard-core",
   "description": "BlinkCard Core SDK",
-  "version": "3000.0.3",
+  "version": "3000.0.4",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -45,6 +45,7 @@
     "types"
   ],
   "dependencies": {
+    "@microblink/analytics": "workspace:*",
     "@microblink/blinkcard-wasm": "workspace:*",
     "@microblink/blinkcard-worker": "workspace:*",
     "@microblink/core-common": "workspace:*",
@@ -54,9 +55,11 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@microblink/tsconfig": "workspace:*",
     "@microblink/repo-utils": "workspace:*",
     "@microblink/test-utils": "workspace:*",
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/wasm-common": "workspace:*",
+    "@microblink/worker-common": "workspace:*",
     "@microsoft/api-extractor": "^7.52.4",
     "@types/common-tags": "^1.8.3",
     "@typescript-eslint/eslint-plugin": "^6.9.0",

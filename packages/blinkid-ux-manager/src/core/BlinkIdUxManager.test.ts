@@ -21,11 +21,11 @@ vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
   };
 });
 
-import { AnalyticService } from "@microblink/analytics/AnalyticService";
 import type {
   BlinkIdScanningResult,
   DocumentClassInfo,
 } from "@microblink/blinkid-core";
+import { AnalyticService } from "@microblink/blinkid-core";
 import {
   createFakeImageData,
   enableRafAwareFakeTimers,

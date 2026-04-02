@@ -1,0 +1,21 @@
+[**@microblink/blinkid-verify-core**](../README.md)
+
+***
+
+[@microblink/blinkid-verify-core](../README.md) / ProgressStatusCallback
+
+# Type Alias: ProgressStatusCallback()
+
+> **ProgressStatusCallback** = (`progress`) => `void`
+
+The progress status callback.
+
+## Parameters
+
+### progress
+
+[`DownloadProgress`](DownloadProgress.md)
+
+## Returns
+
+`void`

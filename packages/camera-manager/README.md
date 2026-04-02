@@ -7,7 +7,6 @@ This package provides camera management for web applications. It handles camera 
 - Handles camera selection, permissions, and video stream lifecycle.
 - Provides access to video frames for downstream processing.
 - Can be used standalone or with the included UI components.
-- Used by [`@microblink/blinkid-ux-manager`](https://www.npmjs.com/package/@microblink/blinkid-ux-manager) and [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid).
 
 ## Installation
 
@@ -81,7 +80,7 @@ cameraUi.dismount();
 
 You can customize UI strings either when creating the camera UI or at runtime:
 
-```
+```typescript
 const cameraUi = await createCameraManagerUi(
   cameraManager,
   undefined,
@@ -95,7 +94,7 @@ const cameraUi = await createCameraManagerUi(
 
 At runtime:
 
-```
+```typescript
 cameraUi.updateLocalization({
   select_camera: "My updated string",
 });

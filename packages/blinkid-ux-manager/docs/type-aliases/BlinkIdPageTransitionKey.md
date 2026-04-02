@@ -12,4 +12,4 @@ Union type of all page transition state keys.
 
 ## See
 
-[blinkIdPageTransitionKeys](../variables/blinkIdPageTransitionKeys.md) for detailed documentation on each state
+`blinkIdPageTransitionKeys` for detailed documentation on each state

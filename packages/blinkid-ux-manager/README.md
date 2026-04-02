@@ -155,7 +155,7 @@ The output files will be available in the `dist/` and `types/` directories.
 
 You can customize UI strings when creating the feedback UI:
 
-```
+```typescript
 createBlinkIdFeedbackUi(uxManager, cameraUi, {
    localizationStrings: {
       scan_the_barcode: "Please scan the barcode"

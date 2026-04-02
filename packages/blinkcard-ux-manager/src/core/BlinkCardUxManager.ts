@@ -2,12 +2,16 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import type {
-  BlinkCardScanningResult,
-  BlinkCardSessionSettings,
-  DeviceInfo,
-  ProcessResultWithBuffer,
-  RemoteScanningSession,
+import {
+  AnalyticService,
+  type BlinkCardScanningResult,
+  type BlinkCardSessionSettings,
+  type DeviceInfo,
+  type PingCameraInputInfoData,
+  type PingScanningConditionsData,
+  type PingUxEventData,
+  type ProcessResultWithBuffer,
+  type RemoteScanningSession,
 } from "@microblink/blinkcard-core";
 import type {
   CameraManager,
@@ -15,12 +19,6 @@ import type {
 } from "@microblink/camera-manager";
 import { FeedbackStabilizer } from "@microblink/feedback-stabilizer";
 
-import { AnalyticService } from "@microblink/analytics/AnalyticService";
-import type {
-  PingCameraInputInfoData,
-  PingScanningConditionsData,
-  PingUxEventData,
-} from "@microblink/analytics/ping";
 import {
   buildCameraAnalyticsKey,
   convertCameraInputToPingData,
@@ -65,7 +63,7 @@ export class BlinkCardUxManager {
   /**
    * The current UI state. Updated internally by the RAF update loop.
    * Read externally once at UI mount to seed the initial Solid signal value;
-   * subsequent updates are delivered via {@link addOnUiStateChangedCallback}.
+   * subsequent updates are delivered via `addOnUiStateChangedCallback`.
    */
   get uiState(): BlinkCardUiState {
     return this.#uiState;
@@ -133,7 +131,7 @@ export class BlinkCardUxManager {
   #analytics: AnalyticService;
   /** Tracks last reported camera hardware state. */
   #reportedCameraKeys = new Set<string>();
-  /** Debounced wrapper around {@link #syncCameraInputToAnalytics} (300 ms). */
+  /** Debounced wrapper around `#syncCameraInputToAnalytics` (300 ms). */
   #debouncedCameraInputSyncToAnalytics = debounce(() => {
     this.#syncCameraInputToAnalytics();
   }, 300);

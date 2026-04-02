@@ -42,7 +42,7 @@ This method is called when the worker is terminated.
 
 ### ~~createBlinkIdScanningSession()~~
 
-> **createBlinkIdScanningSession**(`options?`): `object` & `object` & `ProxyMarked`
+> **createBlinkIdScanningSession**(`options?`): `Omit`\<`BlinkIdScanningSession`, `"deleteLater"` \| `"isAliasOf"` \| `"process"`\> & `object` & `ProxyMarked`
 
 Backward-compatible alias for `createScanningSession`.
 
@@ -97,35 +97,9 @@ Use `createScanningSession` instead.
 
 ***
 
-### createProxySession()
-
-> **createProxySession**(`session`, `sessionSettings`): `object` & `object` & `ProxyMarked`
-
-This method creates a proxy session.
-
-#### Parameters
-
-##### session
-
-`BlinkIdScanningSession`
-
-The session.
-
-##### sessionSettings
-
-`BlinkIdSessionSettings`
-
-The session settings.
-
-#### Returns
-
-The proxy session.
-
-***
-
 ### createScanningSession()
 
-> **createScanningSession**(`options?`): `object` & `object` & `ProxyMarked`
+> **createScanningSession**(`options?`): `Omit`\<`BlinkIdScanningSession`, `"deleteLater"` \| `"isAliasOf"` \| `"process"`\> & `object` & `ProxyMarked`
 
 This method creates a BlinkID scanning session.
 

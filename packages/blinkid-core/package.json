@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-core",
   "description": "BlinkID Core SDK",
-  "version": "7.7.2",
+  "version": "7.7.3",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -45,6 +45,7 @@
     "types"
   ],
   "dependencies": {
+    "@microblink/analytics": "workspace:*",
     "@microblink/blinkid-wasm": "workspace:*",
     "@microblink/blinkid-worker": "workspace:*",
     "@microblink/core-common": "workspace:*",
@@ -54,14 +55,16 @@
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "0.18.2",
-    "@vitest/browser": "^3.0.8",
-    "@microblink/tsconfig": "workspace:*",
     "@microblink/repo-utils": "workspace:*",
     "@microblink/test-utils": "workspace:*",
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/wasm-common": "workspace:*",
+    "@microblink/worker-common": "workspace:*",
     "@microsoft/api-extractor": "^7.52.4",
     "@types/common-tags": "^1.8.3",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
+    "@vitest/browser": "^3.0.8",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "10.1.8",
@@ -78,6 +81,27 @@
     "write-package": "^7.1.0",
     "zx": "^8.8.5"
   },
-  "keywords": [],
+  "keywords": [
+    "aml",
+    "blinkid",
+    "compliance",
+    "computer-vision",
+    "document-authentification",
+    "document-scanner",
+    "document-verification",
+    "driver-license",
+    "frontend",
+    "image-processing",
+    "kyc",
+    "microblink",
+    "ocr",
+    "passport-verification",
+    "typescript",
+    "verification",
+    "verify",
+    "video",
+    "wasm",
+    "webassembly"
+  ],
   "license": "ISC"
 }

@@ -1,0 +1,39 @@
+[**@microblink/blinkid-verify**](../README.md)
+
+***
+
+[@microblink/blinkid-verify](../README.md) / PingSdkInitStartData
+
+# Type Alias: PingSdkInitStartData
+
+> **PingSdkInitStartData** = `object`
+
+## Properties
+
+### packageName
+
+> **packageName**: `string`
+
+***
+
+### platform
+
+> **platform**: `Platform`
+
+***
+
+### platformDetails?
+
+> `optional` **platformDetails**: `PlatformDetails`
+
+***
+
+### product
+
+> **product**: `Product`
+
+***
+
+### userId
+
+> **userId**: `string`

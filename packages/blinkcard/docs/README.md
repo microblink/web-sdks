@@ -6,6 +6,7 @@
 
 ## Classes
 
+- [AnalyticService](classes/AnalyticService.md)
 - [BlinkCardWorker](classes/BlinkCardWorker.md)
 - [Camera](classes/Camera.md)
 - [CameraError](classes/CameraError.md)
@@ -19,6 +20,7 @@
 ## Interfaces
 
 - [BlinkCardUxManager](interfaces/BlinkCardUxManager.md)
+- [PingBase](interfaces/PingBase.md)
 - [UADataValues](interfaces/UADataValues.md)
 - [WasmBindings](interfaces/WasmBindings.md)
 - [WasmModule](interfaces/WasmModule.md)
@@ -101,6 +103,27 @@
 - [LocalizedValue](type-aliases/LocalizedValue.md)
 - [PartialLocalizationStrings](type-aliases/PartialLocalizationStrings.md)
 - [PartialScanningSettingsInput](type-aliases/PartialScanningSettingsInput.md)
+- [Ping](type-aliases/Ping.md)
+- [PingBrowserDeviceInfo](type-aliases/PingBrowserDeviceInfo.md)
+- [PingBrowserDeviceInfoData](type-aliases/PingBrowserDeviceInfoData.md)
+- [PingCameraHardwareInfo](type-aliases/PingCameraHardwareInfo.md)
+- [PingCameraHardwareInfoData](type-aliases/PingCameraHardwareInfoData.md)
+- [PingCameraInputInfo](type-aliases/PingCameraInputInfo.md)
+- [PingCameraInputInfoData](type-aliases/PingCameraInputInfoData.md)
+- [PingCameraPermission](type-aliases/PingCameraPermission.md)
+- [PingCameraPermissionData](type-aliases/PingCameraPermissionData.md)
+- [PingError](type-aliases/PingError.md)
+- [PingErrorData](type-aliases/PingErrorData.md)
+- [PingLog](type-aliases/PingLog.md)
+- [PingLogData](type-aliases/PingLogData.md)
+- [PingScanningConditions](type-aliases/PingScanningConditions.md)
+- [PingScanningConditionsData](type-aliases/PingScanningConditionsData.md)
+- [PingSdkInitStart](type-aliases/PingSdkInitStart.md)
+- [PingSdkInitStartData](type-aliases/PingSdkInitStartData.md)
+- [PingUxEvent](type-aliases/PingUxEvent.md)
+- [PingUxEventData](type-aliases/PingUxEventData.md)
+- [PingWrapperProductInfo](type-aliases/PingWrapperProductInfo.md)
+- [PingWrapperProductInfoData](type-aliases/PingWrapperProductInfoData.md)
 - [PlaybackState](type-aliases/PlaybackState.md)
 - [ProcessingStatus](type-aliases/ProcessingStatus.md)
 - [ProcessResultWithBuffer](type-aliases/ProcessResultWithBuffer.md)
@@ -112,6 +135,7 @@
 - [ScanningSettings](type-aliases/ScanningSettings.md)
 - [ScanningSide](type-aliases/ScanningSide.md)
 - [ScanningStatus](type-aliases/ScanningStatus.md)
+- [SchemaName](type-aliases/SchemaName.md)
 - [ServerPermissionErrorReason](type-aliases/ServerPermissionErrorReason.md)
 - [ServerPermissionSubmitError](type-aliases/ServerPermissionSubmitError.md)
 - [SingleSideScanningResult](type-aliases/SingleSideScanningResult.md)
@@ -123,6 +147,7 @@
 - [VideoFrameProcessorInitOptions](type-aliases/VideoFrameProcessorInitOptions.md)
 - [VideoResolutionName](type-aliases/VideoResolutionName.md)
 - [WasmBuildType](type-aliases/WasmBuildType.md)
+- [WasmSimdVariant](type-aliases/WasmSimdVariant.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 - [WorkerScanningSession](type-aliases/WorkerScanningSession.md)
 
@@ -145,6 +170,7 @@
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [videoResolutions](variables/videoResolutions.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
+- [wasmSimdVariants](variables/wasmSimdVariants.md)
 - [wasmVariants](variables/wasmVariants.md)
 
 ## Functions
