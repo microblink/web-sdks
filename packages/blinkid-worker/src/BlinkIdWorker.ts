@@ -16,8 +16,6 @@ import type {
   EmscriptenModuleFactory,
   WasmVariant,
 } from "@microblink/blinkid-wasm";
-import { OverrideProperties } from "type-fest";
-
 import type { Ping } from "@microblink/analytics/ping";
 import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
 
@@ -506,7 +504,9 @@ export class BlinkIdWorker {
    * @param options - The options for the session.
    * @returns The session.
    */
-  createScanningSession(options?: PartialBlinkIdSessionSettings) {
+  createScanningSession(
+    options?: PartialBlinkIdSessionSettings,
+  ): WorkerScanningSession & ProxyMarked {
     if (!this.#wasmModule) {
       throw new Error("Wasm module not loaded");
     }
@@ -526,7 +526,7 @@ export class BlinkIdWorker {
 
       this.sendPinglets();
 
-      return this.createProxySession(session, sessionSettings);
+      return this.#createProxySession(session, sessionSettings);
     } catch (error) {
       this.reportPinglet({
         schemaName: "ping.error",
@@ -548,7 +548,9 @@ export class BlinkIdWorker {
    *
    * @deprecated Use `createScanningSession` instead.
    */
-  createBlinkIdScanningSession(options?: PartialBlinkIdSessionSettings) {
+  createBlinkIdScanningSession(
+    options?: PartialBlinkIdSessionSettings,
+  ): WorkerScanningSession & ProxyMarked {
     return this.createScanningSession(options);
   }
 
@@ -559,7 +561,7 @@ export class BlinkIdWorker {
    * @param sessionSettings - The session settings.
    * @returns The proxy session.
    */
-  createProxySession(
+  #createProxySession(
     session: BlinkIdScanningSession,
     sessionSettings: BlinkIdSessionSettings,
   ): WorkerScanningSession & ProxyMarked {
@@ -576,7 +578,7 @@ export class BlinkIdWorker {
      * this is a custom session that will be proxied
      * it handles the transfer of the image data buffer
      */
-    const customSession: WorkerScanningSession = {
+    const customSession: InternalWorkerScanningSession = {
       getResult: () => {
         try {
           return session.getResult();
@@ -915,14 +917,13 @@ export type BlinkIdSessionErrorWithBuffer = BlinkIdSessionError & {
 /**
  * The worker scanning session.
  */
-export type WorkerScanningSession = OverrideProperties<
+export type WorkerScanningSession = Omit<
   BlinkIdScanningSession,
-  {
-    process: (
-      image: ImageData,
-    ) => ProcessResultWithBuffer | BlinkIdSessionErrorWithBuffer;
-  }
+  "process" | "deleteLater" | "isAliasOf"
 > & {
+  process: (
+    image: ImageData,
+  ) => ProcessResultWithBuffer | BlinkIdSessionErrorWithBuffer;
   /**
    * Gets the settings.
    *
@@ -944,6 +945,9 @@ export type WorkerScanningSession = OverrideProperties<
   ping: BlinkIdWorker["reportPinglet"];
   sendPinglets: BlinkIdWorker["sendPinglets"];
 };
+
+type InternalWorkerScanningSession = WorkerScanningSession &
+  Pick<BlinkIdScanningSession, "deleteLater" | "isAliasOf">;
 
 /**
  * Initialization settings for the BlinkID worker.

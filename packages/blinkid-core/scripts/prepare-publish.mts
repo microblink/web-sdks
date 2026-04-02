@@ -29,23 +29,33 @@ const corePackageJson = pickKeys([
   "files",
 ]);
 
+const bundledDependencies = [
+  "@microblink/analytics",
+  "@microblink/blinkid-wasm",
+  "@microblink/blinkid-worker",
+  "@microblink/core-common",
+];
+
+const publishedDependencies = Object.fromEntries(
+  Object.entries(packageJson.dependencies).filter(
+    ([key]) => !bundledDependencies.includes(key),
+  ),
+);
+
 await fs.emptyDir(publishPath);
 
 await fs.copy("dist", path.join(publishPath, "dist"));
 await fs.copy("types", path.join(publishPath, "types"));
 await fs.copy("README.md", path.join(publishPath, "README.md"));
 
-// We don't want to include [@microblink/blinkid-worker, @microblink/blinkid-wasm and @microblink/core-common] in the published package.json.
-// They are rolled up into the main types file, and don't have any runtime code
+// Keep bundled internal packages out of the published manifest. They are
+// either rolled into the runtime bundle or inlined into index.rollup.d.ts.
 
 await writePackage(
   newPackagePath,
   {
     ...corePackageJson,
-    dependencies: {
-      "type-fest": packageJson.dependencies["type-fest"],
-      comlink: packageJson.dependencies.comlink,
-    },
+    dependencies: publishedDependencies,
     access: "public",
     registry: "https://registry.npmjs.org/",
     types: "./types/index.rollup.d.ts",

@@ -44,5 +44,5 @@ uxManager.setInitialUiStateKey("INTRO_DATA_PAGE", true);
 
 ## See
 
- - [BlinkIdUiIntroStateKey](../type-aliases/BlinkIdUiIntroStateKey.md) for the union type of these keys
- - getChainedUiStateKey for the automatic state transition logic
+ - `BlinkIdUiIntroStateKey` for the union type of these keys
+ - `getChainedUiStateKey` for the automatic state transition logic

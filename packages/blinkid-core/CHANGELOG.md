@@ -1,5 +1,13 @@
 # @microblink/blinkid-core
 
+## 7.7.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@7.7.3
+  - @microblink/blinkid-worker@7.7.3
+
 ## 7.7.2
 
 ### Patch Changes
@@ -137,6 +145,7 @@
 ### Patch Changes
 
 - Introduced utilities for extracting images from the `BlinkIdScanningResult`:
+
   - `extractSideInputImage`
   - `extractBarcodeImage`
   - `extractSideDocumentImage`

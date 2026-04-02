@@ -1,11 +1,11 @@
 # @microblink/ux-common
 
-Shared UX utilities used by BlinkID and BlinkCard UX manager packages. It provides haptic feedback helpers and common utils for user experience logic.
+Shared UX utilities used by BlinkID, BlinkCard, and BlinkID Verify UX manager packages. It provides haptic feedback helpers and common utils for user experience logic.
 
 ## Overview
 
 - Exports: `hapticFeedback`, `utils`, `cameraAnalyticsMappers`, `RafLoop`.
-- Used internally by `@microblink/blinkid-ux-manager` and `@microblink/blinkcard-ux-manager`.
+- Used internally by `@microblink/blinkid-ux-manager`, `@microblink/blinkid-verify-ux-manager` and `@microblink/blinkcard-ux-manager`.
 - Private package; consumed via `workspace:*` within the monorepo.
 
 ## Development

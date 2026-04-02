@@ -1,0 +1,77 @@
+{
+  "name": "@microblink/blinkid-verify-wasm",
+  "private": true,
+  "version": "3.20.0",
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types",
+    "docs:api": "typedoc",
+    "lint": "pnpm lint:types",
+    "lint:types": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "./dist/index.js",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./size-manifest.json": "./dist/size-manifest.json",
+    "./package.json": "./package.json"
+  },
+  "imports": {
+    "#BlinkIdVerifyModule": "./dist/advanced/BlinkIdVerifyModule.js",
+    "#BlinkIdVerifyModuleTest": "./dist_test/advanced/BlinkIdVerifyModule_Test.js"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/wasm-common": "workspace:*",
+    "@vitest/browser-playwright": "^4.0.8",
+    "arktype": "^2.2.0",
+    "dotenv-cli": "^8.0.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-jsdoc": "^1.3.3",
+    "rimraf": "^6.0.1",
+    "tsx": "^4.21.0",
+    "typedoc": "^0.28.7",
+    "typedoc-plugin-markdown": "^4.7.0",
+    "typescript": "5.8.3",
+    "vite": "^6.2.1",
+    "vitest": "^4.0.8",
+    "zx": "^8.8.5"
+  },
+  "keywords": [
+    "aml",
+    "blinkid-verify",
+    "blinkid",
+    "compliance",
+    "computer-vision",
+    "document-authentification",
+    "document-scanner",
+    "document-verification",
+    "driver-license",
+    "fraud-detection",
+    "frontend",
+    "id-check",
+    "id-verification",
+    "image-processing",
+    "kyc",
+    "microblink",
+    "ocr",
+    "passport-verification",
+    "typescript",
+    "verification",
+    "verify",
+    "video",
+    "wasm",
+    "webassembly"
+  ],
+  "description": "BlinkIdVerify Wasm runtime"
+}

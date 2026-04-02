@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkcard-wasm",
   "private": true,
-  "version": "3000.0.3",
+  "version": "3000.0.4",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",
@@ -60,5 +60,5 @@
     "wasm",
     "webassembly"
   ],
-  "description": "Wasm runtime"
+  "description": "BlinkCard Wasm runtime"
 }

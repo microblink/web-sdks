@@ -4,10 +4,25 @@
   "commit": false,
   "fixed": [
     [
-      "@microblink/blinkid*"
+      "@microblink/blinkid",
+      "@microblink/blinkid-core",
+      "@microblink/blinkid-ux-manager",
+      "@microblink/blinkid-wasm",
+      "@microblink/blinkid-worker"
     ],
     [
-      "@microblink/blinkcard*"
+      "@microblink/blinkid-verify",
+      "@microblink/blinkid-verify-core",
+      "@microblink/blinkid-verify-ux-manager",
+      "@microblink/blinkid-verify-wasm",
+      "@microblink/blinkid-verify-worker"
+    ],
+    [
+      "@microblink/blinkcard",
+      "@microblink/blinkcard-core",
+      "@microblink/blinkcard-ux-manager",
+      "@microblink/blinkcard-wasm",
+      "@microblink/blinkcard-worker"
     ]
   ],
   "access": "public",
@@ -16,6 +31,7 @@
   "ignore": [
     "@microblink/*-example",
     "@microblink/*-qa-app",
-    "@microblink/*-test"
-]
+    "@microblink/*-test",
+    "github-release"
+  ]
 }

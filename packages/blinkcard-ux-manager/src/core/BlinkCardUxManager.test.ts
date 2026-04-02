@@ -21,8 +21,10 @@ vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
   };
 });
 
-import { AnalyticService } from "@microblink/analytics/AnalyticService";
-import type { ProcessResultWithBuffer } from "@microblink/blinkcard-core";
+import {
+  AnalyticService,
+  type ProcessResultWithBuffer,
+} from "@microblink/blinkcard-core";
 import {
   createFakeImageData,
   enableRafAwareFakeTimers,

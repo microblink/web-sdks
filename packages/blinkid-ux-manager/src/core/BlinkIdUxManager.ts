@@ -5,18 +5,16 @@
 // TODO: fix linting to apply only to /ui
 /* eslint-disable solid/reactivity */
 
-import { AnalyticService } from "@microblink/analytics/AnalyticService";
-import type {
-  PingCameraInputInfoData,
-  PingScanningConditionsData,
-} from "@microblink/analytics/ping";
 import {
+  AnalyticService,
   DeviceInfo,
   DocumentRotation,
   type BlinkIdProcessResult,
   type BlinkIdScanningResult,
   type BlinkIdSessionSettings,
   type DocumentClassInfo,
+  type PingCameraInputInfoData,
+  type PingScanningConditionsData,
   type ProcessResultWithBuffer,
   type RemoteScanningSession,
 } from "@microblink/blinkid-core";
@@ -83,7 +81,7 @@ export class BlinkIdUxManager {
   /**
    * The current UI state. Updated internally by the RAF update loop.
    * Read externally once at UI mount to seed the initial Solid signal value;
-   * subsequent updates are delivered via {@link addOnUiStateChangedCallback}.
+   * subsequent updates are delivered via `addOnUiStateChangedCallback`.
    */
   get uiState(): BlinkIdUiState {
     return this.#uiState;
@@ -154,7 +152,7 @@ export class BlinkIdUxManager {
   #analytics: AnalyticService;
   /** Tracks last reported camera hardware state. */
   #reportedCameraKeys = new Set<string>();
-  /** Debounced wrapper around {@link #syncCameraInputToAnalytics} (300 ms). */
+  /** Debounced wrapper around `#syncCameraInputToAnalytics` (300 ms). */
   #debouncedCameraInputSyncToAnalytics = debounce(() => {
     this.#syncCameraInputToAnalytics();
   }, 300);

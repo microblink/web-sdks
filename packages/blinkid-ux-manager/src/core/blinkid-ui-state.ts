@@ -62,8 +62,8 @@ export type BlinkIdReticleType =
  * uxManager.setInitialUiStateKey("INTRO_DATA_PAGE", true);
  * ```
  *
- * @see {@link BlinkIdUiIntroStateKey} for the union type of these keys
- * @see {@link getChainedUiStateKey} for the automatic state transition logic
+ * @see `BlinkIdUiIntroStateKey` for the union type of these keys
+ * @see `getChainedUiStateKey` for the automatic state transition logic
  */
 export const blinkIdUiIntroStateKeys = [
   "INTRO_FRONT_PAGE",
@@ -78,7 +78,7 @@ export const blinkIdUiIntroStateKeys = [
 /**
  * Union type of all intro state keys.
  *
- * @see {@link blinkIdUiIntroStateKeys} for detailed documentation on each state
+ * @see `blinkIdUiIntroStateKeys` for detailed documentation on each state
  */
 export type BlinkIdUiIntroStateKey = (typeof blinkIdUiIntroStateKeys)[number];
 
@@ -107,9 +107,9 @@ export type BlinkIdUiIntroStateKey = (typeof blinkIdUiIntroStateKeys)[number];
  * - `MOVE_RIGHT` → `INTRO_RIGHT_PAGE`
  * - `MOVE_LEFT` → `INTRO_LEFT_PAGE`
  *
- * @see {@link BlinkIdPageTransitionKey} for the union type of these keys
- * @see {@link getChainedUiStateKey} for the automatic state transition logic
- * @see {@link blinkIdUiIntroStateKeys} for the intro states that follow transitions
+ * @see `BlinkIdPageTransitionKey` for the union type of these keys
+ * @see `getChainedUiStateKey` for the automatic state transition logic
+ * @see `blinkIdUiIntroStateKeys` for the intro states that follow transitions
  */
 export const blinkIdPageTransitionKeys = [
   "FLIP_CARD",
@@ -122,7 +122,7 @@ export const blinkIdPageTransitionKeys = [
 /**
  * Union type of all page transition state keys.
  *
- * @see {@link blinkIdPageTransitionKeys} for detailed documentation on each state
+ * @see `blinkIdPageTransitionKeys` for detailed documentation on each state
  */
 export type BlinkIdPageTransitionKey =
   (typeof blinkIdPageTransitionKeys)[number];

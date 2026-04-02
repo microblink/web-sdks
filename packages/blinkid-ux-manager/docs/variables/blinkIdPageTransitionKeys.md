@@ -35,6 +35,6 @@ corresponding intro state to begin scanning the next page:
 
 ## See
 
- - [BlinkIdPageTransitionKey](../type-aliases/BlinkIdPageTransitionKey.md) for the union type of these keys
- - getChainedUiStateKey for the automatic state transition logic
- - [blinkIdUiIntroStateKeys](blinkIdUiIntroStateKeys.md) for the intro states that follow transitions
+ - `BlinkIdPageTransitionKey` for the union type of these keys
+ - `getChainedUiStateKey` for the automatic state transition logic
+ - `blinkIdUiIntroStateKeys` for the intro states that follow transitions

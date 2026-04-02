@@ -6,7 +6,7 @@
 
 # Function: loadBlinkCardCore()
 
-> **loadBlinkCardCore**(`settings`, `progressCallback?`): `Promise`\<\{ `progressStatusCallback?`: `Promise`\<`undefined`\> \| `Remote`\<[`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)\>; `createProxySession`: `Promise`\<`Remote`\<`object` & `object` & `ProxyMarked`\>\>; `createScanningSession`: `Promise`\<`Remote`\<`object` & `object` & `ProxyMarked`\>\>; `initBlinkCard`: `Promise`\<`void`\>; `reportPinglet`: `Promise`\<`void`\>; `sendPinglets`: `Promise`\<`void`\>; `terminate`: `Promise`\<`void`\>; \}\>
+> **loadBlinkCardCore**(`settings`, `progressCallback?`): `Promise`\<\{ `progressStatusCallback?`: `Promise`\<`undefined`\> \| `Remote`\<[`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)\>; `createScanningSession`: `Promise`\<`Remote`\<`Omit`\<[`BlinkCardScanningSession`](../type-aliases/BlinkCardScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"`\> & `object` & `ProxyMarked`\>\>; `initBlinkCard`: `Promise`\<`void`\>; `reportPinglet`: `Promise`\<`void`\>; `sendPinglets`: `Promise`\<`void`\>; `terminate`: `Promise`\<`void`\>; \}\>
 
 Creates and initializes a BlinkCard core instance.
 
@@ -80,7 +80,7 @@ Optional callback for tracking resource download progress (WASM, data files)
 
 ## Returns
 
-`Promise`\<\{ `progressStatusCallback?`: `Promise`\<`undefined`\> \| `Remote`\<[`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)\>; `createProxySession`: `Promise`\<`Remote`\<`object` & `object` & `ProxyMarked`\>\>; `createScanningSession`: `Promise`\<`Remote`\<`object` & `object` & `ProxyMarked`\>\>; `initBlinkCard`: `Promise`\<`void`\>; `reportPinglet`: `Promise`\<`void`\>; `sendPinglets`: `Promise`\<`void`\>; `terminate`: `Promise`\<`void`\>; \}\>
+`Promise`\<\{ `progressStatusCallback?`: `Promise`\<`undefined`\> \| `Remote`\<[`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)\>; `createScanningSession`: `Promise`\<`Remote`\<`Omit`\<[`BlinkCardScanningSession`](../type-aliases/BlinkCardScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"`\> & `object` & `ProxyMarked`\>\>; `initBlinkCard`: `Promise`\<`void`\>; `reportPinglet`: `Promise`\<`void`\>; `sendPinglets`: `Promise`\<`void`\>; `terminate`: `Promise`\<`void`\>; \}\>
 
 Promise that resolves with initialized BlinkCard core instance
 

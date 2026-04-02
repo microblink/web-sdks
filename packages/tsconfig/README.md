@@ -1,6 +1,6 @@
 # @microblink/tsconfig
 
-Shared TypeScript configuration for the monorepo. Other packages extend this base config to keep compiler options consistent across BlinkID, BlinkCard, and supporting packages.
+Shared TypeScript configuration for the monorepo. Other packages extend this base config to keep compiler options consistent across BlinkID, BlinkID Verify, BlinkCard, and supporting packages.
 
 ## Overview
 

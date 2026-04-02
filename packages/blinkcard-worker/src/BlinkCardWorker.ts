@@ -36,7 +36,6 @@ import type {
   EmscriptenModuleFactory,
   WasmVariant,
 } from "@microblink/blinkcard-wasm";
-import { OverrideProperties } from "type-fest";
 import { installWorkerCrashReporter } from "@microblink/worker-common/workerCrashReporter";
 
 export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
@@ -421,8 +420,7 @@ export class BlinkCardWorker {
         this.#proxyUrls?.baltazar && licenseUnlockResult.allowBaltazarProxy;
 
       const baltazarProxyUrl = shouldUseBaltazarProxy
-        ? // shouldUseBaltazarProxy implies this.#proxyUrls.baltazar is defined
-          this.#proxyUrls!.baltazar
+        ? this.#proxyUrls?.baltazar
         : undefined;
 
       if (baltazarProxyUrl) {
@@ -475,7 +473,9 @@ export class BlinkCardWorker {
    * @param sessionSettings - The options for the session.
    * @returns The session.
    */
-  createScanningSession(sessionSettings?: BlinkCardSessionSettingsInput) {
+  createScanningSession(
+    sessionSettings?: BlinkCardSessionSettingsInput,
+  ): WorkerScanningSession & ProxyMarked {
     if (!this.#wasmModule) {
       throw new Error("Wasm module not loaded");
     }
@@ -490,7 +490,7 @@ export class BlinkCardWorker {
 
       this.sendPinglets();
 
-      return this.createProxySession(session);
+      return this.#createProxySession(session);
     } catch (error) {
       this.reportPinglet({
         schemaName: "ping.error",
@@ -513,7 +513,7 @@ export class BlinkCardWorker {
    * @param session - The BlinkCard scanning session.
    * @returns The proxy session.
    */
-  createProxySession(
+  #createProxySession(
     session: BlinkCardScanningSession,
   ): WorkerScanningSession & ProxyMarked {
     this.#activeSession = session;
@@ -522,7 +522,7 @@ export class BlinkCardWorker {
      * this is a custom session that will be proxied
      * it handles the transfer of the image data buffer
      */
-    const customSession: WorkerScanningSession = {
+    const customSession: InternalWorkerScanningSession = {
       getResult: () => {
         try {
           return session.getResult();
@@ -790,12 +790,11 @@ export type ProcessResultWithBuffer = BlinkCardProcessResult & {
 /**
  * The worker scanning session.
  */
-export type WorkerScanningSession = OverrideProperties<
+export type WorkerScanningSession = Omit<
   BlinkCardScanningSession,
-  {
-    process: (image: ImageData) => ProcessResultWithBuffer;
-  }
+  "process" | "deleteLater" | "isAliasOf"
 > & {
+  process: (image: ImageData) => ProcessResultWithBuffer;
   /**
    * Gets the settings.
    *
@@ -829,6 +828,9 @@ export type WorkerScanningSession = OverrideProperties<
   ping: BlinkCardWorker["reportPinglet"];
   sendPinglets: BlinkCardWorker["sendPinglets"];
 };
+
+type InternalWorkerScanningSession = WorkerScanningSession &
+  Pick<BlinkCardScanningSession, "deleteLater" | "isAliasOf">;
 
 /**
  * Initialization settings for the BlinkCard worker.

@@ -49,10 +49,12 @@
 - [SingleSideScanningResult](type-aliases/SingleSideScanningResult.md)
 - [StrictnessLevel](type-aliases/StrictnessLevel.md)
 - [WasmBuildType](type-aliases/WasmBuildType.md)
+- [WasmSimdVariant](type-aliases/WasmSimdVariant.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 
 ## Variables
 
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
+- [wasmSimdVariants](variables/wasmSimdVariants.md)
 - [wasmVariants](variables/wasmVariants.md)

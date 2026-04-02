@@ -30,6 +30,11 @@ export default {
       pinVersion: "5.8.3",
     },
     {
+      label: "Ignore vitest",
+      dependencies: ["vitest", "@vitest/**"],
+      isIgnored: true,
+    },
+    {
       label: "Ignore .version properties of local packages",
       dependencyTypes: ["local"],
       isIgnored: true,

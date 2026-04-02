@@ -40,29 +40,9 @@ This method is called when the worker is terminated.
 
 ***
 
-### createProxySession()
-
-> **createProxySession**(`session`): `object` & `object` & `ProxyMarked`
-
-This method creates a proxy session.
-
-#### Parameters
-
-##### session
-
-`BlinkCardScanningSession`
-
-The BlinkCard scanning session.
-
-#### Returns
-
-The proxy session.
-
-***
-
 ### createScanningSession()
 
-> **createScanningSession**(`sessionSettings?`): `object` & `object` & `ProxyMarked`
+> **createScanningSession**(`sessionSettings?`): `Omit`\<`BlinkCardScanningSession`, `"deleteLater"` \| `"isAliasOf"` \| `"process"`\> & `object` & `ProxyMarked`
 
 This method creates a BlinkCard scanning session.
 

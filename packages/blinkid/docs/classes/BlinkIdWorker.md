@@ -42,7 +42,7 @@ This method is called when the worker is terminated.
 
 ### ~~createBlinkIdScanningSession()~~
 
-> **createBlinkIdScanningSession**(`options?`): `object` & `object` & `ProxyMarked`
+> **createBlinkIdScanningSession**(`options?`): `Omit`\<[`BlinkIdScanningSession`](../type-aliases/BlinkIdScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"`\> & `object` & `ProxyMarked`
 
 Backward-compatible alias for `createScanningSession`.
 
@@ -97,35 +97,9 @@ Use `createScanningSession` instead.
 
 ***
 
-### createProxySession()
-
-> **createProxySession**(`session`, `sessionSettings`): `object` & `object` & `ProxyMarked`
-
-This method creates a proxy session.
-
-#### Parameters
-
-##### session
-
-[`BlinkIdScanningSession`](../type-aliases/BlinkIdScanningSession.md)
-
-The session.
-
-##### sessionSettings
-
-[`BlinkIdSessionSettings`](../type-aliases/BlinkIdSessionSettings.md)
-
-The session settings.
-
-#### Returns
-
-The proxy session.
-
-***
-
 ### createScanningSession()
 
-> **createScanningSession**(`options?`): `object` & `object` & `ProxyMarked`
+> **createScanningSession**(`options?`): `Omit`\<[`BlinkIdScanningSession`](../type-aliases/BlinkIdScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"`\> & `object` & `ProxyMarked`
 
 This method creates a BlinkID scanning session.
 
@@ -214,7 +188,7 @@ This method initializes everything.
 
 ##### pinglet
 
-`Ping`
+[`Ping`](../type-aliases/Ping.md)
 
 #### Returns
 

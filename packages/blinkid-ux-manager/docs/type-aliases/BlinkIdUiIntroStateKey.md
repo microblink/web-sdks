@@ -12,4 +12,4 @@ Union type of all intro state keys.
 
 ## See
 
-[blinkIdUiIntroStateKeys](../variables/blinkIdUiIntroStateKeys.md) for detailed documentation on each state
+`blinkIdUiIntroStateKeys` for detailed documentation on each state

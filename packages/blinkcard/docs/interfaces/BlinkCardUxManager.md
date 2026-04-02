@@ -85,13 +85,13 @@ Whether the production overlay should be shown.
 
 #### Get Signature
 
-> **get** **analytics**(): `AnalyticService`
+> **get** **analytics**(): [`AnalyticService`](../classes/AnalyticService.md)
 
 Gets the analytics service for tracking UX events.
 
 ##### Returns
 
-`AnalyticService`
+[`AnalyticService`](../classes/AnalyticService.md)
 
 ***
 
@@ -133,7 +133,7 @@ Use `mappedUiStateKey` (internal/debug) or `uiStateKey` (displayed state).
 
 The current UI state. Updated internally by the RAF update loop.
 Read externally once at UI mount to seed the initial Solid signal value;
-subsequent updates are delivered via [addOnUiStateChangedCallback](#addonuistatechangedcallback).
+subsequent updates are delivered via `addOnUiStateChangedCallback`.
 
 ##### Returns
 
