@@ -163,6 +163,14 @@ export const BlinkIdFeedbackUi: Component<{
     }
   });
 
+  createEffect(() => {
+    if (displayUnsupportedDocumentModal()) {
+      void store.blinkIdUxManager.analytics.logAlertDisplayedEvent(
+        "DocumentNotSupported",
+      );
+    }
+  });
+
   return (
     <div>
       <style

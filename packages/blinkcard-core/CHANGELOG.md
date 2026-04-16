@@ -1,5 +1,15 @@
 # @microblink/blinkcard-core
 
+## 3000.0.5
+
+### Patch Changes
+
+- Updated analytics package
+- Updated dependencies
+  - @microblink/analytics@2.0.0
+  - @microblink/blinkcard-worker@3000.0.5
+  - @microblink/blinkcard-wasm@3000.0.5
+
 ## 3000.0.4
 
 ### Patch Changes

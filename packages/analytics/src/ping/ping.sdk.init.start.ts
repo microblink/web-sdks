@@ -31,7 +31,8 @@ type Product =
   | "Capture"
   | "DocumentVerification"
   | "Pdf417Mobi"
-  | "PhotoPay";
+  | "PhotoPay"
+  | "BioBlink";
 type Platform =
   | "iOS"
   | "Android"
@@ -55,6 +56,6 @@ type PlatformDetails =
  */
 export type PingSdkInitStart = PingBase<
   "ping.sdk.init.start",
-  "1.1.0",
+  "1.2.0",
   PingSdkInitStartData
 >;

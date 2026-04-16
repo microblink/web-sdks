@@ -413,7 +413,7 @@ export class BlinkIdWorker {
     // Queue init pinglet before remote license check; flush only if init fails.
     this.reportPinglet({
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.1.0",
+      schemaVersion: "1.2.0",
       sessionNumber: 0,
       data: {
         packageName: self.location.hostname,

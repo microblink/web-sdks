@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-verify-ux-manager",
   "description": "BlinkID Verify UX Manager provides user feedback based on the blinkid-verify process results.",
-  "version": "3.20.0",
+  "version": "3.20.1",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@microblink/blinkid-verify-core": "workspace:^",
-    "@microblink/camera-manager": "workspace:^",    
+    "@microblink/camera-manager": "workspace:^",
     "clsx": "^2.1.1",
     "merge-anything": "^6.0.3",
     "perfect-debounce": "^2.1.0",

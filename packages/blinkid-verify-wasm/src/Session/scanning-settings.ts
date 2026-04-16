@@ -7,6 +7,12 @@ export type ScanningSettings = Partial<{
   /** Whether to treat expired documents as fraudulent. */
   treatExpirationAsFraud: boolean;
 
+  /** Whether to scan unsupported back sides of documents. */
+  scanUnsupportedBack: boolean;
+
+  /** Whether to scan only the passport data page of the document. */
+  scanPassportDataPageOnly: boolean;
+
   /**
    * Threshold for detecting screen-displayed documents. Higher levels provide
    * stricter detection.

@@ -83,7 +83,7 @@ export class AnalyticService {
   #createUxEventPing(pingData: PingUxEventData): PingUxEvent {
     return {
       schemaName: "ping.sdk.ux.event",
-      schemaVersion: "1.0.0",
+      schemaVersion: "1.1.0",
       data: pingData,
     };
   }

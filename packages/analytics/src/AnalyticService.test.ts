@@ -102,7 +102,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "CameraStarted",
         },
@@ -114,7 +114,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "CameraClosed",
         },
@@ -128,7 +128,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "HelpOpened",
         },
@@ -140,7 +140,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "HelpClosed",
           helpCloseType: "ContentFullyViewed",
@@ -153,7 +153,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "HelpClosed",
           helpCloseType: "ContentSkipped",
@@ -166,7 +166,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "HelpTooltipDisplayed",
         },
@@ -180,7 +180,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "CloseButtonClicked",
         },
@@ -192,7 +192,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "OnboardingInfoDisplayed",
         },
@@ -206,7 +206,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "AlertDisplayed",
           alertType: "NetworkError",
@@ -221,7 +221,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "ErrorMessage",
           errorMessageType: "EliminateBlur",
@@ -236,7 +236,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "AppMovedToBackground",
         },
@@ -250,7 +250,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.0.0",
+        schemaVersion: "1.1.0",
         data: {
           eventType: "StepTimeout",
         },

@@ -84,7 +84,7 @@ Defaults to `window.location.href`, at the root of the current page.
 
 #### scanningSettings?
 
-`Partial`\<\{ `barcodeAnomalyMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `dataMatchMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `imageQualitySettings`: [`ImageQualitySettings`](../type-aliases/ImageQualitySettings.md); `screenAnalysisMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `staticSecurityFeaturesMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `treatExpirationAsFraud`: `boolean`; `useCase`: [`UseCase`](../type-aliases/UseCase.md); \}\>
+`Partial`\<\{ `barcodeAnomalyMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `dataMatchMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `imageQualitySettings`: [`ImageQualitySettings`](../type-aliases/ImageQualitySettings.md); `scanPassportDataPageOnly`: `boolean`; `scanUnsupportedBack`: `boolean`; `screenAnalysisMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `staticSecurityFeaturesMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `treatExpirationAsFraud`: `boolean`; `useCase`: [`UseCase`](../type-aliases/UseCase.md); \}\>
 
 Specific settings for the scanning process. If no settings are provided,
 defaults will be used.

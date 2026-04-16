@@ -154,6 +154,14 @@ export const BlinkIdVerifyFeedbackUi: Component<{
     }
   });
 
+  createEffect(() => {
+    if (displayUnsupportedDocumentModal()) {
+      void store.blinkIdVerifyUxManager.analytics.logAlertDisplayedEvent(
+        "DocumentNotSupported",
+      );
+    }
+  });
+
   return (
     <div>
       <style
