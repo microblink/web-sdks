@@ -1,5 +1,12 @@
 # @microblink/ux-common
 
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/analytics@2.0.0
+
 ## 1.0.0
 
 ### Major Changes

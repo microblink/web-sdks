@@ -50,7 +50,8 @@ type AlertType =
   | "InvalidLicenseKey"
   | "NetworkError"
   | "DocumentClassNotAllowed"
-  | "StepTimeout";
+  | "StepTimeout"
+  | "DocumentNotSupported";
 type HelpCloseType = "ContentSkipped" | "ContentFullyViewed";
 
 /**
@@ -58,6 +59,6 @@ type HelpCloseType = "ContentSkipped" | "ContentFullyViewed";
  */
 export type PingUxEvent = PingBase<
   "ping.sdk.ux.event",
-  "1.0.0",
+  "1.1.0",
   PingUxEventData
 >;

@@ -1,5 +1,14 @@
 # @microblink/blinkid-worker
 
+## 7.7.4
+
+### Patch Changes
+
+- Updated analytics package
+- Updated dependencies
+  - @microblink/analytics@2.0.0
+  - @microblink/blinkid-wasm@7.7.4
+
 ## 7.7.3
 
 ### Patch Changes

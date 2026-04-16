@@ -1,5 +1,13 @@
 # @microblink/blinkid-wasm
 
+## 7.7.4
+
+### Patch Changes
+
+- Version bump for consistency with other packages
+
+## 7.7.3
+
 ## 7.7.2
 
 ## 7.7.1

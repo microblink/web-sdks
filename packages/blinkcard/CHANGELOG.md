@@ -1,5 +1,13 @@
 # @microblink/blinkcard
 
+## 3000.0.5
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkcard-core@3000.0.5
+  - @microblink/blinkcard-ux-manager@3000.0.5
+
 ## 3000.0.4
 
 ### Patch Changes

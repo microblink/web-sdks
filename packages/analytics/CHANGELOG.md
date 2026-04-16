@@ -1,5 +1,11 @@
 # @microblink/analytics
 
+## 2.0.0
+
+### Major Changes
+
+- Updated analytics to new schema introducing breaking changes in previously used schemas.
+
 ## 1.0.2
 
 ### Patch Changes

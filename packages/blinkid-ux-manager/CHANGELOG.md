@@ -1,5 +1,12 @@
 # @microblink/blinkid-ux-manager
 
+## 7.7.4
+
+### Patch Changes
+
+- Version bump for consistency with other packages
+- Added analytical event logging for when the "Document Not Supported" alert modal is displayed in the feedback UI
+
 ## 7.7.3
 
 ### Patch Changes
