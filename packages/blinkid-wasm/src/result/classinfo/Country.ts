@@ -251,7 +251,6 @@ export type Country =
   | "vanuatu"
   | "vatican-city"
   | "virgin-islands-british"
-  | "virgin-islands-us"
   | "wallis-and-futuna"
   | "western-sahara"
   | "yemen"
@@ -259,4 +258,5 @@ export type Country =
   | "zambia"
   | "zimbabwe"
   | "schengen-area"
-  | "saint-thomas-and-prince";
+  | "saint-thomas-and-prince"
+  | "virgin-islands-of-the-united-states";

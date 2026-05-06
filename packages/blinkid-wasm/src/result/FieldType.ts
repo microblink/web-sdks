@@ -70,11 +70,9 @@ export type FieldType =
     | "stateName"
     | "effectiveDate"
     | "parentsLastName"
-    | "parentsLastName2"
-    | "parentsFirstName2"
     | "workRestriction"
     | "parentsFirstName"
     | "socialSecurityStatus"
     | "legalStatus"
     | "husbandName"
-    | "chinPermanentExpiry";
+    | "cardAccessNumber";

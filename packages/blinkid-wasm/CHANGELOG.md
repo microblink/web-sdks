@@ -1,5 +1,15 @@
 # @microblink/blinkid-wasm
 
+## 7.8.0
+
+### Minor Changes
+
+- - **Results:** `BlinkIdScanningResult` and `VizResult` now expose optional `cardAccessNumber` (`StringResult`).
+  - **`FieldType`:** added `cardAccessNumber`; removed `parentsLastName2`, `parentsFirstName2`, and `chinPermanentExpiry`.
+  - **`DocumentType`:** added `origin-card`.
+  - **`Country`:** removed `virgin-islands-us`; added `virgin-islands-of-the-united-states`.
+  - **Extraction behavior:** top-level `remarks` is filled using information from **both** sides when available. Document number and citizenship are also represented in the MRZ **opt1** value where applicable. Egypt driver licenses: `dateOfBirth` is derived from `personalIdNumber` when appropriate. Improved MRZ parsing for Zimbabwe ID and a new Brunei ID layout.
+
 ## 7.7.4
 
 ### Patch Changes

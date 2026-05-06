@@ -23,6 +23,8 @@ export type PingSdkInitStartData = {
   platformDetails?: PlatformDetails;
   packageName: string;
   userId: string;
+  pingProxyEnabled: boolean;
+  baltazarProxyEnabled: boolean;
 };
 type Product =
   | "BlinkCard"
@@ -56,6 +58,6 @@ type PlatformDetails =
  */
 export type PingSdkInitStart = PingBase<
   "ping.sdk.init.start",
-  "1.2.0",
+  "1.3.0",
   PingSdkInitStartData
 >;

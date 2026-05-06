@@ -100,6 +100,8 @@ export type BlinkIdScanningResult = {
   vehicleOwner?: StringResult;
   /** The certificate number of the document owner */
   certificateNumber?: StringResult;
+  /** The card access number of the document owner */
+  cardAccessNumber?: StringResult;
   /** The country code of the document owner */
   countryCode?: StringResult;
   /** The national insurance number of the document owner */

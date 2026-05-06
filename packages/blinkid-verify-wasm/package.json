@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-verify-wasm",
   "private": true,
-  "version": "3.20.1",
+  "version": "3.20.2",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",
@@ -36,7 +36,6 @@
     "@vitest/browser-playwright": "^4.0.8",
     "arktype": "^2.2.0",
     "dotenv-cli": "^8.0.0",
-    "prettier": "^3.8.1",
     "prettier-plugin-jsdoc": "^1.3.3",
     "rimraf": "^6.0.1",
     "tsx": "^4.21.0",

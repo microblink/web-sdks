@@ -34,6 +34,7 @@ import { obtainNewServerPermission } from "@microblink/worker-common/licencing";
 import { mbToWasmPages } from "@microblink/worker-common/mbToWasmPages";
 import {
   SanitizedProxyUrls,
+  getMicroblinkProxyPingFlags,
   sanitizeProxyUrls,
   validateLicenseProxyPermissions,
 } from "@microblink/worker-common/proxy-url-validator";
@@ -391,7 +392,7 @@ export class BlinkIdVerifyWorker {
     // Queue init pinglet before remote license check; flush only if init fails
     this.reportPinglet({
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.2.0",
+      schemaVersion: "1.3.0",
       sessionNumber: 0,
       data: {
         packageName: self.location.hostname,
@@ -399,6 +400,10 @@ export class BlinkIdVerifyWorker {
         platformDetails: wasmVariant,
         product: "DocumentVerification",
         userId: this.#userId,
+        ...getMicroblinkProxyPingFlags(
+          settings.microblinkProxyUrl,
+          licenseUnlockResult,
+        ),
       },
     });
 

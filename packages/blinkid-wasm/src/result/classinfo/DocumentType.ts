@@ -92,4 +92,5 @@ export type DocumentType =
   | "nin-card"
   | "mysss-card"
   | "gendarmerie-id"
-  | "police-id";
+  | "police-id"
+  | "origin-card";

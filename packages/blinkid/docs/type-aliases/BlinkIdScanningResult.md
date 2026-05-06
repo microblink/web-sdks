@@ -60,6 +60,14 @@ The blood type of the document owner
 
 ***
 
+### cardAccessNumber?
+
+> `optional` **cardAccessNumber**: [`StringResult`](StringResult.md)
+
+The card access number of the document owner
+
+***
+
 ### certificateNumber?
 
 > `optional` **certificateNumber**: [`StringResult`](StringResult.md)

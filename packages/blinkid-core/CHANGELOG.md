@@ -1,5 +1,14 @@
 # @microblink/blinkid-core
 
+## 7.8.0
+
+### Minor Changes
+
+- Updated dependencies
+  - @microblink/analytics@2.0.1
+  - @microblink/blinkid-wasm@7.8.0
+  - @microblink/blinkid-worker@7.8.0
+
 ## 7.7.4
 
 ### Patch Changes

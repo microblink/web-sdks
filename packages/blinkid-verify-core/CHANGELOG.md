@@ -1,5 +1,14 @@
 # @microblink/blinkid-verify-core
 
+## 3.20.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/analytics@2.0.1
+  - @microblink/blinkid-verify-wasm@3.20.2
+  - @microblink/blinkid-verify-worker@3.20.2
+
 ## 3.20.1
 
 ### Patch Changes

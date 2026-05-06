@@ -15,7 +15,6 @@
     "@microblink/unocss-config": "workspace:*",
     "@solid-primitives/keyed": "^1.5.2",
     "@solid-primitives/resize-observer": "^2.1.1",
-    "prettier": "^3.8.1",
     "prettier-plugin-classnames": "0.9.0",
     "solid-js": "^1.9.11",
     "type-fest": "^4.35.0"

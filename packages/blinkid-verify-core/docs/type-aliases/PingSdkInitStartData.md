@@ -10,9 +10,21 @@
 
 ## Properties
 
+### baltazarProxyEnabled
+
+> **baltazarProxyEnabled**: `boolean`
+
+***
+
 ### packageName
 
 > **packageName**: `string`
+
+***
+
+### pingProxyEnabled
+
+> **pingProxyEnabled**: `boolean`
 
 ***
 
