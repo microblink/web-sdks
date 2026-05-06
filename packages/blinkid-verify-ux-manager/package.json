@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-verify-ux-manager",
   "description": "BlinkID Verify UX Manager provides user feedback based on the blinkid-verify process results.",
-  "version": "3.20.1",
+  "version": "3.20.2",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",

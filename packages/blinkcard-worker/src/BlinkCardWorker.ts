@@ -18,6 +18,7 @@ import { isIOS } from "@microblink/worker-common/isSafari";
 import { obtainNewServerPermission } from "@microblink/worker-common/licencing";
 import { mbToWasmPages } from "@microblink/worker-common/mbToWasmPages";
 import {
+  getMicroblinkProxyPingFlags,
   sanitizeProxyUrls,
   validateLicenseProxyPermissions,
   type SanitizedProxyUrls,
@@ -381,7 +382,7 @@ export class BlinkCardWorker {
     // Queue init pinglet before remote license check; flush only if init fails.
     this.reportPinglet({
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.2.0",
+      schemaVersion: "1.3.0",
       sessionNumber: 0,
       data: {
         packageName: self.location.hostname,
@@ -389,6 +390,10 @@ export class BlinkCardWorker {
         platformDetails: wasmVariant,
         product: "BlinkCard",
         userId: this.#userId,
+        ...getMicroblinkProxyPingFlags(
+          settings.microblinkProxyUrl,
+          licenseUnlockResult,
+        ),
       },
     });
 

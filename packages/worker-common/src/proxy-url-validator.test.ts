@@ -7,6 +7,7 @@ import {
   validateLicenseProxyPermissions,
   sanitizeProxyUrls,
   ProxyUrlValidationError,
+  getMicroblinkProxyPingFlags,
 } from "./proxy-url-validator";
 import type { LicenseUnlockResult } from "@microblink/wasm-common";
 
@@ -243,6 +244,77 @@ describe("Proxy URL Validator", () => {
       expect(error?.url).toBe(invalidUrl);
       expect(error?.message).toContain(invalidUrl);
       expect(error?.code).toBe("HTTPS_REQUIRED");
+    });
+  });
+
+  describe("getMicroblinkProxyPingFlags", () => {
+    const baseLicense: Pick<
+      LicenseUnlockResult,
+      | "allowPingProxy"
+      | "allowBaltazarProxy"
+      | "hasPing"
+      | "unlockResult"
+    > = {
+      allowPingProxy: true,
+      allowBaltazarProxy: true,
+      hasPing: true,
+      unlockResult: "valid",
+    };
+
+    it("returns false for both when proxy URL is absent", () => {
+      expect(getMicroblinkProxyPingFlags(undefined, baseLicense)).toEqual({
+        pingProxyEnabled: false,
+        baltazarProxyEnabled: false,
+      });
+    });
+
+    it("returns baltazar true only for online license with proxy URL and allowBaltazarProxy", () => {
+      expect(
+        getMicroblinkProxyPingFlags(undefined, {
+          ...baseLicense,
+          unlockResult: "requires-server-permission",
+        }),
+      ).toEqual({ pingProxyEnabled: false, baltazarProxyEnabled: false });
+
+      expect(
+        getMicroblinkProxyPingFlags("https://p.example", {
+          ...baseLicense,
+          unlockResult: "requires-server-permission",
+          allowBaltazarProxy: false,
+        }),
+      ).toEqual({ pingProxyEnabled: true, baltazarProxyEnabled: false });
+
+      expect(
+        getMicroblinkProxyPingFlags("https://p.example", {
+          ...baseLicense,
+          unlockResult: "requires-server-permission",
+        }),
+      ).toEqual({ pingProxyEnabled: true, baltazarProxyEnabled: true });
+    });
+
+    it("returns ping true only when URL, allowPingProxy, and hasPing", () => {
+      expect(
+        getMicroblinkProxyPingFlags("https://p.example", {
+          ...baseLicense,
+          allowPingProxy: false,
+        }),
+      ).toEqual({ pingProxyEnabled: false, baltazarProxyEnabled: false });
+
+      expect(
+        getMicroblinkProxyPingFlags("https://p.example", {
+          ...baseLicense,
+          hasPing: false,
+        }),
+      ).toEqual({ pingProxyEnabled: false, baltazarProxyEnabled: false });
+    });
+
+    it("returns baltazar false for offline license even with URL and allowBaltazarProxy", () => {
+      expect(
+        getMicroblinkProxyPingFlags("https://p.example", {
+          ...baseLicense,
+          allowBaltazarProxy: false,
+        }),
+      ).toEqual({ pingProxyEnabled: true, baltazarProxyEnabled: false });
     });
   });
 });

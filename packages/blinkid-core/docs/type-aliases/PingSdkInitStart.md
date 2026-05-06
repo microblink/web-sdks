@@ -6,6 +6,6 @@
 
 # Type Alias: PingSdkInitStart
 
-> **PingSdkInitStart** = [`PingBase`](../interfaces/PingBase.md)\<`"ping.sdk.init.start"`, `"1.2.0"`, [`PingSdkInitStartData`](PingSdkInitStartData.md)\>
+> **PingSdkInitStart** = [`PingBase`](../interfaces/PingBase.md)\<`"ping.sdk.init.start"`, `"1.3.0"`, [`PingSdkInitStartData`](PingSdkInitStartData.md)\>
 
 Ping type for ping.sdk.init.start

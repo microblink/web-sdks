@@ -55,10 +55,20 @@ vi.mock("@microblink/worker-common/downloadResourceBuffer", () => ({
 vi.mock("@microblink/worker-common/wasm-feature-detect", () => ({
   detectWasmFeatures: detectWasmFeaturesMock,
 }));
-vi.mock("@microblink/worker-common/proxy-url-validator", () => ({
-  validateLicenseProxyPermissions: validateLicenseProxyPermissionsMock,
-  sanitizeProxyUrls: sanitizeProxyUrlsMock,
-}));
+vi.mock(
+  "@microblink/worker-common/proxy-url-validator",
+  async (importOriginal) => {
+    const actual =
+      await importOriginal<
+        typeof import("@microblink/worker-common/proxy-url-validator")
+      >();
+    return {
+      ...actual,
+      validateLicenseProxyPermissions: validateLicenseProxyPermissionsMock,
+      sanitizeProxyUrls: sanitizeProxyUrlsMock,
+    };
+  },
+);
 
 vi.mock("@microblink/worker-common/licencing", () => ({
   obtainNewServerPermission: obtainNewServerPermissionMock,

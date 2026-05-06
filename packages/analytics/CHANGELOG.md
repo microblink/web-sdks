@@ -1,5 +1,11 @@
 # @microblink/analytics
 
+## 2.0.1
+
+### Patch Changes
+
+- Added `pingProxyEnabled` and `baltazarProxyEnabled` flags to the SDK init pinglet.
+
 ## 2.0.0
 
 ### Major Changes

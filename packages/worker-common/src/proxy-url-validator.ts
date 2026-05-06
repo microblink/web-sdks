@@ -110,3 +110,30 @@ export function sanitizeProxyUrls(baseUrl: string): {
     );
   }
 }
+
+/**
+ * Analytics flags for `ping.sdk.init.start` (and similar), derived from the
+ * configured proxy URL and license fields. Does not validate the URL or
+ * license proxy permissions — validate after confirming the license unlocked
+ * successfully.
+ *
+ * `baltazarProxyEnabled` is true when the license is online
+ * (`requires-server-permission`), a Microblink proxy base URL is set, and the
+ * license allows routing the remote license (Baltazar) check through that proxy.
+ */
+export function getMicroblinkProxyPingFlags(
+  microblinkProxyUrl: string | undefined,
+  license: Pick<
+    LicenseUnlockResult,
+    "allowPingProxy" | "allowBaltazarProxy" | "hasPing" | "unlockResult"
+  >,
+): { pingProxyEnabled: boolean; baltazarProxyEnabled: boolean } {
+  const hasMicroblinkProxyUrl = Boolean(microblinkProxyUrl);
+  const isOnlineLicense = license.unlockResult === "requires-server-permission";
+  return {
+    pingProxyEnabled:
+      hasMicroblinkProxyUrl && license.allowPingProxy && license.hasPing,
+    baltazarProxyEnabled:
+      isOnlineLicense && hasMicroblinkProxyUrl && license.allowBaltazarProxy,
+  };
+}

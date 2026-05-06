@@ -45,6 +45,10 @@ For more advanced usage, customization, or integration with your own UI, see the
 
 Full documentation, API reference, and integration guides are available at [docs.microblink.com](https://docs.microblink.com).
 
+### Supported documents
+
+Supported documents and result fields are available at [docs.microblink.com](https://docs.microblink.com/blinkid/supported-documents).
+
 ## Example Apps
 
 Explore example applications in the GitHub repository for ready-to-run demos:

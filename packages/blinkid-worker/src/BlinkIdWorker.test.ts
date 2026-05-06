@@ -55,7 +55,7 @@ describe("BlinkIdWorker", () => {
     const worker = new BlinkIdWorker();
     const pinglet: Ping = {
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.2.0",
+      schemaVersion: "1.3.0",
       sessionNumber: 0,
       data: {
         product: "BlinkID",
@@ -63,6 +63,8 @@ describe("BlinkIdWorker", () => {
         platformDetails: "advanced-threads",
         packageName: "example.com",
         userId: "test-user",
+        pingProxyEnabled: false,
+        baltazarProxyEnabled: false,
       },
     };
     expect(() => worker.reportPinglet(pinglet)).toThrow(

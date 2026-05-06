@@ -1,7 +1,7 @@
 {
   "name": "@microblink/analytics",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.0.1",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",
@@ -39,7 +39,6 @@
     "eslint": "^8.57.0",
     "eslint-config-prettier": "10.1.8",
     "eslint-define-config": "^1.24.1",
-    "prettier": "^3.8.1",
     "rimraf": "^6.0.1",
     "tsx": "^4.21.0",
     "typedoc": "^0.28.7",

@@ -76,7 +76,6 @@
     "eslint-define-config": "^1.24.1",
     "eslint-plugin-solid": "0.14.5",
     "playwright": "^1.51.0",
-    "prettier": "^3.8.1",
     "prettier-plugin-classnames": "0.9.0",
     "publint": "^0.3.12",
     "rimraf": "^6.0.1",

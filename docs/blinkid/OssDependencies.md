@@ -152,7 +152,7 @@ This report includes:
 | eigen/3.4.2@microblink/main#406195518d246c1d387b54df8ade9052 | Mozilla Public License Version 2.0 | [Link](https://github.com/microblink/eigen-git-mirror) | Eigen is a C++ template library for linear algebra: vectors, matrices, and related algorithms. It is versatile, fast, elegant and works on many platforms (OS/Compilers). |
 | err/1.0.2@microblink/main#c37bea8eb2a49b4f46fdd47f028d144d | Boost Software License | [Link](https://github.com/microblink/err) | err - yet another take on C++ error handling |
 | functionoid/1.0.1@microblink/main#a63c389de8e94c11f18c62430bb3aa1f | Boost Software License, Version 1.0 | [Link](https://github.com/microblink/functionoid) | a complete C++17 rewrite of boost/std::function |
-| gtest/1.14.9@microblink/main#92cbac29cb2870655027eb912cd72358 | BSD 3-Clause | [Link](https://bitbucket.org/microblink/core-google-test/src) | Google's C++ test framework |
+| gtest/1.14.10@microblink/main#aeea6cc884a4400edf8084592f7b23ec | BSD 3-Clause | [Link](https://bitbucket.org/microblink/core-google-test/src) | Google's C++ test framework |
 | hash/2.0.3@microblink/main#bca5158cdd3532fd9a32d7539b66194f | zlib | [Link](https://github.com/microblink/hash-library) | Portable C++ Hashing Library |
 | kiwaku/20230809.4@microblink/main#6e5eb5cb85661173d4d516738282e5db | BSL-1.0 | [Link](https://github.com/microblink/kiwaku) | C++20 and onward collection of high performance data containers and related tools |
 | libjpeg_turbo/3.0.2.2@microblink/main#c5ae8c1d15ab8215718ea3df429e55e1 | BSD-3-Clause, Zlib | [Link](https://github.com/microblink/libjpeg-turbo) | SIMD-accelerated libjpeg-compatible JPEG codec library |
