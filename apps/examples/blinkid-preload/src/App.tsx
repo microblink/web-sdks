@@ -120,13 +120,6 @@ export const App: Component = () => {
           // we create the camera manager
           const cameraManager = new CameraManager();
 
-          // this creates the UI and attaches it to the DOM
-          const cameraUi = await createCameraManagerUi(cameraManager);
-
-          cameraUi.addOnDismountCallback(() => {
-            console.log("camera ui dismounted");
-          });
-
           // we create the UX manager
           const blinkIdUxManager = await createBlinkIdUxManager(
             cameraManager,
@@ -138,6 +131,13 @@ export const App: Component = () => {
             setResult(result);
             setStep("success");
             cameraUi.dismount();
+          });
+
+          // this creates the UI and attaches it to the DOM
+          const cameraUi = await createCameraManagerUi(cameraManager);
+
+          cameraUi.addOnDismountCallback(() => {
+            console.log("camera ui dismounted");
           });
 
           await cameraManager.startCameraStream();
