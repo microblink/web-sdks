@@ -21,10 +21,7 @@ vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
   };
 });
 
-import {
-  AnalyticService,
-  type ProcessResultWithBuffer,
-} from "@microblink/blinkcard-core";
+import { type ProcessResultWithBuffer } from "@microblink/blinkcard-core";
 import {
   createFakeImageData,
   enableRafAwareFakeTimers,
@@ -134,14 +131,14 @@ beforeEach(() => {
 
 describe("BlinkCardUxManager - startup and camera analytics", () => {
   test("logs device info and playback events", () => {
-    const logDeviceInfoSpy = vi.spyOn(
-      AnalyticService.prototype,
-      "logDeviceInfo",
-    );
-    const { cameraHarness, manager } = createBlinkCardTestContext();
+    const { cameraHarness, manager, scanningSession } =
+      createBlinkCardTestContext();
 
-    expect(logDeviceInfoSpy).toHaveBeenCalledWith(manager.deviceInfo);
-    logDeviceInfoSpy.mockRestore();
+    expect(scanningSession.ping).toHaveBeenCalledWith({
+      schemaName: "ping.browser.device.info",
+      schemaVersion: "1.0.0",
+      data: manager.deviceInfo,
+    });
 
     const logCameraStartedEventSpy = vi.spyOn(
       manager.analytics,

@@ -6,7 +6,7 @@ This report lists all open source dependencies used in the BlinkID SDK packages.
 
 This report includes:
 - **NPM Dependencies**: Production dependencies from all packages in the monorepo (126 packages)
-- **C++ Dependencies**: Native dependencies for WebAssembly builds (33 unique packages across 1 build flavors)
+- **C++ Dependencies**: Native dependencies for WebAssembly builds (33 unique packages across 3 build flavors)
 
 ## NPM Dependencies
 

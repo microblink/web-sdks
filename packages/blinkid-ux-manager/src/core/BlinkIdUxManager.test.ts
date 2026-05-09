@@ -25,7 +25,6 @@ import type {
   BlinkIdScanningResult,
   DocumentClassInfo,
 } from "@microblink/blinkid-core";
-import { AnalyticService } from "@microblink/blinkid-core";
 import {
   createFakeImageData,
   enableRafAwareFakeTimers,
@@ -130,15 +129,14 @@ beforeEach(() => {
 
 describe("BlinkIdUxManager - startup and camera analytics", () => {
   test("logs device info and playback events", async () => {
-    const logDeviceInfoSpy = vi.spyOn(
-      AnalyticService.prototype,
-      "logDeviceInfo",
-    );
+    const { cameraHarness, manager, scanningSession } =
+      await createBlinkIdTestContext();
 
-    const { cameraHarness, manager } = await createBlinkIdTestContext();
-
-    expect(logDeviceInfoSpy).toHaveBeenCalledWith(manager.deviceInfo);
-    logDeviceInfoSpy.mockRestore();
+    expect(scanningSession.ping).toHaveBeenCalledWith({
+      schemaName: "ping.browser.device.info",
+      schemaVersion: "1.0.0",
+      data: manager.deviceInfo,
+    });
 
     const logCameraStartedEventSpy = vi.spyOn(
       manager.analytics,
