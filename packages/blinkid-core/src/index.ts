@@ -31,8 +31,7 @@ export {
 } from "@microblink/core-common/deviceInfo/deviceInfo";
 export { getCrossOriginWorkerURL } from "@microblink/core-common/getCrossOriginWorkerURL";
 export { getUserId } from "@microblink/core-common/getUserId";
-export * from "./BlinkIdCore";
-export * from "./defaultSessionSettings";
+export * from "./loadBlinkIdCore";
 export * from "./utils";
 
 /** Represents a remote scanning session. */

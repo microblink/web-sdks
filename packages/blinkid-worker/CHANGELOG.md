@@ -1,5 +1,20 @@
 # @microblink/blinkid-worker
 
+## 8000.0.0
+
+### Major Changes
+
+- Aligns the BlinkID worker Comlink API with the v8000 runtime and Wasm bindings. This is a breaking change for integrations that called the worker API directly against the 7.x surface.
+- For the full upgrade guide, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).
+- Re-exports trimmed result and session types from `@microblink/blinkid-wasm` (including `barcodeImage` and tightened `FieldType`). Adds `getResolvedSessionSettings()` on the scanning session.
+- Replaces 7.x session anonymization settings with a result-time redaction API. Remove `scanningSettings.anonymizationMode` and `scanningSettings.customDocumentAnonymizationSettings` from `BlinkIdSessionSettings`. Use `RedactionSettings` and `RedactionMode` instead. Pass an optional `redactionSettingsResolver` in the second argument to `BlinkIdWorker.createScanningSession` (`BlinkIdCreateScanningSessionOptions`). The resolver receives the classified `DocumentClassInfo` and returns `RedactionSettings`, or `null` / `undefined` for SDK defaults. When configured, `session.getResult()` applies the resolved settings automatically. Exposes `BlinkIdWorker.getDefaultRedactionSettings(documentClassInfo)` to seed per-document rules. Map legacy `DocumentAnonymizationSettings` to `RedactionSettings` (`documentNumberAnonymizationSettings` → `documentNumberRedactionSettings`; per-document filters move into resolver logic keyed off `DocumentClassInfo`).
+
+### Other Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@8000.0.0
+  - @microblink/worker-common@1.0.4
+
 ## 7.8.0
 
 ### Minor Changes

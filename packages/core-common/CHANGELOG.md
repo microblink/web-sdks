@@ -1,5 +1,11 @@
 # @microblink/core-common
 
+## 1.0.2
+
+### Patch Changes
+
+- Updates `createProxyWorker` so arguments passed to `createScanningSession` are scanned for function-valued properties and wrapped with Comlink `proxy`, keeping callbacks and resolver objects usable across the worker boundary without silent failures.
+
 ## 1.0.1
 
 ### Patch Changes

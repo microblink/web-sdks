@@ -12,137 +12,146 @@ Represents the final complete result of the scanning process.
 
 ## Properties
 
-### additionalAddressInformation?
+### additionalAddressInformation
 
-> `optional` **additionalAddressInformation**: [`StringResult`](StringResult.md)
+> **additionalAddressInformation**: [`StringResult`](StringResult.md) \| `undefined`
 
 The additional address information of the document owner
 
 ***
 
-### additionalNameInformation?
+### additionalNameInformation
 
-> `optional` **additionalNameInformation**: [`StringResult`](StringResult.md)
+> **additionalNameInformation**: [`StringResult`](StringResult.md) \| `undefined`
 
 The additional name information of the document owner
 
 ***
 
-### additionalOptionalAddressInformation?
+### additionalOptionalAddressInformation
 
-> `optional` **additionalOptionalAddressInformation**: [`StringResult`](StringResult.md)
+> **additionalOptionalAddressInformation**: [`StringResult`](StringResult.md) \| `undefined`
 
 Additional optional address information of the document owner
 
 ***
 
-### additionalPersonalIdNumber?
+### additionalPersonalIdNumber
 
-> `optional` **additionalPersonalIdNumber**: [`StringResult`](StringResult.md)
+> **additionalPersonalIdNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
 The additional personal identification number
 
 ***
 
-### address?
+### address
 
-> `optional` **address**: [`StringResult`](StringResult.md)
+> **address**: [`StringResult`](StringResult.md) \| `undefined`
 
 The address of the document owner
 
 ***
 
-### bloodType?
+### barcodeImageScanningSide
 
-> `optional` **bloodType**: [`StringResult`](StringResult.md)
+> **barcodeImageScanningSide**: [`ScanningSide`](ScanningSide.md) \| `undefined`
+
+Scanning side matching the returned barcode image.
+
+***
+
+### bloodType
+
+> **bloodType**: [`StringResult`](StringResult.md) \| `undefined`
 
 The blood type of the document owner
 
 ***
 
-### cardAccessNumber?
+### cardAccessNumber
 
-> `optional` **cardAccessNumber**: [`StringResult`](StringResult.md)
+> **cardAccessNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
-The card access number of the document owner
+Numeric code used to establish secure electronic access to the embedded
+contactless chip.
 
 ***
 
-### certificateNumber?
+### certificateNumber
 
-> `optional` **certificateNumber**: [`StringResult`](StringResult.md)
+> **certificateNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
 The certificate number of the document owner
 
 ***
 
-### countryCode?
+### countryCode
 
-> `optional` **countryCode**: [`StringResult`](StringResult.md)
+> **countryCode**: [`StringResult`](StringResult.md) \| `undefined`
 
 The country code of the document owner
 
 ***
 
-### dataMatchResult?
+### dataMatchResult
 
-> `optional` **dataMatchResult**: [`DataMatchResult`](DataMatchResult.md)
+> **dataMatchResult**: [`DataMatchResult`](DataMatchResult.md) \| `undefined`
 
 Info on whether the data extracted from multiple sides matches
 
 ***
 
-### dateOfBirth?
+### dateOfBirth
 
-> `optional` **dateOfBirth**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\>
+> **dateOfBirth**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\> \| `undefined`
 
 The date of birth of the document owner
 
 ***
 
-### dateOfEntry?
+### dateOfEntry
 
-> `optional` **dateOfEntry**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\>
+> **dateOfEntry**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\> \| `undefined`
 
 The date of entry of the document owner
 
 ***
 
-### dateOfExpiry?
+### dateOfExpiry
 
-> `optional` **dateOfExpiry**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\>
+> **dateOfExpiry**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\> \| `undefined`
 
 The date of expiry of the document
 
 ***
 
-### dateOfExpiryPermanent?
+### dateOfExpiryPermanent
 
-> `optional` **dateOfExpiryPermanent**: `boolean`
+> **dateOfExpiryPermanent**: `boolean` \| `undefined`
 
 Determines if date of expiry is permanent
 
 ***
 
-### dateOfIssue?
+### dateOfIssue
 
-> `optional` **dateOfIssue**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\>
+> **dateOfIssue**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\> \| `undefined`
 
 The date of issue of the document
 
 ***
 
-### dependentsInfo?
+### dependentsInfo
 
-> `optional` **dependentsInfo**: [`DependentInfo`](DependentInfo.md)[]
+> **dependentsInfo**: [`DependentInfo`](DependentInfo.md)[] \| `undefined`
 
 The dependents info
 
 ***
 
-### documentAdditionalNumber?
+### documentAdditionalNumber
 
-> `optional` **documentAdditionalNumber**: [`StringResult`](StringResult.md)
+> **documentAdditionalNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
 The additional number of the document
 
@@ -156,345 +165,369 @@ The document class information
 
 ***
 
-### documentNumber?
+### documentImagesScanningSide
 
-> `optional` **documentNumber**: [`StringResult`](StringResult.md)
+> **documentImagesScanningSide**: [`ScanningSide`](ScanningSide.md)[] \| `undefined`
+
+Scanning sides matching document image indexes in `subResults`.
+
+***
+
+### documentNumber
+
+> **documentNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
 The document number
 
 ***
 
-### documentOptionalAdditionalNumber?
+### documentOptionalAdditionalNumber
 
-> `optional` **documentOptionalAdditionalNumber**: [`StringResult`](StringResult.md)
+> **documentOptionalAdditionalNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
 Additional optional number of the document
 
 ***
 
-### documentSubtype?
+### documentSubtype
 
-> `optional` **documentSubtype**: [`StringResult`](StringResult.md)
+> **documentSubtype**: [`StringResult`](StringResult.md) \| `undefined`
 
 The document subtype transcription
 
 ***
 
-### driverLicenseDetailedInfo?
+### driverLicenseDetailedInfo
 
-> `optional` **driverLicenseDetailedInfo**: [`DriverLicenceDetailedInfo`](DriverLicenceDetailedInfo.md)\<[`StringResult`](StringResult.md)\>
+> **driverLicenseDetailedInfo**: [`DriverLicenceDetailedInfo`](DriverLicenceDetailedInfo.md)\<[`StringResult`](StringResult.md)\> \| `undefined`
 
 The driver license detailed info
 
 ***
 
-### effectiveDate?
+### effectiveDate
 
-> `optional` **effectiveDate**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\>
+> **effectiveDate**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\> \| `undefined`
 
 The effective date of the document
 
 ***
 
-### eligibilityCategory?
+### eligibilityCategory
 
-> `optional` **eligibilityCategory**: [`StringResult`](StringResult.md)
+> **eligibilityCategory**: [`StringResult`](StringResult.md) \| `undefined`
 
 The eligibility category
 
 ***
 
-### employer?
+### employer
 
-> `optional` **employer**: [`StringResult`](StringResult.md)
+> **employer**: [`StringResult`](StringResult.md) \| `undefined`
 
 The employer of the document owner
 
 ***
 
-### fathersName?
+### faceImageScanningSide
 
-> `optional` **fathersName**: [`StringResult`](StringResult.md)
+> **faceImageScanningSide**: [`ScanningSide`](ScanningSide.md) \| `undefined`
+
+Scanning side matching the returned face image.
+
+***
+
+### fathersName
+
+> **fathersName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The father's name of the document owner
 
 ***
 
-### firstName?
+### firstName
 
-> `optional` **firstName**: [`StringResult`](StringResult.md)
+> **firstName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The first name of the document owner
 
 ***
 
-### fullName?
+### fullName
 
-> `optional` **fullName**: [`StringResult`](StringResult.md)
+> **fullName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The full name of the document owner
 
 ***
 
-### husbandName?
+### husbandName
 
-> `optional` **husbandName**: [`StringResult`](StringResult.md)
+> **husbandName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The husband name of the document owner
 
 ***
 
-### issuingAuthority?
+### inputImagesScanningSide
 
-> `optional` **issuingAuthority**: [`StringResult`](StringResult.md)
+> **inputImagesScanningSide**: [`ScanningSide`](ScanningSide.md)[] \| `undefined`
+
+Scanning sides matching input image indexes in `subResults`.
+
+***
+
+### issuingAuthority
+
+> **issuingAuthority**: [`StringResult`](StringResult.md) \| `undefined`
 
 The issuing authority of the document
 
 ***
 
-### lastName?
+### lastName
 
-> `optional` **lastName**: [`StringResult`](StringResult.md)
+> **lastName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The last name of the document owner
 
 ***
 
-### legalStatus?
+### legalStatus
 
-> `optional` **legalStatus**: [`StringResult`](StringResult.md)
+> **legalStatus**: [`StringResult`](StringResult.md) \| `undefined`
 
 The legal status of the document owner
 
 ***
 
-### localityCode?
+### localityCode
 
-> `optional` **localityCode**: [`StringResult`](StringResult.md)
+> **localityCode**: [`StringResult`](StringResult.md) \| `undefined`
 
 The locality code of the document owner
 
 ***
 
-### localizedName?
+### localizedName
 
-> `optional` **localizedName**: [`StringResult`](StringResult.md)
+> **localizedName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The localized name of the document owner
 
 ***
 
-### maidenName?
+### maidenName
 
-> `optional` **maidenName**: [`StringResult`](StringResult.md)
+> **maidenName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The maiden name of the document owner
 
 ***
 
-### manufacturingYear?
+### manufacturingYear
 
-> `optional` **manufacturingYear**: [`StringResult`](StringResult.md)
+> **manufacturingYear**: [`StringResult`](StringResult.md) \| `undefined`
 
 The manufacturing year
 
 ***
 
-### maritalStatus?
+### maritalStatus
 
-> `optional` **maritalStatus**: [`StringResult`](StringResult.md)
+> **maritalStatus**: [`StringResult`](StringResult.md) \| `undefined`
 
 The marital status of the document owner
 
 ***
 
-### mode?
+### mothersName
 
-> `optional` **mode**: [`RecognitionMode`](RecognitionMode.md)
-
-Scanning mode used to scan current document
-
-***
-
-### mothersName?
-
-> `optional` **mothersName**: [`StringResult`](StringResult.md)
+> **mothersName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The mother's name of the document owner
 
 ***
 
-### municipalityCode?
+### municipalityCode
 
-> `optional` **municipalityCode**: [`StringResult`](StringResult.md)
+> **municipalityCode**: [`StringResult`](StringResult.md) \| `undefined`
 
 The municipality code of the document owner
 
 ***
 
-### municipalityOfRegistration?
+### municipalityOfRegistration
 
-> `optional` **municipalityOfRegistration**: [`StringResult`](StringResult.md)
+> **municipalityOfRegistration**: [`StringResult`](StringResult.md) \| `undefined`
 
 The municipality of registration of the document owner
 
 ***
 
-### nationalInsuranceNumber?
+### nationalInsuranceNumber
 
-> `optional` **nationalInsuranceNumber**: [`StringResult`](StringResult.md)
+> **nationalInsuranceNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
 The national insurance number of the document owner
 
 ***
 
-### nationality?
+### nationality
 
-> `optional` **nationality**: [`StringResult`](StringResult.md)
+> **nationality**: [`StringResult`](StringResult.md) \| `undefined`
 
 The nationality of the document owner
 
 ***
 
-### parentsInfo?
+### parentsInfo
 
-> `optional` **parentsInfo**: [`ParentInfo`](ParentInfo.md)[]
+> **parentsInfo**: `object`[] \| `undefined`
 
 The parents info
 
 ***
 
-### personalIdNumber?
+### personalIdNumber
 
-> `optional` **personalIdNumber**: [`StringResult`](StringResult.md)
+> **personalIdNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
 The personal identification number
 
 ***
 
-### placeOfBirth?
+### placeOfBirth
 
-> `optional` **placeOfBirth**: [`StringResult`](StringResult.md)
+> **placeOfBirth**: [`StringResult`](StringResult.md) \| `undefined`
 
 The place of birth of the document owner
 
 ***
 
-### pollingStationCode?
+### pollingStationCode
 
-> `optional` **pollingStationCode**: [`StringResult`](StringResult.md)
+> **pollingStationCode**: [`StringResult`](StringResult.md) \| `undefined`
 
 The polling station code of the document owner
 
 ***
 
-### profession?
+### profession
 
-> `optional` **profession**: [`StringResult`](StringResult.md)
+> **profession**: [`StringResult`](StringResult.md) \| `undefined`
 
 The profession of the document owner
 
 ***
 
-### race?
+### race
 
-> `optional` **race**: [`StringResult`](StringResult.md)
+> **race**: [`StringResult`](StringResult.md) \| `undefined`
 
 The race of the document owner
 
 ***
 
-### registrationCenterCode?
+### registrationCenterCode
 
-> `optional` **registrationCenterCode**: [`StringResult`](StringResult.md)
+> **registrationCenterCode**: [`StringResult`](StringResult.md) \| `undefined`
 
 The registration center code of the document owner
 
 ***
 
-### religion?
+### religion
 
-> `optional` **religion**: [`StringResult`](StringResult.md)
+> **religion**: [`StringResult`](StringResult.md) \| `undefined`
 
 The religion of the document owner
 
 ***
 
-### remarks?
+### remarks
 
-> `optional` **remarks**: [`StringResult`](StringResult.md)
+> **remarks**: [`StringResult`](StringResult.md) \| `undefined`
 
 The remarks on the residence permit
 
 ***
 
-### residencePermitType?
+### residencePermitType
 
-> `optional` **residencePermitType**: [`StringResult`](StringResult.md)
+> **residencePermitType**: [`StringResult`](StringResult.md) \| `undefined`
 
 The residence permit type
 
 ***
 
-### residentialStatus?
+### residentialStatus
 
-> `optional` **residentialStatus**: [`StringResult`](StringResult.md)
+> **residentialStatus**: [`StringResult`](StringResult.md) \| `undefined`
 
 The residential status of the document owner
 
 ***
 
-### sectionCode?
+### sectionCode
 
-> `optional` **sectionCode**: [`StringResult`](StringResult.md)
+> **sectionCode**: [`StringResult`](StringResult.md) \| `undefined`
 
 The section code of the document owner
 
 ***
 
-### sex?
+### sex
 
-> `optional` **sex**: [`StringResult`](StringResult.md)
+> **sex**: [`StringResult`](StringResult.md) \| `undefined`
 
 The sex of the document owner
 
 ***
 
-### socialSecurityStatus?
+### signatureImageScanningSide
 
-> `optional` **socialSecurityStatus**: [`StringResult`](StringResult.md)
+> **signatureImageScanningSide**: [`ScanningSide`](ScanningSide.md) \| `undefined`
+
+Scanning side matching the returned signature image.
+
+***
+
+### socialSecurityStatus
+
+> **socialSecurityStatus**: [`StringResult`](StringResult.md) \| `undefined`
 
 The social security status of the document owner
 
 ***
 
-### specificDocumentValidity?
+### specificDocumentValidity
 
-> `optional` **specificDocumentValidity**: [`StringResult`](StringResult.md)
+> **specificDocumentValidity**: [`StringResult`](StringResult.md) \| `undefined`
 
 The specific document validity
 
 ***
 
-### sponsor?
+### sponsor
 
-> `optional` **sponsor**: [`StringResult`](StringResult.md)
+> **sponsor**: [`StringResult`](StringResult.md) \| `undefined`
 
 The sponsor of the document owner.
 
 ***
 
-### stateCode?
+### stateCode
 
-> `optional` **stateCode**: [`StringResult`](StringResult.md)
+> **stateCode**: [`StringResult`](StringResult.md) \| `undefined`
 
 The state code of the document owner
 
 ***
 
-### stateName?
+### stateName
 
-> `optional` **stateName**: [`StringResult`](StringResult.md)
+> **stateName**: [`StringResult`](StringResult.md) \| `undefined`
 
 The state of the document owner
 
@@ -508,32 +541,32 @@ The results of scanning each side of the document
 
 ***
 
-### vehicleOwner?
+### vehicleOwner
 
-> `optional` **vehicleOwner**: [`StringResult`](StringResult.md)
+> **vehicleOwner**: [`StringResult`](StringResult.md) \| `undefined`
 
 The vehicle owner
 
 ***
 
-### vehicleType?
+### vehicleType
 
-> `optional` **vehicleType**: [`StringResult`](StringResult.md)
+> **vehicleType**: [`StringResult`](StringResult.md) \| `undefined`
 
 The vehicle type
 
 ***
 
-### visaType?
+### visaType
 
-> `optional` **visaType**: [`StringResult`](StringResult.md)
+> **visaType**: [`StringResult`](StringResult.md) \| `undefined`
 
 The visa type of the document
 
 ***
 
-### workRestriction?
+### workRestriction
 
-> `optional` **workRestriction**: [`StringResult`](StringResult.md)
+> **workRestriction**: [`StringResult`](StringResult.md) \| `undefined`
 
 The work restriction of the document owner

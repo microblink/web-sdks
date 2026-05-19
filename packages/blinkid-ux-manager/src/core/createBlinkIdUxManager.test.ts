@@ -2,7 +2,10 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import type { RemoteScanningSession } from "@microblink/blinkid-core";
+import type {
+  BlinkIdSessionSettings,
+  RemoteScanningSession,
+} from "@microblink/blinkid-core";
 import { getDeviceInfo } from "@microblink/blinkid-core";
 import type { CameraManager } from "@microblink/camera-manager";
 import { createFakeScanningSession } from "@microblink/test-utils";
@@ -35,7 +38,7 @@ describe("createBlinkIdUxManager", () => {
     const cameraManager = {} as CameraManager;
     const sessionSettings = { inputImageSource: "video", scanningSettings: {} };
     const scanningSession = createFakeScanningSession({
-      settings: sessionSettings,
+      resolvedSettings: sessionSettings,
       showDemoOverlay: SHOW_DEMO_OVERLAY,
       showProductionOverlay: SHOW_PRODUCTION_OVERLAY,
     });
@@ -66,11 +69,126 @@ describe("createBlinkIdUxManager", () => {
     );
   });
 
+  test("does not derive initial state from extraction mode", async () => {
+    const cameraManager = {} as CameraManager;
+    const sessionSettings = {
+      inputImageSource: "video",
+      scanningMode: "single",
+      scanningSettings: {
+        documentCaptureModule: {},
+        barcodeModule: {},
+      },
+    } as BlinkIdSessionSettings;
+    const scanningSession = createFakeScanningSession({
+      resolvedSettings: sessionSettings,
+    });
+
+    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<
+      ReturnType<typeof getDeviceInfo>
+    >);
+    vi.mocked(BlinkIdUxManager).mockImplementation(
+      () => ({}) as BlinkIdUxManager,
+    );
+
+    await createBlinkIdUxManager(
+      cameraManager,
+      scanningSession as unknown as RemoteScanningSession,
+    );
+
+    expect(BlinkIdUxManager).toHaveBeenCalledWith(
+      cameraManager,
+      scanningSession,
+      {},
+      sessionSettings,
+      expect.any(Boolean),
+      expect.any(Boolean),
+      expect.any(Object),
+    );
+  });
+
+  test("passes status-derived initial state into the manager", async () => {
+    const cameraManager = {} as CameraManager;
+    const sessionSettings = {
+      inputImageSource: "video",
+      scanningSettings: {},
+    };
+    const scanningSession = createFakeScanningSession({
+      resolvedSettings: sessionSettings,
+      scanningStatus: "scanning-barcode-in-progress",
+    });
+
+    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<
+      ReturnType<typeof getDeviceInfo>
+    >);
+    vi.mocked(BlinkIdUxManager).mockImplementation(
+      () => ({}) as BlinkIdUxManager,
+    );
+
+    await createBlinkIdUxManager(
+      cameraManager,
+      scanningSession as unknown as RemoteScanningSession,
+    );
+
+    expect(BlinkIdUxManager).toHaveBeenCalledWith(
+      cameraManager,
+      scanningSession,
+      expect.objectContaining({
+        initialUiStateKey: "PROCESSING_BARCODE",
+      }),
+      sessionSettings,
+      expect.any(Boolean),
+      expect.any(Boolean),
+      expect.any(Object),
+    );
+  });
+
+  test("preserves explicit initial state over barcode prompt default", async () => {
+    const cameraManager = {} as CameraManager;
+    const sessionSettings = {
+      inputImageSource: "video",
+      scanningMode: "single",
+      scanningSettings: {
+        documentCaptureModule: {},
+        barcodeModule: {},
+      },
+    } as BlinkIdSessionSettings;
+    const scanningSession = createFakeScanningSession({
+      resolvedSettings: sessionSettings,
+    });
+
+    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<
+      ReturnType<typeof getDeviceInfo>
+    >);
+    vi.mocked(BlinkIdUxManager).mockImplementation(
+      () => ({}) as BlinkIdUxManager,
+    );
+
+    await createBlinkIdUxManager(
+      cameraManager,
+      scanningSession as unknown as RemoteScanningSession,
+      { initialUiStateKey: "INTRO_DATA_PAGE" },
+    );
+
+    expect(BlinkIdUxManager).toHaveBeenCalledWith(
+      cameraManager,
+      scanningSession,
+      expect.objectContaining({
+        initialUiStateKey: "INTRO_DATA_PAGE",
+      }),
+      sessionSettings,
+      expect.any(Boolean),
+      expect.any(Boolean),
+      expect.any(Object),
+    );
+  });
+
   test("best-effort reports setup failures through the scanning session", async () => {
     const cameraManager = {} as CameraManager;
     const scanningSession = createFakeScanningSession({
       overrides: {
-        getSettings: vi.fn().mockRejectedValue(new Error("rpc failed")),
+        getResolvedSessionSettings: vi
+          .fn()
+          .mockRejectedValue(new Error("rpc failed")),
       },
     });
 

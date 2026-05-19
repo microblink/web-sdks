@@ -8,6 +8,10 @@ This package provides the Web Worker script for the BlinkID browser SDK. It is u
 - Used by higher-level packages such as [`@microblink/blinkid-core`](https://www.npmjs.com/package/@microblink/blinkid-core) and [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid).
 - Not intended for direct use by end-users.
 
+## Migration from v7 to v8000
+
+For breaking changes and upgrade steps in the BlinkID package line, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).
+
 ## Usage
 
 This package is bundled and distributed as part of the BlinkID browser SDK. If you want to use BlinkID in your project, install and use:

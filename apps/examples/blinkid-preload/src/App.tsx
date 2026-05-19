@@ -59,7 +59,7 @@ export const App: Component = () => {
       delete subResult?.documentImage;
       delete subResult?.faceImage;
       delete subResult?.signatureImage;
-      delete subResult?.barcodeInputImage;
+      delete subResult?.barcodeImage;
     }
 
     return resultCopy;
@@ -125,7 +125,6 @@ export const App: Component = () => {
             cameraManager,
             core,
           );
-          blinkIdUxManager.setTimeoutDuration(8000);
 
           blinkIdUxManager.addOnResultCallback((result) => {
             setResult(result);

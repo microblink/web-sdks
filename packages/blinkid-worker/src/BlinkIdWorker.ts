@@ -9,11 +9,16 @@ import type {
   BlinkIdScanningResult,
   BlinkIdScanningSession,
   BlinkIdSessionError,
+  // todo
+  BlinkIdSessionErrorType,
   BlinkIdSessionSettings,
+  BlinkIdSessionSettingsInput,
   BlinkIdWasmModule,
   DocumentClassInfo,
   DocumentRotation,
   EmscriptenModuleFactory,
+  RedactionSettings,
+  ScanningStatus,
   WasmVariant,
 } from "@microblink/blinkid-wasm";
 import type { Ping } from "@microblink/analytics/ping";
@@ -37,10 +42,6 @@ import {
   validateLicenseProxyPermissions,
 } from "@microblink/worker-common/proxy-url-validator";
 import {
-  buildSessionSettings,
-  PartialBlinkIdSessionSettings,
-} from "./buildSessionSettings";
-import {
   LicenseError,
   ServerPermissionError,
 } from "@microblink/worker-common/errors";
@@ -49,6 +50,31 @@ import { installWorkerCrashReporter } from "@microblink/worker-common/workerCras
 export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
+
+/**
+ * Resolves custom result redaction settings for a classified document.
+ *
+ * Return `null` or `undefined` to keep the SDK default redaction behavior.
+ */
+export type RedactionSettingsResolver = (
+  classInfo: DocumentClassInfo,
+) =>
+  | RedactionSettings
+  | null
+  | undefined
+  | Promise<RedactionSettings | null | undefined>;
+
+/**
+ * Options applied by BlinkID Worker when creating a scanning session.
+ */
+export type BlinkIdCreateScanningSessionOptions = {
+  /**
+   * Resolves custom result redaction settings for the classified document.
+   *
+   * Returning `null` or `undefined` keeps the SDK default redaction behavior.
+   */
+  redactionSettingsResolver?: RedactionSettingsResolver;
+};
 
 const createFrameTransferError = (message: string, error: unknown) => {
   const causeMessage =
@@ -375,7 +401,6 @@ export class BlinkIdWorker {
    */
   async initBlinkId(
     settings: BlinkIdWorkerInitSettings,
-    defaultSessionSettings: BlinkIdSessionSettings,
     progressCallback?: ProgressStatusCallback,
   ) {
     const resourcesPath = new URL(
@@ -383,7 +408,6 @@ export class BlinkIdWorker {
       settings.resourcesLocation,
     ).toString();
 
-    this.#defaultSessionSettings = defaultSessionSettings;
     this.progressStatusCallback = progressCallback;
     this.#userId = settings.userId;
 
@@ -506,24 +530,20 @@ export class BlinkIdWorker {
   /**
    * This method creates a BlinkID scanning session.
    *
-   * @param options - The options for the session.
+   * @param sessionSettings - The options for the session.
    * @returns The session.
    */
   createScanningSession(
-    options?: PartialBlinkIdSessionSettings,
+    sessionSettings?: BlinkIdSessionSettingsInput,
+    options?: BlinkIdCreateScanningSessionOptions,
   ): WorkerScanningSession & ProxyMarked {
     if (!this.#wasmModule) {
       throw new Error("Wasm module not loaded");
     }
 
     try {
-      const sessionSettings = buildSessionSettings(
-        options,
-        this.#defaultSessionSettings,
-      );
-
       const session = this.#wasmModule.createScanningSession(
-        sessionSettings,
+        sessionSettings ?? {},
         this.#userId,
       );
 
@@ -531,7 +551,10 @@ export class BlinkIdWorker {
 
       this.sendPinglets();
 
-      return this.#createProxySession(session, sessionSettings);
+      return this.#createProxySession(
+        session,
+        options?.redactionSettingsResolver,
+      );
     } catch (error) {
       this.reportPinglet({
         schemaName: "ping.error",
@@ -548,27 +571,41 @@ export class BlinkIdWorker {
     }
   }
 
-  /**
-   * Backward-compatible alias for `createScanningSession`.
-   *
-   * @deprecated Use `createScanningSession` instead.
-   */
-  createBlinkIdScanningSession(
-    options?: PartialBlinkIdSessionSettings,
-  ): WorkerScanningSession & ProxyMarked {
-    return this.createScanningSession(options);
+  getDefaultRedactionSettings(
+    documentType: DocumentClassInfo,
+  ): RedactionSettings {
+    if (!this.#wasmModule) {
+      throw new Error("Wasm module not loaded");
+    }
+    try {
+      return this.#wasmModule.getDefaultRedactionSettings(documentType);
+    } catch (error) {
+      console.warn("Failed to get default redaction settings:", error);
+      this.reportPinglet({
+        schemaName: "ping.error",
+        schemaVersion: "1.0.0",
+        sessionNumber: this.#currentSessionNumber,
+        data: {
+          errorType: "NonFatal",
+          errorMessage: error instanceof Error ? error.message : String(error),
+        },
+      });
+      this.sendPinglets();
+      throw new Error("Failed to get default redaction settings", {
+        cause: error,
+      });
+    }
   }
 
   /**
    * This method creates a proxy session.
    *
    * @param session - The session.
-   * @param sessionSettings - The session settings.
    * @returns The proxy session.
    */
   #createProxySession(
     session: BlinkIdScanningSession,
-    sessionSettings: BlinkIdSessionSettings,
+    redactionSettingsResolver?: RedactionSettingsResolver,
   ): WorkerScanningSession & ProxyMarked {
     this.#activeSession = session;
 
@@ -584,9 +621,23 @@ export class BlinkIdWorker {
      * it handles the transfer of the image data buffer
      */
     const customSession: InternalWorkerScanningSession = {
-      getResult: () => {
+      getResult: async () => {
         try {
-          return session.getResult();
+          if (!redactionSettingsResolver || !cachedClassInfo) {
+            return session.getResult();
+          }
+
+          const resolvedRedactionSettings =
+            await redactionSettingsResolver(cachedClassInfo);
+
+          if (
+            resolvedRedactionSettings === null ||
+            resolvedRedactionSettings === undefined
+          ) {
+            return session.getResult();
+          }
+
+          return session.getResult(resolvedRedactionSettings);
         } catch (error) {
           if (!this.#wasmModule) {
             throw error;
@@ -735,6 +786,25 @@ export class BlinkIdWorker {
           throw error;
         }
       },
+      getScanningStatus: () => {
+        try {
+          return session.getScanningStatus();
+        } catch (error) {
+          this.reportPinglet({
+            schemaName: "ping.error",
+            schemaVersion: "1.0.0",
+            sessionNumber: this.#currentSessionNumber,
+            data: {
+              errorType: "NonFatal",
+              errorMessage:
+                error instanceof Error ? error.message : String(error),
+              stackTrace: error instanceof Error ? error.stack : undefined,
+            },
+          });
+          this.sendPinglets();
+          throw error;
+        }
+      },
       ping: (ping: Ping) => {
         this.reportPinglet({
           ...ping,
@@ -742,7 +812,30 @@ export class BlinkIdWorker {
         });
       },
       sendPinglets: () => this.sendPinglets(),
-      getSettings: () => sessionSettings,
+      getSettings: () => session.getSettings(),
+      getResolvedSessionSettings: () => session.getResolvedSessionSettings(),
+      getSessionId: () => session.getSessionId(),
+      getSessionNumber: () => session.getSessionNumber(),
+      resolveCurrentStep: () => {
+        try {
+          console.debug("BlinkIdWorker: resolveCurrentStep");
+          session.resolveCurrentStep();
+        } catch (error) {
+          this.reportPinglet({
+            schemaName: "ping.error",
+            schemaVersion: "1.0.0",
+            sessionNumber: this.#currentSessionNumber,
+            data: {
+              errorType: "NonFatal",
+              errorMessage:
+                error instanceof Error ? error.message : String(error),
+              stackTrace: error instanceof Error ? error.stack : undefined,
+            },
+          });
+          this.sendPinglets();
+          throw error;
+        }
+      },
       reset: () => {
         try {
           session.reset();
@@ -753,6 +846,8 @@ export class BlinkIdWorker {
             throw error;
           }
 
+          // TODO: map error to pinglet error type
+          //   const mappedError = this.#mapSessionError(error);
           this.reportPinglet({
             schemaName: "ping.error",
             schemaVersion: "1.0.0",
@@ -924,17 +1019,38 @@ export type BlinkIdSessionErrorWithBuffer = BlinkIdSessionError & {
  */
 export type WorkerScanningSession = Omit<
   BlinkIdScanningSession,
-  "process" | "deleteLater" | "isAliasOf"
+  "process" | "getResult" | "deleteLater" | "isAliasOf"
 > & {
   process: (
     image: ImageData,
   ) => ProcessResultWithBuffer | BlinkIdSessionErrorWithBuffer;
+  /**
+   * Returns the result of the scanning session.
+   *
+   * Applies resolved redaction settings when a resolver is configured and the
+   * document class info is available. Otherwise, SDK defaults apply.
+   *
+   * @returns The scanning result.
+   */
+  getResult: () => BlinkIdScanningResult | Promise<BlinkIdScanningResult>;
+  /**
+   * Gets the scanning status.
+   *
+   * @returns The scanning status.
+   */
+  getScanningStatus: () => ScanningStatus;
   /**
    * Gets the settings.
    *
    * @returns The settings.
    */
   getSettings: () => BlinkIdSessionSettings;
+  /**
+   * Gets the resolved settings used to configure the recognizer.
+   *
+   * @returns The resolved settings.
+   */
+  getResolvedSessionSettings: () => BlinkIdSessionSettings;
   /**
    * Shows the demo overlay.
    *

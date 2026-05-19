@@ -5,6 +5,16 @@
 import { BlinkIdScanningResult, ScanningSide } from "@microblink/blinkid-wasm";
 
 /**
+ * Converts a scanning side to an index.
+ *
+ * @param side - The scanning side.
+ * @returns The index.
+ */
+export function scanningSideToIndex(side: ScanningSide): number {
+  return side === "first" ? 0 : 1;
+}
+
+/**
  * Extracts the input image for a given side from the scanning result.
  *
  * @param blinkIdScanningResult - The scanning result.
@@ -15,8 +25,10 @@ export function extractSideInputImage(
   blinkIdScanningResult: BlinkIdScanningResult,
   side: ScanningSide,
 ): ImageData | null {
-  const sideIndex = side === "first" ? 0 : 1;
-  return blinkIdScanningResult.subResults[sideIndex]?.inputImage ?? null;
+  return (
+    blinkIdScanningResult.subResults[scanningSideToIndex(side)]?.inputImage ??
+    null
+  );
 }
 
 /**
@@ -28,10 +40,14 @@ export function extractSideInputImage(
 export function extractBarcodeImage(
   blinkIdScanningResult: BlinkIdScanningResult,
 ): ImageData | null {
+  if (!blinkIdScanningResult.barcodeImageScanningSide) {
+    return null;
+  }
+
   return (
-    blinkIdScanningResult.subResults.find(
-      (subResult) => subResult.barcodeInputImage,
-    )?.barcodeInputImage ?? null
+    blinkIdScanningResult.subResults[
+      scanningSideToIndex(blinkIdScanningResult.barcodeImageScanningSide)
+    ]?.barcodeImage ?? null
   );
 }
 
@@ -46,8 +62,10 @@ export function extractSideDocumentImage(
   blinkIdScanningResult: BlinkIdScanningResult,
   side: ScanningSide,
 ): ImageData | null {
-  const sideIndex = side === "first" ? 0 : 1;
-  return blinkIdScanningResult.subResults[sideIndex]?.documentImage ?? null;
+  return (
+    blinkIdScanningResult.subResults[scanningSideToIndex(side)]
+      ?.documentImage ?? null
+  );
 }
 
 /**
@@ -59,9 +77,14 @@ export function extractSideDocumentImage(
 export function extractFaceImage(
   blinkIdScanningResult: BlinkIdScanningResult,
 ): ImageData | null {
+  if (!blinkIdScanningResult.faceImageScanningSide) {
+    return null;
+  }
+
   return (
-    blinkIdScanningResult.subResults.find((subResult) => subResult.faceImage)
-      ?.faceImage?.image ?? null
+    blinkIdScanningResult.subResults[
+      scanningSideToIndex(blinkIdScanningResult.faceImageScanningSide)
+    ]?.faceImage?.image ?? null
   );
 }
 
@@ -74,9 +97,13 @@ export function extractFaceImage(
 export function extractSignatureImage(
   blinkIdScanningResult: BlinkIdScanningResult,
 ): ImageData | null {
+  if (!blinkIdScanningResult.signatureImageScanningSide) {
+    return null;
+  }
+
   return (
-    blinkIdScanningResult.subResults.find(
-      (subResult) => subResult.signatureImage,
-    )?.signatureImage?.image ?? null
+    blinkIdScanningResult.subResults[
+      scanningSideToIndex(blinkIdScanningResult.signatureImageScanningSide)
+    ]?.signatureImage?.image ?? null
   );
 }

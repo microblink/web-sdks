@@ -17,22 +17,79 @@ import {
 import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
 
 import { Tooltip } from "@ark-ui/solid";
-import HelpOcclusion from "../assets/help/help_occlusion.svg";
+import HelpBarcodeOnlyBlur from "../assets/help/help_barcode_only_blur.svg?component-solid";
+import HelpBarcodeOnlyLighting from "../assets/help/help_barcode_only_lighting.svg?component-solid";
+import HelpBarcodeOnlyVisible from "../assets/help/help_barcode_only_occlusion.svg?component-solid";
 import HelpCameraLens from "../assets/help/help_camera_lens.svg?component-solid";
-import HelpLighting from "../assets/help/help_lighting.svg?component-solid";
 import HelpBlur from "../assets/help/help_blur.svg?component-solid";
+import HelpDocumentCaptureBarcodeFieldsVisible from "../assets/help/help_document_with_barcode_fields_visible.svg?component-solid";
+import HelpLighting from "../assets/help/help_lighting.svg?component-solid";
+import HelpOcclusion from "../assets/help/help_occlusion.svg?component-solid";
 import QuestionIcon from "../assets/icons/icon-question.svg?component-solid";
 
 import { Dynamic } from "solid-js/web";
 
 import { useLocalization } from "../LocalizationContext";
+import {
+  type BlinkIdModalExtractionMode,
+  type BlinkIdModalLocaleGroup,
+} from "./modalExtractionMode";
+
+type HelpImageComponent = typeof HelpOcclusion;
+type HelpStepLocaleKey = "visibility" | "lighting" | "blur";
+type HelpScanStepContent = {
+  localeKey: HelpStepLocaleKey;
+  image: HelpImageComponent;
+};
+
+type HelpModalContent = {
+  localeGroup: BlinkIdModalLocaleGroup;
+  scanSteps: readonly [
+    HelpScanStepContent,
+    HelpScanStepContent,
+    HelpScanStepContent,
+  ];
+};
+
+export const helpModalContentByExtractionMode = {
+  "full-document": {
+    localeGroup: "full_document",
+    scanSteps: [
+      { localeKey: "visibility", image: HelpOcclusion },
+      { localeKey: "lighting", image: HelpLighting },
+      { localeKey: "blur", image: HelpBlur },
+    ],
+  },
+  "document-with-barcode": {
+    localeGroup: "document_with_barcode",
+    scanSteps: [
+      {
+        localeKey: "visibility",
+        image: HelpDocumentCaptureBarcodeFieldsVisible,
+      },
+      { localeKey: "lighting", image: HelpLighting },
+      { localeKey: "blur", image: HelpBlur },
+    ],
+  },
+  "barcode-only": {
+    localeGroup: "barcode_only",
+    scanSteps: [
+      { localeKey: "visibility", image: HelpBarcodeOnlyVisible },
+      { localeKey: "lighting", image: HelpBarcodeOnlyLighting },
+      { localeKey: "blur", image: HelpBarcodeOnlyBlur },
+    ],
+  },
+} as const satisfies Record<BlinkIdModalExtractionMode, HelpModalContent>;
 
 /**
  * The HelpModal component.
  *
  * @returns The HelpModal component.
  */
-export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
+export const HelpModal: Component<{
+  isDesktop: boolean;
+  extractionMode: BlinkIdModalExtractionMode;
+}> = (props) => {
   const { t } = useLocalization();
 
   const { store, updateStore } = useBlinkIdUiStore();
@@ -42,6 +99,10 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
   const isModalOpen = () => store.showHelpModal;
   const isLastStep = () => step() === steps().length - 1;
   const closeModal = () => updateStore({ showHelpModal: false });
+  const modalContent = () =>
+    helpModalContentByExtractionMode[props.extractionMode];
+  const scanSteps = () => modalContent().scanSteps;
+  const localeGroup = () => t.help_modal[modalContent().localeGroup];
 
   /**
    * Fix for timing issue, array is created before `t` is updated.
@@ -50,29 +111,22 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
     ...(props.isDesktop
       ? [
           {
-            title: t.help_modal_camera_lens_title,
+            title: localeGroup().camera_lens.title_desktop,
             img: HelpCameraLens,
-            description: t.help_modal_camera_lens_details,
+            description: localeGroup().camera_lens.details_desktop,
           },
         ]
       : []),
-    {
-      title: t.help_modal_title_1,
-      img: HelpOcclusion,
-      description: t.help_modal_details_1,
-    },
-    {
-      title: t.help_modal_title_2,
-      img: HelpLighting,
-      description: t.help_modal_details_2,
-    },
-    {
-      title: t.help_modal_title_3,
-      img: HelpBlur,
-      description: props.isDesktop
-        ? t.help_modal_blur_details_desktop
-        : t.help_modal_details_3,
-    },
+    ...scanSteps().map((scanStep) => {
+      const stepContent = localeGroup()[scanStep.localeKey];
+      return {
+        title: props.isDesktop ? stepContent.title_desktop : stepContent.title,
+        img: scanStep.image,
+        description: props.isDesktop
+          ? stepContent.details_desktop
+          : stepContent.details,
+      };
+    }),
   ]);
 
   const onClose = () => {
@@ -110,19 +164,19 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
       onEscapeKeyDown={() => closeModal()}
       onCloseClicked={() => closeModal()}
       initialFocusEl={() => nextButtonRef()}
-      aria-label={t.scanning_help}
+      aria-label={t.help_modal.aria}
       scrollable={false}
       actions={{
         primary: {
           "aria-label": isLastStep()
-            ? t.resume_scanning
-            : t.help_modal_next_btn,
-          label: isLastStep() ? t.help_modal_done_btn : t.help_modal_next_btn,
+            ? t.help_modal.done_btn_aria
+            : t.help_modal.next_btn,
+          label: isLastStep() ? t.help_modal.done_btn : t.help_modal.next_btn,
           onClick: () => (isLastStep() ? closeModal() : setStep(step() + 1)),
           ref: setNextButtonRef,
         },
         secondary: {
-          label: t.help_modal_back_btn,
+          label: t.help_modal.back_btn,
           onClick: () => setStep(step() - 1),
           disabled: step() === 0,
         },
@@ -292,7 +346,7 @@ export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
     >
       <Tooltip.Trigger
         part="help-button-part"
-        aria-label={t.help_aria_label}
+        aria-label={t.help_button.aria_label}
         class="btn-focus rounded-full bg-white grid place-items-center size-9
           appearance-none border-none hover:bg-gray-100 active:bg-gray-200
           pos-absolute bottom-4 right-4 [&_svg]:size-7"
@@ -315,7 +369,7 @@ export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
           >
             <Tooltip.ArrowTip />
           </Tooltip.Arrow>
-          {t.help_tooltip}
+          {t.help_button.tooltip}
         </Tooltip.Content>
       </Tooltip.Positioner>
     </Tooltip.Root>

@@ -3,14 +3,20 @@
  */
 
 import type { EmscriptenModule, WasmBindings } from "@microblink/wasm-common";
-import { BlinkIdScanningSession, BlinkIdSessionSettings } from "./session";
+import { BlinkIdScanningSession, BlinkIdSessionSettingsInput } from "./session";
+import { RedactionSettings } from "./settings/RedactionSettings";
+import { DocumentClassInfo } from "./result";
 
 /**
  * The BlinkID Wasm module.
  *
  * @ignore
  */
-export interface BlinkIdWasmModule extends BlinkIdBindings, EmscriptenModule {}
+export interface BlinkIdWasmModule extends BlinkIdBindings, EmscriptenModule {
+  getDefaultRedactionSettings: (
+    documentType: DocumentClassInfo,
+  ) => RedactionSettings;
+}
 
 /**
  * The BlinkID bindings.
@@ -18,6 +24,6 @@ export interface BlinkIdWasmModule extends BlinkIdBindings, EmscriptenModule {}
  * @ignore
  */
 export interface BlinkIdBindings extends WasmBindings<
-  BlinkIdSessionSettings,
+  BlinkIdSessionSettingsInput,
   BlinkIdScanningSession
 > {}

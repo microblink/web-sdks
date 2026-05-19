@@ -8,7 +8,7 @@ import { Motion, Presence } from "solid-motionone";
 
 import { clsx } from "clsx";
 import { BlinkIdUiState, blinkIdUiStateMap } from "../core/blinkid-ui-state";
-import { useLocalization } from "./LocalizationContext";
+import { LocalizationStrings, useLocalization } from "./LocalizationContext";
 import { feedbackMessages } from "./feedbackMessages";
 
 // icons
@@ -21,6 +21,7 @@ import PassportHighlight from "./assets/reticles/passport-highlight.svg?componen
 import PassportTop from "./assets/reticles/passport-top.svg?component-solid";
 import SearchIcon from "./assets/reticles/searching.svg?component-solid";
 import ScanIcon from "./assets/reticles/spin.svg?component-solid";
+import type { BlinkIdExtractionMode } from "../core/extractionMode";
 
 /**
  * The UiFeedbackOverlay component.
@@ -31,6 +32,7 @@ import ScanIcon from "./assets/reticles/spin.svg?component-solid";
 export const UiFeedbackOverlay: Component<{
   uiState: BlinkIdUiState;
   isDesktop: boolean;
+  blinkIdExtractionMode?: BlinkIdExtractionMode;
 }> = (props) => {
   const isPassportCaptureState = () => {
     return (
@@ -111,6 +113,7 @@ export const UiFeedbackOverlay: Component<{
           {/* feedback message */}
           <UiFeedbackMessage
             uiState={props.uiState}
+            blinkIdExtractionMode={props.blinkIdExtractionMode}
             isDesktop={props.isDesktop}
           />
         </div>
@@ -362,13 +365,19 @@ const ScanningReticle: Component = () => (
 const UiFeedbackMessage: Component<{
   uiState: BlinkIdUiState;
   isDesktop: boolean;
+  blinkIdExtractionMode?: BlinkIdExtractionMode;
 }> = (props) => {
   const { t } = useLocalization();
 
-  const message = () => {
+  const feedbackMessageKey = ():
+    | keyof LocalizationStrings["feedback_messages"]
+    | undefined => {
     const key = props.uiState.key;
     if (key in feedbackMessages) {
-      return feedbackMessages[key]?.(props.isDesktop);
+      return feedbackMessages[key]?.(
+        props.isDesktop,
+        props.blinkIdExtractionMode,
+      );
     }
 
     return;
@@ -387,7 +396,7 @@ const UiFeedbackMessage: Component<{
     >
       <Presence exitBeforeEnter>
         <Rerun on={() => props.uiState.key}>
-          <Show when={message()}>
+          <Show when={feedbackMessageKey()}>
             <Motion.div
               initial={{ opacity: 0, transform: "translateY(2rem)" }}
               animate={{
@@ -405,7 +414,9 @@ const UiFeedbackMessage: Component<{
                 isSuccess() && "sr-only",
               )}
             >
-              <div>{t[message()!]}</div>
+              <div role="alert">
+                {t.feedback_messages[feedbackMessageKey()!]}
+              </div>
             </Motion.div>
           </Show>
         </Rerun>

@@ -32,7 +32,9 @@ Day in month [1-31]
 
 > **filledByDomainKnowledge**: `boolean`
 
-Indicates whether this date is filled by internal domain knowledge
+Indicates whether this Date object is filled by internal domain knowledge.
+If it is, successfullyParsed flag is set to false and originalString is set
+to empty.
 
 ***
 
@@ -48,7 +50,7 @@ Month in year [1-12]
 
 > `optional` **originalString**: `S`
 
-Original date string from the document
+Original date time string
 
 ***
 
@@ -56,7 +58,7 @@ Original date string from the document
 
 > `optional` **successfullyParsed**: `boolean`
 
-Indicates whether date was parsed successfully
+Indicates whether this Date object is successfully parsed from string.
 
 ***
 

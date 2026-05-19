@@ -1,5 +1,11 @@
 # @microblink/blinkid-verify-ux-manager
 
+## 3.20.3
+
+### Patch changes
+
+- Refines English onboarding and feedback strings (for example clearer “a document” wording) and adjusts Arabic locale strings for the same flows.
+
 ## 3.20.2
 
 ### Patch Changes

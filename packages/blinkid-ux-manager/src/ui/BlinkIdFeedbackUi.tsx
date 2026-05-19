@@ -18,7 +18,7 @@ import { createWithSignal } from "solid-zustand";
 import { BlinkIdUiState } from "../core/blinkid-ui-state";
 import {
   LocalizationProvider,
-  LocalizationStrings,
+  PartialLocalizationStrings,
   useLocalization,
 } from "./LocalizationContext";
 import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
@@ -42,7 +42,7 @@ import { OnboardingGuideModal } from "./dialogs/OnboardingGuideModal";
  * @returns The BlinkIdFeedbackUi component.
  */
 export const BlinkIdFeedbackUi: Component<{
-  localization?: Partial<LocalizationStrings>;
+  localization?: PartialLocalizationStrings;
 }> = (props) => {
   const { store, updateStore } = useBlinkIdUiStore();
 
@@ -155,6 +155,8 @@ export const BlinkIdFeedbackUi: Component<{
     );
   };
 
+  const extractionMode = store.blinkIdUxManager.extractionMode;
+
   createEffect(() => {
     if (displayTimeoutModal()) {
       void store.blinkIdUxManager.analytics.logAlertDisplayedEvent(
@@ -188,7 +190,7 @@ export const BlinkIdFeedbackUi: Component<{
 
             // update camera manager dialog title localization
             store.cameraManagerComponent.updateLocalization({
-              dialog_title: t.scanning_screen,
+              dialog_title: t.sdk_aria,
             });
 
             return (
@@ -196,22 +198,22 @@ export const BlinkIdFeedbackUi: Component<{
                 <Switch>
                   <Match when={displayTimeoutModal()}>
                     <ErrorModal
-                      header={t.scan_unsuccessful}
-                      text={t.scan_unsuccessful_details}
+                      header={t.timeout_modal.title}
+                      text={t.timeout_modal.details}
                       shouldResetScanningSession={true}
                     />
                   </Match>
                   <Match when={displayUnsupportedDocumentModal()}>
                     <ErrorModal
-                      header={t.document_not_recognized}
-                      text={t.document_not_recognized_details}
+                      header={t.document_not_recognized_modal.title}
+                      text={t.document_not_recognized_modal.details}
                       shouldResetScanningSession={true}
                     />
                   </Match>
                   <Match when={displayDocumentFilteredModal()}>
                     <ErrorModal
-                      header={t.document_filtered}
-                      text={t.document_filtered_details}
+                      header={t.document_filtered_modal.title}
+                      text={t.document_filtered_modal.details}
                       shouldResetScanningSession={true}
                     />
                   </Match>
@@ -221,6 +223,7 @@ export const BlinkIdFeedbackUi: Component<{
                   <UiFeedbackOverlay
                     uiState={uiState()}
                     isDesktop={isDesktop()}
+                    blinkIdExtractionMode={extractionMode}
                   />
                 </Show>
 
@@ -250,8 +253,11 @@ export const BlinkIdFeedbackUi: Component<{
           }}
         </SmartEnvironmentProvider>
 
-        <OnboardingGuideModal isDesktop={isDesktop()} />
-        <HelpModal isDesktop={isDesktop()} />
+        <OnboardingGuideModal
+          isDesktop={isDesktop()}
+          extractionMode={extractionMode}
+        />
+        <HelpModal isDesktop={isDesktop()} extractionMode={extractionMode} />
       </LocalizationProvider>
     </div>
   );

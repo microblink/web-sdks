@@ -9,6 +9,7 @@ import {
   AnalyticService,
   DeviceInfo,
   DocumentRotation,
+  ScanningStatus,
   type BlinkIdProcessResult,
   type BlinkIdScanningResult,
   type BlinkIdSessionSettings,
@@ -43,9 +44,9 @@ import {
   blinkIdUiStateMap,
   blinkIdUiStepSuccessKeys,
   getUiStateKey,
+  getUiStateKeyFromScanningStatus,
 } from "./blinkid-ui-state";
 import { BlinkIdProcessingError } from "./BlinkIdProcessingError";
-import { BlinkIdUxManagerOptions } from "./createBlinkIdUxManager";
 import { DocumentClassFilter } from "./DocumentClassFilter";
 import {
   ChainedUiStateProps,
@@ -62,8 +63,83 @@ import {
   mapErrorStateKeyToAnalyticsType,
   type PingableErrorUiStateKey,
 } from "./uxAnalyticsMappers";
+import {
+  defaultBlinkIdTimeoutConfiguration,
+  normalizeBlinkIdTimeoutConfiguration,
+} from "./BlinkIdTimeoutConfiguration";
+import type { BlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
+import type { BlinkIdUxManagerOptions } from "./createBlinkIdUxManager";
+import {
+  getBlinkIdExtractionMode,
+  type BlinkIdExtractionMode,
+} from "./extractionMode";
 
 type ProcessingLifecycleState = "ready" | "busy" | "terminal";
+type ScanTimeoutKind = "inactivity" | "scan-step";
+type ScanTimerState = {
+  timeoutId?: number;
+  startedAt?: number;
+  remainingMs: number | null;
+};
+export type BlinkIdProgressTimerStatus =
+  | "disabled"
+  | "idle"
+  | "running"
+  | "paused";
+
+/**
+ * Callback invoked after BlinkID processes a camera frame.
+ *
+ * @param frameResult - Process result for the current frame. This contains the
+ * input image analysis and result completeness data that the UX manager uses to
+ * map feedback state; it does not include the final scanning result.
+ * @param advanceToNextStep - Advances the scanning session to the next required
+ * step. Use this for custom flows that decide, from the frame result, that the
+ * current side or step is complete before the default UX flow advances. For
+ * example, call this once `frameResult` contains all data your integration
+ * needs, even if the default flow would keep waiting for an optional barcode
+ * step that is hard to capture on a poor camera.
+ * @param triggerStepTimeout - Immediately triggers the scan-step timeout path
+ * for the active step. Use this when custom validation decides that the current
+ * step should fail or stop waiting for more frames.
+ * @param getLastFrame - Returns the raw `ArrayBuffer` for the frame that
+ * produced `frameResult`. The buffer is intended for diagnostics or custom
+ * tooling that needs the exact last processed frame.
+ */
+export type BlinkIdFrameProcessCallback = (
+  frameResult: BlinkIdProcessResult,
+  advanceToNextStep: () => Promise<void>,
+  triggerStepTimeout: () => void,
+  getLastFrame: () => ArrayBuffer,
+) => void;
+
+export type BlinkIdProgressTimerState = {
+  /** Configured timeout duration in milliseconds. */
+  configuredMs: number | null;
+  /** Remaining timeout duration in milliseconds. */
+  remainingMs: number | null;
+  /** Whether this timer is idle, actively counting down, or paused. */
+  status: BlinkIdProgressTimerStatus;
+};
+
+export type BlinkIdProgress = {
+  /** Currently stabilized BlinkID UI state key. */
+  uiStateKey: BlinkIdUiStateKey;
+  /** Remaining state for the inactivity timeout. */
+  inactivity: BlinkIdProgressTimerState;
+  /** Remaining state for the scan-step timeout. */
+  perSide: BlinkIdProgressTimerState;
+  /** Remaining state for partially supported barcode auto-resolution. */
+  partiallySupportedBarcodeResolve: BlinkIdProgressTimerState;
+  /** Whether BlinkID is currently timing an active scan step. */
+  isTimingActiveScanStep: boolean;
+  /** Current camera playback state that controls timer pause/resume. */
+  playbackState: "idle" | "playback" | "capturing";
+  /** Latest raw mapped BlinkID UI key. */
+  mappedUiStateKey: BlinkIdUiStateKey;
+  /** Stabilized UI state key that last reset the inactivity timeout. */
+  inactivityResetUiStateKey?: BlinkIdUiStateKey;
+};
 
 /**
  * The BlinkIdUxManager class. This is the main class that manages the UX of
@@ -102,6 +178,8 @@ export class BlinkIdUxManager {
   readonly showProductionOverlay: boolean;
   /** The device info. */
   readonly deviceInfo: DeviceInfo;
+  /** Session-settings-derived extraction mode used by UI copy and assets. */
+  readonly #extractionMode: BlinkIdExtractionMode;
 
   #documentPagination?: DocumentPagination;
   #lastDocumentRotation?: DocumentRotation;
@@ -111,33 +189,43 @@ export class BlinkIdUxManager {
 
   /** Protects worker message channel from concurrent/terminal process calls. */
   #processingLifecycleState: ProcessingLifecycleState = "ready";
-  /** The scanning session timeout ID. */
-  #timeoutId?: number;
-  /** Timeout duration in ms for the scanning session. If null, timeout won't be triggered ever. */
-  #timeoutDuration: number | null = 10000; // 10s
-  /**
-   * Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
-   *
-   * @deprecated This option will be removed in a future release. Use `helpTooltipShowDelay` in `FeedbackUiOptions` instead.
-   */
-  #helpTooltipShowDelay: number | null = 5000; // 5s
-  /**
-   * Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden.
-   *
-   * @deprecated This option will be removed in a future release. Use `helpTooltipHideDelay` in `FeedbackUiOptions` instead.
-   */
-  #helpTooltipHideDelay: number | null = 5000; // 5s
+  /** True after destroy() is called; used to suppress late async work during teardown. */
+  #isDestroyed = false;
+  /** BlinkID timeout configuration. */
+  #timeoutConfiguration: BlinkIdTimeoutConfiguration =
+    defaultBlinkIdTimeoutConfiguration;
+  /** Last stabilized UI state key that reset the inactivity timer. */
+  #inactivityResetUiStateKey?: BlinkIdUiStateKey;
+  /** Whether the current scan step should be timing. */
+  #isTimingActiveScanStep = false;
+  /** State of the inactivity timeout timer. */
+  #inactivityTimeoutState: ScanTimerState = {
+    remainingMs: defaultBlinkIdTimeoutConfiguration.inactivityTimeoutMs,
+  };
+  /** State of the scan-step timeout timer. */
+  #scanStepTimeoutState: ScanTimerState = {
+    remainingMs: defaultBlinkIdTimeoutConfiguration.scanStepTimeoutMs,
+  };
+  /** State of the partially supported barcode resolve timer. */
+  #partiallySupportedBarcodeResolveTimeoutState: ScanTimerState = {
+    remainingMs:
+      defaultBlinkIdTimeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
+  };
+  /** Whether the partially supported barcode resolve timer has been started. */
+  #partiallySupportedBarcodeResolveTimerStarted = false;
+  /** Prevents repeated resolve attempts for the same barcode step. */
+  #partiallySupportedBarcodeResolveAttempted = false;
 
   /** The callbacks for when the UI state changes. */
   #onUiStateChangedCallbacks = new Set<(uiState: BlinkIdUiState) => void>();
   /** The callbacks for when a scan result is available. */
   #onResultCallbacks = new Set<(result: BlinkIdScanningResult) => void>();
   /** The callbacks for when a frame is processed. */
-  #onFrameProcessCallbacks = new Set<
-    (frameResult: ProcessResultWithBuffer) => void
-  >();
+  #onFrameProcessCallbacks = new Set<BlinkIdFrameProcessCallback>();
   /** The callbacks for when an error occurs during processing. */
   #onErrorCallbacks = new Set<(errorState: BlinkIdProcessingError) => void>();
+  /** The callbacks for BlinkID progress snapshots emitted from the RAF loop. */
+  #onProgressCallbacks = new Set<(progress: BlinkIdProgress) => void>();
   /** The callbacks for when a document is filtered. */
   #onDocumentFilteredCallbacks = new Set<
     (documentClassInfo: DocumentClassInfo) => void
@@ -160,6 +248,7 @@ export class BlinkIdUxManager {
   #rafLoop = new RafLoop((timestamp) => {
     this.feedbackStabilizer.tick();
     void this.#updateUiState(this.feedbackStabilizer.currentState.key);
+    this.#emitProgress();
   }, 1000 / 30);
 
   /**
@@ -184,6 +273,10 @@ export class BlinkIdUxManager {
     this.showDemoOverlay = showDemoOverlay;
     this.showProductionOverlay = showProductionOverlay;
     this.deviceInfo = deviceInfo;
+    this.#extractionMode = getBlinkIdExtractionMode(sessionSettings);
+    this.#timeoutConfiguration = normalizeBlinkIdTimeoutConfiguration(
+      options.timeoutConfiguration,
+    );
 
     if (options.initialUiStateKey) {
       this.#initialUiStateKey = options.initialUiStateKey;
@@ -198,6 +291,7 @@ export class BlinkIdUxManager {
 
     this.#mappedUiStateKey = this.feedbackStabilizer.currentState.key;
     this.#pendingIntroAnchorKey = this.uiState.key;
+    this.#clearScanTimeoutState();
 
     // Initialize analytics service with the scanning session's ping function
     this.#analytics = new AnalyticService({
@@ -230,11 +324,9 @@ export class BlinkIdUxManager {
     return this.#mappedUiStateKey;
   }
 
-  /**
-   * @deprecated Use `mappedUiStateKey` (internal/debug) or `uiStateKey` (displayed state).
-   */
-  get rawUiStateKey(): BlinkIdUiStateKey {
-    return this.#mappedUiStateKey;
+  /** Session-settings-derived extraction mode used by feedback and dialogs. */
+  get extractionMode(): BlinkIdExtractionMode {
+    return this.#extractionMode;
   }
 
   startUiUpdateLoop() {
@@ -248,7 +340,6 @@ export class BlinkIdUxManager {
   #setupObservers() {
     let previousPlaybackState: "idle" | "playback" | "capturing" | undefined;
 
-    // clear timeout when we stop processing and add one when we start
     const unsubscribeCaptureState = this.cameraManager.subscribe(
       (s) => s.playbackState,
       (playbackState) => {
@@ -260,6 +351,14 @@ export class BlinkIdUxManager {
         const isCaptureTransition =
           playbackState === "capturing" &&
           previousPlaybackState !== "capturing";
+        const isPendingIntroAnchorTransition =
+          isCaptureTransition &&
+          this.#pendingIntroAnchorKey === this.uiState.key;
+        const isIntroCaptureTransition =
+          isPendingIntroAnchorTransition &&
+          (blinkIdUiIntroStateKeys as readonly BlinkIdUiStateKey[]).includes(
+            this.uiState.key,
+          );
 
         if (!wasActive && isActive) {
           void this.#analytics.logCameraStartedEvent();
@@ -269,23 +368,34 @@ export class BlinkIdUxManager {
           void this.#analytics.sendPinglets();
         }
 
-        if (
-          isCaptureTransition &&
-          this.#pendingIntroAnchorKey === this.uiState.key
-        ) {
+        if (isPendingIntroAnchorTransition) {
           this.feedbackStabilizer.restartCurrentStateTimer();
           this.#pendingIntroAnchorKey = undefined;
         }
 
         previousPlaybackState = playbackState;
-        if (this.#timeoutDuration === null) return;
-
         if (playbackState !== "capturing") {
-          this.clearScanTimeout();
-        } else {
-          console.debug("🔁 continuing timeout");
-          this.#setTimeout(this.uiState);
+          this.#restartInactivityTimeout();
+          this.#pauseScanTimer(this.#scanStepTimeoutState);
+          this.#pauseScanTimer(
+            this.#partiallySupportedBarcodeResolveTimeoutState,
+          );
+          return;
         }
+
+        if (isIntroCaptureTransition) {
+          this.#resetScanTimeoutsForCurrentStep();
+          return;
+        }
+
+        if (!this.#isTimingActiveScanStep) {
+          this.#resetScanTimeoutsForCurrentStep();
+          return;
+        }
+
+        console.debug("🔁 continuing timeout");
+        this.#restartInactivityTimeout();
+        this.#resumeScanTimeouts();
       },
     );
     this.#cleanupCallbacks.add(unsubscribeCaptureState);
@@ -321,6 +431,8 @@ export class BlinkIdUxManager {
     const visibilityChangeCallback = () => {
       if (document.visibilityState === "hidden") {
         void this.#analytics.logAppMovedToBackgroundEvent();
+      } else if (this.#isTimingActiveScanStep) {
+        this.#resetScanTimeoutsForCurrentStep();
       }
       void this.#analytics.sendPinglets();
     };
@@ -518,29 +630,68 @@ export class BlinkIdUxManager {
   }
 
   /**
-   * Returns the timeout duration in ms. Null if timeout won't be triggered ever.
+   * Returns the active BlinkID timeout configuration.
    */
-  getTimeoutDuration(): number | null {
-    return this.#timeoutDuration;
+  getTimeoutConfiguration(): BlinkIdTimeoutConfiguration {
+    return { ...this.#timeoutConfiguration };
   }
 
-  /**
-   * Returns the time in ms before the help tooltip is shown. Null if tooltip won't be auto shown.
-   *
-   * @deprecated This option will be removed in a future release. Use `helpTooltipShowDelay` in `FeedbackUiOptions` instead.
-   */
-  getHelpTooltipShowDelay(): number | null {
-    return this.#helpTooltipShowDelay;
-  }
+  #buildProgress = (): BlinkIdProgress => {
+    const playbackState = this.cameraManager.getState().playbackState;
 
-  /**
-   * Returns the time in ms before the help tooltip is hidden. Null if tooltip won't be auto hidden.
-   *
-   * @deprecated This option will be removed in a future release. Use `helpTooltipHideDelay` in `FeedbackUiOptions` instead.
-   */
-  getHelpTooltipHideDelay(): number | null {
-    return this.#helpTooltipHideDelay;
-  }
+    return {
+      uiStateKey: this.uiState.key,
+      inactivity: {
+        configuredMs: this.#timeoutConfiguration.inactivityTimeoutMs,
+        remainingMs: this.#getProgressScanTimerRemainingMs(
+          this.#inactivityTimeoutState,
+        ),
+        status: this.#getScanTimerProgressStatus(
+          this.#inactivityTimeoutState,
+          playbackState,
+          "inactivity",
+        ),
+      },
+      perSide: {
+        configuredMs: this.#timeoutConfiguration.scanStepTimeoutMs,
+        remainingMs: this.#getProgressScanTimerRemainingMs(
+          this.#scanStepTimeoutState,
+        ),
+        status: this.#getScanTimerProgressStatus(
+          this.#scanStepTimeoutState,
+          playbackState,
+          "scan-step",
+        ),
+      },
+      partiallySupportedBarcodeResolve: {
+        configuredMs:
+          this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
+        remainingMs: this.#getProgressScanTimerRemainingMs(
+          this.#partiallySupportedBarcodeResolveTimeoutState,
+        ),
+        status:
+          this.#getPartiallySupportedBarcodeResolveTimerProgressStatus(
+            playbackState,
+          ),
+      },
+      isTimingActiveScanStep: this.#isTimingActiveScanStep,
+      playbackState,
+      mappedUiStateKey: this.#mappedUiStateKey,
+      inactivityResetUiStateKey: this.#inactivityResetUiStateKey,
+    };
+  };
+
+  #emitProgress = () => {
+    if (this.#onProgressCallbacks.size === 0) {
+      return;
+    }
+
+    invokeCallbacks(
+      this.#onProgressCallbacks,
+      this.#buildProgress(),
+      "onProgress",
+    );
+  };
 
   /**
    * Gets the haptic feedback manager instance.
@@ -657,22 +808,24 @@ export class BlinkIdUxManager {
   /**
    * Registers a callback function to be called when a frame is processed.
    *
-   * @param callback - A function that will be called with the frame analysis
-   * result.
+   * @param callback - A function that receives the processed frame result and
+   * controls for custom step advancement, step timeout triggering, and access to
+   * the last processed frame buffer.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
    *
    * @example
-   * const cleanup = manager.addOnFrameProcessCallback((frameResult) => {
+   * const cleanup = manager.addOnFrameProcessCallback((frameResult, advanceToNextStep) => {
    *   console.log('Frame processed:', frameResult);
+   *   if (shouldAdvance(frameResult)) {
+   *     void advanceToNextStep();
+   *   }
    * });
    *
    * // Later, to remove the callback:
    * cleanup();
    */
-  addOnFrameProcessCallback(
-    callback: (frameResult: ProcessResultWithBuffer) => void,
-  ) {
+  addOnFrameProcessCallback(callback: BlinkIdFrameProcessCallback) {
     this.#onFrameProcessCallbacks.add(callback);
     return () => {
       this.#onFrameProcessCallbacks.delete(callback);
@@ -699,6 +852,29 @@ export class BlinkIdUxManager {
     this.#onErrorCallbacks.add(callback);
     return () => {
       this.#onErrorCallbacks.delete(callback);
+    };
+  }
+
+  /**
+   * Registers a callback function to receive BlinkID progress snapshots.
+   *
+   * @param callback - A function that will be called with progress data from
+   * the internal 30 FPS RAF loop.
+   * @returns A cleanup function that, when called, will remove the registered
+   * callback.
+   *
+   * @example
+   * const cleanup = manager.addOnProgressCallback((progress) => {
+   *   console.log('BlinkID progress:', progress);
+   * });
+   *
+   * // Later, to remove the callback:
+   * cleanup();
+   */
+  addOnProgressCallback(callback: (progress: BlinkIdProgress) => void) {
+    this.#onProgressCallbacks.add(callback);
+    return () => {
+      this.#onProgressCallbacks.delete(callback);
     };
   }
 
@@ -768,11 +944,21 @@ export class BlinkIdUxManager {
    * @param frameResult - The frame result.
    */
   #invokeOnFrameProcessCallbacks = (frameResult: ProcessResultWithBuffer) => {
-    invokeCallbacks(
-      this.#onFrameProcessCallbacks,
-      frameResult,
-      "onFrameProcess",
-    );
+    for (const callback of this.#onFrameProcessCallbacks) {
+      try {
+        callback(
+          {
+            inputImageAnalysisResult: frameResult.inputImageAnalysisResult,
+            resultCompleteness: frameResult.resultCompleteness,
+          },
+          () => this.#advanceToNextStep(),
+          () => this.#handleScanTimeout("scan-step"),
+          () => frameResult.arrayBuffer,
+        );
+      } catch (error) {
+        console.error("Error in onFrameProcess callback", error);
+      }
+    }
   };
 
   /**
@@ -823,93 +1009,403 @@ export class BlinkIdUxManager {
   }
 
   /**
-   * Sets the duration after which the scanning session will timeout. The
-   * timeout can occur in various scenarios and may be restarted by different
-   * scanning events.
+   * Updates the BlinkID timeout configuration.
    *
-   * @param duration The timeout duration in milliseconds. If null, timeout won't
-   * be triggered ever.
-   * @param setHelpTooltipShowDelay If true, also sets the help tooltip show
-   * delay to half of the provided duration. If timeout duration is null, help
-   * tooltip show delay will be set to null. Defaults to true.
-   * @throws {Error} Throws an error if duration is less than or equal to 0 when not null.
+   * Updating the configuration resets timeout tracking for the current scan
+   * step so the new durations take effect immediately.
    */
-  setTimeoutDuration(duration: number | null, setHelpTooltipShowDelay = true) {
-    if (duration !== null && duration <= 0) {
-      throw new Error("Timeout duration must be greater than 0");
-    }
+  setTimeoutConfiguration(
+    timeoutConfiguration: Partial<BlinkIdTimeoutConfiguration>,
+  ) {
+    this.#timeoutConfiguration = normalizeBlinkIdTimeoutConfiguration({
+      ...this.#timeoutConfiguration,
+      ...timeoutConfiguration,
+    });
 
-    this.#timeoutDuration = duration;
-
-    if (setHelpTooltipShowDelay) {
-      this.setHelpTooltipShowDelay(duration !== null ? duration / 2 : null);
-    }
-  }
-
-  /**
-   * Sets the duration in milliseconds before the help tooltip is shown.
-   * A value of null means the help tooltip will not be auto shown.
-   *
-   * @param duration The duration in milliseconds before the help tooltip is
-   * shown. If null, tooltip won't be auto shown.
-   * @throws {Error} Throws an error if duration is less than or equal to 0 when
-   * not null.
-   *
-   * @deprecated This option will be removed in a future release. Use `helpTooltipShowDelay` in `FeedbackUiOptions` instead.
-   */
-  setHelpTooltipShowDelay(duration: number | null) {
-    if (duration !== null && duration <= 0) {
-      throw new Error("Help tooltip show delay must be greater than 0");
-    }
-
-    this.#helpTooltipShowDelay = duration;
-  }
-
-  /**
-   * Sets the duration in milliseconds before the help tooltip is hidden.
-   * A value of null means the help tooltip will not be auto hidden.
-   *
-   * @param duration The duration in milliseconds before the help tooltip is
-   * hidden. If null, tooltip won't be auto hidden.
-   * @throws {Error} Throws an error if duration is less than or equal to 0 when
-   * not null.
-   *
-   * @deprecated This option will be removed in a future release. Use `helpTooltipHideDelay` in `FeedbackUiOptions` instead.
-   */
-  setHelpTooltipHideDelay(duration: number | null) {
-    if (duration !== null && duration <= 0) {
-      throw new Error("Help tooltip display duration must be greater than 0");
-    }
-
-    this.#helpTooltipHideDelay = duration;
-  }
-
-  /**
-   * Sets the timeout for the scanning session.
-   *
-   * @param uiState - The UI state.
-   */
-  #setTimeout = (uiState: BlinkIdUiState) => {
-    if (this.#timeoutDuration === null) {
-      console.debug("⏳🟢 timeout duration is null, not starting timeout");
+    if (this.#isTimingActiveScanStep) {
+      this.#resetScanTimeoutsForCurrentStep();
       return;
     }
 
+    this.#clearScanTimeoutState();
+  }
+
+  #getScanTimerRemainingMs = (timerState: ScanTimerState) => {
+    if (timerState.remainingMs === null) {
+      return null;
+    }
+
+    if (timerState.startedAt === undefined) {
+      return Math.max(timerState.remainingMs, 0);
+    }
+
+    return Math.max(
+      timerState.remainingMs - (performance.now() - timerState.startedAt),
+      0,
+    );
+  };
+
+  #getProgressScanTimerRemainingMs = (timerState: ScanTimerState) => {
+    const remainingMs = this.#getScanTimerRemainingMs(timerState);
+    return remainingMs === null ? null : Math.ceil(remainingMs);
+  };
+
+  #isBarcodeScanStepUiState = (uiStateKey: BlinkIdUiStateKey) => {
+    return uiStateKey === "PROCESSING_BARCODE";
+  };
+
+  #getScanTimerProgressStatus = (
+    timerState: ScanTimerState,
+    playbackState: "idle" | "playback" | "capturing",
+    timeoutKind: ScanTimeoutKind,
+  ): BlinkIdProgressTimerStatus => {
+    if (timerState.remainingMs === null) {
+      return "disabled";
+    }
+
+    if (!this.#isTimingActiveScanStep) {
+      return "idle";
+    }
+
+    if (
+      timeoutKind === "inactivity" &&
+      this.#isBarcodeScanStepUiState(this.uiState.key)
+    ) {
+      return "paused";
+    }
+
+    if (
+      playbackState === "capturing" &&
+      timerState.timeoutId !== undefined &&
+      timerState.startedAt !== undefined
+    ) {
+      return "running";
+    }
+
+    if (
+      timeoutKind === "inactivity" &&
+      timerState.timeoutId === undefined &&
+      timerState.startedAt === undefined &&
+      timerState.remainingMs === this.#timeoutConfiguration.inactivityTimeoutMs
+    ) {
+      return "idle";
+    }
+
+    return "paused";
+  };
+
+  #getPartiallySupportedBarcodeResolveTimerProgressStatus = (
+    playbackState: "idle" | "playback" | "capturing",
+  ): BlinkIdProgressTimerStatus => {
+    if (
+      this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs === null
+    ) {
+      return "disabled";
+    }
+
+    if (
+      !this.#partiallySupportedBarcodeResolveTimerStarted ||
+      this.#partiallySupportedBarcodeResolveAttempted
+    ) {
+      return "idle";
+    }
+
+    if (
+      playbackState === "capturing" &&
+      this.#partiallySupportedBarcodeResolveTimeoutState.timeoutId !==
+        undefined &&
+      this.#partiallySupportedBarcodeResolveTimeoutState.startedAt !== undefined
+    ) {
+      return "running";
+    }
+
+    return "paused";
+  };
+
+  #pauseScanTimer = (timerState: ScanTimerState) => {
+    if (
+      timerState.remainingMs === null ||
+      timerState.timeoutId === undefined ||
+      timerState.startedAt === undefined
+    ) {
+      return;
+    }
+
+    timerState.remainingMs = this.#getScanTimerRemainingMs(timerState);
+    this.#clearScanTimerHandle(timerState);
+  };
+
+  #clearScanTimerHandle = (timerState: ScanTimerState) => {
+    if (timerState.timeoutId !== undefined) {
+      window.clearTimeout(timerState.timeoutId);
+      timerState.timeoutId = undefined;
+    }
+
+    timerState.startedAt = undefined;
+  };
+
+  #clearScanTimeoutState = () => {
+    this.#clearScanTimerHandle(this.#inactivityTimeoutState);
+    this.#clearScanTimerHandle(this.#scanStepTimeoutState);
+    this.#clearScanTimerHandle(
+      this.#partiallySupportedBarcodeResolveTimeoutState,
+    );
+    this.#inactivityTimeoutState.remainingMs =
+      this.#timeoutConfiguration.inactivityTimeoutMs;
+    this.#scanStepTimeoutState.remainingMs =
+      this.#timeoutConfiguration.scanStepTimeoutMs;
+    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs =
+      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs;
+    this.#inactivityResetUiStateKey = undefined;
+    this.#isTimingActiveScanStep = false;
+    this.#partiallySupportedBarcodeResolveTimerStarted = false;
+    this.#partiallySupportedBarcodeResolveAttempted = false;
+  };
+
+  #scheduleScanTimer = (
+    timerState: ScanTimerState,
+    timeoutKind: ScanTimeoutKind,
+  ) => {
+    if (timerState.timeoutId !== undefined) {
+      return;
+    }
+
+    if (timerState.remainingMs === null) {
+      return;
+    }
+
+    if (timerState.remainingMs <= 0) {
+      this.#handleScanTimeout(timeoutKind);
+      return;
+    }
+
+    timerState.startedAt = performance.now();
+    timerState.timeoutId = window.setTimeout(() => {
+      timerState.timeoutId = undefined;
+      timerState.startedAt = undefined;
+      timerState.remainingMs = 0;
+      this.#handleScanTimeout(timeoutKind);
+    }, timerState.remainingMs);
+  };
+
+  #schedulePartiallySupportedBarcodeResolveTimer = () => {
+    const timerState = this.#partiallySupportedBarcodeResolveTimeoutState;
+
+    if (
+      !this.#partiallySupportedBarcodeResolveTimerStarted ||
+      this.#partiallySupportedBarcodeResolveAttempted ||
+      timerState.timeoutId !== undefined ||
+      timerState.remainingMs === null
+    ) {
+      return;
+    }
+
+    if (timerState.remainingMs <= 0) {
+      void this.#handlePartiallySupportedBarcodeResolveTimeout();
+      return;
+    }
+
+    timerState.startedAt = performance.now();
+    timerState.timeoutId = window.setTimeout(() => {
+      timerState.timeoutId = undefined;
+      timerState.startedAt = undefined;
+      timerState.remainingMs = 0;
+      void this.#handlePartiallySupportedBarcodeResolveTimeout();
+    }, timerState.remainingMs);
+  };
+
+  #startPartiallySupportedBarcodeResolveTimer = () => {
+    if (
+      this.#partiallySupportedBarcodeResolveTimerStarted ||
+      this.#partiallySupportedBarcodeResolveAttempted ||
+      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs ===
+        null
+    ) {
+      return;
+    }
+
+    this.#partiallySupportedBarcodeResolveTimerStarted = true;
+    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs =
+      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs;
+
+    if (this.cameraManager.getState().playbackState === "capturing") {
+      this.#schedulePartiallySupportedBarcodeResolveTimer();
+    }
+  };
+
+  #clearPartiallySupportedBarcodeResolveTimer = () => {
+    this.#clearScanTimerHandle(
+      this.#partiallySupportedBarcodeResolveTimeoutState,
+    );
+    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs =
+      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs;
+    this.#partiallySupportedBarcodeResolveTimerStarted = false;
+    this.#partiallySupportedBarcodeResolveAttempted = false;
+  };
+
+  #handlePartiallySupportedBarcodeResolveTimeout = async () => {
+    if (
+      this.#processingLifecycleState === "terminal" ||
+      this.#partiallySupportedBarcodeResolveAttempted
+    ) {
+      return;
+    }
+
+    this.#partiallySupportedBarcodeResolveAttempted = true;
+    this.#partiallySupportedBarcodeResolveTimerStarted = false;
+    this.#clearScanTimerHandle(
+      this.#partiallySupportedBarcodeResolveTimeoutState,
+    );
+    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs = 0;
+
+    try {
+      await this.#advanceToNextStep();
+    } catch (error) {
+      await this.#analytics.logErrorEvent({
+        origin: "ux.partiallySupportedBarcodeResolve",
+        error,
+        errorType: "NonFatal",
+      });
+      await this.#analytics.sendPinglets();
+    }
+  };
+
+  #resumeScanTimeouts = () => {
+    if (
+      !this.#isTimingActiveScanStep ||
+      this.#processingLifecycleState === "terminal"
+    ) {
+      return;
+    }
+
+    if (this.#isBarcodeScanStepUiState(this.uiState.key)) {
+      this.#suppressInactivityTimeoutForBarcodeScanStep();
+    } else {
+      this.#scheduleScanTimer(this.#inactivityTimeoutState, "inactivity");
+    }
+    this.#scheduleScanTimer(this.#scanStepTimeoutState, "scan-step");
+    this.#schedulePartiallySupportedBarcodeResolveTimer();
+  };
+
+  #suppressInactivityTimeoutForBarcodeScanStep = () => {
+    this.#clearScanTimerHandle(this.#inactivityTimeoutState);
+    this.#inactivityTimeoutState.remainingMs =
+      this.#timeoutConfiguration.inactivityTimeoutMs;
+    this.#inactivityResetUiStateKey = "PROCESSING_BARCODE";
+  };
+
+  #resetTimeoutsForBarcodeScanStep = () => {
+    this.#suppressInactivityTimeoutForBarcodeScanStep();
+    this.#clearScanTimerHandle(this.#scanStepTimeoutState);
+    this.#scanStepTimeoutState.remainingMs =
+      this.#timeoutConfiguration.scanStepTimeoutMs;
+    this.#isTimingActiveScanStep = true;
+
+    if (this.cameraManager.getState().playbackState === "capturing") {
+      this.#scheduleScanTimer(this.#scanStepTimeoutState, "scan-step");
+    }
+  };
+
+  #resetScanTimeoutsForCurrentStep = (
+    uiStateKey: BlinkIdUiStateKey = this.uiState.key,
+  ) => {
+    if (this.#isBarcodeScanStepUiState(uiStateKey)) {
+      this.#resetTimeoutsForBarcodeScanStep();
+      return;
+    }
+
+    this.#clearScanTimerHandle(this.#inactivityTimeoutState);
+    this.#clearScanTimerHandle(this.#scanStepTimeoutState);
+    this.#clearScanTimerHandle(
+      this.#partiallySupportedBarcodeResolveTimeoutState,
+    );
+    this.#inactivityTimeoutState.remainingMs =
+      this.#timeoutConfiguration.inactivityTimeoutMs;
+    this.#scanStepTimeoutState.remainingMs =
+      this.#timeoutConfiguration.scanStepTimeoutMs;
+    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs =
+      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs;
+    this.#inactivityResetUiStateKey = uiStateKey;
+    this.#isTimingActiveScanStep = true;
+    this.#partiallySupportedBarcodeResolveTimerStarted = false;
+    this.#partiallySupportedBarcodeResolveAttempted = false;
+
+    if (this.cameraManager.getState().playbackState === "capturing") {
+      this.#resumeScanTimeouts();
+    }
+  };
+
+  #restartInactivityTimeout = (
+    uiStateKey: BlinkIdUiStateKey = this.uiState.key,
+  ) => {
+    if (!this.#isTimingActiveScanStep) {
+      return;
+    }
+
+    if (this.#isBarcodeScanStepUiState(uiStateKey)) {
+      this.#suppressInactivityTimeoutForBarcodeScanStep();
+      return;
+    }
+
+    this.#inactivityResetUiStateKey = uiStateKey;
+    this.#clearScanTimerHandle(this.#inactivityTimeoutState);
+    this.#inactivityTimeoutState.remainingMs =
+      this.#timeoutConfiguration.inactivityTimeoutMs;
+
+    if (this.cameraManager.getState().playbackState === "capturing") {
+      this.#scheduleScanTimer(this.#inactivityTimeoutState, "inactivity");
+    }
+  };
+
+  #restartInactivityTimeoutForUiState = (uiStateKey: BlinkIdUiStateKey) => {
+    if (!this.#isTimingActiveScanStep) {
+      return;
+    }
+
+    if (this.#inactivityResetUiStateKey === uiStateKey) {
+      return;
+    }
+
+    this.#restartInactivityTimeout(uiStateKey);
+  };
+
+  #handleScanTimeout = (timeoutKind: ScanTimeoutKind) => {
+    if (this.#processingLifecycleState === "terminal") {
+      return;
+    }
+
+    console.debug(`⏳🟢 ${timeoutKind} timeout triggered`);
     this.clearScanTimeout();
-    console.debug(`⏳🟢 starting timeout for ${uiState.key}`);
+    this.cameraManager.stopFrameCapture();
 
-    this.#timeoutId = window.setTimeout(() => {
-      console.debug("⏳🟢 timeout triggered");
-      this.cameraManager.stopFrameCapture();
+    this.#invokeOnErrorCallbacks("timeout");
 
-      this.#invokeOnErrorCallbacks("timeout");
+    void this.#analytics.logStepTimeoutEvent();
+    void this.#analytics.sendPinglets();
 
-      void this.#analytics.logStepTimeoutEvent();
-      void this.#analytics.sendPinglets();
+    void this.resetScanningSession(false);
+  };
 
-      // reset the scanning session, but don't continue
-      void this.resetScanningSession(false);
-    }, this.#timeoutDuration);
+  #updatePartiallySupportedBarcodeResolveTimer = (
+    scanningStatus: ScanningStatus,
+    processResult: BlinkIdProcessResult,
+  ) => {
+    if (scanningStatus !== "scanning-barcode-in-progress") {
+      if (this.#partiallySupportedBarcodeResolveTimerStarted) {
+        this.#clearPartiallySupportedBarcodeResolveTimer();
+      }
+      return;
+    }
+
+    if (
+      processResult.inputImageAnalysisResult.processingStatus !==
+        "barcode-recognition-failed" ||
+      processResult.resultCompleteness.barcode?.parsingSupported !== false
+    ) {
+      return;
+    }
+
+    this.#startPartiallySupportedBarcodeResolveTimer();
   };
 
   /**
@@ -960,9 +1456,15 @@ export class BlinkIdUxManager {
     }
 
     this.#processingLifecycleState = "busy";
+    let returnedArrayBuffer: ArrayBuffer | undefined;
 
     try {
       const processResult = await this.scanningSession.process(imageData);
+      returnedArrayBuffer = processResult.arrayBuffer;
+
+      if (this.#isDestroyed) {
+        return returnedArrayBuffer;
+      }
 
       if (processResult.arrayBuffer.byteLength === 0) {
         console.warn(
@@ -990,7 +1492,17 @@ export class BlinkIdUxManager {
         extractDocumentClassInfo(processResult),
       );
 
-      const mappedUiStateKey = this.#getMappedUiStateKey(processResult);
+      const scanningStatus = await this.scanningSession.getScanningStatus();
+
+      const mappedUiStateKey = this.#getMappedUiStateKey(
+        scanningStatus,
+        processResult,
+      );
+
+      this.#updatePartiallySupportedBarcodeResolveTimer(
+        scanningStatus,
+        processResult,
+      );
 
       // stop/resume side-effects remain on frame processing path
       this.#handleProcessResultSideEffects(mappedUiStateKey);
@@ -1005,13 +1517,13 @@ export class BlinkIdUxManager {
 
       // fills the stabilizer event queue on the video frame, RAF handles updates
       // Ingest immediately to avoid an extra manager queue layer.
-      if (mappedUiStateKey) {
-        this.#mappedUiStateKey = mappedUiStateKey;
-        this.feedbackStabilizer.ingest(mappedUiStateKey);
-      }
+      this.#ingestMappedUiStateKey(mappedUiStateKey);
 
       return processResult.arrayBuffer;
     } catch (error) {
+      if (this.#isDestroyed) {
+        return returnedArrayBuffer;
+      }
       await this.#analytics.logErrorEvent({
         origin: "ux.frameCapture",
         error,
@@ -1035,6 +1547,15 @@ export class BlinkIdUxManager {
     void this.#analytics.sendPinglets();
   };
 
+  #ingestMappedUiStateKey(mappedUiStateKey?: BlinkIdUiStateKey): void {
+    if (!mappedUiStateKey) {
+      return;
+    }
+
+    this.#mappedUiStateKey = mappedUiStateKey;
+    this.feedbackStabilizer.ingest(mappedUiStateKey);
+  }
+
   #handleProcessResultSideEffects = (
     mappedUiStateKey?: BlinkIdUiStateKey,
   ): void => {
@@ -1049,6 +1570,7 @@ export class BlinkIdUxManager {
       )
     ) {
       console.debug("🛑 stop processing", mappedUiStateKey);
+      this.#clearPartiallySupportedBarcodeResolveTimer();
       this.cameraManager.stopFrameCapture();
       void this.#analytics.sendPinglets();
       if (mappedUiStateKey === "DOCUMENT_CAPTURED") {
@@ -1057,12 +1579,69 @@ export class BlinkIdUxManager {
     }
   };
 
-  #getMappedUiStateKey = (processResult: BlinkIdProcessResult) => {
+  #getMappedUiStateKey = (
+    scanningStatus: ScanningStatus,
+    processResult: BlinkIdProcessResult,
+  ) => {
     if (!this.sessionSettings) {
       return undefined;
     }
-    return getUiStateKey(processResult, this.sessionSettings.scanningSettings);
+
+    return getUiStateKey(
+      scanningStatus,
+      processResult.inputImageAnalysisResult,
+      this.sessionSettings.scanningSettings,
+    );
   };
+
+  async #advanceToNextStep(): Promise<void> {
+    console.debug("⏭️ Advancing to next step");
+    if (this.#processingLifecycleState === "terminal") {
+      return;
+    }
+
+    const wasCapturing =
+      this.cameraManager.getState().playbackState === "capturing";
+    if (wasCapturing) {
+      this.cameraManager.stopFrameCapture();
+    }
+
+    await this.scanningSession.resolveCurrentStep();
+
+    if (this.#isDestroyed) {
+      return;
+    }
+
+    const scanningStatus = await this.scanningSession.getScanningStatus();
+    const mappedUiStateKey = getUiStateKeyFromScanningStatus(scanningStatus);
+
+    const stepResolved =
+      mappedUiStateKey !== undefined &&
+      (blinkIdUiStepSuccessKeys as readonly BlinkIdUiStateKey[]).includes(
+        mappedUiStateKey,
+      );
+
+    if (wasCapturing && stepResolved) {
+      console.debug("🛑 stop processing", mappedUiStateKey);
+      this.#clearPartiallySupportedBarcodeResolveTimer();
+      void this.#analytics.sendPinglets();
+      if (mappedUiStateKey === "DOCUMENT_CAPTURED") {
+        this.#processingLifecycleState = "terminal";
+      }
+    } else {
+      this.#handleProcessResultSideEffects(mappedUiStateKey);
+    }
+
+    this.#ingestMappedUiStateKey(mappedUiStateKey);
+
+    if (
+      wasCapturing &&
+      (scanningStatus === "scanning-side-in-progress" ||
+        scanningStatus === "scanning-barcode-in-progress")
+    ) {
+      await this.cameraManager.startFrameCapture();
+    }
+  }
 
   /**
    * Updates the UI state from the uiStateKey
@@ -1129,15 +1708,17 @@ export class BlinkIdUxManager {
   };
 
   /**
-   * Handles side effects triggered by a UI state transition: restarts the
-   * scan timeout, resumes frame capture on intro states, and orchestrates
+   * Handles side effects triggered by a UI state transition: resumes frame
+   * capture on intro states and orchestrates
    * result retrieval on DOCUMENT_CAPTURED.
    *
    * @param uiState - The UI state.
    */
   #handleUiStateUpdates = async (uiState: BlinkIdUiState) => {
-    if (this.#timeoutDuration !== null && uiState.key !== "DOCUMENT_CAPTURED") {
-      this.#setTimeout(uiState);
+    if (this.#isBarcodeScanStepUiState(uiState.key)) {
+      this.#resetTimeoutsForBarcodeScanStep();
+    } else if (uiState.key !== "DOCUMENT_CAPTURED") {
+      this.#restartInactivityTimeoutForUiState(uiState.key);
     }
 
     // handle resuming processing on intro states
@@ -1161,8 +1742,12 @@ export class BlinkIdUxManager {
       try {
         await sleep(uiState.minDuration); // allow checkbox success animation to play out
 
-        const result = await this.getSessionResult();
+        if (this.#isDestroyed) {
+          return;
+        }
 
+        const result = await this.getSessionResult();
+        console.log("result", result);
         this.#invokeOnResultCallbacks(result);
       } catch (err) {
         console.error(
@@ -1206,6 +1791,7 @@ export class BlinkIdUxManager {
     this.feedbackStabilizer.reset(uiStateKey);
     this.#uiState = this.feedbackStabilizer.currentState;
     this.#mappedUiStateKey = this.uiState.key;
+    this.#isDestroyed = false;
     this.#processingLifecycleState = "ready";
     this.#pendingIntroAnchorKey = uiStateKey;
     this.#firstProcessedFrameAt = undefined;
@@ -1216,13 +1802,7 @@ export class BlinkIdUxManager {
    * Clears the scanning session timeout.
    */
   clearScanTimeout() {
-    if (!this.#timeoutId) {
-      return;
-    }
-
-    console.debug("⏳🔴 clearing timeout");
-    window.clearTimeout(this.#timeoutId);
-    this.#timeoutId = undefined;
+    this.#clearScanTimeoutState();
   }
 
   /**
@@ -1272,6 +1852,7 @@ export class BlinkIdUxManager {
     this.#onResultCallbacks.clear();
     this.#onFrameProcessCallbacks.clear();
     this.#onErrorCallbacks.clear();
+    this.#onProgressCallbacks.clear();
     this.#onDocumentFilteredCallbacks.clear();
   }
 
@@ -1305,6 +1886,7 @@ export class BlinkIdUxManager {
    */
   destroy() {
     console.debug("💥 Destroying BlinkIdUxManager");
+    this.#isDestroyed = true;
     this.#processingLifecycleState = "terminal";
     this.clearScanTimeout();
     this.cleanupAllObservers();

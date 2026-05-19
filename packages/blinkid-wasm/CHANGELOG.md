@@ -1,14 +1,24 @@
 # @microblink/blinkid-wasm
 
+## 8000.0.0
+
+### Major Changes
+
+- Aligns BlinkID Wasm bindings and exported TypeScript types with the v8000 runtime. This is a breaking change for code that depended on the 7.x result and session surface.
+- For the full upgrade guide, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).
+- Trims result and field typings to match the runtime (for example removal of stale result-only fields and exports such as `mode`, `ParentInfo`, `RecognitionMode`, and unsupported VIZ properties). Renames `SingleSideScanningResult.barcodeInputImage` to `barcodeImage` and tightens `FieldType` to the values currently exposed by the bindings.
+- Adds `getResolvedSessionSettings()` on the scanning session so callers can read the effective `BlinkIdSessionSettings` after defaults and resolvers are applied.
+- Replaces 7.x session anonymization settings with result-time redaction types and bindings. Remove `scanningSettings.anonymizationMode` and `scanningSettings.customDocumentAnonymizationSettings` from `BlinkIdSessionSettings`. Use `RedactionSettings` and `RedactionMode` instead (`RedactionMode` keeps the same string values as `AnonymizationMode`: `none`, `image-only`, `result-fields-only`, `full-result`). Exposes `getDefaultRedactionSettings(documentClassInfo)` on the Wasm module. `RedactionSettings` adds `mode`, `redactMrz`, and `redactBarcode` on the result payload. For worker and core integration details, see `@microblink/blinkid-worker` and `@microblink/blinkid-core` changelogs.
+
 ## 7.8.0
 
 ### Minor Changes
 
-- - **Results:** `BlinkIdScanningResult` and `VizResult` now expose optional `cardAccessNumber` (`StringResult`).
-  - **`FieldType`:** added `cardAccessNumber`; removed `parentsLastName2`, `parentsFirstName2`, and `chinPermanentExpiry`.
-  - **`DocumentType`:** added `origin-card`.
-  - **`Country`:** removed `virgin-islands-us`; added `virgin-islands-of-the-united-states`.
-  - **Extraction behavior:** top-level `remarks` is filled using information from **both** sides when available. Document number and citizenship are also represented in the MRZ **opt1** value where applicable. Egypt driver licenses: `dateOfBirth` is derived from `personalIdNumber` when appropriate. Improved MRZ parsing for Zimbabwe ID and a new Brunei ID layout.
+- **Results:** `BlinkIdScanningResult` and `VizResult` now expose optional `cardAccessNumber` (`StringResult`).
+- **`FieldType`:** added `cardAccessNumber`; removed `parentsLastName2`, `parentsFirstName2`, and `chinPermanentExpiry`.
+- **`DocumentType`:** added `origin-card`.
+- **`Country`:** removed `virgin-islands-us`; added `virgin-islands-of-the-united-states`.
+- **Extraction behavior:** top-level `remarks` is filled using information from **both** sides when available. Document number and citizenship are also represented in the MRZ **opt1** value where applicable. Egypt driver licenses: `dateOfBirth` is derived from `personalIdNumber` when appropriate. Improved MRZ parsing for Zimbabwe ID and a new Brunei ID layout.
 
 ## 7.7.4
 
@@ -30,8 +40,6 @@
 
 ### Patch Changes
 
-- Extends `BlinkIdScanningResult` and `VizResult` with optional fields for parents info (`ParentInfo[]`), effective date, husband name, legal status, social security status, and work restriction. The new `ParentInfo` type (parent first/last name) is exported from the result module.
-- Switches `FieldType` to an explicit string union so types match supported extraction fields. New literals include `effectiveDate`, `parentsFirstName`, `parentsLastName`, `workRestriction`, `socialSecurityStatus`, `legalStatus`, `husbandName`, `chinPermanentExpiry`, and other dependent/document/vehicle/locality field types.
 - Adds country `saint-thomas-and-prince`; document types `nin-card`, `mysss-card`, `gendarmerie-id`, `police-id`; and additional Brazilian and Indian regions (e.g. `acre`, `espirito-santo`, `odisha`, `uttarakhand`) to class info.
 
 ## 7.6.4

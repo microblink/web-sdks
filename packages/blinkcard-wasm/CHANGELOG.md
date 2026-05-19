@@ -1,5 +1,11 @@
 # @microblink/blinkcard-wasm
 
+## 3000.0.7
+
+### Patch Changes
+
+- Consolidates BlinkCard Wasm session result Embind blocks into shared `@microblink/wasm-common` binding helpers and routes session settings enums through the shared headers, reducing duplication without changing the intended public TypeScript API.
+
 ## 3000.0.6
 
 ### Patch Changes

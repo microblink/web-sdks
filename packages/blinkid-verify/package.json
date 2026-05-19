@@ -3,7 +3,7 @@
   "description": "All-in-one BlinkID Verify browser SDK for fast and accurate ID verification in web applications.",
   "author": "Microblink",
   "license": "ISC",
-  "version": "3.20.2",
+  "version": "3.20.3",
   "type": "module",
   "main": "dist/blinkid-verify.js",
   "module": "./dist/blinkid-verify.js",

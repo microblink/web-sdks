@@ -16,10 +16,14 @@ export type DateResult<S extends string | StringResult> = {
   month?: number;
   /** Four digit year */
   year?: number;
-  /** Original date string from the document */
+  /** Original date time string */
   originalString?: S;
-  /** Indicates whether this date is filled by internal domain knowledge */
+  /**
+   * Indicates whether this Date object is filled by internal domain knowledge.
+   * If it is, successfullyParsed flag is set to false and originalString is set
+   * to empty.
+   */
   filledByDomainKnowledge: boolean;
-  /** Indicates whether date was parsed successfully */
+  /** Indicates whether this Date object is successfully parsed from string. */
   successfullyParsed?: boolean;
 };

@@ -15,11 +15,14 @@ import {
 
 // Mock factory for SingleSideScanningResult
 const createMockSingleSideScanningResult = (overrides = {}) => ({
+  viz: undefined,
+  mrz: undefined,
+  barcode: undefined,
   inputImage: createFakeImageData(),
   documentImage: createFakeImageData(),
   faceImage: { image: createFakeImageData() },
   signatureImage: { image: createFakeImageData() },
-  barcodeInputImage: createFakeImageData(),
+  barcodeImage: createFakeImageData(),
   ...overrides,
 });
 
@@ -27,15 +30,87 @@ const createMockSingleSideScanningResult = (overrides = {}) => ({
 const createMockBlinkIdScanningResult = (
   overrides = {},
 ): BlinkIdScanningResult => ({
-  subResults: [
-    createMockSingleSideScanningResult(),
-    createMockSingleSideScanningResult(),
-  ],
   documentClassInfo: {
     country: "usa",
     type: "id",
     region: undefined,
+    countryName: "",
+    isoNumericCountryCode: "",
+    isoAlpha2CountryCode: "",
+    isoAlpha3CountryCode: "",
   },
+  dataMatchResult: undefined,
+  additionalAddressInformation: undefined,
+  additionalNameInformation: undefined,
+  additionalOptionalAddressInformation: undefined,
+  additionalPersonalIdNumber: undefined,
+  address: undefined,
+  bloodType: undefined,
+  cardAccessNumber: undefined,
+  certificateNumber: undefined,
+  countryCode: undefined,
+  dateOfBirth: undefined,
+  dateOfEntry: undefined,
+  dateOfExpiry: undefined,
+  dateOfIssue: undefined,
+  dependentsInfo: undefined,
+  documentAdditionalNumber: undefined,
+  documentNumber: undefined,
+  documentOptionalAdditionalNumber: undefined,
+  documentSubtype: undefined,
+  driverLicenseDetailedInfo: undefined,
+  effectiveDate: undefined,
+  eligibilityCategory: undefined,
+  employer: undefined,
+  fathersName: undefined,
+  firstName: undefined,
+  fullName: undefined,
+  husbandName: undefined,
+  issuingAuthority: undefined,
+  lastName: undefined,
+  legalStatus: undefined,
+  localityCode: undefined,
+  maidenName: undefined,
+  manufacturingYear: undefined,
+  maritalStatus: undefined,
+  mothersName: undefined,
+  municipalityCode: undefined,
+  municipalityOfRegistration: undefined,
+  nationalInsuranceNumber: undefined,
+  nationality: undefined,
+  parentsInfo: undefined,
+  personalIdNumber: undefined,
+  placeOfBirth: undefined,
+  pollingStationCode: undefined,
+  profession: undefined,
+  race: undefined,
+  registrationCenterCode: undefined,
+  religion: undefined,
+  remarks: undefined,
+  residencePermitType: undefined,
+  residentialStatus: undefined,
+  sectionCode: undefined,
+  sex: undefined,
+  socialSecurityStatus: undefined,
+  specificDocumentValidity: undefined,
+  sponsor: undefined,
+  stateCode: undefined,
+  stateName: undefined,
+  vehicleOwner: undefined,
+  vehicleType: undefined,
+  visaType: undefined,
+  workRestriction: undefined,
+  dateOfExpiryPermanent: undefined,
+  localizedName: undefined,
+  inputImagesScanningSide: undefined,
+  documentImagesScanningSide: undefined,
+  faceImageScanningSide: undefined,
+  signatureImageScanningSide: undefined,
+  barcodeImageScanningSide: undefined,
+  subResults: [
+    createMockSingleSideScanningResult(),
+    createMockSingleSideScanningResult(),
+  ],
   ...overrides,
 });
 
@@ -95,11 +170,12 @@ describe("extractBarcodeImage", () => {
   it("should extract barcode image from first side", () => {
     const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
+      barcodeImageScanningSide: "first",
       subResults: [
         createMockSingleSideScanningResult({
-          barcodeInputImage: expectedImage,
+          barcodeImage: expectedImage,
         }),
-        createMockSingleSideScanningResult({ barcodeInputImage: undefined }),
+        createMockSingleSideScanningResult({ barcodeImage: undefined }),
       ],
     });
 
@@ -111,10 +187,11 @@ describe("extractBarcodeImage", () => {
   it("should extract barcode image from second side", () => {
     const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
+      barcodeImageScanningSide: "second",
       subResults: [
-        createMockSingleSideScanningResult({ barcodeInputImage: undefined }),
+        createMockSingleSideScanningResult({ barcodeImage: undefined }),
         createMockSingleSideScanningResult({
-          barcodeInputImage: expectedImage,
+          barcodeImage: expectedImage,
         }),
       ],
     });
@@ -127,8 +204,8 @@ describe("extractBarcodeImage", () => {
   it("should return null when no barcode image exists", () => {
     const result = createMockBlinkIdScanningResult({
       subResults: [
-        createMockSingleSideScanningResult({ barcodeInputImage: undefined }),
-        createMockSingleSideScanningResult({ barcodeInputImage: undefined }),
+        createMockSingleSideScanningResult({ barcodeImage: undefined }),
+        createMockSingleSideScanningResult({ barcodeImage: undefined }),
       ],
     });
 
@@ -194,6 +271,7 @@ describe("extractFaceImage", () => {
   it("should extract face image from first side", () => {
     const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
+      faceImageScanningSide: "first",
       subResults: [
         createMockSingleSideScanningResult({
           faceImage: { image: expectedImage },
@@ -210,6 +288,7 @@ describe("extractFaceImage", () => {
   it("should extract face image from second side", () => {
     const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
+      faceImageScanningSide: "second",
       subResults: [
         createMockSingleSideScanningResult({ faceImage: undefined }),
         createMockSingleSideScanningResult({
@@ -241,6 +320,7 @@ describe("extractSignatureImage", () => {
   it("should extract signature image from first side", () => {
     const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
+      signatureImageScanningSide: "first",
       subResults: [
         createMockSingleSideScanningResult({
           signatureImage: { image: expectedImage },
@@ -257,6 +337,7 @@ describe("extractSignatureImage", () => {
   it("should extract signature image from second side", () => {
     const expectedImage = createFakeImageData();
     const result = createMockBlinkIdScanningResult({
+      signatureImageScanningSide: "second",
       subResults: [
         createMockSingleSideScanningResult({ signatureImage: undefined }),
         createMockSingleSideScanningResult({
@@ -272,6 +353,7 @@ describe("extractSignatureImage", () => {
 
   it("should return null when no signature image exists", () => {
     const result = createMockBlinkIdScanningResult({
+      signatureImageScanningSide: undefined,
       subResults: [
         createMockSingleSideScanningResult({ signatureImage: undefined }),
         createMockSingleSideScanningResult({ signatureImage: undefined }),

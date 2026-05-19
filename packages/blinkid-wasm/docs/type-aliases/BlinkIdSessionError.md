@@ -9,7 +9,7 @@
 > **BlinkIdSessionError** = `object`
 
 Represents the error returned from `BlinkIdScanningSession.process` and
-`BlinkIdScanningSession.reset`.
+`BlinkIdScanningSession.reset` / `resolveCurrentStep`.
 
 ## Properties
 

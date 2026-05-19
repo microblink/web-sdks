@@ -1,5 +1,92 @@
 # @microblink/blinkid-ux-manager
 
+## 8000.0.0
+
+### Major Changes
+
+- For the full upgrade guide, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).
+- Breaks custom localization overrides for the feedback UI. `feedbackUiOptions.localizationStrings` and the third argument to `createBlinkIdFeedbackUi` no longer accept the old flat top-level keys (such as `scan_the_barcode`, `help_modal_title_1`, `alert_cancel_btn`, `onboarding_modal_title`, or `scanning_help`). Overrides must follow the nested object shape in `src/ui/locales/en.ts`: live hints live under `feedback_messages`; help chrome and step copy under `help_modal` with flow branches `full_document`, `document_with_barcode`, and `barcode_only`, each exposing steps `visibility`, `lighting`, and `blur` plus desktop-only `camera_lens` fields where present; onboarding under `onboarding_modal` with the same three branch names plus shared `btn` and `aria`; document and error dialogs under `document_filtered_modal`, `document_not_recognized_modal`, `error_modal`, and `timeout_modal`; the help entry point under `help_button`; and the scanning surface ARIA label under `sdk_aria`. Replace legacy keys `document_scanned` and `front_side_scanned` with `feedback_messages.document_scanned_aria` and `feedback_messages.front_side_scanned_aria`. New feedback keys include `feedback_messages.scan_the_barcode_side` and `feedback_messages.keep_still`. The active `help_modal` and `onboarding_modal` branch matches BlinkID extraction mode: `full-document` uses `full_document`, `document-with-barcode` uses `document_with_barcode`, and `barcode-only` uses `barcode_only`.
+- Flat key migration (pre-v8000 → current). Re-key every override from the old flat name to the nested path below. Barcode-only and document-with-barcode help copy also lives under `help_modal.barcode_only`, `help_modal.document_with_barcode`, and matching `onboarding_modal` groups; the table maps the legacy single capture help flow to `help_modal.full_document.*`. For nested key structure, extraction-mode groups, and English copy deltas, see the README under **Internationalization**.
+- ```markdown
+  | Old flat key                       | New path                                         |
+  | ---------------------------------- | ------------------------------------------------ |
+  | `alert_cancel_btn`                 | `error_modal.cancel_btn`                         |
+  | `alert_retry_btn`                  | `error_modal.retry_btn`                          |
+  | `blur_detected`                    | `feedback_messages.blur_detected`                |
+  | `camera_angle_too_steep`           | `feedback_messages.camera_angle_too_steep`       |
+  | `document_filtered`                | `document_filtered_modal.title`                  |
+  | `document_filtered_details`        | `document_filtered_modal.details`                |
+  | `document_not_recognized`          | `document_not_recognized_modal.title`            |
+  | `document_not_recognized_details`  | `document_not_recognized_modal.details`          |
+  | `document_scanned`                 | `feedback_messages.document_scanned_aria`        |
+  | `document_too_close_to_edge`       | `feedback_messages.document_too_close_to_edge`   |
+  | `face_photo_not_fully_visible`     | `feedback_messages.face_photo_not_fully_visible` |
+  | `flip_document`                    | `feedback_messages.flip_document`                |
+  | `flip_to_back_side`                | `feedback_messages.flip_to_back_side`            |
+  | `front_side_scanned`               | `feedback_messages.front_side_scanned_aria`      |
+  | `glare_detected`                   | `feedback_messages.glare_detected`               |
+  | `help_aria_label`                  | `help_button.aria_label`                         |
+  | `help_tooltip`                     | `help_button.tooltip`                            |
+  | `help_modal_back_btn`              | `help_modal.back_btn`                            |
+  | `help_modal_next_btn`              | `help_modal.next_btn`                            |
+  | `help_modal_done_btn`              | `help_modal.done_btn`                            |
+  | `help_modal_title_1`               | `help_modal.full_document.visibility.title`            |
+  | `help_modal_details_1`             | `help_modal.full_document.visibility.details`          |
+  | `help_modal_title_2`               | `help_modal.full_document.lighting.title`              |
+  | `help_modal_details_2`             | `help_modal.full_document.lighting.details`            |
+  | `help_modal_title_3`               | `help_modal.full_document.blur.title`                  |
+  | `help_modal_details_3`             | `help_modal.full_document.blur.details`                |
+  | `help_modal_blur_details_desktop`  | `help_modal.full_document.blur.details_desktop`        |
+  | `help_modal_camera_lens_title`     | `help_modal.full_document.camera_lens.title_desktop`   |
+  | `help_modal_camera_lens_details`   | `help_modal.full_document.camera_lens.details_desktop` |
+  | `keep_document_parallel`           | `feedback_messages.keep_document_parallel`       |
+  | `keep_document_still`              | `feedback_messages.keep_document_still`          |
+  | `move_closer`                      | `feedback_messages.move_closer`                  |
+  | `move_farther`                     | `feedback_messages.move_farther`                 |
+  | `move_left`                        | `feedback_messages.move_left`                    |
+  | `move_right`                       | `feedback_messages.move_right`                   |
+  | `move_top`                         | `feedback_messages.move_top`                     |
+  | `occluded`                         | `feedback_messages.occluded`                     |
+  | `onboarding_modal_btn`             | `onboarding_modal.btn`                           |
+  | `onboarding_modal_title`           | `onboarding_modal.full_document.title`                 |
+  | `onboarding_modal_title_desktop`   | `onboarding_modal.full_document.title_desktop`         |
+  | `onboarding_modal_details`         | `onboarding_modal.full_document.details`               |
+  | `onboarding_modal_details_desktop` | `onboarding_modal.full_document.details_desktop`       |
+  | `resume_scanning`                  | `help_modal.done_btn_aria`                       |
+  | `scan_data_page`                   | `feedback_messages.scan_data_page`               |
+  | `scan_last_page_barcode`           | `feedback_messages.scan_last_page_barcode`       |
+  | `scan_left_page`                   | `feedback_messages.scan_left_page`               |
+  | `scan_right_page`                  | `feedback_messages.scan_right_page`              |
+  | `scan_the_back_side`               | `feedback_messages.scan_the_back_side`           |
+  | `scan_the_barcode`                 | `feedback_messages.scan_the_barcode`             |
+  | `scan_the_front_side`              | `feedback_messages.scan_the_front_side`          |
+  | `scan_top_page`                    | `feedback_messages.scan_top_page`                |
+  | `scan_unsuccessful`                | `timeout_modal.title`                            |
+  | `scan_unsuccessful_details`        | `timeout_modal.details`                          |
+  | `scanning_help`                    | `help_modal.aria`                                |
+  | `scanning_instructions`            | `onboarding_modal.aria`                          |
+  | `scanning_screen`                  | `sdk_aria`                                       |
+  | `too_bright`                       | `feedback_messages.too_bright`                   |
+  | `too_dark`                         | `feedback_messages.too_dark`                     |
+  | `wrong_left`                       | `feedback_messages.wrong_left`                   |
+  | `wrong_right`                      | `feedback_messages.wrong_right`                  |
+  | `wrong_top`                        | `feedback_messages.wrong_top`                    |
+  ```
+- Derives BlinkID UX extraction mode (`full-document`, `document-with-barcode`, or `barcode-only`) from session settings and drives help/onboarding assets and copy per mode. Help and onboarding illustrations were renamed for clarity (`barcode_only`, `document_with_barcode`, and related assets).
+
+### Minor Changes
+
+- Replaces BlinkID's single scan timeout with a two-timer model exposed through `timeoutConfiguration`: `inactivityTimeoutMs` tracks inactivity between stabilized UI-state changes, and `scanStepTimeoutMs` limits total active capture time for the current scan step. Set either value to `null` to disable that timer. The inactivity timer restarts only after the feedback stabilizer applies a new UI state; the per-side timer pauses whenever capture stops and resets when a new intro-anchored scan step begins or when the app returns from the background.
+- Adds `getTimeoutConfiguration()` and `setTimeoutConfiguration()` to `BlinkIdUxManager`, and removes the legacy single-timeout API `getTimeoutDuration()` / `setTimeoutDuration()`.
+- Adds `BlinkIdProgress`, `BlinkIdProgressTimerState`, `BlinkIdProgressTimerStatus`, and `addOnProgressCallback(...)` for live, RAF-driven progress snapshots (QA tooling and custom debug overlays).
+- Adds `partiallySupportedBarcodeResolveTimeoutMs` on `timeoutConfiguration` to control how long the SDK waits before resolving a barcode step when the barcode is only partially supported.
+- Exports `BlinkIdFrameProcessCallback` and documents `addOnFrameProcessCallback` (frame-level control with `advanceToNextStep()`, `triggerStepTimeout()`, and `getLastFrame()`).
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-core@8000.0.0
+
 ## 7.8.0
 
 ### Minor Changes

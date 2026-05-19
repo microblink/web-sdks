@@ -50,11 +50,11 @@ export const ErrorModal: Component<ErrorModalProps> = (props) => {
       open={true}
       actions={{
         primary: {
-          label: t.alert_retry_btn,
+          label: t.error_modal.retry_btn,
           onClick: () => void handlePrimaryClick(),
         },
         secondary: {
-          label: t.alert_cancel_btn,
+          label: t.error_modal.cancel_btn,
           onClick: () => dismountCameraManagerUi(),
         },
       }}

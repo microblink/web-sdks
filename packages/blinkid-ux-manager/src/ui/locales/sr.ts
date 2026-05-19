@@ -6,74 +6,181 @@
  * Localization strings for sr.
  */
 export default {
-  alert_cancel_btn: "Otkaži",
-  alert_retry_btn: "Pokušaj ponovo",
-  blur_detected: "Držite mirno dokument i telefon",
-  camera_angle_too_steep: "Držite dokument paralelno sa telefonom",
-  document_filtered: "Dokument nije prihvaćen",
-  document_filtered_details: "Pokušajte da skenirate drugi dokument.",
-  document_not_recognized: "Документ није препознат",
-  document_not_recognized_details:
-    "Skenirajte prednju stranu podržanog dokumenta.",
-  document_scanned: "Uspeh! Dokument skeniran",
-  document_too_close_to_edge: "Udaljite",
-  face_photo_not_fully_visible: "Neka slika lica bude u potpunosti vidljiva",
-  flip_document: "Preokrenite dokument",
-  flip_to_back_side: "Preokrenite dokument",
-  front_side_scanned: "Uspeh! Prednja strana skenirana",
-  glare_detected: "Nagnite ili pomerite dokument kako biste uklonili odsjaj",
-  help_aria_label: "Pomoć",
-  help_modal_back_btn: "Nazad",
-  help_modal_blur_details_desktop:
-    "Pokušajte da uređaj  i dokument budu mirni tokom skeniranja. Pomeranje bilo koje od njih može zamutiti sliku i učiniti podatke na dokumentu nečitljivim.",
-  help_modal_camera_lens_details:
-    "Proverite da li na sočivu kamere ima mrlja ili prašine. Prljavo sočivo može zamutiti konačnu sliku, zbog čega detalji na dokumentu postaju nečitljivi i onemogućavaju uspešno skeniranje podataka.",
-  help_modal_camera_lens_title: "Očistite sočiva kamere",
-  help_modal_details_1:
-    "Uverite se da ne prekrivate delove dokumenta prstom, uključujući donje redove. Takođe, pazite na hologramske refleksije koje prelaze preko polja dokumenta.",
-  help_modal_details_2:
-    "Izbegavajte direktnu oštru svetlost jer se odbija od dokumenta i može učiniti delove dokumenta nečitljivim. Ako ne možete da pročitate podatke na dokumentu, neće biti vidljivi ni kameri.",
-  help_modal_details_3:
-    "Pokušajte da telefon i dokument budu mirni tokom skeniranja. Pomeranje bilo koje od njih može zamutiti sliku i učiniti podatke na dokumentu nečitljivim.",
-  help_modal_done_btn: "Završeno",
-  help_modal_next_btn: "Sledeći",
-  help_modal_title_1: "Neka sva polja budu vidljiva",
-  help_modal_title_2: "Pazite na oštro svetlo",
-  help_modal_title_3: "Ostanite mirni dok skenirate",
-  help_tooltip: "Potrebna vam je pomoć?",
-  keep_document_parallel: "Držite dokument paralelno s ekranom",
-  keep_document_still: "Držite mirno dokument i ure]aj",
-  move_closer: "Približite",
-  move_farther: "Udaljite",
-  move_left: "Pređite na stranicu sa leve strane",
-  move_right: "Premesti se na stranicu sa desne strane",
-  move_top: "Pređite na stranicu na vrhu",
-  occluded: "Neka dokument bude u potpunosti vidljiv",
-  onboarding_modal_btn: "Pokreni skeniranje",
-  onboarding_modal_details:
-    "Uverite se da je dokument dobro osvetljen. Sva polja dokumenta treba da budu vidljiva na ekranu kamere.",
-  onboarding_modal_details_desktop:
-    "Uverite se da je sočivo kamere čisto i dobro osvetljeno. Sva polja dokumenta treba da budu vidljiva na ekranu kamere.",
-  onboarding_modal_title: "Neka svi detalji budu vidljivi",
-  onboarding_modal_title_desktop: "Pripremite se za skeniranje",
-  resume_scanning: "Nastavi skeniranje",
-  scan_data_page: "Skenirajte stranicu sa podacima dokumenta",
-  scan_last_page_barcode: "Skenirajte barkod sa zadnje stranice",
-  scan_left_page: "Skenirajte levu stranicu",
-  scan_right_page: "Skenirajte desnu stranicu",
-  scan_the_back_side: "Skenirajte zadnju stranu dokumenta",
-  scan_the_barcode: "Skenirajte bar kod",
-  scan_the_front_side: "Skenirajte prednju stranu\\ndokumenta",
-  scan_top_page: "Skenirajte gornju stranicu",
-  scan_unsuccessful: "Skeniranje neuspešno",
-  scan_unsuccessful_details:
-    "Nije moguće pročitati dokument. Molimo Vas, pokušajte ponovo.",
-  scanning_help: "Pomoć za skeniranje",
-  scanning_instructions: "Uputstva za skeniranje",
-  scanning_screen: "Ekran skeniranja dokumenta",
-  too_bright: "Pomerite se na mesto sa manje svetla",
-  too_dark: "Pomerite se na svetlije mesto",
-  wrong_left: "Pređite na levu stranicu",
-  wrong_right: "Pređite na desnu stranicu",
-  wrong_top: "Pređite na gornju stranicu",
+  document_filtered_modal: {
+    details: "Pokušajte da skenirate drugi dokument.",
+    title: "Dokument nije prihvaćen",
+  },
+  document_not_recognized_modal: {
+    details: "Skenirajte prednju stranu podržanog dokumenta.",
+    title: "Документ није препознат",
+  },
+  error_modal: { cancel_btn: "Otkaži", retry_btn: "Pokušaj ponovo" },
+  feedback_messages: {
+    blur_detected: "Držite mirno dokument i telefon",
+    camera_angle_too_steep: "Držite dokument paralelno sa telefonom",
+    document_scanned_aria: "Uspeh! Dokument skeniran",
+    document_too_close_to_edge: "Udaljite",
+    face_photo_not_fully_visible: "Neka slika lica bude u potpunosti vidljiva",
+    flip_document: "Preokrenite dokument",
+    flip_to_back_side: "Preokrenite dokument",
+    front_side_scanned_aria: "Uspeh! Prednja strana skenirana",
+    glare_detected: "Nagnite ili pomerite dokument kako biste uklonili odsjaj",
+    keep_document_parallel: "Držite dokument paralelno s ekranom",
+    keep_document_still: "Držite mirno dokument i ure]aj",
+    keep_still: "Ostanite mirni",
+    move_closer: "Približite",
+    move_farther: "Udaljite",
+    move_left: "Pređite na stranicu sa leve strane",
+    move_right: "Premesti se na stranicu sa desne strane",
+    move_top: "Pređite na stranicu na vrhu",
+    occluded: "Neka dokument bude u potpunosti vidljiv",
+    scan_data_page: "Skenirajte stranicu sa podacima dokumenta",
+    scan_last_page_barcode: "Skenirajte barkod sa zadnje stranice",
+    scan_left_page: "Skenirajte levu stranicu",
+    scan_right_page: "Skenirajte desnu stranicu",
+    scan_the_back_side: "Skenirajte zadnju stranu dokumenta",
+    scan_the_barcode: "Skenirajte bar kod",
+    scan_the_barcode_side: "Skenirajte  stranu dokumenta sa barkodom",
+    scan_the_front_side: "Skenirajte prednju stranu\\ndokumenta",
+    scan_top_page: "Skenirajte gornju stranicu",
+    too_bright: "Pomerite se na mesto sa manje svetla",
+    too_dark: "Pomerite se na svetlije mesto",
+    wrong_left: "Pređite na levu stranicu",
+    wrong_right: "Pređite na desnu stranicu",
+    wrong_top: "Pređite na gornju stranicu",
+  },
+  help_button: { aria_label: "Pomoć", tooltip: "Potrebna vam je pomoć?" },
+  help_modal: {
+    aria: "Pomoć za skeniranje",
+    back_btn: "Nazad",
+    barcode_only: {
+      blur: {
+        details:
+          "Pokušajte da držite telefon i bar-kod mirno tokom skeniranja. Pomeranje bilo čega može da zamuti sliku i oteža očitavanje bar-koda.",
+        details_desktop:
+          "Pokušajte da budete mirni tokom skeniranja. Pomeranje može zamutiti sliku i učiniti bar-kod nečitljivim.",
+        title: "Ostanite mirni dok skenirate",
+        title_desktop: "Ostanite mirni dok skenirate",
+      },
+      camera_lens: {
+        details_desktop:
+          "Proverite da li na sočivu kamere ima mrlja ili prašine. Prljavo sočivo može zamutiti konačnu sliku, zbog čega detalji na bar-kodu postaju nečitljivi i onemogućavaju uspešno skeniranje podataka.",
+        title_desktop: "Očistite sočiva kamere",
+      },
+      lighting: {
+        details:
+          "Izbegavajte jako direktno svetlo jer može da stvori odsjaj na bar-kodu i oteža skeniranje. Ako bar-kod nije jasno vidljiv vama, postoji mogućnost da ga ni kamera neće moći očitati.",
+        details_desktop:
+          "Izbegavajte jako direktno svetlo jer može da stvori odsjaj na bar-kodu i oteža skeniranje. Ako bar-kod nije jasno vidljiv vama, postoji mogućnost da ga ni kamera neće moći očitati.",
+        title: "Pazite na oštro svetlo",
+        title_desktop: "Pazite na oštro svetlo",
+      },
+      visibility: {
+        details:
+          "Uverite se da ne prekrivate delove bar-koda prstom. Obratite pažnju i na odsjaj preko bar-koda zbog koga bi kod mogao biti nečitljiv.",
+        details_desktop:
+          "Uverite se da ne prekrivate delove bar-koda prstom. Obratite pažnju i na odsjaj preko bar-koda zbog koga bi kod mogao biti nečitljiv.",
+        title: "Neka bar-kod bude vidljiv",
+        title_desktop: "Neka bar-kod bude vidljiv",
+      },
+    },
+    document_with_barcode: {
+      blur: {
+        details:
+          "Pokušajte da telefon i dokument budu mirni tokom skeniranja. Pomeranje bilo koje od njih može zamutiti sliku i učiniti podatke na dokumentu nečitljivim.",
+        details_desktop:
+          "Pokušajte da budete mirni tokom skeniranja. Pomeranje može da zamuti sliku i učini podatke na dokumentu nečitljivim.",
+        title: "Ostanite mirni dok skenirate",
+        title_desktop: "Ostanite mirni dok skenirate",
+      },
+      camera_lens: {
+        details_desktop:
+          "Proverite da li na sočivu kamere ima mrlja ili prašine. Prljavo sočivo može zamutiti konačnu sliku, zbog čega detalji na dokumentu postaju nečitljivi i onemogućavaju uspešno skeniranje podataka.",
+        title_desktop: "Očistite sočiva kamere",
+      },
+      lighting: {
+        details:
+          "Izbegavajte direktnu oštru svetlost jer se odbija od dokumenta i može učiniti delove dokumenta nečitljivim. Ako ne možete da pročitate podatke na dokumentu, neće biti vidljivi ni kameri.",
+        details_desktop:
+          "Izbegavajte direktnu oštru svetlost jer se odbija od dokumenta i može učiniti delove dokumenta nečitljivim. Ako ne možete da pročitate podatke na dokumentu, neće biti vidljivi ni kameri.",
+        title: "Pazite na oštro svetlo",
+        title_desktop: "Pazite na oštro svetlo",
+      },
+      visibility: {
+        details:
+          "Uverite se da ne prekrivate delove bar-koda prstom. Obratite pažnju i na odsjaj preko bar-koda zbog koga bi kod mogao biti nečitljiv.",
+        details_desktop:
+          "Uverite se da ne prekrivate delove bar-koda prstom. Obratite pažnju i na odsjaj preko bar-koda zbog koga bi kod mogao biti nečitljiv.",
+        title: "Neka bar-kod bude vidljiv",
+        title_desktop: "Neka bar-kod bude vidljiv",
+      },
+    },
+    done_btn: "Završeno",
+    done_btn_aria: "Nastavi skeniranje",
+    full_document: {
+      blur: {
+        details:
+          "Pokušajte da telefon i dokument budu mirni tokom skeniranja. Pomeranje bilo koje od njih može zamutiti sliku i učiniti podatke na dokumentu nečitljivim.",
+        details_desktop:
+          "Pokušajte da budete mirni tokom skeniranja. Pomeranje može da zamuti sliku i učini podatke na dokumentu nečitljivim.",
+        title: "Ostanite mirni dok skenirate",
+        title_desktop: "Ostanite mirni dok skenirate",
+      },
+      camera_lens: {
+        details_desktop:
+          "Proverite da li na sočivu kamere ima mrlja ili prašine. Prljavo sočivo može zamutiti konačnu sliku, zbog čega detalji na dokumentu postaju nečitljivi i onemogućavaju uspešno skeniranje podataka.",
+        title_desktop: "Očistite sočiva kamere",
+      },
+      lighting: {
+        details:
+          "Izbegavajte direktnu oštru svetlost jer se odbija od dokumenta i može učiniti delove dokumenta nečitljivim. Ako ne možete da pročitate podatke na dokumentu, neće biti vidljivi ni kameri.",
+        details_desktop:
+          "Izbegavajte direktnu oštru svetlost jer se odbija od dokumenta i može učiniti delove dokumenta nečitljivim. Ako ne možete da pročitate podatke na dokumentu, neće biti vidljivi ni kameri.",
+        title: "Pazite na oštro svetlo",
+        title_desktop: "Pazite na oštro svetlo",
+      },
+      visibility: {
+        details:
+          "Uverite se da ne prekrivate delove dokumenta prstom, uključujući donje redove. Takođe, pazite na hologramske refleksije koje prelaze preko polja dokumenta.",
+        details_desktop:
+          "Uverite se da ne prekrivate delove dokumenta prstom, uključujući donje redove. Takođe, pazite na hologramske refleksije koje prelaze preko polja dokumenta.",
+        title: "Neka sva polja budu vidljiva",
+        title_desktop: "Neka sva polja budu vidljiva",
+      },
+    },
+    next_btn: "Sledeći",
+  },
+  onboarding_modal: {
+    aria: "Uputstva za skeniranje",
+    barcode_only: {
+      details:
+        "Potražite bar-kod (niz crnih linija ili kvadratni kod). Usmerite kameru ka njemu i držite mirno — skeniranje će se obaviti automatski.",
+      details_desktop:
+        "Potražite bar-kod (niz crnih linija ili kvadratni kod). Vodite računa da objektiv kamere bude čist i da bar-kod bude dobro osvetljen.",
+      title: "Nađite i skenirajte bar-kod",
+      title_desktop: "Očistite sočiva kamere i nađite bar-kod",
+    },
+    btn: "Pokreni skeniranje",
+    document_with_barcode: {
+      details:
+        "Različiti tipovi identifikacionih dokumenata će možda imati različite formate i lokacije bar-kodova. Tražite bar-kod na prednjoj ili zadnjoj strani dokumenta.",
+      details_desktop:
+        "Proverite da li se na prednjoj ili zadnjoj strani ličnog dokumenta nalazi bar-kod. Vodite računa da objektiv kamere bude čist i da dokument bude dobro osvetljen.",
+      title: "Nađite bar-kod na identifikacionom dokumentu",
+      title_desktop: "Očistite sočiva kamere i nađite bar-kod",
+    },
+    full_document: {
+      details:
+        "Uverite se da je dokument dobro osvetljen. Sva polja dokumenta treba da budu vidljiva na ekranu kamere.",
+      details_desktop:
+        "Uverite se da je sočivo kamere čisto i dobro osvetljeno. Sva polja dokumenta treba da budu vidljiva na ekranu kamere.",
+      title: "Neka svi detalji budu vidljivi",
+      title_desktop: "Pripremite se za skeniranje",
+    },
+  },
+  sdk_aria: "Ekran skeniranja dokumenta",
+  timeout_modal: {
+    details: "Nije moguće pročitati dokument. Molimo Vas, pokušajte ponovo.",
+    title: "Skeniranje neuspešno",
+  },
 } as const;

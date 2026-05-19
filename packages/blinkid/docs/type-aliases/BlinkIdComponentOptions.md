@@ -6,7 +6,7 @@
 
 # Type Alias: BlinkIdComponentOptions
 
-> **BlinkIdComponentOptions** = `Simplify`\<`object` & [`BlinkIdInitSettings`](BlinkIdInitSettings.md) & `Partial`\<`Omit`\<[`BlinkIdSessionSettings`](BlinkIdSessionSettings.md), `"inputImageSource"`\>\>\>
+> **BlinkIdComponentOptions** = `Simplify`\<`object` & [`BlinkIdInitSettings`](BlinkIdInitSettings.md) & `Partial`\<`Omit`\<[`BlinkIdSessionSettingsInput`](BlinkIdSessionSettingsInput.md), `"inputImageSource"`\>\>\>
 
 Configuration options for creating a BlinkID component.
 

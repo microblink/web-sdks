@@ -74,10 +74,11 @@ export function isPassportWithoutBarcode(
     docClass?.country !== "usa" &&
     docClass?.country !== "india"
   );
-} /**
+}
+
+/**
  * Utility type for document pagination types.
  */
-
 export type DocumentPagination =
   | "passport-no-barcode"
   | "passport-with-barcode"

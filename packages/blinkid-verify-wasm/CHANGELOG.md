@@ -1,5 +1,11 @@
 # @microblink/blinkid-verify-wasm
 
+## 3.20.3
+
+### Patch Changes
+
+- Fixes BlinkID Verify Wasm Embind registration by removing redundant geometry helpers and eliminating a conflicting registration where `Quadrangle` was bound under the `Point` name, so the module’s exported classes match the intended `Point` and `Quadrangle` types.
+
 ## 3.20.2
 
 ### Patch Changes

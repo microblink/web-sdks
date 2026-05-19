@@ -13,13 +13,21 @@ export type * from "@microblink/feedback-stabilizer";
 export type * from "@microblink/ux-common/hapticFeedback";
 export * from "./core/blinkid-ui-state";
 export type { BlinkIdProcessingError } from "./core/BlinkIdProcessingError";
-export type { BlinkIdUxManager } from "./core/BlinkIdUxManager";
+export type { BlinkIdTimeoutConfiguration } from "./core/BlinkIdTimeoutConfiguration";
+export type {
+  BlinkIdFrameProcessCallback,
+  BlinkIdProgress,
+  BlinkIdProgressTimerState,
+  BlinkIdProgressTimerStatus,
+  BlinkIdUxManager,
+} from "./core/BlinkIdUxManager";
 export * from "./core/createBlinkIdUxManager";
 export type { DocumentClassFilter } from "./core/DocumentClassFilter";
 export * from "./ui/createBlinkIdFeedbackUi";
 export type {
   LocaleRecord,
   LocalizationStrings,
+  PartialLocalizationStrings,
 } from "./ui/LocalizationContext";
 
 /**

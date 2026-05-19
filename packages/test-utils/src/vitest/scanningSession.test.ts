@@ -16,6 +16,8 @@ describe("createFakeScanningSession", () => {
     expect(typeof session.showDemoOverlay).toBe("function");
     expect(typeof session.showProductionOverlay).toBe("function");
     expect(typeof session.getResult).toBe("function");
+    expect(typeof session.resolveCurrentStep).toBe("function");
+    expect(typeof session.getScanningStatus).toBe("function");
     expect(typeof session.ping).toBe("function");
     expect(typeof session.sendPinglets).toBe("function");
     expect(typeof session.reset).toBe("function");
@@ -29,6 +31,8 @@ describe("createFakeScanningSession", () => {
     await session.showDemoOverlay();
     await session.showProductionOverlay();
     await session.getResult();
+    await session.resolveCurrentStep();
+    await session.getScanningStatus();
     await session.ping({});
     await session.sendPinglets();
     await session.reset();
@@ -42,11 +46,13 @@ describe("createFakeScanningSession", () => {
     const session = createFakeScanningSession<
       { arrayBuffer: ArrayBuffer },
       { scanningSettings: { skipImagesWithBlur: boolean } },
-      { status: "ok" }
+      { status: "ok" },
+      "side-scanned"
     >({
       processResult: { arrayBuffer: new ArrayBuffer(8) },
       settings: { scanningSettings: { skipImagesWithBlur: true } },
       result: { status: "ok" },
+      scanningStatus: "side-scanned",
       showDemoOverlay: true,
       showProductionOverlay: false,
       isDeleted: true,
@@ -58,10 +64,12 @@ describe("createFakeScanningSession", () => {
     const processResult = await session.process(imageData);
     const settings = await session.getSettings();
     const result = await session.getResult();
+    const scanningStatus = await session.getScanningStatus();
 
     expect(processResult.arrayBuffer.byteLength).toBe(8);
     expect(settings.scanningSettings.skipImagesWithBlur).toBe(true);
     expect(result.status).toBe("ok");
+    expect(scanningStatus).toBe("side-scanned");
     expect(await session.showDemoOverlay()).toBe(true);
     expect(await session.showProductionOverlay()).toBe(false);
     expect(await session.isDeleted()).toBe(true);
@@ -70,6 +78,7 @@ describe("createFakeScanningSession", () => {
 
   test("supports SDK-specific extension fields without coupling", () => {
     const session = createFakeScanningSession<
+      unknown,
       unknown,
       unknown,
       unknown,

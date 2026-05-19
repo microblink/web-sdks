@@ -5,7 +5,10 @@
 import type {
   BlinkIdScanningResult,
   BlinkIdSessionSettings,
+  BlinkIdSessionSettingsInput,
+  PartialScanningSettingsInput,
   ScanningSettings,
+  ScanningStatus,
 } from "@microblink/blinkid-core";
 import type { CameraManager } from "@microblink/camera-manager";
 import {
@@ -16,10 +19,7 @@ import {
   type FakeScanningSession,
 } from "@microblink/test-utils";
 import type { BlinkIdUxManager } from "./BlinkIdUxManager";
-import {
-  createProcessResult,
-  createSessionSettings,
-} from "./__testdata/blinkidTestFixtures";
+import { createProcessResult } from "./__testdata/blinkidTestFixtures";
 import { createBlinkIdUxManager } from "./createBlinkIdUxManager";
 
 export type BlinkIdCameraHarness = FakeCameraHarness<CameraManager>;
@@ -42,7 +42,7 @@ export type BlinkIdUnitSessionMock = FakeScanningSession<
 >;
 
 export type CreateBlinkIdIntegrationContextOptions = {
-  sessionSettings?: BlinkIdSessionSettings;
+  sessionSettings?: BlinkIdSessionSettingsInput;
   showDemoOverlay?: boolean;
   showProductionOverlay?: boolean;
   fakeCameraOptions?: CreateFakeCameraManagerOptions;
@@ -50,14 +50,15 @@ export type CreateBlinkIdIntegrationContextOptions = {
 };
 
 export const createBlinkIdUnitSessionMock = (
-  overrideSettings?: Partial<ScanningSettings>,
+  overrideSettings?: PartialScanningSettingsInput,
 ): BlinkIdUnitSessionMock =>
   createFakeScanningSession<
     ReturnType<typeof createProcessResult>,
-    { scanningSettings: Partial<ScanningSettings> },
+    { scanningSettings: PartialScanningSettingsInput },
     unknown
   >({
     settings: { scanningSettings: overrideSettings ?? {} },
+    resolvedSettings: { scanningSettings: overrideSettings ?? {} },
     showDemoOverlay: false,
     showProductionOverlay: false,
   });
@@ -72,10 +73,11 @@ export const createBlinkIdIntegrationContext = async (
   const cameraHarness = createBlinkIdCameraHarness(options.fakeCameraOptions);
   const scanningSession = createFakeScanningSession<
     ReturnType<typeof createProcessResult>,
-    BlinkIdSessionSettings,
+    BlinkIdSessionSettingsInput,
     BlinkIdScanningResult
   >({
-    settings: options.sessionSettings ?? createSessionSettings(),
+    settings: options.sessionSettings ?? {},
+    resolvedSettings: options.sessionSettings ?? {},
     showDemoOverlay: options.showDemoOverlay ?? false,
     showProductionOverlay: options.showProductionOverlay ?? false,
     overrides: options.sessionOverrides,

@@ -4,32 +4,12 @@
 
 import type {
   BlinkIdScanningResult,
-  BlinkIdSessionSettings,
   ProcessResultWithBuffer,
-  ScanningSettings,
 } from "@microblink/blinkid-core";
-import { defaultSessionSettings } from "@microblink/blinkid-core";
 import { merge } from "merge-anything";
 import { type PartialDeep } from "type-fest";
 import { blankProcessResult } from "./blankProcessResult";
 
-export const defaultScanningSettings: ScanningSettings =
-  defaultSessionSettings.scanningSettings;
-
-export const getMergedSettings = (
-  overrides: PartialDeep<ScanningSettings> = {},
-): ScanningSettings => {
-  return merge(defaultSessionSettings.scanningSettings, overrides);
-};
-
-export const createSessionSettings = (
-  settingsOverrides: PartialDeep<ScanningSettings> = {},
-): BlinkIdSessionSettings => {
-  return {
-    ...defaultSessionSettings,
-    scanningSettings: getMergedSettings(settingsOverrides),
-  };
-};
 
 export const createScanningResult = (
   overrides: Partial<BlinkIdScanningResult> = {},

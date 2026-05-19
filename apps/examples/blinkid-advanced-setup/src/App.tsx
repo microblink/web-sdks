@@ -56,7 +56,7 @@ export const App: Component = () => {
       delete subResult?.documentImage;
       delete subResult?.faceImage;
       delete subResult?.signatureImage;
-      delete subResult?.barcodeInputImage;
+      delete subResult?.barcodeImage;
     }
 
     return resultCopy;
@@ -91,8 +91,10 @@ export const App: Component = () => {
        * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid-core/src/defaultSessionSettings.ts
        */
       scanningSettings: {
-        scanPassportDataPageOnly: false,
-        scanUnsupportedBack: true,
+        documentCaptureModule: {
+          passportDataPageScanOnly: false,
+          unsupportedDocumentsAllowed: true,
+        },
       },
     });
 
@@ -105,8 +107,6 @@ export const App: Component = () => {
      * Create the UX manager.
      */
     const uxManager = await createBlinkIdUxManager(cameraManager, session);
-    // set the timeout duration to null to disable the timeout.
-    // uxManager.setTimeoutDuration(null);
     uxManager.setHapticFeedbackEnabled(false);
 
     /*

@@ -1,0 +1,15 @@
+[**@microblink/blinkid-core**](../README.md)
+
+***
+
+[@microblink/blinkid-core](../README.md) / SensitivityLevel
+
+# Type Alias: SensitivityLevel
+
+> **SensitivityLevel** = `"off"` \| `"low"` \| `"mid"` \| `"high"`
+
+Represents the sensitivity levels for document quality analysis.
+
+This type is used to configure detection sensitivity thresholds and enable or
+disable detection functionality. The levels range from turning detection off
+completely to setting various levels of sensitivity (Low, Mid, High).

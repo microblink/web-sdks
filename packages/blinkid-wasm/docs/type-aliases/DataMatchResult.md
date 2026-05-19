@@ -20,8 +20,8 @@ The overall state of the data match.
 
 ***
 
-### statePerField?
+### statePerField
 
-> `optional` **statePerField**: [`DataMatchFieldState`](DataMatchFieldState.md)[]
+> **statePerField**: [`DataMatchFieldState`](DataMatchFieldState.md)[]
 
 Info on whether the data extracted from multiple sides matches

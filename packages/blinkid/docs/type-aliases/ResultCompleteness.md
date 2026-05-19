@@ -16,56 +16,56 @@ the VIZ, MRZ, and barcode, have been successfully extracted.
 
 ## Properties
 
-### barcodeExtracted
+### barcode
 
-> **barcodeExtracted**: `boolean`
+> **barcode**: [`BarcodeCompleteness`](BarcodeCompleteness.md) \| `undefined`
 
-Whether the barcode fields have been extracted
-
-***
-
-### documentImageExtracted
-
-> **documentImageExtracted**: `boolean`
-
-Whether the document image has been extracted
+Rich completeness for barcode extraction.
 
 ***
 
-### faceImageExtracted
+### barcodeImage
 
-> **faceImageExtracted**: `boolean`
+> **barcodeImage**: [`ImageCompleteness`](ImageCompleteness.md) \| `undefined`
 
-Whether the face image has been extracted
-
-***
-
-### mrzExtracted
-
-> **mrzExtracted**: `boolean`
-
-Whether the MRZ fields have been extracted
+Rich completeness for barcode image extraction.
 
 ***
 
-### scanningStatus
+### documentImages
 
-> **scanningStatus**: [`ScanningStatus`](ScanningStatus.md)
+> **documentImages**: [`ImageCompleteness`](ImageCompleteness.md)[] \| `undefined`
 
-The status of the scanning process
-
-***
-
-### signatureImageExtracted
-
-> **signatureImageExtracted**: `boolean`
-
-Whether the signature image has been extracted
+Rich completeness for document image extraction.
 
 ***
 
-### vizExtracted
+### faceImage
 
-> **vizExtracted**: `boolean`
+> **faceImage**: [`ImageCompleteness`](ImageCompleteness.md) \| `undefined`
 
-Whether the VIZ fields have been extracted
+Rich completeness for face image extraction.
+
+***
+
+### mrz
+
+> **mrz**: [`MrzCompleteness`](MrzCompleteness.md) \| `undefined`
+
+Rich completeness for MRZ extraction.
+
+***
+
+### signatureImage
+
+> **signatureImage**: [`ImageCompleteness`](ImageCompleteness.md) \| `undefined`
+
+Rich completeness for signature image extraction.
+
+***
+
+### viz
+
+> **viz**: ([`VizCompleteness`](VizCompleteness.md) \| `null`)[] \| `undefined`
+
+Rich per-module completeness for VIZ side results.

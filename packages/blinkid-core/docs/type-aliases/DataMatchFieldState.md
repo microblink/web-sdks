@@ -8,7 +8,7 @@
 
 > **DataMatchFieldState** = `object`
 
-Represents the state of data match per field
+Represents the state of the data match per field.
 
 ## Properties
 
@@ -16,7 +16,7 @@ Represents the state of data match per field
 
 > **fieldType**: [`DataMatchFieldType`](DataMatchFieldType.md)
 
-Type of field on which data match algorithm has been performed.
+Represents the type of the field used in data match.
 
 ***
 
@@ -24,4 +24,4 @@ Type of field on which data match algorithm has been performed.
 
 > **state**: [`DataMatchState`](DataMatchState.md)
 
-The state of the data match on the specified field.
+Represents the state of the data match on the specified field.

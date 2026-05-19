@@ -9,6 +9,10 @@ This package provides the core BlinkID functionality for browser-based document 
 - Can be used directly by end users for advanced use cases.
 - Used internally by [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid).
 
+## Migration from v7 to v8000
+
+For breaking changes and upgrade steps, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).
+
 ## Installation
 
 Install from npm using your preferred package manager:
@@ -36,7 +40,47 @@ const core = await loadBlinkIdCore({ licenseKey: "your-license-key", resourcesLo
 const session = await core.createScanningSession();
 ```
 
-> **Deprecated:** `createBlinkIdScanningSession` is a backward-compatible alias for `createScanningSession`. Prefer `createScanningSession` going forward.
+You can also pass worker-side session options as the second argument. For
+example, use `redactionSettingsResolver` to choose result redaction per
+classified document:
+
+```javascript
+const session = await core.createScanningSession(
+  {
+    scanningMode: "automatic",
+  },
+  {
+    redactionSettingsResolver: (documentClassInfo) => {
+      if (
+        documentClassInfo.country === "germany" &&
+        documentClassInfo.type === "id"
+      ) {
+        return {
+          mode: "full-result",
+          fields: ["documentNumber"],
+          documentNumberRedactionSettings: {
+            prefixDigitsVisible: 0,
+            suffixDigitsVisible: 4,
+          },
+          redactMrz: true,
+          redactBarcode: false,
+        };
+      }
+
+      // Return null to keep SDK default redaction settings.
+      return null;
+    },
+  },
+);
+```
+
+`redactionSettingsResolver` replaces the v7 session-level anonymization
+settings (`scanningSettings.anonymizationMode` and
+`scanningSettings.customDocumentAnonymizationSettings`). The resolver receives
+the classified `DocumentClassInfo`; return `RedactionSettings` for custom
+redaction or `null` / `undefined` to keep the SDK defaults. See the
+[BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000)
+for the full migration.
 
 See the example apps in the `apps/examples` directory in the GitHub repository for full usage details.
 
