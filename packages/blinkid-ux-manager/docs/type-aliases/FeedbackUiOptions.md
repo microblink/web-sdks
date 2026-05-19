@@ -32,17 +32,11 @@ Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hid
 
 Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
 
-#### Default Value
-
-```ts
-5000
-```
-
 ***
 
 ### localizationStrings?
 
-> `optional` **localizationStrings**: `Partial`\<[`LocalizationStrings`](LocalizationStrings.md)\>
+> `optional` **localizationStrings**: [`PartialLocalizationStrings`](PartialLocalizationStrings.md)
 
 The localization strings.
 
@@ -88,24 +82,6 @@ If set to `true`, the help button will be shown.
 ```ts
 true
 ```
-
-***
-
-### ~~showHelpTooltipTimeout?~~
-
-> `optional` **showHelpTooltipTimeout**: `number`
-
-The timeout for the help tooltip in ms.
-
-#### Default Value
-
-```ts
-3000
-```
-
-#### Deprecated
-
-This option will be removed in a future release. Use `helpTooltipShowDelay` instead.
 
 ***
 

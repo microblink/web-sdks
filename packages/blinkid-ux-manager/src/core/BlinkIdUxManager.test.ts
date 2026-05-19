@@ -35,7 +35,10 @@ import {
 } from "@microblink/test-utils";
 import type { BlinkIdUiState, BlinkIdUiStateKey } from "./blinkid-ui-state";
 import { blinkIdUiStateMap } from "./blinkid-ui-state";
-import type { BlinkIdUxManager } from "./BlinkIdUxManager";
+import type {
+  BlinkIdFrameProcessCallback,
+  BlinkIdUxManager,
+} from "./BlinkIdUxManager";
 import {
   createBlinkIdUxManager as createBlinkIdUxManagerFactory,
   type BlinkIdUxManagerOptions,
@@ -46,6 +49,7 @@ import {
   type BlinkIdUnitSessionMock,
 } from "./test-helpers.integration";
 import { createProcessResult } from "./__testdata/blinkidTestFixtures";
+import { createDocumentClassInfo } from "./test-utils";
 
 /**
  * Test file role:
@@ -410,10 +414,10 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   });
 
   test("should call document filtered callback when filter returns false", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
     const mockProcessResult = createProcessResult({
       inputImageAnalysisResult: {
@@ -446,10 +450,10 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   });
 
   test("should not call document filtered callback when filter returns true", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
     const mockProcessResult = createProcessResult({
       inputImageAnalysisResult: {
@@ -481,9 +485,9 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
   test("should not apply filter when document class info is incomplete", async () => {
     // Missing type field
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
-    };
+    });
 
     const mockProcessResult = createProcessResult({
       inputImageAnalysisResult: {
@@ -528,10 +532,10 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   });
 
   test("should not apply filtering when no filter is added", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
     const mockProcessResult = createProcessResult({
       inputImageAnalysisResult: {
@@ -551,10 +555,10 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   });
 
   test("should remove filter and not invoke callback when cleanup function is called", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
     // Add a spy for the document filtered callback
     const documentFilteredSpy = vi.fn();
@@ -591,10 +595,10 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   });
 
   test("should use the most recently added filter", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
     const mockProcessResult = createProcessResult({
       inputImageAnalysisResult: {
@@ -623,10 +627,10 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   });
 
   test("should stop camera capture and not emit result when document is filtered out", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
     // Mock both process result and final scanning result
     const mockProcessResult = createProcessResult({
@@ -672,17 +676,19 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   });
 
   test("should invoke frame process callbacks even when document is filtered out", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
+    const knownArrayBuffer = new ArrayBuffer(42);
     const mockProcessResult = createProcessResult({
       inputImageAnalysisResult: {
         processingStatus: "success",
         documentClassInfo: mockDocumentClassInfo,
         documentDetectionStatus: "success",
       },
+      arrayBuffer: knownArrayBuffer,
     });
     mockScanningSession.process.mockResolvedValue(mockProcessResult);
 
@@ -696,18 +702,91 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     await emitFrame(createFakeImageData());
 
-    // Verify frame process callback was called with the process result
-    expect(frameProcessSpy).toHaveBeenCalledWith(mockProcessResult);
+    expect(frameProcessSpy).toHaveBeenCalledTimes(1);
+    const [frameResult, advanceToNextStep, triggerStepTimeout, getLastFrame] =
+      frameProcessSpy.mock
+        .calls[0]! as unknown as Parameters<BlinkIdFrameProcessCallback>;
+
+    expect(frameResult).toEqual({
+      inputImageAnalysisResult: mockProcessResult.inputImageAnalysisResult,
+      resultCompleteness: mockProcessResult.resultCompleteness,
+    });
+    expect(frameResult).not.toHaveProperty("arrayBuffer");
+    expect(advanceToNextStep).toEqual(expect.any(Function));
+    expect(triggerStepTimeout).toEqual(expect.any(Function));
+    expect(getLastFrame).toEqual(expect.any(Function));
+    expect(getLastFrame()).toBe(knownArrayBuffer);
 
     cleanupFrameProcessCallback();
     filterCleanup();
   });
 
+  test("addOnFrameProcessCallback cleanup removes the listener", async () => {
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: createDocumentClassInfo({
+          country: "usa",
+          type: "dl",
+        }),
+        documentDetectionStatus: "success",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+
+    const spy = vi.fn();
+    const cleanup = manager.addOnFrameProcessCallback(spy);
+
+    await emitFrame(createFakeImageData());
+    expect(spy).toHaveBeenCalledTimes(1);
+
+    spy.mockClear();
+    cleanup();
+    await emitFrame(createFakeImageData());
+    expect(spy).not.toHaveBeenCalled();
+  });
+
+  test("continues invoking subsequent frame process callbacks when an earlier callback throws", async () => {
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: createDocumentClassInfo({
+          country: "usa",
+          type: "dl",
+        }),
+        documentDetectionStatus: "success",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+
+    const consoleErrorSpy = vi
+      .spyOn(console, "error")
+      .mockImplementation(() => undefined);
+
+    const first = vi.fn(() => {
+      throw new Error("boom");
+    });
+    const second = vi.fn();
+    manager.addOnFrameProcessCallback(first);
+    manager.addOnFrameProcessCallback(second);
+
+    await emitFrame(createFakeImageData());
+
+    expect(first).toHaveBeenCalledTimes(1);
+    expect(second).toHaveBeenCalledTimes(1);
+    expect(consoleErrorSpy).toHaveBeenCalledWith(
+      "Error in onFrameProcess callback",
+      expect.any(Error),
+    );
+
+    consoleErrorSpy.mockRestore();
+  });
+
   test("should return arrayBuffer from process result when document is filtered out", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
     const mockArrayBuffer = new ArrayBuffer(8);
     const mockProcessResult = {
@@ -734,10 +813,10 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   });
 
   test("should return arrayBuffer and update UI state when document passes filter", async () => {
-    const mockDocumentClassInfo: DocumentClassInfo = {
+    const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",
       type: "dl",
-    };
+    });
 
     const mockArrayBuffer = new ArrayBuffer(16);
 
@@ -747,12 +826,10 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
         documentClassInfo: mockDocumentClassInfo,
         documentDetectionStatus: "success",
       },
-      resultCompleteness: {
-        scanningStatus: "side-scanned",
-      },
       arrayBuffer: mockArrayBuffer,
     });
     mockScanningSession.process.mockResolvedValue(mockProcessResult);
+    mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
 
     // Add filter that accepts all documents
     const filterCleanup = manager.addDocumentClassFilter(() => true);
@@ -886,7 +963,7 @@ describe("BlinkIdUxManager - session lifecycle: reset behavior", () => {
 
     // Simulate timeout to trigger error callback
     const timeoutDuration = 5000;
-    manager.setTimeoutDuration(timeoutDuration);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: timeoutDuration });
     cameraHarness.emitPlaybackState("capturing");
     vi.advanceTimersByTime(timeoutDuration);
 
@@ -922,7 +999,7 @@ describe("BlinkIdUxManager - timeout behavior", () => {
 
   test("should trigger timeout and error callback", () => {
     const timeoutDuration = 5000;
-    manager.setTimeoutDuration(timeoutDuration);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: timeoutDuration });
 
     const errorCallback = vi.fn();
     manager.addOnErrorCallback(errorCallback);
@@ -939,7 +1016,7 @@ describe("BlinkIdUxManager - timeout behavior", () => {
 
   test("should clear timeout when stopping capture", () => {
     const timeoutDuration = 5000;
-    manager.setTimeoutDuration(timeoutDuration);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: timeoutDuration });
 
     const errorCallback = vi.fn();
     manager.addOnErrorCallback(errorCallback);
@@ -957,7 +1034,7 @@ describe("BlinkIdUxManager - timeout behavior", () => {
   });
 
   test("should not set timeout when timeout duration is null", () => {
-    manager.setTimeoutDuration(null);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: null });
 
     const errorCallback = vi.fn();
     manager.addOnErrorCallback(errorCallback);
@@ -973,7 +1050,7 @@ describe("BlinkIdUxManager - timeout behavior", () => {
 
   test("should reset UI state when timeout occurs", () => {
     const timeoutDuration = 5000;
-    manager.setTimeoutDuration(timeoutDuration);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: timeoutDuration });
 
     const uiStateChangedSpy = vi.fn();
     manager.addOnUiStateChangedCallback(uiStateChangedSpy);
@@ -991,7 +1068,7 @@ describe("BlinkIdUxManager - timeout behavior", () => {
 
   test("should clear timeout when UI state changes", async () => {
     const timeoutDuration = 5000;
-    manager.setTimeoutDuration(timeoutDuration);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: timeoutDuration });
 
     const errorCallback = vi.fn();
     manager.addOnErrorCallback(errorCallback);
@@ -1076,7 +1153,9 @@ describe(
 
       const context = await createBlinkIdTestContext({
         sessionSettings: {
-          skipImagesWithBlur: true,
+          documentCaptureModule: {
+            imageWithBlurRejected: true,
+          },
         },
       });
       cameraHarness = context.cameraHarness;
@@ -1100,9 +1179,11 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "side-scanned" },
       });
       mockScanningSession.process.mockResolvedValue(mockSuccessResult);
+      mockScanningSession.getScanningStatus
+        .mockResolvedValueOnce("scanning-side-in-progress")
+        .mockResolvedValue("side-scanned");
 
       // Simulate long idle before capture starts without flushing RAF callbacks.
       vi.setSystemTime(Date.now() + 10_000);
@@ -1212,7 +1293,6 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "side-scanned" },
       });
       mockScanningSession.process.mockResolvedValue(mockSuccessResult);
 
@@ -1234,9 +1314,9 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "side-scanned" },
       });
       mockScanningSession.process.mockResolvedValue(mockSuccessResult);
+      mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
 
       // Process a frame after mapping produces PAGE_CAPTURED.
       await cameraHarness.emitFrame(createFakeImageData());
@@ -1258,7 +1338,6 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "side-scanned" },
       });
       mockScanningSession.process.mockResolvedValue(mockSuccessResult);
 
@@ -1339,11 +1418,11 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "document-scanned" },
       });
 
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
       mockScanningSession.getResult.mockResolvedValue(mockResult);
+      mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
 
       cameraHarness.emitPlaybackState("capturing");
 
@@ -1435,10 +1514,10 @@ describe(
             documentClassInfo: { country: "usa", type: "dl" },
             documentDetectionStatus: "success",
           },
-          resultCompleteness: { scanningStatus: "side-scanned" },
         });
 
         mockScanningSession.process.mockResolvedValue(mockProcessResult);
+        mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
 
         // Simulate frame capture
         await cameraHarness.emitFrame(createFakeImageData());
@@ -1462,6 +1541,9 @@ describe(
     );
 
     test("should defer DOCUMENT_CAPTURED while INTRO_BACK_PAGE minDuration is active", async () => {
+      mockScanningSession.getScanningStatus.mockResolvedValue(
+        "document-scanned",
+      );
       mockScanningSession.process.mockResolvedValue(
         createProcessResult({
           inputImageAnalysisResult: {
@@ -1469,7 +1551,6 @@ describe(
             documentClassInfo: { country: "usa", type: "dl" },
             documentDetectionStatus: "success",
           },
-          resultCompleteness: { scanningStatus: "document-scanned" },
         }),
       );
       mockScanningSession.getResult.mockResolvedValue({ someData: "done" });
@@ -1502,11 +1583,13 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "document-scanned" },
       });
 
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
       mockScanningSession.getResult.mockResolvedValue({ someData: "test" });
+      mockScanningSession.getScanningStatus.mockResolvedValue(
+        "document-scanned",
+      );
 
       await cameraHarness.emitFrame(createFakeImageData());
       await tickRaf();
@@ -1526,11 +1609,13 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "document-scanned" },
       });
 
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
       mockScanningSession.getResult.mockResolvedValue({ someData: "test" });
+      mockScanningSession.getScanningStatus.mockResolvedValue(
+        "document-scanned",
+      );
 
       // Simulate frame capture
       await cameraHarness.emitFrame(createFakeImageData());
@@ -1574,9 +1659,9 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "side-scanned" },
       });
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
+      mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
 
       await cameraHarness.emitFrame(createFakeImageData());
       await cameraHarness.emitFrame(createFakeImageData());
@@ -1704,11 +1789,13 @@ describe(
           documentClassInfo: { country: "usa", type: "dl" },
           documentDetectionStatus: "success",
         },
-        resultCompleteness: { scanningStatus: "document-scanned" },
       });
 
       mockScanningSession.process.mockResolvedValue(mockProcessResult);
       mockScanningSession.getResult.mockResolvedValue({ someData: "done" });
+      mockScanningSession.getScanningStatus.mockResolvedValue(
+        "document-scanned",
+      );
 
       await cameraHarness.emitFrame(createFakeImageData());
       await tickRaf();
@@ -1722,7 +1809,7 @@ describe(
       manager.addOnErrorCallback(errorCallback);
 
       // Set a short timeout
-      manager.setTimeoutDuration(1000);
+      manager.setTimeoutConfiguration({ inactivityTimeoutMs: 1000 });
 
       // Simulate starting capture
       cameraHarness.emitPlaybackState("capturing");

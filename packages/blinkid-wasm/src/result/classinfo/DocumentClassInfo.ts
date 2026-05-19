@@ -9,23 +9,23 @@ import { Region } from "./Region";
 /** Represents the document class information. */
 export type DocumentClassInfo = {
   /** The document country. */
-  country?: Country;
+  country: Country | undefined;
 
   /** The document region. */
-  region?: Region;
+  region: Region | undefined;
 
   /** The type of the scanned document. */
-  type?: DocumentType;
+  type: DocumentType | undefined;
 
   /** The name of the country that issued the scanned document. */
-  countryName?: string;
+  countryName: string;
 
   /** The ISO numeric code of the country that issued the scanned document. */
-  isoNumericCountryCode?: string;
+  isoNumericCountryCode: string;
 
   /** The 2-letter ISO code of the country that issued the scanned document. */
-  isoAlpha2CountryCode?: string;
+  isoAlpha2CountryCode: string;
 
   /** The 3-letter ISO code of the country that issued the scanned document. */
-  isoAlpha3CountryCode?: string;
+  isoAlpha3CountryCode: string;
 };

@@ -6,73 +6,182 @@
  * Localization strings for vi.
  */
 export default {
-  alert_cancel_btn: "Hủy bỏ",
-  alert_retry_btn: "Thử lại",
-  blur_detected: "Giữ tài liệu và điện thoại cố định",
-  camera_angle_too_steep: "Giữ tài liệu nằm song song với điện thoại",
-  document_filtered: "Tài liệu không được chấp nhận",
-  document_filtered_details: "Thử quét tài liệu khác.",
-  document_not_recognized: "Không nhận dạng được tài liệu",
-  document_not_recognized_details: "Quét mặt trước của tài liệu được hỗ trợ.",
-  document_scanned: "Thành công! Đã quét tài liệu",
-  document_too_close_to_edge: "Di chuyển xa hơn",
-  face_photo_not_fully_visible: "Đảm bảo thấy đầy đủ ảnh khuôn mặt",
-  flip_document: "Lật tài liệu",
-  flip_to_back_side: "Lật tài liệu",
-  front_side_scanned: "Thành công! Đã quét mặt trước",
-  glare_detected:
-    "Nghiêng hoặc di chuyển tài liệu để loại bỏ hiệu ứng phản chiếu",
-  help_aria_label: "Trợ giúp",
-  help_modal_back_btn: "Quay lại",
-  help_modal_blur_details_desktop:
-    "Cố gắng giữ yên thiết bị và tài liệu trong khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên tài liệu không thể đọc được.",
-  help_modal_camera_lens_details:
-    "Kiểm tra ống kính camera xem có vết bẩn hoặc bụi không. Ống kính bẩn sẽ khiến hình ảnh cuối bị mờ, làm cho thông tin trên tài liệu không thể đọc được và ngăn cản việc quét dữ liệu thành công.",
-  help_modal_camera_lens_title: "Làm sạch ống kính camera",
-  help_modal_details_1:
-    "Đảm bảo rằng bạn không dùng ngón tay che các phần của tài liệu, kể cả các dòng dưới cùng. Ngoài ra, hãy để ý các phản xạ ảnh ba chiều đi qua các trường tài liệu.",
-  help_modal_details_2:
-    "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
-  help_modal_details_3:
-    "Cố gắng giữ cố định điện thoại và tài liệu trong khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên tài liệu không thể đọc được.",
-  help_modal_done_btn: "Đã xong",
-  help_modal_next_btn: "Tiếp theo",
-  help_modal_title_1: "Đảm bảo nhìn thấy rõ tất cả các trường",
-  help_modal_title_2: "Đề phòng ánh sáng gay gắt",
-  help_modal_title_3: "Giữ cố định trong khi quét",
-  help_tooltip: "Bạn cần trợ giúp?",
-  keep_document_parallel: "Giữ tài liệu nằm song song với màn hình",
-  keep_document_still: "Giữ yên tài liệu và thiết bị",
-  move_closer: "Di chuyển gần hơn",
-  move_farther: "Di chuyển xa hơn",
-  move_left: "Di chuyển đến trang bên trái",
-  move_right: "Di chuyển đến trang bên phải",
-  move_top: "Di chuyển đến trang trên cùng",
-  occluded: "Giữ văn bản hiển thị hoàn toàn",
-  onboarding_modal_btn: "Bắt đầu quét",
-  onboarding_modal_details:
-    "Đảm bảo rằng bạn giữ cho tài liệu được chiếu sáng tốt. Tất cả các trường tài liệu sẽ hiển thị trên màn hình camera.",
-  onboarding_modal_details_desktop:
-    "Đảm bảo rằng bạn giữ ống kính camera sạch sẽ và tài liệu được chiếu sáng tốt. Tất cả các trường tài liệu sẽ hiển thị trên màn hình camera.",
-  onboarding_modal_title: "Đảm bảo nhìn thấy rõ tất cả các chi tiết",
-  onboarding_modal_title_desktop: "Sẵn sàng quét",
-  resume_scanning: "Tiếp tục quét",
-  scan_data_page: "Quét trang chứa dữ liệu của tài liệu",
-  scan_last_page_barcode: "Quét mã vạch từ trang cuối cùng",
-  scan_left_page: "Quét trang bên trái",
-  scan_right_page: "Quét trang bên phải",
-  scan_the_back_side: "Quét mặt sau của tài liệu",
-  scan_the_barcode: "Quét mã vạch",
-  scan_the_front_side: "Quét mặt trước\\ncủa tài liệu",
-  scan_top_page: "Quét trang trên cùng",
-  scan_unsuccessful: "Quét không thành công",
-  scan_unsuccessful_details: "Không thể đọc tài liệu. Xin vui lòng thử lại.",
-  scanning_help: "Trợ giúp quét",
-  scanning_instructions: "Hướng dẫn quét",
-  scanning_screen: "Màn hình quét tài liệu",
-  too_bright: "Di chuyển đến nơi ít sáng hơn",
-  too_dark: "Di chuyển đến nơi sáng hơn",
-  wrong_left: "Di chuyển đến trang bên trái",
-  wrong_right: "Di chuyển đến trang bên phải",
-  wrong_top: "Di chuyển đến trang trên cùng",
+  document_filtered_modal: {
+    details: "Thử quét tài liệu khác.",
+    title: "Tài liệu không được chấp nhận",
+  },
+  document_not_recognized_modal: {
+    details: "Quét mặt trước của tài liệu được hỗ trợ.",
+    title: "Không nhận dạng được tài liệu",
+  },
+  error_modal: { cancel_btn: "Hủy bỏ", retry_btn: "Thử lại" },
+  feedback_messages: {
+    blur_detected: "Giữ tài liệu và điện thoại cố định",
+    camera_angle_too_steep: "Giữ tài liệu nằm song song với điện thoại",
+    document_scanned_aria: "Thành công! Đã quét tài liệu",
+    document_too_close_to_edge: "Di chuyển xa hơn",
+    face_photo_not_fully_visible: "Đảm bảo thấy đầy đủ ảnh khuôn mặt",
+    flip_document: "Lật tài liệu",
+    flip_to_back_side: "Lật tài liệu",
+    front_side_scanned_aria: "Thành công! Đã quét mặt trước",
+    glare_detected:
+      "Nghiêng hoặc di chuyển tài liệu để loại bỏ hiệu ứng phản chiếu",
+    keep_document_parallel: "Giữ tài liệu nằm song song với màn hình",
+    keep_document_still: "Giữ yên tài liệu và thiết bị",
+    keep_still: "Giữ yên",
+    move_closer: "Di chuyển gần hơn",
+    move_farther: "Di chuyển xa hơn",
+    move_left: "Di chuyển đến trang bên trái",
+    move_right: "Di chuyển đến trang bên phải",
+    move_top: "Di chuyển đến trang trên cùng",
+    occluded: "Giữ văn bản hiển thị hoàn toàn",
+    scan_data_page: "Quét trang chứa dữ liệu của tài liệu",
+    scan_last_page_barcode: "Quét mã vạch từ trang cuối cùng",
+    scan_left_page: "Quét trang bên trái",
+    scan_right_page: "Quét trang bên phải",
+    scan_the_back_side: "Quét mặt sau của tài liệu",
+    scan_the_barcode: "Quét mã vạch",
+    scan_the_barcode_side: "Quét mặt có mã vạch của một giấy tờ",
+    scan_the_front_side: "Quét mặt trước\\ncủa tài liệu",
+    scan_top_page: "Quét trang trên cùng",
+    too_bright: "Di chuyển đến nơi ít sáng hơn",
+    too_dark: "Di chuyển đến nơi sáng hơn",
+    wrong_left: "Di chuyển đến trang bên trái",
+    wrong_right: "Di chuyển đến trang bên phải",
+    wrong_top: "Di chuyển đến trang trên cùng",
+  },
+  help_button: { aria_label: "Trợ giúp", tooltip: "Bạn cần trợ giúp?" },
+  help_modal: {
+    aria: "Trợ giúp quét",
+    back_btn: "Quay lại",
+    barcode_only: {
+      blur: {
+        details:
+          "Cố gắng giữ yên điện thoại và mã vạch trong khi quét. Di chuyển có thể làm mờ hình ảnh hoặc khiến mã vạch khó đọc.",
+        details_desktop:
+          "Cố gắng giữ yên khi quét. Di chuyển có thể làm mờ hình ảnh hoặc khiến mã vạch khó đọc.",
+        title: "Giữ cố định trong khi quét",
+        title_desktop: "Giữ cố định trong khi quét",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kiểm tra ống kính camera xem có vết bẩn hoặc bụi không. Ống kính bẩn sẽ khiến hình ảnh cuối bị mờ, làm cho mã vạch không thể đọc được và ngăn cản việc quét dữ liệu thành công.",
+        title_desktop: "Làm sạch ống kính camera",
+      },
+      lighting: {
+        details:
+          "Tránh ánh sáng gay gắt trực tiếp vì nó có thể tạo ra lóa sáng trên mã vạch và khiến việc quét trở nên khó khăn. Nếu mã vạch không rõ ràng với bạn, camera cũng có thể không đọc được.",
+        details_desktop:
+          "Tránh ánh sáng gay gắt trực tiếp vì nó có thể tạo ra lóa sáng trên mã vạch và khiến việc quét trở nên khó khăn. Nếu mã vạch không rõ ràng với bạn, camera cũng có thể không đọc được.",
+        title: "Đề phòng ánh sáng gay gắt",
+        title_desktop: "Đề phòng ánh sáng gay gắt",
+      },
+      visibility: {
+        details:
+          "Đảm bảo bạn không dùng ngón tay che các phần của mã vạch. Ngoài ra, hãy coi chừng ánh sáng phản chiếu trên mã vạch có thể khiến mã vạch không thể đọc được.",
+        details_desktop:
+          "Đảm bảo bạn không dùng ngón tay che các phần của mã vạch. Ngoài ra, hãy coi chừng ánh sáng phản chiếu trên mã vạch có thể khiến mã vạch không thể đọc được.",
+        title: "Đảm bảo thấy rõ mã vạch",
+        title_desktop: "Đảm bảo thấy rõ mã vạch",
+      },
+    },
+    document_with_barcode: {
+      blur: {
+        details:
+          "Cố gắng giữ cố định điện thoại và tài liệu trong khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên tài liệu không thể đọc được.",
+        details_desktop:
+          "Cố gắng giữ yên khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên giấy tờ không thể đọc được.",
+        title: "Giữ cố định trong khi quét",
+        title_desktop: "Giữ cố định trong khi quét",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kiểm tra ống kính camera xem có vết bẩn hoặc bụi không. Ống kính bẩn sẽ khiến hình ảnh cuối bị mờ, làm cho thông tin trên tài liệu không thể đọc được và ngăn cản việc quét dữ liệu thành công.",
+        title_desktop: "Làm sạch ống kính camera",
+      },
+      lighting: {
+        details:
+          "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
+        details_desktop:
+          "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
+        title: "Đề phòng ánh sáng gay gắt",
+        title_desktop: "Đề phòng ánh sáng gay gắt",
+      },
+      visibility: {
+        details:
+          "Đảm bảo bạn không dùng ngón tay che các phần của mã vạch. Ngoài ra, hãy coi chừng ánh sáng phản chiếu trên mã vạch có thể khiến mã vạch không thể đọc được.",
+        details_desktop:
+          "Đảm bảo bạn không dùng ngón tay che các phần của mã vạch. Ngoài ra, hãy coi chừng ánh sáng phản chiếu trên mã vạch có thể khiến mã vạch không thể đọc được.",
+        title: "Đảm bảo thấy rõ mã vạch",
+        title_desktop: "Đảm bảo thấy rõ mã vạch",
+      },
+    },
+    done_btn: "Đã xong",
+    done_btn_aria: "Tiếp tục quét",
+    full_document: {
+      blur: {
+        details:
+          "Cố gắng giữ cố định điện thoại và tài liệu trong khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên tài liệu không thể đọc được.",
+        details_desktop:
+          "Cố gắng giữ yên khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên giấy tờ không thể đọc được.",
+        title: "Giữ cố định trong khi quét",
+        title_desktop: "Giữ cố định trong khi quét",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kiểm tra ống kính camera xem có vết bẩn hoặc bụi không. Ống kính bẩn sẽ khiến hình ảnh cuối bị mờ, làm cho thông tin trên tài liệu không thể đọc được và ngăn cản việc quét dữ liệu thành công.",
+        title_desktop: "Làm sạch ống kính camera",
+      },
+      lighting: {
+        details:
+          "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
+        details_desktop:
+          "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
+        title: "Đề phòng ánh sáng gay gắt",
+        title_desktop: "Đề phòng ánh sáng gay gắt",
+      },
+      visibility: {
+        details:
+          "Đảm bảo rằng bạn không dùng ngón tay che các phần của tài liệu, kể cả các dòng dưới cùng. Ngoài ra, hãy để ý các phản xạ ảnh ba chiều đi qua các trường tài liệu.",
+        details_desktop:
+          "Đảm bảo rằng bạn không dùng ngón tay che các phần của tài liệu, kể cả các dòng dưới cùng. Ngoài ra, hãy để ý các phản xạ ảnh ba chiều đi qua các trường tài liệu.",
+        title: "Đảm bảo nhìn thấy rõ tất cả các trường",
+        title_desktop: "Đảm bảo nhìn thấy rõ tất cả các trường",
+      },
+    },
+    next_btn: "Tiếp theo",
+  },
+  onboarding_modal: {
+    aria: "Hướng dẫn quét",
+    barcode_only: {
+      details:
+        "Tìm mã vạch (một dãy các đường kẻ đen hoặc mã vuông). Hướng camera của bạn về phía nó và giữ yên — quá trình quét sẽ tự động diễn ra.",
+      details_desktop:
+        "Tìm mã vạch (một dãy các đường kẻ đen hoặc mã vuông). Đảm bảo rằng ống kính camera của bạn sạch và mã vạch được chiếu sáng tốt.",
+      title: "Tìm và quét mã vạch",
+      title_desktop: "Làm sạch ống kính và tìm mã vạch",
+    },
+    btn: "Bắt đầu quét",
+    document_with_barcode: {
+      details:
+        "Các loại thẻ ID khác nhau có thể có định dạng và vị trí mã vạch khác nhau. Hãy xem mặt trước và mặt sau của thẻ ID để tìm mã vạch.",
+      details_desktop:
+        "Kiểm tra mặt trước và mặt sau của thẻ ID để tìm mã vạch. Đảm bảo rằng bạn giữ ống kính camera sạch sẽ và giấy tờ được chiếu sáng tốt.",
+      title: "Xác định vị trí mã vạch trên thẻ ID",
+      title_desktop: "Làm sạch ống kính và tìm mã vạch",
+    },
+    full_document: {
+      details:
+        "Đảm bảo rằng bạn giữ cho tài liệu được chiếu sáng tốt. Tất cả các trường tài liệu sẽ hiển thị trên màn hình camera.",
+      details_desktop:
+        "Đảm bảo rằng bạn giữ ống kính camera sạch sẽ và tài liệu được chiếu sáng tốt. Tất cả các trường tài liệu sẽ hiển thị trên màn hình camera.",
+      title: "Đảm bảo nhìn thấy rõ tất cả các chi tiết",
+      title_desktop: "Sẵn sàng quét",
+    },
+  },
+  sdk_aria: "Màn hình quét tài liệu",
+  timeout_modal: {
+    details: "Không thể đọc tài liệu. Xin vui lòng thử lại.",
+    title: "Quét không thành công",
+  },
 } as const;

@@ -8,68 +8,66 @@
 
 > **SingleSideScanningResult** = `object`
 
-Results of scanning a single side of a document
-
 ## Properties
 
-### barcode?
+### barcode
 
-> `optional` **barcode**: [`BarcodeResult`](BarcodeResult.md)
+> **barcode**: [`BarcodeResult`](BarcodeResult.md) \| `undefined`
 
-The data extracted from the barcode
-
-***
-
-### barcodeInputImage?
-
-> `optional` **barcodeInputImage**: `ImageData`
-
-The input image containing parsable barcode
+The data extracted from the barcode.
 
 ***
 
-### documentImage?
+### barcodeImage
 
-> `optional` **documentImage**: `ImageData`
+> **barcodeImage**: `ImageData` \| `undefined`
 
-The cropped document image
-
-***
-
-### faceImage?
-
-> `optional` **faceImage**: [`DetailedCroppedImageResult`](DetailedCroppedImageResult.md)
-
-The cropped face image
+The input image containing parsable barcode.
 
 ***
 
-### inputImage?
+### documentImage
 
-> `optional` **inputImage**: `ImageData`
+> **documentImage**: `ImageData` \| `undefined`
 
-The input image
-
-***
-
-### mrz?
-
-> `optional` **mrz**: [`MrzResult`](MrzResult.md)
-
-The data extracted from the Machine Readable Zone
+The cropped document image.
 
 ***
 
-### signatureImage?
+### faceImage
 
-> `optional` **signatureImage**: [`DetailedCroppedImageResult`](DetailedCroppedImageResult.md)
+> **faceImage**: [`DetailedCroppedImageResult`](DetailedCroppedImageResult.md) \| `undefined`
 
-The cropped signature image
+The cropped face image.
 
 ***
 
-### viz?
+### inputImage
 
-> `optional` **viz**: [`VizResult`](VizResult.md)
+> **inputImage**: `ImageData` \| `undefined`
 
-The data extracted from the Visual Inspection Zone
+The input image.
+
+***
+
+### mrz
+
+> **mrz**: [`MrzResult`](MrzResult.md) \| `undefined`
+
+The data extracted from the Machine Readable Zone.
+
+***
+
+### signatureImage
+
+> **signatureImage**: [`DetailedCroppedImageResult`](DetailedCroppedImageResult.md) \| `undefined`
+
+The cropped signature image.
+
+***
+
+### viz
+
+> **viz**: [`VizResult`](VizResult.md) \| `undefined`
+
+The data extracted from the Visual Inspection Zone.

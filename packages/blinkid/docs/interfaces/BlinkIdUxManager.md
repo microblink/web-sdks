@@ -101,6 +101,20 @@ The UX analytics service
 
 ***
 
+### extractionMode
+
+#### Get Signature
+
+> **get** **extractionMode**(): `BlinkIdExtractionMode`
+
+Session-settings-derived extraction mode used by feedback and dialogs.
+
+##### Returns
+
+`BlinkIdExtractionMode`
+
+***
+
 ### mappedUiStateKey
 
 #### Get Signature
@@ -108,22 +122,6 @@ The UX analytics service
 > **get** **mappedUiStateKey**(): [`BlinkIdUiStateKey`](../type-aliases/BlinkIdUiStateKey.md)
 
 Latest mapped candidate key before stabilization.
-
-##### Returns
-
-[`BlinkIdUiStateKey`](../type-aliases/BlinkIdUiStateKey.md)
-
-***
-
-### rawUiStateKey
-
-#### Get Signature
-
-> **get** **rawUiStateKey**(): [`BlinkIdUiStateKey`](../type-aliases/BlinkIdUiStateKey.md)
-
-##### Deprecated
-
-Use `mappedUiStateKey` (internal/debug) or `uiStateKey` (displayed state).
 
 ##### Returns
 
@@ -288,10 +286,11 @@ Registers a callback function to be called when a frame is processed.
 
 ##### callback
 
-(`frameResult`) => `void`
+[`BlinkIdFrameProcessCallback`](../type-aliases/BlinkIdFrameProcessCallback.md)
 
-A function that will be called with the frame analysis
-result.
+A function that receives the processed frame result and
+controls for custom step advancement, step timeout triggering, and access to
+the last processed frame buffer.
 
 #### Returns
 
@@ -307,8 +306,50 @@ callback.
 #### Example
 
 ```ts
-const cleanup = manager.addOnFrameProcessCallback((frameResult) => {
+const cleanup = manager.addOnFrameProcessCallback((frameResult, advanceToNextStep) => {
   console.log('Frame processed:', frameResult);
+  if (shouldAdvance(frameResult)) {
+    void advanceToNextStep();
+  }
+});
+
+// Later, to remove the callback:
+cleanup();
+```
+
+***
+
+### addOnProgressCallback()
+
+> **addOnProgressCallback**(`callback`): () => `void`
+
+Registers a callback function to receive BlinkID progress snapshots.
+
+#### Parameters
+
+##### callback
+
+(`progress`) => `void`
+
+A function that will be called with progress data from
+the internal 30 FPS RAF loop.
+
+#### Returns
+
+A cleanup function that, when called, will remove the registered
+callback.
+
+> (): `void`
+
+##### Returns
+
+`void`
+
+#### Example
+
+```ts
+const cleanup = manager.addOnProgressCallback((progress) => {
+  console.log('BlinkID progress:', progress);
 });
 
 // Later, to remove the callback:
@@ -454,38 +495,6 @@ The haptic feedback manager
 
 ***
 
-### ~~getHelpTooltipHideDelay()~~
-
-> **getHelpTooltipHideDelay**(): `null` \| `number`
-
-Returns the time in ms before the help tooltip is hidden. Null if tooltip won't be auto hidden.
-
-#### Returns
-
-`null` \| `number`
-
-#### Deprecated
-
-This option will be removed in a future release. Use `helpTooltipHideDelay` in `FeedbackUiOptions` instead.
-
-***
-
-### ~~getHelpTooltipShowDelay()~~
-
-> **getHelpTooltipShowDelay**(): `null` \| `number`
-
-Returns the time in ms before the help tooltip is shown. Null if tooltip won't be auto shown.
-
-#### Returns
-
-`null` \| `number`
-
-#### Deprecated
-
-This option will be removed in a future release. Use `helpTooltipShowDelay` in `FeedbackUiOptions` instead.
-
-***
-
 ### getInitialUiStateKey()
 
 > **getInitialUiStateKey**(): [`BlinkIdUiStateKey`](../type-aliases/BlinkIdUiStateKey.md)
@@ -512,15 +521,15 @@ The result.
 
 ***
 
-### getTimeoutDuration()
+### getTimeoutConfiguration()
 
-> **getTimeoutDuration**(): `null` \| `number`
+> **getTimeoutConfiguration**(): [`BlinkIdTimeoutConfiguration`](../type-aliases/BlinkIdTimeoutConfiguration.md)
 
-Returns the timeout duration in ms. Null if timeout won't be triggered ever.
+Returns the active BlinkID timeout configuration.
 
 #### Returns
 
-`null` \| `number`
+[`BlinkIdTimeoutConfiguration`](../type-aliases/BlinkIdTimeoutConfiguration.md)
 
 ***
 
@@ -606,68 +615,6 @@ Whether haptic feedback should be enabled
 
 ***
 
-### ~~setHelpTooltipHideDelay()~~
-
-> **setHelpTooltipHideDelay**(`duration`): `void`
-
-Sets the duration in milliseconds before the help tooltip is hidden.
-A value of null means the help tooltip will not be auto hidden.
-
-#### Parameters
-
-##### duration
-
-The duration in milliseconds before the help tooltip is
-hidden. If null, tooltip won't be auto hidden.
-
-`null` | `number`
-
-#### Returns
-
-`void`
-
-#### Throws
-
-Throws an error if duration is less than or equal to 0 when
-not null.
-
-#### Deprecated
-
-This option will be removed in a future release. Use `helpTooltipHideDelay` in `FeedbackUiOptions` instead.
-
-***
-
-### ~~setHelpTooltipShowDelay()~~
-
-> **setHelpTooltipShowDelay**(`duration`): `void`
-
-Sets the duration in milliseconds before the help tooltip is shown.
-A value of null means the help tooltip will not be auto shown.
-
-#### Parameters
-
-##### duration
-
-The duration in milliseconds before the help tooltip is
-shown. If null, tooltip won't be auto shown.
-
-`null` | `number`
-
-#### Returns
-
-`void`
-
-#### Throws
-
-Throws an error if duration is less than or equal to 0 when
-not null.
-
-#### Deprecated
-
-This option will be removed in a future release. Use `helpTooltipShowDelay` in `FeedbackUiOptions` instead.
-
-***
-
 ### setInitialUiStateKey()
 
 > **setInitialUiStateKey**(`uiStateKey`, `applyImmediately?`): `void`
@@ -694,38 +641,24 @@ If true, immediately applies and emits this state.
 
 ***
 
-### setTimeoutDuration()
+### setTimeoutConfiguration()
 
-> **setTimeoutDuration**(`duration`, `setHelpTooltipShowDelay?`): `void`
+> **setTimeoutConfiguration**(`timeoutConfiguration`): `void`
 
-Sets the duration after which the scanning session will timeout. The
-timeout can occur in various scenarios and may be restarted by different
-scanning events.
+Updates the BlinkID timeout configuration.
+
+Updating the configuration resets timeout tracking for the current scan
+step so the new durations take effect immediately.
 
 #### Parameters
 
-##### duration
+##### timeoutConfiguration
 
-The timeout duration in milliseconds. If null, timeout won't
-be triggered ever.
-
-`null` | `number`
-
-##### setHelpTooltipShowDelay?
-
-`boolean`
-
-If true, also sets the help tooltip show
-delay to half of the provided duration. If timeout duration is null, help
-tooltip show delay will be set to null. Defaults to true.
+`Partial`\<[`BlinkIdTimeoutConfiguration`](../type-aliases/BlinkIdTimeoutConfiguration.md)\>
 
 #### Returns
 
 `void`
-
-#### Throws
-
-Throws an error if duration is less than or equal to 0 when not null.
 
 ***
 

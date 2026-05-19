@@ -6,7 +6,7 @@
 
 # Function: getUiStateKey()
 
-> **getUiStateKey**(`frameProcessResult`, `settings?`): `undefined` \| [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md)
+> **getUiStateKey**(`scanningStatus`, `inputImageAnalysisResult`, `scanningSettings`): `undefined` \| [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md)
 
 Determines the appropriate UI state key based on the current frame processing
 result and scanning settings.
@@ -17,19 +17,17 @@ interface.
 
 ## Parameters
 
-### frameProcessResult
+### scanningStatus
 
-[`PartialProcessResult`](../type-aliases/PartialProcessResult.md)
+`ScanningStatus`
 
-The current (possibly partial) result of frame
-processing, including image analysis and completeness.
+### inputImageAnalysisResult
 
-### settings?
+`InputImageAnalysisResult`
 
-`Partial`\<`ScanningSettings`\>
+### scanningSettings
 
-Optional scanning settings that may influence state
-selection.
+`ScanningSettings`
 
 ## Returns
 

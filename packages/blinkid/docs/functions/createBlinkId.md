@@ -75,6 +75,14 @@ The URL of the Microblink proxy server. This proxy handles requests to Microblin
 "https://your-proxy.example.com"
 ```
 
+#### redactionSettingsResolver?
+
+[`RedactionSettingsResolver`](../type-aliases/RedactionSettingsResolver.md)
+
+Resolves custom result redaction settings for the classified document.
+
+Return `null` or `undefined` to keep the SDK default redaction behavior.
+
 #### resourcesLocation?
 
 `string`
@@ -102,20 +110,7 @@ based on the detected document type.
 
 #### scanningSettings?
 
-[`ScanningSettings`](../type-aliases/ScanningSettings.md)
-
-The specific scanning settings for the scanning session.
-
-Defines various parameters that control the scanning process including:
-
-- Document detection and quality thresholds
-- Image processing options
-- Result extraction and validation rules
-- Document-specific scanning behaviors
-
-**See**
-
-`ScanningSettings` for detailed configuration options
+`Partial`\<\{ `barcodeModule`: `Partial`\<`null` \| [`BarcodeModuleSettings`](../type-aliases/BarcodeModuleSettings.md)\>; `documentCaptureModule`: `Partial`\<`null` \| [`DocumentCaptureModuleSettings`](../type-aliases/DocumentCaptureModuleSettings.md)\>; `maxAllowedMismatchesPerField`: `number`; `mrzModule`: `Partial`\<`null` \| [`MrzModuleSettings`](../type-aliases/MrzModuleSettings.md)\>; `vizModule`: `Partial`\<`null` \| [`VizModuleSettings`](../type-aliases/VizModuleSettings.md)\>; \}\>
 
 #### targetNode?
 
@@ -138,6 +133,13 @@ Lightweight builds have reduced size but may have limited functionality.
 A unique identifier for the user/session.
 Used for analytics and tracking purposes.
 
+#### uxManagerOptions?
+
+`Partial`\<[`BlinkIdUxManagerOptions`](../type-aliases/BlinkIdUxManagerOptions.md)\>
+
+Customization options for BlinkID UX manager behavior.
+Controls headless UX flow details such as timeout configuration.
+
 #### wasmVariant?
 
 `"basic"` \| `"advanced"` \| `"advanced-threads"`
@@ -157,6 +159,13 @@ Promise that resolves to a BlinkIdComponent with all SDK instances and UI elemen
 const blinkId = await createBlinkId({
   licenseKey: "your-license-key",
   targetNode: document.getElementById("blinkid-container"),
+  uxManagerOptions: {
+    timeoutConfiguration: {
+      inactivityTimeoutMs: 15000,
+      scanStepTimeoutMs: 90000,
+      partiallySupportedBarcodeResolveTimeoutMs: 8000,
+    },
+  },
   feedbackUiOptions: {
     showOnboardingGuide: false
   }
@@ -165,6 +174,10 @@ const blinkId = await createBlinkId({
 // Add result callback
 blinkId.addOnResultCallback((result) => {
   console.log("Scanning result:", result);
+});
+
+blinkId.addOnProgressCallback((progress) => {
+  console.log("BlinkID progress:", progress.uiStateKey);
 });
 
 // Clean up when done

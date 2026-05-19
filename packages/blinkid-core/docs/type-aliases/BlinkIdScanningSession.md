@@ -6,6 +6,6 @@
 
 # Type Alias: BlinkIdScanningSession
 
-> **BlinkIdScanningSession** = `EmbindObject`\<\{ `getResult`: () => [`BlinkIdScanningResult`](BlinkIdScanningResult.md); `process`: (`image`) => [`BlinkIdProcessResult`](BlinkIdProcessResult.md) \| [`BlinkIdSessionError`](BlinkIdSessionError.md); `reset`: () => `void` \| [`BlinkIdSessionError`](BlinkIdSessionError.md); \}\>
+> **BlinkIdScanningSession** = `EmbindObject`\<\{ `getResolvedSessionSettings`: () => [`BlinkIdSessionSettings`](BlinkIdSessionSettings.md); `getResult`: (`redactionSettings?`) => [`BlinkIdScanningResult`](BlinkIdScanningResult.md); `getScanningStatus`: () => [`ScanningStatus`](ScanningStatus.md); `getSessionId`: () => `string`; `getSessionNumber`: () => `number`; `getSettings`: () => [`BlinkIdSessionSettings`](BlinkIdSessionSettings.md); `process`: (`image`) => [`BlinkIdProcessResult`](BlinkIdProcessResult.md); `reset`: () => `void`; `resolveCurrentStep`: () => `void`; \}\>
 
 Represents the scanning session for BlinkID

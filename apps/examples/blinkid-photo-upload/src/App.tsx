@@ -3,12 +3,13 @@
  */
 
 import {
+  BlinkIdCore,
   BlinkIdProcessResult,
   BlinkIdScanningResult,
   loadBlinkIdCore,
   ProcessingStatus,
 } from "@microblink/blinkid-core";
-import { Component, createSignal, Show } from "solid-js";
+import { Component, createSignal, onCleanup, onMount, Show } from "solid-js";
 
 type BlinkIdSession = Awaited<
   ReturnType<
@@ -47,17 +48,6 @@ const createImageData = async (file: File): Promise<ImageData> => {
   }
 };
 
-// Session management
-const initBlinkIdScanningSession = async (): Promise<BlinkIdSession> => {
-  const blinkIdCore = await loadBlinkIdCore({
-    licenseKey: import.meta.env.VITE_LICENCE_KEY,
-  });
-
-  return blinkIdCore.createScanningSession({
-    inputImageSource: "photo",
-  });
-};
-
 const App: Component = () => {
   const [scanningResult, setScanningResult] =
     createSignal<BlinkIdScanningResult>();
@@ -72,6 +62,8 @@ const App: Component = () => {
 
   // Loading, error, success signals
   const [isLoading, setIsLoading] = createSignal(false);
+  const [isInitializingSession, setIsInitializingSession] = createSignal(false);
+  const [isSessionReady, setIsSessionReady] = createSignal(false);
   const [error, setError] = createSignal<string>();
   const [success, setSuccess] = createSignal<string>();
 
@@ -87,6 +79,7 @@ const App: Component = () => {
   const [backImageUrl, setBackImageUrl] = createSignal<string>();
   const [barcodeImageUrl, setBarcodeImageUrl] = createSignal<string>();
 
+  let blinkIdCore: BlinkIdCore | undefined;
   let session: BlinkIdSession | undefined;
 
   const cleanupSession = async () => {
@@ -94,11 +87,50 @@ const App: Component = () => {
       if (session) {
         await session.delete();
         session = undefined;
+        setIsSessionReady(false);
       }
     } catch (err) {
       console.error("Error cleaning up session:", err);
     }
   };
+
+  const initializeSession = async () => {
+    setIsInitializingSession(true);
+    setError(undefined);
+    try {
+      await cleanupSession();
+
+      blinkIdCore ??= await loadBlinkIdCore({
+        licenseKey: import.meta.env.VITE_LICENCE_KEY,
+      });
+
+      session = await blinkIdCore.createScanningSession({
+        inputImageSource: "photo",
+      });
+      setIsSessionReady(true);
+    } catch (err) {
+      setIsSessionReady(false);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to initialize BlinkID scanning session",
+      );
+    } finally {
+      setIsInitializingSession(false);
+    }
+  };
+
+  onMount(() => {
+    void initializeSession();
+  });
+
+  onCleanup(() => {
+    void (async () => {
+      await cleanupSession();
+      await blinkIdCore?.terminate();
+      blinkIdCore = undefined;
+    })();
+  });
 
   const getResult = async () => {
     if (!session) {
@@ -116,7 +148,6 @@ const App: Component = () => {
       setSuccess("Document successfully scanned!");
 
       await cleanupSession();
-      session = undefined;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to get result");
     } finally {
@@ -131,7 +162,6 @@ const App: Component = () => {
       setSuccess(undefined);
 
       await cleanupSession();
-      session = undefined;
 
       // Reset scan states
       setFrontScanned(false);
@@ -157,6 +187,8 @@ const App: Component = () => {
         URL.revokeObjectURL(barcodeImageUrl()!);
         setBarcodeImageUrl(undefined);
       }
+
+      await initializeSession();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to restart");
     } finally {
@@ -181,8 +213,14 @@ const App: Component = () => {
       setError(undefined);
       setSuccess(undefined);
 
-      const currentSession = session ?? (await initBlinkIdScanningSession());
-      session = currentSession;
+      if (!session) {
+        setError(
+          "Scanning session is not ready. Wait for initialization or tap Retry.",
+        );
+        return;
+      }
+
+      const currentSession = session;
 
       // Create thumbnail URL
       const thumbnailUrl = URL.createObjectURL(file);
@@ -279,9 +317,27 @@ const App: Component = () => {
     }
   };
 
+  const uploadsDisabled = () =>
+    isLoading() || isInitializingSession() || !isSessionReady();
+
   return (
     <div class="container">
       <h1>BlinkID Photo Upload Example</h1>
+
+      <Show when={isInitializingSession()}>
+        <div class="processing">Initializing BlinkID…</div>
+      </Show>
+
+      <Show when={error() && !isSessionReady()}>
+        <button
+          type="button"
+          class="restart-btn"
+          disabled={isInitializingSession()}
+          onClick={() => void initializeSession()}
+        >
+          Retry initialization
+        </button>
+      </Show>
 
       <div class="upload-section">
         <div class="side-upload">
@@ -291,7 +347,7 @@ const App: Component = () => {
               type="file"
               accept="image/*"
               onChange={(e) => void handleFileUpload(e, "front")}
-              disabled={isLoading() || frontScanned()}
+              disabled={uploadsDisabled() || frontScanned()}
             />
             <Show when={frontImageUrl()}>
               <div class="thumbnail">
@@ -321,7 +377,7 @@ const App: Component = () => {
                 type="file"
                 accept="image/*"
                 onChange={(e) => void handleFileUpload(e, "back")}
-                disabled={isLoading() || backScanned()}
+                disabled={uploadsDisabled() || backScanned()}
               />
               <Show when={backImageUrl()}>
                 <div class="thumbnail">
@@ -352,7 +408,7 @@ const App: Component = () => {
                 type="file"
                 accept="image/*"
                 onChange={(e) => void handleFileUpload(e, "barcode")}
-                disabled={isLoading() || barcodeScanned()}
+                disabled={uploadsDisabled() || barcodeScanned()}
               />
               <Show when={barcodeImageUrl()}>
                 <div class="thumbnail">
@@ -375,7 +431,9 @@ const App: Component = () => {
           </div>
         </Show>
 
-        {isLoading() && <div class="processing">Processing...</div>}
+        <Show when={isLoading() && !isInitializingSession()}>
+          <div class="processing">Processing…</div>
+        </Show>
         {error() && <div class="error">{error()}</div>}
         {success() && <div class="success">{success()}</div>}
 
@@ -383,7 +441,7 @@ const App: Component = () => {
           <button
             class="restart-btn"
             onClick={() => void handleRestart()}
-            disabled={isLoading()}
+            disabled={isLoading() || isInitializingSession()}
           >
             Restart
           </button>

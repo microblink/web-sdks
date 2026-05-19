@@ -4,12 +4,11 @@
 
 import {
   InputImageAnalysisResult,
-  ResultCompleteness,
   ScanningSettings,
+  ScanningStatus,
 } from "@microblink/blinkid-core";
 import { UiState } from "@microblink/feedback-stabilizer";
 import { match, P } from "ts-pattern";
-import { getChainedUiStateKey } from "./getChainedUiStateKey";
 import {
   isPassport,
   isPassportWithBarcode,
@@ -446,14 +445,17 @@ export const blinkIdUiStateMap: BlinkIdUiStateMap = {
 } as const;
 
 /**
- * The partial process result.
+ * Maps a session-level scanning status to a UI state key
  */
-export type PartialProcessResult = {
-  /** The input image analysis result. */
-  inputImageAnalysisResult: Partial<InputImageAnalysisResult>;
-  /** The result completeness. */
-  resultCompleteness: Partial<ResultCompleteness>;
-};
+export function getUiStateKeyFromScanningStatus(
+  scanningStatus: ScanningStatus,
+): BlinkIdUiMappableKey | undefined {
+  return match<ScanningStatus, BlinkIdUiMappableKey | undefined>(scanningStatus)
+    .with("document-scanned", () => "DOCUMENT_CAPTURED")
+    .with("side-scanned", () => "PAGE_CAPTURED")
+    .with("scanning-barcode-in-progress", () => "PROCESSING_BARCODE")
+    .otherwise(() => undefined);
+}
 
 /**
  * Determines the appropriate UI state key based on the current frame processing
@@ -470,37 +472,24 @@ export type PartialProcessResult = {
  * @returns The UI state key representing what should be shown to the user.
  */
 export function getUiStateKey(
-  frameProcessResult: PartialProcessResult,
-  settings?: Partial<ScanningSettings>,
+  scanningStatus: ScanningStatus,
+  inputImageAnalysisResult: InputImageAnalysisResult,
+  scanningSettings: ScanningSettings,
 ) {
-  return (
-    match<PartialProcessResult, BlinkIdUiMappableKey | undefined>(
-      frameProcessResult,
-    )
-      // Success states
-      .with(
-        {
-          resultCompleteness: {
-            scanningStatus: "document-scanned",
-          },
-        },
-        () => "DOCUMENT_CAPTURED",
-      )
-      .with(
-        {
-          resultCompleteness: {
-            scanningStatus: "side-scanned",
-          },
-        },
-        () => "PAGE_CAPTURED",
-      )
+  const scanningStatusKey = getUiStateKeyFromScanningStatus(scanningStatus);
 
+  if (scanningStatusKey) {
+    return scanningStatusKey;
+  }
+
+  return (
+    match<InputImageAnalysisResult, BlinkIdUiMappableKey | undefined>(
+      inputImageAnalysisResult,
+    )
       // Unsupported document
       .with(
         {
-          inputImageAnalysisResult: {
-            processingStatus: "unsupported-document",
-          },
+          processingStatus: "unsupported-document",
         },
         () => "UNSUPPORTED_DOCUMENT",
       )
@@ -508,51 +497,41 @@ export function getUiStateKey(
       // scan wrong side / page
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            processingStatus: "scanning-wrong-side",
-            documentClassInfo: P.when(isPassportWithBarcode),
-          },
+          scanningSide: "second",
+          processingStatus: "scanning-wrong-side",
+          documentClassInfo: P.when(isPassportWithBarcode),
         },
         () => "WRONG_LAST_PAGE",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            processingStatus: "scanning-wrong-side",
-            documentClassInfo: P.when(isPassportWithoutBarcode),
-            documentRotation: "counter-clockwise-90",
-          },
+          scanningSide: "second",
+          processingStatus: "scanning-wrong-side",
+          documentClassInfo: P.when(isPassportWithoutBarcode),
+          documentRotation: "counter-clockwise-90",
         },
         () => "WRONG_LEFT_PAGE",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            processingStatus: "scanning-wrong-side",
-            documentClassInfo: P.when(isPassportWithoutBarcode),
-            documentRotation: "clockwise-90",
-          },
+          scanningSide: "second",
+          processingStatus: "scanning-wrong-side",
+          documentClassInfo: P.when(isPassportWithoutBarcode),
+          documentRotation: "clockwise-90",
         },
         () => "WRONG_RIGHT_PAGE",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            processingStatus: "scanning-wrong-side",
-            documentClassInfo: P.when(isPassportWithoutBarcode),
-          },
+          scanningSide: "second",
+          processingStatus: "scanning-wrong-side",
+          documentClassInfo: P.when(isPassportWithoutBarcode),
         },
         () => "WRONG_TOP_PAGE",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            processingStatus: "scanning-wrong-side",
-          },
+          processingStatus: "scanning-wrong-side",
         },
         () => "WRONG_SIDE",
       )
@@ -560,13 +539,8 @@ export function getUiStateKey(
       // passport not in frame
       .with(
         {
-          resultCompleteness: {
-            scanningStatus: "scanning-side-in-progress",
-          },
-          inputImageAnalysisResult: {
-            scanningSide: "first",
-            documentClassInfo: P.when(isPassportWithBarcode),
-          },
+          scanningSide: "first",
+          documentClassInfo: P.when(isPassportWithBarcode),
         },
         () => "DATA_PAGE_NOT_IN_FRAME",
       )
@@ -574,33 +548,25 @@ export function getUiStateKey(
       // framing
       .with(
         {
-          inputImageAnalysisResult: {
-            documentDetectionStatus: "camera-angle-too-steep",
-          },
+          documentDetectionStatus: "camera-angle-too-steep",
         },
         () => "DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            documentDetectionStatus: "camera-too-close",
-          },
+          documentDetectionStatus: "camera-too-close",
         },
         () => "DOCUMENT_FRAMING_CAMERA_TOO_CLOSE",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            documentDetectionStatus: "camera-too-far",
-          },
+          documentDetectionStatus: "camera-too-far",
         },
         () => "DOCUMENT_FRAMING_CAMERA_TOO_FAR",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            documentDetectionStatus: "document-too-close-to-camera-edge",
-          },
+          documentDetectionStatus: "document-too-close-to-camera-edge",
         },
         () => "DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE",
       )
@@ -608,25 +574,23 @@ export function getUiStateKey(
       // lighting
       .with(
         {
-          inputImageAnalysisResult: {
-            documentLightingStatus: P.when(
-              (status) =>
-                status === "too-bright" &&
-                settings?.skipImagesWithInadequateLightingConditions,
-            ),
-          },
+          documentLightingStatus: P.when(
+            (status) =>
+              status === "too-bright" &&
+              scanningSettings.documentCaptureModule
+                ?.imageWithPoorLightingRejected,
+          ),
         },
         () => "TOO_BRIGHT",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            documentLightingStatus: P.when(
-              (status) =>
-                status === "too-dark" &&
-                settings?.skipImagesWithInadequateLightingConditions,
-            ),
-          },
+          documentLightingStatus: P.when(
+            (status) =>
+              status === "too-dark" &&
+              scanningSettings.documentCaptureModule
+                ?.imageWithPoorLightingRejected,
+          ),
         },
         () => "TOO_DARK",
       )
@@ -634,12 +598,11 @@ export function getUiStateKey(
       // glare
       .with(
         {
-          inputImageAnalysisResult: {
-            glareDetectionStatus: P.when(
-              (status) =>
-                status === "detected" && settings?.skipImagesWithGlare,
-            ),
-          },
+          glareDetectionStatus: P.when(
+            (status) =>
+              status === "detected" &&
+              scanningSettings.documentCaptureModule?.imageWithGlareRejected,
+          ),
         },
         () => "GLARE_DETECTED",
       )
@@ -647,67 +610,55 @@ export function getUiStateKey(
       // occluded
       .with(
         {
-          inputImageAnalysisResult: {
-            documentDetectionStatus: "document-partially-visible",
-          },
+          documentDetectionStatus: "document-partially-visible",
         },
         () => "OCCLUDED",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            documentHandOcclusionStatus: P.when(
-              (status) =>
-                status === "detected" && settings?.skipImagesOccludedByHand,
-            ),
-          },
+          documentHandOcclusionStatus: P.when(
+            (status) =>
+              status === "detected" &&
+              scanningSettings.documentCaptureModule
+                ?.imageWithHandOcclusionRejected,
+          ),
         },
         () => "OCCLUDED",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            missingMandatoryFields: P.when(
-              (arr) => Array.isArray(arr) && arr.length > 0,
-            ),
-          },
+          missingMandatoryFields: P.when(
+            (arr) => Array.isArray(arr) && arr.length > 0,
+          ),
         },
         () => "OCCLUDED",
       )
       // technically the same as the previous case
       .with(
         {
-          inputImageAnalysisResult: {
-            processingStatus: "mandatory-field-missing",
-          },
+          processingStatus: "mandatory-field-missing",
         },
         () => "OCCLUDED",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            processingStatus: "invalid-characters-found",
-          },
+          processingStatus: "invalid-characters-found",
         },
         () => "OCCLUDED",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            processingStatus: "mrz-parsing-failed",
-          },
+          processingStatus: "mrz-parsing-failed",
         },
         () => "OCCLUDED",
       )
 
       .with(
         {
-          inputImageAnalysisResult: {
-            processingStatus: "image-return-failed",
-            imageExtractionFailures: P.when(
-              (arr) => Array.isArray(arr) && arr.includes("face"),
-            ),
-          },
+          processingStatus: "image-return-failed",
+          imageExtractionFailures: P.when(
+            (arr) => Array.isArray(arr) && arr.includes("face"),
+          ),
         },
         () => "FACE_PHOTO_OCCLUDED",
       )
@@ -715,11 +666,11 @@ export function getUiStateKey(
       // blur
       .with(
         {
-          inputImageAnalysisResult: {
-            blurDetectionStatus: P.when(
-              (status) => status === "detected" && settings?.skipImagesWithBlur,
-            ),
-          },
+          blurDetectionStatus: P.when(
+            (status) =>
+              status === "detected" &&
+              scanningSettings.documentCaptureModule?.imageWithBlurRejected,
+          ),
         },
         () => "BLUR_DETECTED",
       )
@@ -727,93 +678,71 @@ export function getUiStateKey(
       // document not in frame
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "first",
-            documentDetectionStatus: "failed",
-            documentClassInfo: P.when(isPassportWithBarcode),
-          },
+          scanningSide: "first",
+          documentDetectionStatus: "failed",
+          documentClassInfo: P.when(isPassportWithBarcode),
         },
         () => "DATA_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentDetectionStatus: "failed",
-            documentClassInfo: P.when(isPassportWithoutBarcode),
-            documentRotation: "counter-clockwise-90",
-          },
+          scanningSide: "second",
+          documentDetectionStatus: "failed",
+          documentClassInfo: P.when(isPassportWithoutBarcode),
+          documentRotation: "counter-clockwise-90",
         },
         () => "LEFT_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentDetectionStatus: "failed",
-            documentClassInfo: P.when(isPassportWithoutBarcode),
-            documentRotation: "clockwise-90",
-          },
+          scanningSide: "second",
+          documentDetectionStatus: "failed",
+          documentClassInfo: P.when(isPassportWithoutBarcode),
+          documentRotation: "clockwise-90",
         },
         () => "RIGHT_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentDetectionStatus: "failed",
-            documentClassInfo: P.when(isPassportWithoutBarcode),
-          },
+          scanningSide: "second",
+          documentDetectionStatus: "failed",
+          documentClassInfo: P.when(isPassportWithoutBarcode),
         },
         () => "TOP_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentDetectionStatus: "failed",
-            documentClassInfo: P.when(isPassportWithBarcode),
-          },
+          scanningSide: "second",
+          documentDetectionStatus: "failed",
+          documentClassInfo: P.when(isPassportWithBarcode),
         },
         () => "LAST_PAGE_NOT_IN_FRAME",
       )
       // non-passport not in frame
       .with(
         {
-          resultCompleteness: {
-            scanningStatus: "scanning-side-in-progress",
-          },
-          inputImageAnalysisResult: {
-            scanningSide: "first",
-            documentDetectionStatus: "failed",
-            documentClassInfo: P.when((x) => !isPassport(x)),
-          },
+          scanningSide: "first",
+          documentDetectionStatus: "failed",
+          documentClassInfo: P.when((x) => !isPassport(x)),
         },
         () => "FRONT_PAGE_NOT_IN_FRAME",
       )
       .with(
         {
-          resultCompleteness: {
-            scanningStatus: "scanning-side-in-progress",
-          },
-          inputImageAnalysisResult: {
-            scanningSide: "second",
-            documentDetectionStatus: "failed",
-            documentClassInfo: P.when((x) => !isPassport(x)),
-          },
+          scanningSide: "second",
+          documentDetectionStatus: "failed",
+          documentClassInfo: P.when((x) => !isPassport(x)),
         },
         () => "BACK_PAGE_NOT_IN_FRAME",
       )
       // barcode
       .with(
         {
-          inputImageAnalysisResult: {
-            /**
-             * This processing status can only occur if document has mandatory barcode,
-             * during the VIZ step
-             */
-            processingStatus: "barcode-detection-failed",
-          },
+          /**
+           * This processing status can only occur if document has mandatory barcode,
+           * during the VIZ step
+           */
+          processingStatus: "barcode-detection-failed",
         },
         () => "BARCODE_NOT_IN_FRAME",
       )
@@ -821,9 +750,7 @@ export function getUiStateKey(
       // scan barcode
       .with(
         {
-          inputImageAnalysisResult: {
-            processingStatus: "barcode-recognition-failed",
-          },
+          processingStatus: "barcode-recognition-failed",
         },
         () => "PROCESSING_BARCODE",
       )

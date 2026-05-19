@@ -6,72 +6,181 @@
  * Localization strings for is.
  */
 export default {
-  alert_cancel_btn: "Hætta við",
-  alert_retry_btn: "Reynið aftur",
-  blur_detected: "Haldið skjali og síma kyrrum",
-  camera_angle_too_steep: "Haldið skjali samhliða síma",
-  document_filtered: "Skjal ekki samþykkt",
-  document_filtered_details: "Prófið að skannað annað skjal.",
-  document_not_recognized: "Skjal ekki þekkt",
-  document_not_recognized_details: "Skannið framhliðina á studdu skjali.",
-  document_scanned: "Tókst! Skjalið var skannað",
-  document_too_close_to_edge: "Færið fjær",
-  face_photo_not_fully_visible: "Haldið andlitsmynd fyllilega sýnilegri",
-  flip_document: "Snúið skjalinu",
-  flip_to_back_side: "Snúið á bakhliðina",
-  front_side_scanned: "Tókst! Framhlið skönnuð",
-  glare_detected: "Hallið eða færið skjalið til að fjarlægja endurkast",
-  help_aria_label: "Hjálp",
-  help_modal_back_btn: "Til baka",
-  help_modal_blur_details_desktop:
-    "Reynið að halda tækinu og skjalinu kyrru meðan verið er að skanna. Ef annað hvort hreyfist getur myndin orðið óskýr og gögnin á skjalinu orðið ólæsileg.",
-  help_modal_camera_lens_details:
-    "Athugið hvort blettir eða ryk séu á myndavélalinsunni. Skítug linsa veldur því að lokamyndin verður óskýr, sem gerir skjalupplýsingarnar ólæsilegar og kemur í veg fyrir að hægt sé að skanna gögnin með góðum árangri.",
-  help_modal_camera_lens_title: "Hreinsið myndavélalinsuna",
-  help_modal_details_1:
-    "Gangið úr skugga um að hlutar skjalsins séu ekki huldir með fingri, þar á meðal neðstu línurnar. Gætið einnig að endurspeglunum heilmyndar sem fara yfir reiti skjalsins.",
-  help_modal_details_2:
-    "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
-  help_modal_details_3:
-    "Reynið að halda símanum og skjalinu kyrrum á meðan skannað er. Að færa annað hvort getur gert myndina óskýra og gert gögnin í skjalinu ólæsileg.",
-  help_modal_done_btn: "Lokið",
-  help_modal_next_btn: "Áfram",
-  help_modal_title_1: "Haldið öllum reitum sýnilegum",
-  help_modal_title_2: "Gætið að sterku ljósi",
-  help_modal_title_3: "Verið kyrr á meðan skannað er",
-  help_tooltip: "Þarftu aðstoð?",
-  keep_document_parallel: "Halldið skjalinu samhliða skjá",
-  keep_document_still: "Haldið skjali og tæki kyrru",
-  move_closer: "Færið nær",
-  move_farther: "Færið fjær",
-  move_left: "Farið á síðuna vinstra megin",
-  move_right: "Farið á síðuna hægra megin",
-  move_top: "Farið á síðuna sem er efst",
-  occluded: "Haldið skjalinu fyllilega sýnilegu",
-  onboarding_modal_btn: "Byrja að skanna",
-  onboarding_modal_details:
-    "Gangið úr skugga um að skjalið sé vel lýst. Allir reitir skjals ættu að vera sýnilegir á skjá myndavélarinnar.",
-  onboarding_modal_details_desktop:
-    "Gangið úr skugga um að myndavélarlinsan sé hrein og að skjalið sé vel lýst. Allir reitir skjals ættu að vera sýnilegir á skjá myndavélarinnar.",
-  onboarding_modal_title: "Haldið öllum upplýsingunum sýnilegum",
-  onboarding_modal_title_desktop: "Verið tilbúin að skanna",
-  resume_scanning: "Halda áfram að skanna",
-  scan_data_page: "Skannið gagnasíðu skjalsins",
-  scan_last_page_barcode: "Skannaðu strikamerki frá síðustu síðu",
-  scan_left_page: "Skannið vinstri síðuna",
-  scan_right_page: "Skannið hægri síðuna",
-  scan_the_back_side: "Skannið bakhlið skjalsins",
-  scan_the_barcode: "Skannið strikamerkið",
-  scan_the_front_side: "Skannið framhliðina á skjalinu",
-  scan_top_page: "Skannið efstu síðuna",
-  scan_unsuccessful: "Skönnun mistókst",
-  scan_unsuccessful_details: "Ekki tókst að lesa skjalið. Reynið aftur.",
-  scanning_help: "Skönnunarhjálp",
-  scanning_instructions: "Skönnunarleiðbeiningar",
-  scanning_screen: "Skjalaskönnunarskjár",
-  too_bright: "Farið á stað með minni lýsingu",
-  too_dark: "Farið á bjartari stað",
-  wrong_left: "Farið yfir á vinstri síðuna",
-  wrong_right: "Farið yfir á hægri síðuna",
-  wrong_top: "Farið á efstu síðuna",
+  document_filtered_modal: {
+    details: "Prófið að skannað annað skjal.",
+    title: "Skjal ekki samþykkt",
+  },
+  document_not_recognized_modal: {
+    details: "Skannið framhliðina á studdu skjali.",
+    title: "Skjal ekki þekkt",
+  },
+  error_modal: { cancel_btn: "Hætta við", retry_btn: "Reynið aftur" },
+  feedback_messages: {
+    blur_detected: "Haldið skjali og síma kyrrum",
+    camera_angle_too_steep: "Haldið skjali samhliða síma",
+    document_scanned_aria: "Tókst! Skjalið var skannað",
+    document_too_close_to_edge: "Færið fjær",
+    face_photo_not_fully_visible: "Haldið andlitsmynd fyllilega sýnilegri",
+    flip_document: "Snúið skjalinu",
+    flip_to_back_side: "Snúið á bakhliðina",
+    front_side_scanned_aria: "Tókst! Framhlið skönnuð",
+    glare_detected: "Hallið eða færið skjalið til að fjarlægja endurkast",
+    keep_document_parallel: "Halldið skjalinu samhliða skjá",
+    keep_document_still: "Haldið skjali og tæki kyrru",
+    keep_still: "Haltu kyrru",
+    move_closer: "Færið nær",
+    move_farther: "Færið fjær",
+    move_left: "Farið á síðuna vinstra megin",
+    move_right: "Farið á síðuna hægra megin",
+    move_top: "Farið á síðuna sem er efst",
+    occluded: "Haldið skjalinu fyllilega sýnilegu",
+    scan_data_page: "Skannið gagnasíðu skjalsins",
+    scan_last_page_barcode: "Skannaðu strikamerki frá síðustu síðu",
+    scan_left_page: "Skannið vinstri síðuna",
+    scan_right_page: "Skannið hægri síðuna",
+    scan_the_back_side: "Skannið bakhlið skjalsins",
+    scan_the_barcode: "Skannið strikamerkið",
+    scan_the_barcode_side: "Skannaðu strikamerkjahlið skjals",
+    scan_the_front_side: "Skannið framhliðina á skjalinu",
+    scan_top_page: "Skannið efstu síðuna",
+    too_bright: "Farið á stað með minni lýsingu",
+    too_dark: "Farið á bjartari stað",
+    wrong_left: "Farið yfir á vinstri síðuna",
+    wrong_right: "Farið yfir á hægri síðuna",
+    wrong_top: "Farið á efstu síðuna",
+  },
+  help_button: { aria_label: "Hjálp", tooltip: "Þarftu aðstoð?" },
+  help_modal: {
+    aria: "Skönnunarhjálp",
+    back_btn: "Til baka",
+    barcode_only: {
+      blur: {
+        details:
+          "Reyndu að halda símanum og strikamerkinu kyrru meðan þú skannar. Ef annað hvort hreyfist getur myndin orðið óskýr og strikamerkið orðið erfitt að lesa.",
+        details_desktop:
+          "Reyndu að halda kyrru á meðan skannað er. Hreyfing getur gert myndina óskýra og gert strikamerkið erfitt að lesa.",
+        title: "Verið kyrr á meðan skannað er",
+        title_desktop: "Verið kyrr á meðan skannað er",
+      },
+      camera_lens: {
+        details_desktop:
+          "Athugaðu hvort blettir eða ryk séu á myndavélarlinsunni. Óhrein linsa veldur því að lokamyndin verður óskýr, sem gerir strikamerkið ólæsilegt og kemur í veg fyrir að hægt sé að skanna gögnin með góðum árangri.",
+        title_desktop: "Hreinsið myndavélalinsuna",
+      },
+      lighting: {
+        details:
+          "Forðastu beint skarpt ljós, því það getur valdið glampa á strikamerkinu og gert það erfitt að skanna. Ef þú sérð strikamerkið ekki greinilega, gæti myndavélin einnig átt erfitt með að lesið það.",
+        details_desktop:
+          "Forðastu beint skarpt ljós, því það getur valdið glampa á strikamerkinu og gert það erfitt að skanna. Ef þú sérð strikamerkið ekki greinilega, gæti myndavélin einnig átt erfitt með að lesið það.",
+        title: "Gætið að sterku ljósi",
+        title_desktop: "Gætið að sterku ljósi",
+      },
+      visibility: {
+        details:
+          "Gakktu úr skugga um að þú hyljir ekki hluta strikamerkisins með fingri. Gáðu einnig að endurkasti ljóss sem fer yfir strikamerkið og gæti gert það ólæsilegt.",
+        details_desktop:
+          "Gakktu úr skugga um að þú hyljir ekki hluta strikamerkisins með fingri. Gáðu einnig að endurkasti ljóss sem fer yfir strikamerkið og gæti gert það ólæsilegt.",
+        title: "Haltu strikamerkinu sýnilegu",
+        title_desktop: "Haltu strikamerkinu sýnilegu",
+      },
+    },
+    document_with_barcode: {
+      blur: {
+        details:
+          "Reynið að halda símanum og skjalinu kyrrum á meðan skannað er. Að færa annað hvort getur gert myndina óskýra og gert gögnin í skjalinu ólæsileg.",
+        details_desktop:
+          "Reyndu að halda kyrru meðan verið er að skanna. Hreyfing getur gert myndina óskýra og gert gögn á skjalinu ólæsileg.",
+        title: "Verið kyrr á meðan skannað er",
+        title_desktop: "Verið kyrr á meðan skannað er",
+      },
+      camera_lens: {
+        details_desktop:
+          "Athugið hvort blettir eða ryk séu á myndavélalinsunni. Skítug linsa veldur því að lokamyndin verður óskýr, sem gerir skjalupplýsingarnar ólæsilegar og kemur í veg fyrir að hægt sé að skanna gögnin með góðum árangri.",
+        title_desktop: "Hreinsið myndavélalinsuna",
+      },
+      lighting: {
+        details:
+          "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
+        details_desktop:
+          "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
+        title: "Gætið að sterku ljósi",
+        title_desktop: "Gætið að sterku ljósi",
+      },
+      visibility: {
+        details:
+          "Gakktu úr skugga um að þú hyljir ekki hluta strikamerkisins með fingri. Gáðu einnig að endurkasti ljóss sem fer yfir strikamerkið og gæti gert það ólæsilegt.",
+        details_desktop:
+          "Gakktu úr skugga um að þú hyljir ekki hluta strikamerkisins með fingri. Gáðu einnig að endurkasti ljóss sem fer yfir strikamerkið og gæti gert það ólæsilegt.",
+        title: "Haltu strikamerkinu sýnilegu",
+        title_desktop: "Haltu strikamerkinu sýnilegu",
+      },
+    },
+    done_btn: "Lokið",
+    done_btn_aria: "Halda áfram að skanna",
+    full_document: {
+      blur: {
+        details:
+          "Reynið að halda símanum og skjalinu kyrrum á meðan skannað er. Að færa annað hvort getur gert myndina óskýra og gert gögnin í skjalinu ólæsileg.",
+        details_desktop:
+          "Reyndu að halda kyrru meðan verið er að skanna. Hreyfing getur gert myndina óskýra og gert gögn á skjalinu ólæsileg.",
+        title: "Verið kyrr á meðan skannað er",
+        title_desktop: "Verið kyrr á meðan skannað er",
+      },
+      camera_lens: {
+        details_desktop:
+          "Athugið hvort blettir eða ryk séu á myndavélalinsunni. Skítug linsa veldur því að lokamyndin verður óskýr, sem gerir skjalupplýsingarnar ólæsilegar og kemur í veg fyrir að hægt sé að skanna gögnin með góðum árangri.",
+        title_desktop: "Hreinsið myndavélalinsuna",
+      },
+      lighting: {
+        details:
+          "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
+        details_desktop:
+          "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
+        title: "Gætið að sterku ljósi",
+        title_desktop: "Gætið að sterku ljósi",
+      },
+      visibility: {
+        details:
+          "Gangið úr skugga um að hlutar skjalsins séu ekki huldir með fingri, þar á meðal neðstu línurnar. Gætið einnig að endurspeglunum heilmyndar sem fara yfir reiti skjalsins.",
+        details_desktop:
+          "Gangið úr skugga um að hlutar skjalsins séu ekki huldir með fingri, þar á meðal neðstu línurnar. Gætið einnig að endurspeglunum heilmyndar sem fara yfir reiti skjalsins.",
+        title: "Haldið öllum reitum sýnilegum",
+        title_desktop: "Haldið öllum reitum sýnilegum",
+      },
+    },
+    next_btn: "Áfram",
+  },
+  onboarding_modal: {
+    aria: "Skönnunarleiðbeiningar",
+    barcode_only: {
+      details:
+        "Leitaðu að strikamerki (röð af svörtum línum eða ferköntuðum kóða). Beindu myndavélinni að því og haltu henni kyrrri — skönnun fer fram sjálfkrafa.",
+      details_desktop:
+        "Leitaðu að strikamerki (röð af svörtum línum eða ferköntuðum kóða). Gakktu úr skugga um að linsan á myndavélinni sé hrein og að strikamerkið sé vel upplýst.",
+      title: "Finndu og skannaðu strikamerkið",
+      title_desktop: "Hreinsaðu myndavélarlinsuna og finndu strikamerkið",
+    },
+    btn: "Byrja að skanna",
+    document_with_barcode: {
+      details:
+        "Mismunandi gerðir skilríkja geta haft mismunandi strikamerkjaform og staðsetningar. Leitaðu að strikamerki á fram- og bakhlið skilríkisins.",
+      details_desktop:
+        "Athugaðu fram- og bakhlið skilríkjanna fyrir strikamerki. Gakktu úr skugga um að linsa myndavélarinnar sé hrein og skjalið vel upplýst.",
+      title: "Finndu strikamerkið á skilríkinu",
+      title_desktop: "Hreinsaðu myndavélarlinsuna og finndu strikamerkið",
+    },
+    full_document: {
+      details:
+        "Gangið úr skugga um að skjalið sé vel lýst. Allir reitir skjals ættu að vera sýnilegir á skjá myndavélarinnar.",
+      details_desktop:
+        "Gangið úr skugga um að myndavélarlinsan sé hrein og að skjalið sé vel lýst. Allir reitir skjals ættu að vera sýnilegir á skjá myndavélarinnar.",
+      title: "Haldið öllum upplýsingunum sýnilegum",
+      title_desktop: "Verið tilbúin að skanna",
+    },
+  },
+  sdk_aria: "Skjalaskönnunarskjár",
+  timeout_modal: {
+    details: "Ekki tókst að lesa skjalið. Reynið aftur.",
+    title: "Skönnun mistókst",
+  },
 } as const;

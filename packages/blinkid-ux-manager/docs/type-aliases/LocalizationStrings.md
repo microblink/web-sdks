@@ -6,6 +6,8 @@
 
 # Type Alias: LocalizationStrings
 
-> **LocalizationStrings** = \{ \[K in keyof LocaleRecord\]: LocaleRecord\[K\] \| string & \{\} \}
+> **LocalizationStrings** = `LocalizedValue`\<[`LocaleRecord`](LocaleRecord.md)\>
 
 The localization strings type.
+This allows for autocomplete for defaults, but also overriding with strings at any level.
+https://twitter.com/mattpocockuk/status/1709281782325977101

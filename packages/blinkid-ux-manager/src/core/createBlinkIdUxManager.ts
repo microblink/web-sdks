@@ -8,14 +8,25 @@ import {
 } from "@microblink/blinkid-core";
 import { CameraManager } from "@microblink/camera-manager";
 import { BlinkIdUxManager } from "./BlinkIdUxManager";
-import { BlinkIdUiStateKey } from "./blinkid-ui-state";
+import {
+  BlinkIdUiStateKey,
+  getUiStateKeyFromScanningStatus,
+} from "./blinkid-ui-state";
+import type { BlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
 
+/**
+ * Options for the BlinkIdUxManager.
+ */
 export type BlinkIdUxManagerOptions = {
   /**
    * Initial UI state key used by the manager/stabilizer reset flow.
    * Defaults to `INTRO_FRONT_PAGE`.
    */
   initialUiStateKey?: BlinkIdUiStateKey;
+  /**
+   * Configures BlinkID scanning timeout behavior.
+   */
+  timeoutConfiguration?: Partial<BlinkIdTimeoutConfiguration>;
 };
 
 /**
@@ -32,22 +43,35 @@ export const createBlinkIdUxManager = async (
 ): Promise<BlinkIdUxManager> => {
   try {
     const [
-      sessionSettings,
+      resolvedSessionSettings,
       showDemoOverlay,
       showProductionOverlay,
       deviceInfo,
+      scanningStatus,
     ] = await Promise.all([
-      scanningSession.getSettings(),
+      scanningSession.getResolvedSessionSettings(),
       scanningSession.showDemoOverlay(),
       scanningSession.showProductionOverlay(),
       getDeviceInfo(),
+      scanningSession.getScanningStatus(),
     ]);
+
+    const initialUiStateKey =
+      getUiStateKeyFromScanningStatus(scanningStatus) ??
+      options.initialUiStateKey;
+    const managerOptions =
+      initialUiStateKey == null
+        ? options
+        : {
+            ...options,
+            initialUiStateKey,
+          };
 
     return new BlinkIdUxManager(
       cameraManager,
       scanningSession,
-      options,
-      sessionSettings,
+      managerOptions,
+      resolvedSessionSettings,
       showDemoOverlay,
       showProductionOverlay,
       deviceInfo,

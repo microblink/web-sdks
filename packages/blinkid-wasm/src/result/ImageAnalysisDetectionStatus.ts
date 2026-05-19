@@ -2,11 +2,14 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-/** ImageAnalysisDetectionStatus defines possible states of detection. */
+/**
+ * ImageAnalysisDetectionStatus defines possible states of detection.
+ *
+ * - `not-available` Detection was not performed.
+ * - `not-detected` Not detected on input image.
+ * - `detected` Detected on input image.
+ */
 export type ImageAnalysisDetectionStatus =
-  /** Detection was not performed */
   | "not-available"
-  /** Not detected on input image */
   | "not-detected"
-  /** Detected on input image */
   | "detected";

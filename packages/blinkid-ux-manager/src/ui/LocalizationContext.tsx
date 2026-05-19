@@ -18,14 +18,42 @@ import enLocaleStrings from "./locales/en";
 export type LocaleRecord = typeof enLocaleStrings;
 
 /**
- * The localization strings type.
+ * Recursively transforms a locale record to allow string overrides at any level.
  */
-export type LocalizationStrings = {
-  // This allows for autocomplete for defaults, but also overriding
-  // https://twitter.com/mattpocockuk/status/1709281782325977101
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  [K in keyof LocaleRecord]: LocaleRecord[K] | (string & {});
-};
+export type LocalizedValue<T> =
+  T extends Record<string, unknown>
+    ?
+        | {
+            [K in keyof T]: LocalizedValue<T[K]>;
+          }
+        | (string & Record<string, never>)
+    : T | (string & Record<string, never>);
+
+/**
+ * Deep partial type that allows any string to be assigned to override values.
+ * This type is permissive to allow any partial override structure.
+ */
+// eslint-disable @typescript-eslint/ban-types
+type DeepPartialLocalized<T> =
+  T extends Record<string, unknown>
+    ? {
+        -readonly [K in keyof T]?: T[K] extends Record<string, unknown>
+          ? DeepPartialLocalized<T[K]> | string
+          : string;
+      }
+    : never;
+
+/**
+ * The localization strings type.
+ * This allows for autocomplete for defaults, but also overriding with strings at any level.
+ * https://twitter.com/mattpocockuk/status/1709281782325977101
+ */
+export type LocalizationStrings = LocalizedValue<LocaleRecord>;
+
+/**
+ * Partial version of LocalizationStrings that allows any string to be assigned.
+ */
+export type PartialLocalizationStrings = DeepPartialLocalized<LocaleRecord>;
 
 /**
  * The localization context.
@@ -39,17 +67,18 @@ const LocalizationContext = createContext<{
  * The localization provider.
  */
 export const LocalizationProvider: ParentComponent<{
-  userStrings?: Partial<LocalizationStrings>;
+  userStrings?: PartialLocalizationStrings;
 }> = (props) => {
-  const [localizationStore, updateLocalizationStore] =
-    // avoid initing with original as proxying to the original object will
-    // mutate the original object on store updates
-    createStore<LocalizationStrings>({} as LocalizationStrings);
+  const mergedStrings = (): LocalizationStrings =>
+    ({
+      ...enLocaleStrings,
+      ...props.userStrings,
+    }) as LocalizationStrings;
 
-  const mergedStrings = () => ({
-    ...enLocaleStrings,
-    ...props.userStrings,
-  });
+  // avoid initing with original as proxying to the original object will
+  // mutate the original object on store updates
+  const [localizationStore, updateLocalizationStore] =
+    createStore<LocalizationStrings>(mergedStrings());
 
   // update store as a side-effects of userStrings changing
   createEffect(() => {

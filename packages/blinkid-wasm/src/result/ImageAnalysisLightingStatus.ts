@@ -2,13 +2,16 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-/** ImageAnalysisLightingStatus defines possible lighting statuses. */
+/**
+ * ImageAnalysisLightingStatus defines possible lighting statuses.
+ *
+ * - `not-available` status is not available.
+ * - `too-bright` status is when the document lighting is too bright.
+ * - `too-dark` status is when the document lighting is too dark.
+ * - `normal` status is when the document lighting is normal.
+ */
 export type ImageAnalysisLightingStatus =
-  /** Status is not available */
   | "not-available"
-  /** Document lighting is too bright */
   | "too-bright"
-  /** Document lighting is too dark */
   | "too-dark"
-  /** Document lighting is normal */
   | "normal";

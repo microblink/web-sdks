@@ -3,7 +3,7 @@
  */
 
 import type { Remote } from "comlink";
-import { releaseProxy, transfer, wrap } from "comlink";
+import { proxy as comlinkProxy, releaseProxy, transfer, wrap } from "comlink";
 import { oneLineTrim } from "common-tags";
 import { getCrossOriginWorkerURL } from "./getCrossOriginWorkerURL";
 
@@ -27,6 +27,28 @@ const createFrameTransferError = (message: string, error: unknown) => {
   }
 
   return new FrameTransferError(`${message}${causeMessage}`);
+};
+
+/**
+ * Proxies an object with function properties to a Comlink proxy.
+ * @param value Object to proxy
+ * @returns Proxied object
+ */
+const proxyObjectWithFunctionProperties = <T>(value: T): T => {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return value;
+  }
+
+  const entries = Object.entries(value as Record<string, unknown>);
+  const hasFunctionProperty = entries.some(
+    ([, entryValue]) => typeof entryValue === "function",
+  );
+
+  if (!hasFunctionProperty) {
+    return value;
+  }
+
+  return comlinkProxy({ ...(value as Record<string, unknown>) }) as T;
 };
 
 /**
@@ -171,8 +193,11 @@ export async function createProxyWorker<T extends BaseSdkWorkerProxy>(
         return async (
           ...args: Parameters<T["createScanningSession"]>
         ): Promise<ExtractSession<T>> => {
+          const proxiedArgs = args.map(
+            proxyObjectWithFunctionProperties,
+          ) as Parameters<T["createScanningSession"]>;
           const session = (await target.createScanningSession(
-            ...args,
+            ...proxiedArgs,
           )) as ExtractSession<T>;
 
           // Wrap the session to auto-transfer on process()

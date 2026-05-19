@@ -2,237 +2,510 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-import { AnonymizationMode } from "./AnonymizationMode";
-import { CroppedImageSettings } from "./CroppedImageSettings";
-import { DetectionLevel } from "./DetectionLevel";
-import { DocumentAnonymizationSettings } from "./DocumentAnonymizationSettings";
-import { DocumentRules } from "./DocumentRules";
-import { RecognitionModeFilter } from "./RecognitionModeFilter";
+import { SensitivityLevel } from "./SensitivityLevel";
 
 /**
- * Represents the configurable settings for scanning a document.
+ * Settings for the document capture module.
  *
- * This structure defines various parameters and policies related to the
- * scanning process, including image quality handling, data extraction and
- * anonymization, along with options for frame processing and image extraction.
+ * This module is responsible for the initial document detection, image
+ * extraction (such as face and document images), and image quality validation
+ * (blur, glare, and lighting checks).
+ *
+ * For Automatic ScanningMode, when scanning a supported document, the front
+ * side must be captured first, followed by the back side. When scanning an
+ * unsupported document, the capture order is flexible; since the side cannot be
+ * identified, either side can be scanned first.
+ *
+ * This setting must be turned on for Viz and Mrz extraction to work correctly.
+ *
+ * If enabled, session will start with document detection step at the
+ * initialization.
  */
-export type ScanningSettings = {
+export type DocumentCaptureModuleSettings = {
   /**
-   * The level of blur detection in the document image.
+   * Indicates whether the input image is already cropped and
+   * perspective-corrected.
    *
-   * Defines the severity of blur detected in the document image, as defined in
-   * `DetectionLevel`. Values range from `off` (detection NotAvailable) to
-   * higher levels of blur detection.
+   * If `true`, the input image must consist solely of the already cropped and
+   * corrected document.
    *
-   * `low` – less sensitive to blur; if something is detected as blur, it is
-   * almost certainly actual blur, but some amount of blur may not be detected
-   * at all.
+   * Default value is `false`.
    *
-   * `high` – highly sensitive to blur; it may detect as blur even something
-   * that only resembles blur.
+   * This setting is not applicable to `Video` sources and will cause a
+   * validation error if set to true.
+   *
+   * @default false
    */
-  blurDetectionLevel: DetectionLevel;
-
+  inputImageCropped: boolean;
   /**
-   * Indicates whether images with blur in the document image should be skipped.
+   * Enables the scanning and processing of unsupported document types.
    *
-   * A value of `true` means images with detected blur will be excluded from
-   * further processing to prevent blurred images from being used
+   * A document is considered unsupported if its classification result is
+   * `OTHER`.
    *
-   * - If `blurDetectionLevel` is `off` - blurred images will be processed
-   * - If blur is detected `InputImageAnalysisResult#processingStatus` will be
-   *   `image-preprocessing-failed` and blur will be reported in the
-   *   `BlinkIdProcessResult`
-   *
-   * A value of `false` means images with detected blur will not be excluded
-   * from further processing
-   *
-   * - If `blurDetectionLevel` is not `off` - even if blur is detected, the image
-   *   will be processed and blur will be reported in the
-   *   `BlinkIdProcessResult`.
+   * @default false
    */
-  skipImagesWithBlur: boolean;
-
+  unsupportedDocumentsAllowed: boolean;
   /**
-   * The level of glare detection in the document image.
+   * Indicates whether the back side scan should be skipped if that side
+   * supports image capture only (no MRZ, Barcode, etc.).
    *
-   * Defines the severity of glare detected in the document image, as defined in
-   * `DetectionLevel`. Values range from `off` (detection NotAvailable) to
-   * higher levels of glare detection.
+   * Some documents have a back side that is supported for capture but contains
+   * no extractable data. These sides can be captured only.
    *
-   * `low` – less sensitive to glare; if something is detected as glare, it is
-   * almost certainly actual glare, but some amount of glare may not be detected
-   * at all.
+   * When `true`, processing stops after the front side for these documents.
+   * When `false`, the back side is captured even if no data is extracted.
    *
-   * `high` – highly sensitive to glare; it may detect as glare even something
-   * that only resembles glare.
+   * Default value is `true`.
+   *
+   * Note for `ScanningMode`:
+   *
+   * - `Automatic`: Can be toggled as needed to optimize the flow.
+   * - `Single`: This must remain `true`. Since only one side is captured in this
+   *   mode, setting this to `false` will result in a settings validation
+   *   failure.
+   *
+   * @default true
    */
-  glareDetectionLevel: DetectionLevel;
-
+  secondSideWithNoExtractableDataSkipped: boolean;
   /**
-   * Indicates whether images with glare in the document image should be
-   * skipped.
+   * Indicates whether only the passport data page (the page containing the MRZ)
+   * should be scanned.
    *
-   * A value of `true` means images with detected glare will be excluded from
-   * further processing to prevent glared images from being used
+   * If set to `false`, the scanning process will require a second page scan for
+   * certain passport types that support it.
    *
-   * - If `glareDetectionLevel` is `off` - glared images will be processed
-   * - If glare is detected `InputImageAnalysisResult#processingStatus` will be
-   *   `image-preprocessing-failed` and glare will be reported in the
-   *   `BlinkIdProcessResult`
+   * Default value is `true`.
    *
-   * A value of `false` means images with detected glare will not be excluded
-   * from further processing
+   * Note for `ScanningMode`:
    *
-   * - If `glareDetectionLevel` is not `off` - even if glare is detected, the
-   *   image will be processed and glare will be reported in the
-   *   `BlinkIdProcessResult`
+   * - `Automatic`: Can be toggled as needed.
+   * - `Single`: This must remain `true`. Since only one side is captured in this
+   *   mode, setting this to `false` will result in a settings validation
+   *   failure.
+   *
+   * @default true
    */
-  skipImagesWithGlare: boolean;
-
+  passportDataPageScanOnly: boolean;
   /**
-   * The level of allowed detected tilt of the document in the image.
+   * Enables the extraction of the document's face image.
    *
-   * Defines the severity of allowed detected tilt of the document in the image,
-   * as defined in `DetectionLevel`. Values range from `off` (detection
-   * NotAvailable) to higher levels of allowed tilt.
+   * If face image is present on the document, an extraction becomes mandatory
+   * for supported documents. The requirement for its presence is determined by
+   * document rules.
    *
-   * `low` – less sensitive to tilt.
+   * For unsupported documents, presence is optional.
    *
-   * `high` – highly sensitive to tilt.
+   * @default false
    */
-  tiltDetectionLevel: DetectionLevel;
-
+  faceImageExtractionEnabled: boolean;
   /**
-   * Indicates whether images with inadequate lighting conditions should be
-   * rejected.
-   *
-   * Inadequate lighting conditions are represented as either `too-bright` or
-   * `too-dark` document images, as defined in the `ImageAnalysisLightingStatus`
-   * type. A value of `true` means images with inadequate lighting conditions
-   * will be excluded from further processing to prevent images with inadequate
-   * lighting from being used
-   *
-   * - If inadequate light conditions are detected
-   *   `InputImageAnalysisResult#processingStatus` will be
-   *   `image-preprocessing-failed` and lighting status will be reported in the
-   *   `BlinkIdProcessResult`.
-   */
-  skipImagesWithInadequateLightingConditions: boolean;
-
-  /**
-   * Indicates whether images occluded by hand should be rejected.
-   *
-   * A value of `true` means images occluded by hand will be excluded from
-   * further processing to prevent occluded images from being used
-   *
-   * - If hand occlusion is detected `InputImageAnalysisResult#processingStatus`
-   *   will be `image-preprocessing-failed` and hand occlusion status will be
-   *   reported in the `BlinkIdProcessResult`.
-   *
-   * This setting is applicable only if `scanCroppedDocumentImage` is false.
-   */
-  skipImagesOccludedByHand: boolean;
-
-  /**
-   * Indicates whether the aggregation of data from multiple images is enabled.
-   *
-   * Disabling this setting will yield higher-quality captured images, but it
-   * may slow down the scanning process due to the additional effort required to
-   * find the optimal image.
-   *
-   * Enabling this setting will simplify the extraction process, but the
-   * extracted data will be aggregated from multiple images instead of being
-   * sourced from a single image.
-   *
-   * This only applies when `InputImageSource` is equal to `video` - for images
-   * from `photo` source, setting will be ignored.
-   */
-  combineResultsFromMultipleInputImages: boolean;
-
-  /**
-   * Enables barcode recognition to proceed even if the initial VIZ extraction
-   * fails.
-   *
-   * If the barcode recognition is successful, the process will still end in a
-   * valid state. This setting is applicable only to images from `photo`
-   * source.
-   *
-   * For multi-side scanning, it is permitted only for the back side.
-   */
-  enableBarcodeScanOnly: boolean;
-
-  /**
-   * Defines custom rules for specific document class.
-   *
-   * When defining customDocumentRules, `documentFilter` is optionally set to
-   * specify the document to which the rule applies, and a `fields` with the
-   * appropriate `alphabetType` should be specified as mandatory for that
+   * If set to true, face image presence will be mandatory for the scanned
    * document.
    *
-   * If a `fields` is set to a field that is optional for that document or does
-   * not exist on it, all fields on the document become optional.
+   * For `Automatic` scanning mode, document side with the face image must be
+   * scanned first.
    *
-   * If a `fields` is set to a field with an incorrect alphabetType, all fields
-   * on the document become optional.
+   * In case of a timeout and advancement to the next step in the scanning flow,
+   * if a face image is detected on the scanned side but cannot be extracted,
+   * the presence requirement is considered fulfilled. As a result, face image
+   * extraction will no longer be a requirement to complete the scan on next
+   * side.
    *
-   * If a `fields` is set to a field that doesn't exist in the internal rules,
-   * that rule is ignored.
-   *
-   * When adding multiple `fields`, any field that does not match our rules is
-   * ignored. Only fields that comply with our rules are set as mandatory.
-   *
-   * If the documentFilter fields `country`, `region`, or `type` are set to
-   * `null`, all supported values for those fields will be considered. For
-   * example, if `country = null`, the rule will apply to all supported
-   * countries in BlinkID.
-   *
-   * By default, document fields are validated using internal rules that define
-   * mandatory fields for the scanned document class. This setting allows users
-   * to narrow down our internal rules on mandatory fields. All undefined fields
-   * will become optional. It is not possible to mark fields as mandatory if
-   * they cannot theoretically appear on the document.
-   *
-   * The more detailed document filter will have priority over the other.
+   * @default false
    */
-  customDocumentRules: DocumentRules[];
-
+  faceImagePresenceMandatory: boolean;
   /**
-   * The mode of anonymization applied to the document.
-   *
-   * Redact specific fields based on requirements or laws regarding a specific
-   * document. Data can be redacted from the image, the result or both.
-   */
-  anonymizationMode?: AnonymizationMode;
-
-  /**
-   * Redact fields for specific document class.
-   *
-   * Fields specified by requirements or laws for a specific document will be
-   * redacted regardless of this setting. Based on anonymizationMode setting,
-   * data will be redacted from the image, the result or both.
-   */
-  customDocumentAnonymizationSettings: DocumentAnonymizationSettings[];
-
-  /**
-   * Indicates whether input images should be returned.
+   * Indicates whether input images should be returned in the result.
    *
    * Save the input images at the moment of the data extraction or timeout. This
    * significantly increases memory consumption. The scanning performance is not
    * affected.
-   */
-  returnInputImages: boolean;
-
-  /**
-   * Process only cropped document images.
    *
-   * Requires the input image to consist solely of the cropped document image
-   * with perspective correction applied. This only applies to images from
-   * `photo` input image source - for images from `video` input image source,
-   * setting will be ignored.
+   * @default false
    */
-  scanCroppedDocumentImage: boolean;
+  inputImageReturnEnabled: boolean;
+  /**
+   * Indicates whether the document image should be returned.
+   *
+   * @default false
+   */
+  documentImageReturnEnabled: boolean;
+  /**
+   * Defines the minimum required margin between the document and the edge of
+   * the input image, expressed as a percentage of the image dimensions.
+   *
+   * This setting ensures compliance with regulations in certain countries that
+   * mandate documents be stored with adequate visual margins.
+   *
+   * This setting is only applicable for the 'Video' input source Providing this
+   * setting for 'Photo' will result in a settings validation failure.
+   *
+   * Allowed values range is [0.0, 1.0].
+   *
+   * Defaults to '0.02f' for `Video` mode (recommended).
+   *
+   * @default 0.02
+   */
+  inputImageMargin: number;
+  /**
+   * The DPI value for the cropped document, face and signature image.
+   *
+   * Allowed values range is [100, 400].
+   *
+   * @default 250
+   */
+  dotsPerInch: number;
+  /**
+   * The extension factor for the cropped document image. Applicable only to
+   * document images.
+   *
+   * Allowed values range is [0.0, 1.0].
+   *
+   * @default 0.0
+   */
+  extensionFactor: number;
+  /**
+   * The sensitivity of blur detection in the document image.
+   *
+   * Defines the severity of blur detected in the document image, as defined in
+   * `SensitivityLevel`. Values range from `Off` (detection NotAvailable) to
+   * higher sensitivity levels of blur detection. Low – less sensitive to blur;
+   * if something is detected as blur, it is almost certainly actual blur, but
+   * some amount of blur may not be detected at all. High – highly sensitive to
+   * blur; it may detect as blur even something that only resembles blur.
+   *
+   * @default "mid"
+   */
+  blurSensitivityLevel: SensitivityLevel;
+  /**
+   * Indicates whether images with detected blur should be rejected.
+   *
+   * A value of `true` means images with detected blur will be excluded from
+   * further processing. If glare is detected, `ProcessingStatus` will be
+   * `ImagePreprocessingFailed`.
+   *
+   * A value of `false` means images will be processed even if blur is detected,
+   * and the blur status will be reported in the `ProcessResult`.
+   *
+   * Default behavior depends on `blurSensitivityLevel`:
+   *
+   * - `Low`, `Mid`, `High`: Defaults to `true`.
+   * - `Off`: Defaults to `false`. This setting is not applicable if sensitivity
+   *   level is `Off` and setting it to `true` will result in a settings
+   *   validation failure.
+   *
+   * @default true
+   */
+  imageWithBlurRejected: boolean;
+  /**
+   * The sensitivity of glare detection in the document image.
+   *
+   * Defines the severity of glare detected in the document image, as defined in
+   * `SensitivityLevel`. Values range from `Off` (detection NotAvailable) to
+   * higher sensitivity levels of glare detection. Low – less sensitive to
+   * glare; if something is detected as glare, it is almost certainly actual
+   * glare, but some amount of glare may not be detected at all. High – highly
+   * sensitive to glare; it may detect as glare even something that only
+   * resembles glare.
+   *
+   * @default "mid"
+   */
+  glareSensitivityLevel: SensitivityLevel;
+  /**
+   * Indicates whether images with detected glare should be rejected.
+   *
+   * A value of `true` means images with detected glare will be excluded from
+   * further processing. If glare is detected, `ProcessingStatus` will be
+   * `ImagePreprocessingFailed`.
+   *
+   * A value of `false` means images will be processed even if glare is
+   * detected, and the glare status will be reported in the `ProcessResult`.
+   *
+   * Default behavior depends on `glareSensitivityLevel`:
+   *
+   * - `Low`, `Mid`, `High`: Defaults to `true`.
+   * - `Off`: Defaults to `false`. This setting is not applicable if sensitivity
+   *   level is `Off` and Setting it to `true` will result in a settings
+   *   validation failure.
+   *
+   * @default true
+   */
+  imageWithGlareRejected: boolean;
+  /**
+   * The sensitivity of allowed detected tilt of the document in the image.
+   *
+   * Defines the severity of allowed detected tilt of the document in the image,
+   * as defined in `SensitivityLevel`. Values range from `Off` (detection
+   * NotAvailable) to higher sensitivity levels of allowed tilt. Low – less
+   * sensitive to tilt. High – highly sensitive to tilt.
+   *
+   * @default "mid"
+   */
+  tiltSensitivityLevel: SensitivityLevel;
+  /**
+   * Indicates whether images with poor lighting conditions should be rejected.
+   *
+   * Poor lighting conditions are represented as either `TooBright` or `TooDark`
+   * document images, as defined in the `ImageAnalysisLightingStatus` type.
+   *
+   * A value of `true` means images with poor lighting conditions will be
+   * excluded from further processing to prevent images with inadequate lighting
+   * from being used.
+   *
+   * If poor light conditions are detected, `ProcessingStatus` will be
+   * `ImagePreprocessingFailed` and lighting status will be reported in the
+   * `ProcessResult`.
+   *
+   * @default true
+   */
+  imageWithPoorLightingRejected: boolean;
+  /**
+   * Indicates whether images occluded by hand should be rejected.
+   *
+   * When set to `true`, images where a hand is detected covering parts of the
+   * document will be excluded from further processing. If occlusion is
+   * detected, `ProcessingStatus` will be `ImagePreprocessingFailed` and hand
+   * occlusion status will be reported in the `ProcessResult`.
+   *
+   * Default behavior depends on `inputImageCropped`:
+   *
+   * - `true`: Defaults to `false`. This setting is not applicable. Setting this
+   *   to `true` while `inputImageCropped` is also `true` will result in a
+   *   settings validation failure.
+   * - `false`: Defaults to `true`. Images with hand occlusion are rejected.
+   *
+   * @default true
+   */
+  imageWithHandOcclusionRejected: boolean;
+};
 
+/**
+ * Settings for the barcode extraction module.
+ *
+ * This module manages the detection and data extraction from various 1D and 2D
+ * barcode formats (such as PDF417, QR codes, and various retail codes).
+ *
+ * If barcode is present on the document, an extraction becomes mandatory if
+ * supported.
+ *
+ * For supported documents, the requirement for its presence is determined by
+ * document rules. For unsupported documents, presence is optional.
+ *
+ * This setting can function independently of document capture module. If
+ * enabled and document capture module is disabled session will be set to
+ * extract barcode immediately at the initialization.
+ */
+export type BarcodeModuleSettings = {
+  /**
+   * If set to true, barcode presence becomes mandatory for the scanned
+   * document.
+   *
+   * For Single ScanningMode, the barcode must be present on the scanned side.
+   * For Automatic ScanningMode, the barcode must be present on one of the
+   * scanned sides.
+   *
+   * In case of a timeout and advancement to the next step in the scanning flow,
+   * if a barcode is detected on the scanned side but cannot be extracted, the
+   * presence requirement is considered fulfilled. As a result, barcode
+   * extraction will no longer be a requirement to complete the scan on next
+   * side.
+   *
+   * @default false
+   */
+  presenceMandatory: boolean;
+  /**
+   * Indicates whether the barcode image should be returned in the result.
+   *
+   * The DPI setting and the extension factor do not affect returned barcode
+   * image.
+   *
+   * @default false
+   */
+  barcodeImageReturnEnabled: boolean;
+  /**
+   * Enables the scanning and processing of Pdf417 barcodes.
+   *
+   * The current analyzer model flags a barcode as "present" if either a
+   * `PDF417` or a `QR` code is detected. Because the model does not distinguish
+   * between the two types at this stage, a conflict can occur: if `PDF417` is
+   * enabled but `QR` is disabled, the analyzer may trigger for a `QR` code,
+   * causing the process to hang.
+   *
+   * To prevent this, `pdf417ScanningEnabled` and `qrScanningEnabled` must be
+   * enabled together.
+   *
+   * @default true
+   */
+  pdf417ScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of QR barcodes.
+   *
+   * The current analyzer model flags a barcode as "present" if either a
+   * `PDF417` or a `QR` code is detected. Because the model does not distinguish
+   * between the two types at this stage, a conflict can occur: if `PDF417` is
+   * enabled but `QR` is disabled, the analyzer may trigger for a `QR` code,
+   * causing the process to hang.
+   *
+   * To prevent this, `qrScanningEnabled` and `pdf417ScanningEnabled` must be
+   * enabled together.
+   *
+   * @default true
+   */
+  qrScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of UPC-E barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  upceScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of UPC-A barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  upcaScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of Code-128 barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  code128ScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of Code-39 barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  code39ScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of EAN-8 barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  ean8ScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of EAN-13 barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  ean13ScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of ITF barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  itfScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of DataMatrix barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  dataMatrixScanningEnabled: boolean;
+};
+
+/**
+ * Settings for the MRZ (Machine Readable Zone) extraction module.
+ *
+ * This module is dedicated to the detection and parsing of machine-readable
+ * zone typically found on passports, visas, and identity cards.
+ *
+ * If Mrz is present on the document, an extraction becomes mandatory if
+ * supported.
+ *
+ * For supported documents, the requirement for its presence is determined by
+ * document rules. For unsupported documents, presence is optional.
+ *
+ * This setting requires document capture module to be enabled. Disabling
+ * document document capture module will result in a settings validation
+ * failure.
+ */
+export type MrzModuleSettings = {
+  /**
+   * If set to true, Mrz presence becomes mandatory for the scanned document
+   * regardless of the document rules.
+   *
+   * For Single ScanningMode, the Mrz must be present on the scanned side. For
+   * Automatic ScanningMode, the Mrz must be present on one of the scanned
+   * sides.
+   *
+   * In case of a timeout and advancement to the next step in the scanning flow,
+   * if a Mrz is detected on the scanned side but cannot be extracted, the
+   * presence requirement is considered fulfilled. As a result, Mrz extraction
+   * will no longer be a requirement to complete the scan on next side.
+   *
+   * @default false
+   */
+  presenceMandatory: boolean;
+};
+
+/**
+ * Settings for the VIZ (Visual Inspection Zone) extraction module.
+ *
+ * This module is responsible for extracting data from the document's visual
+ * fields.
+ *
+ * It supports features such as character validation for increased accuracy,
+ * signature image extraction, and data aggregation across multiple video
+ * frames.
+ *
+ * Viz consists of various fields whose presence requirements are determined by
+ * document rules. Successful VIZ extraction is only achieved once all mandatory
+ * fields have been extracted (this doesn't imply that all optional fields have
+ * been extracted)
+ *
+ * If Viz is present on the document, an extraction becomes mandatory if
+ * supported.
+ *
+ * Scanning the back side only is insufficient as it lacks the necessary context
+ * for data validation; in such cases, the Viz will be treated as not present.
+ *
+ * The Viz extraction must always initiate with the front side of the document.
+ *
+ * This setting requires document capture module to be enabled. Disabling
+ * document document capture module will result in a settings validation
+ * failure.
+ */
+export type VizModuleSettings = {
+  /**
+   * If set to true, Viz presence becomes mandatory for the scanned document.
+   *
+   * For Single ScanningMode, the Viz must be present on the scanned side. Only
+   * the front side of supported documents can be scanned. For Automatic
+   * ScanningMode, this setting won't affect the default behaviour; front side
+   * must be scanned first followed by the back side.
+   *
+   * In case of a timeout and advancement to the next step in the scanning flow,
+   * if a Viz was not extracted fully from a front side, we'll proceed to
+   * extract Viz from the back side, if present.
+   *
+   * @default false
+   */
+  presenceMandatory: boolean;
+  /**
+   * Enables the extraction of the document's signature image if supported.
+   *
+   * For supported documents, signature image extraction is determined by
+   * document rules. For unsupported documents, extraction won't be performed.
+   *
+   * @default false
+   */
+  signatureImageExtractionEnabled: boolean;
   /**
    * Indicates whether character validation is enabled.
    *
@@ -242,39 +515,123 @@ export type ScanningSettings = {
    * used to improve scanning accuracy.
    *
    * If set to `true`, when an invalid character is detected
-   * `invalid-characters-found` is returned.
-   */
-  enableCharacterValidation: boolean;
-
-  /**
-   * Defines the minimum required margin (in percentage) between the edge of the
-   * input image and the document.
+   * `ProcessingStatus::InvalidCharactersFound` is returned.
    *
-   * Default value is `0.02f` (also recommended value). The setting is
-   * applicable only when using images from `video` source. The setting is not
-   * applicable if `scanCroppedDocumentImage` is enabled (it will be ignored).
-   * This setting is implemented to comply with regulations in certain countries
-   * that mandate documents to be stored with adequate margins in the image.
+   * @default true
    */
-  inputImageMargin: number;
-
+  characterValidationEnabled: boolean;
   /**
-   * Indicates whether backside of unsupported document should be scanned also.
+   * Indicates whether the aggregation of data from multiple input images is
+   * enabled.
    *
-   * By default, back side of the document will not be scanned if only the front
-   * side is supported for a specific document.
+   * Disabling this setting will yield higher-quality captured images, but it
+   * may slow down the scanning process due to the additional effort required to
+   * find the optimal image.
+   *
+   * Enabling this setting will simplify the extraction process, but the
+   * extracted data will be aggregated from multiple images instead of being
+   * sourced from a single image.
+   *
+   * This setting is only applicable to the 'Video' input source. For 'Video',
+   * it defaults to 'true'. Providing this setting for a 'Photo' source will
+   * result in a settings validation failure.
+   *
+   * @default true for 'Video' input source, false for 'Photo' input source
    */
-  scanUnsupportedBack: boolean;
+  resultAggregationEnabled: boolean;
+};
 
+/**
+ * Represents the configurable settings for scanning a document.
+ *
+ * This structure allows for the granular configuration of different extraction
+ * modules, enabling or disabling specific features based on the scanning use
+ * case.
+ */
+export type ScanningSettings = {
   /**
-   * Indicates whether scanning can continue to the next side despite an
-   * uncertain front-side scan.
+   * Settings for the document capture module.
    *
-   * This only applies to images from `photo` input image source - for images
-   * from `video` source, setting will be ignored.
+   * This module is responsible for the initial document detection, image
+   * extraction (such as face and document images), and image quality validation
+   * (blur, glare, and lighting checks).
+   *
+   * For Automatic ScanningMode, when scanning a supported document, the front
+   * side must be captured first, followed by the back side. When scanning an
+   * unsupported document, the capture order is flexible; since the side cannot
+   * be identified, either side can be scanned first.
+   *
+   * This setting must be turned on for Viz and Mrz extraction to work
+   * correctly.
+   *
+   * If enabled, session will start with document detection step at the
+   * initialization.
    */
-  allowUncertainFrontSideScan: boolean;
-
+  documentCaptureModule: DocumentCaptureModuleSettings | null;
+  /**
+   * Settings for the barcode extraction module.
+   *
+   * This module manages the detection and data extraction from various 1D and
+   * 2D barcode formats (such as PDF417, QR codes, and various retail codes).
+   *
+   * If barcode is present on the document, an extraction becomes mandatory if
+   * supported.
+   *
+   * For supported documents, the requirement for its presence is determined by
+   * document rules. For unsupported documents, presence is optional.
+   *
+   * This setting can function independently of document capture module. If
+   * enabled and document capture module is disabled session will be set to
+   * extract barcode immediately at the initialization.
+   */
+  barcodeModule: BarcodeModuleSettings | null;
+  /**
+   * Settings for the MRZ (Machine Readable Zone) extraction module.
+   *
+   * This module is dedicated to the detection and parsing of machine-readable
+   * zone typically found on passports, visas, and identity cards.
+   *
+   * If Mrz is present on the document, an extraction becomes mandatory if
+   * supported.
+   *
+   * For supported documents, the requirement for its presence is determined by
+   * document rules. For unsupported documents, presence is optional.
+   *
+   * This setting requires document capture module to be enabled. Disabling
+   * document document capture module will result in a settings validation
+   * failure.
+   */
+  mrzModule: MrzModuleSettings | null;
+  /**
+   * Settings for the VIZ (Visual Inspection Zone) extraction module.
+   *
+   * This module is responsible for extracting data from the document's visual
+   * fields.
+   *
+   * It supports features such as character validation for increased accuracy,
+   * signature image extraction, and data aggregation across multiple video
+   * frames.
+   *
+   * Viz consists of various fields whose presence requirements are determined
+   * by document rules. Successful VIZ extraction is only achieved once all
+   * mandatory fields have been extracted (this doesn't imply that all optional
+   * fields have been extracted)
+   *
+   * If Viz is present on the document, an extraction becomes mandatory if
+   * supported.
+   *
+   * Scanning the back side only is insufficient as it lacks the necessary
+   * context for data validation; in such cases, the Viz will be treated as not
+   * present.
+   *
+   * The Viz extraction must always initiate with the front side of the
+   * document.
+   *
+   * This setting requires document capture module to be enabled. Disabling
+   * document document capture module will result in a settings validation
+   * failure.
+   */
+  vizModule: VizModuleSettings | null;
   /**
    * The maximum allowed mismatches per field during data matching.
    *
@@ -282,33 +639,4 @@ export type ScanningSettings = {
    * inconsistent during data matching. By default, no mismatches are allowed.
    */
   maxAllowedMismatchesPerField: number;
-
-  /**
-   * Indicates whether only the passport data page should be scanned.
-   *
-   * Scan only the data page ( page containing `MRZ` ) of the passport. If set
-   * to false, it will be required to scan the second page of certain
-   * passports.
-   */
-  scanPassportDataPageOnly: boolean;
-
-  /**
-   * Configures the image cropping settings during scanning process.
-   *
-   * Allows customization of cropped image handling, such as dotsPerInch,
-   * extensionFactor, and whether images should be returned for the entire
-   * document, face or signature regions.
-   */
-  croppedImageSettings: CroppedImageSettings;
-
-  /**
-   * The filter for recognition modes.
-   *
-   * Specifies which recognition modes are enabled during the scanning process,
-   * default value enables all modes. Used to enable/disable recognition of
-   * specific document groups.
-   *
-   * @experimental This setting will be removed in upcoming releases.
-   */
-  recognitionModeFilter: RecognitionModeFilter;
 };

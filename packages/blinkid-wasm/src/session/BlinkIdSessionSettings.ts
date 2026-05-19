@@ -5,6 +5,7 @@
 import { ScanningSettings } from "../settings";
 import { InputImageSource } from "./InputImageSource";
 import { ScanningMode } from "./ScanningMode";
+import { OverrideProperties } from "type-fest";
 
 /**
  * Represents the configuration settings for a scanning session.
@@ -66,3 +67,28 @@ export type BlinkIdSessionSettings = {
    */
   scanningSettings: ScanningSettings;
 };
+
+/**
+ * Partial scanning settings input. Used when passing partial settings to the
+ * Wasm module. All fields are optional; the C++ layer merges with defaults.
+ *
+ * @see `ScanningSettings` for detailed configuration options
+ */
+export type PartialScanningSettingsInput = Partial<
+  OverrideProperties<
+    ScanningSettings,
+    {
+      documentCaptureModule: Partial<ScanningSettings["documentCaptureModule"]>;
+      barcodeModule: Partial<ScanningSettings["barcodeModule"]>;
+      mrzModule: Partial<ScanningSettings["mrzModule"]>;
+      vizModule: Partial<ScanningSettings["vizModule"]>;
+    }
+  >
+>;
+
+export type BlinkIdSessionSettingsInput = OverrideProperties<
+  Partial<BlinkIdSessionSettings>,
+  {
+    scanningSettings?: PartialScanningSettingsInput;
+  }
+>;

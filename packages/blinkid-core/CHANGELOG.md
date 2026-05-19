@@ -1,5 +1,23 @@
 # @microblink/blinkid-core
 
+## 8000.0.0
+
+### Major Changes
+
+- Aligns the published BlinkID core API with the v8000 runtime and worker surface. This is a breaking change for integrations built against the 7.x core types and session API.
+- For the full upgrade guide, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).
+- Re-exports trimmed result and field typings from `@microblink/blinkid-wasm` (for example removal of stale result-only fields and exports such as `mode`, `ParentInfo`, `RecognitionMode`, and unsupported VIZ properties). Renames `SingleSideScanningResult.barcodeInputImage` to `barcodeImage` and tightens `FieldType` to match the runtime.
+- Adds `getResolvedSessionSettings()` on the remote scanning session so apps can read the effective `BlinkIdSessionSettings` after defaults and resolvers are applied.
+- Replaces 7.x session anonymization settings with a result-time redaction API. Remove `scanningSettings.anonymizationMode` and `scanningSettings.customDocumentAnonymizationSettings` from `BlinkIdSessionSettings`. Use `RedactionSettings` and `RedactionMode` instead. Pass an optional `redactionSettingsResolver` in the second argument to `BlinkIdCore.createScanningSession` (`BlinkIdCreateScanningSessionOptions`); types are re-exported from `@microblink/blinkid-worker`. When configured, `session.getResult()` applies the resolved settings automatically. Use `BlinkIdWorker.getDefaultRedactionSettings(documentClassInfo)` to seed per-document rules.
+- If you use the built-in feedback UI, nested localization overrides and extraction-mode-specific copy are documented in the `@microblink/blinkid-ux-manager` changelog and README.
+
+### Other Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@8000.0.0
+  - @microblink/blinkid-worker@8000.0.0
+  - @microblink/core-common@1.0.2
+
 ## 7.8.0
 
 ### Minor Changes
@@ -49,8 +67,8 @@
 
 ### Patch Changes
 
-- Extends `BlinkIdScanningResult` and `VizResult` with optional fields for parents info (`ParentInfo[]`), effective date, husband name, legal status, social security status, and work restriction. The new `ParentInfo` type (parent first/last name) is exported from the result module.
-- Switches `FieldType` to an explicit string union so types match supported extraction fields. New literals include `effectiveDate`, `parentsFirstName`, `parentsLastName`, `workRestriction`, `socialSecurityStatus`, `legalStatus`, `husbandName`, `chinPermanentExpiry`, and other dependent/document/vehicle/locality field types.
+- Aligns the re-exported BlinkID result typings with the current runtime surface by removing stale result-only fields and exports, including `mode`, `ParentInfo`, `RecognitionMode`, and unsupported VIZ/result properties.
+- Re-exports `SingleSideScanningResult.barcodeImage` and the trimmed BlinkID `FieldType` union without compatibility aliases.
 - Adds country `saint-thomas-and-prince`; document types `nin-card`, `mysss-card`, `gendarmerie-id`, `police-id`; and additional Brazilian and Indian regions (e.g. `acre`, `espirito-santo`, `odisha`, `uttarakhand`) to class info.
 - Introduces `createScanningSession(...)` as the primary API and keeps `createBlinkIdScanningSession(...)` as a backward-compatible alias with a deprecation notice.
 - Optimizes worker frame processing by auto-transferring `ImageData` buffers, reducing per-frame copy overhead. After `process(...)`, the original `ImageData.data.buffer` is intentionally detached.

@@ -1,5 +1,14 @@
 # @microblink/blinkcard-core
 
+## 3000.0.7
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkcard-wasm@3000.0.7
+  - @microblink/core-common@1.0.2
+  - @microblink/blinkcard-worker@3000.0.7
+
 ## 3000.0.6
 
 ### Patch Changes

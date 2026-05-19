@@ -8,29 +8,31 @@ import { DetailedCroppedImageResult } from "./image";
 import { MrzResult } from "./mrz";
 import { VizResult } from "./viz";
 
-/** Results of scanning a single side of a document */
+/*
+ * The results of scanning a single side of a document.
+ */
 export type SingleSideScanningResult = {
-  /** The data extracted from the Visual Inspection Zone */
-  viz?: VizResult;
+  /** The data extracted from the Visual Inspection Zone. */
+  viz: VizResult | undefined;
 
-  /** The data extracted from the Machine Readable Zone */
-  mrz?: MrzResult;
+  /** The data extracted from the Machine Readable Zone. */
+  mrz: MrzResult | undefined;
 
-  /** The data extracted from the barcode */
-  barcode?: BarcodeResult;
+  /** The data extracted from the barcode. */
+  barcode: BarcodeResult | undefined;
 
-  /** The input image */
-  inputImage?: ImageData;
+  /** The input image. */
+  inputImage: ImageData | undefined;
 
-  /** The input image containing parsable barcode */
-  barcodeInputImage?: ImageData;
+  /** The input image containing parsable barcode. */
+  barcodeImage: ImageData | undefined;
 
-  /** The cropped document image */
-  documentImage?: ImageData;
+  /** The cropped document image. */
+  documentImage: ImageData | undefined;
 
-  /** The cropped face image */
-  faceImage?: DetailedCroppedImageResult;
+  /** The cropped face image. */
+  faceImage: DetailedCroppedImageResult | undefined;
 
-  /** The cropped signature image */
-  signatureImage?: DetailedCroppedImageResult;
+  /** The cropped signature image. */
+  signatureImage: DetailedCroppedImageResult | undefined;
 };

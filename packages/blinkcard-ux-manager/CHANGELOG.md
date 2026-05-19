@@ -1,5 +1,11 @@
 # @microblink/blinkcard-ux-manager
 
+## 3000.0.7
+
+### Patch Changes
+
+- Updates Arabic (`ar`) feedback and onboarding strings for consistency with the latest copy.
+
 ## 3000.0.6
 
 ### Patch Changes

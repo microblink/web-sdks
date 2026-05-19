@@ -26,6 +26,9 @@ importers:
       prettier:
         specifier: ^3.8.1
         version: 3.8.1
+      prettier-plugin-classnames:
+        specifier: 0.9.0
+        version: 0.9.0(prettier@3.8.1)
       rimraf:
         specifier: ^6.0.1
         version: 6.0.1

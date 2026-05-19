@@ -5,11 +5,9 @@
 /**
  * DocumentImageColor defines possible color statuses determined from scanned
  * image.
+ *
+ * - `not-available` Determining image color status was not performed.
+ * - `black-and-white` Black-and-white image scanned.
+ * - `color` Color image scanned.
  */
-export type DocumentImageColor =
-  /** Determining image color status was not performed */
-  | "not-available"
-  /** Black-and-white image scanned */
-  | "black-and-white"
-  /** Color image scanned */
-  | "color";
+export type DocumentImageColor = "not-available" | "black-and-white" | "color";

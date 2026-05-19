@@ -6,74 +6,182 @@
  * Localization strings for uz.
  */
 export default {
-  alert_cancel_btn: "Bekor qilish",
-  alert_retry_btn: "Qayta urining",
-  blur_detected: "Hujjat va telefonni qimirlatmang",
-  camera_angle_too_steep: "Hujjatni telefonga baravar ushlang",
-  document_filtered: "Hujjat qabul qilinmadi",
-  document_filtered_details: "Boshqa hujjatni skanerlab koʻring",
-  document_not_recognized: "Hujjat aniqlanmadi",
-  document_not_recognized_details:
-    "Dastaklanadigan hujjatning old tomonini skanerlang",
-  document_scanned: "Muvaffaqiyat! Hujjat skanerlandi",
-  document_too_close_to_edge: "Uzoqlashtiring",
-  face_photo_not_fully_visible: "Yuz surati toʻliq koʻrinib tursin",
-  flip_document: "Hujjatni boshqa tomonga aylantiring",
-  flip_to_back_side: "Orqa tomonga aylantiring",
-  front_side_scanned: "Muvaffaqiyat! Old tomon skanerlandi",
-  glare_detected:
-    "Akslanishni olib tashlash uchun hujjatni eging yoki siljiting",
-  help_aria_label: "Yordam",
-  help_modal_back_btn: "Ortga",
-  help_modal_blur_details_desktop:
-    "Skanerlash paytida qurilma va hujjatni imkon qadar qimirlatmang. Qimirlab ketish tasvirni xiralashtirishi va hujjatdagi ma’lumotlarni o‘qib bo‘lmaydigan qilib qo‘yishi mumkin.",
-  help_modal_camera_lens_details:
-    "Kamera linzasida dog‘ yoki chang yo‘qligini tekshiring. Kirlangan linza yakuniy tasvirni xiralashtiradi, bu hujjatdagi maʼlumotlarni o‘qib bo‘lmaydigan qiladi va ma’lumotlarni muvaffaqiyatli skanerlashga to‘sqinlik qiladi.",
-  help_modal_camera_lens_title: "Kamerangiz obyektivini tozalang",
-  help_modal_details_1:
-    "Barmogʻingiz hujjatning ayrim qismlarini, jumladan, pastki qatorlarni berkitib qoʻymasin. Hujjat maydoni boʻylab oʻtadigan gologramma aks etishiga ham diqqat qarating.",
-  help_modal_details_2:
-    "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
-  help_modal_details_3:
-    "Skanerlaganda telefon va hujjatni qimirlatmang. Ulardan istalgan birining qimirlashi rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
-  help_modal_done_btn: "Tayyor",
-  help_modal_next_btn: "Keyingisi",
-  help_modal_title_1: "Barcha maydonlar koʻrinib tursin",
-  help_modal_title_2: "Kuchli yorugʻlik tushmasin",
-  help_modal_title_3: "Skanerlayotganda qimirlatmang",
-  help_tooltip: "Yordam kerakmi?",
-  keep_document_parallel: "Hujjatni ekranga parallel ushlang",
-  keep_document_still: "Hujjat va qurilmani qimirlatmang",
-  move_closer: "Yaqinlashtiring",
-  move_farther: "Uzoqlashtiring",
-  move_left: "Chapdagi sahifaga oʻting",
-  move_right: "Oʻngdagi sahifaga oʻting",
-  move_top: "Tepadagi sahifaga oʻting",
-  occluded: "Hujjat toʻliq koʻrinsin",
-  onboarding_modal_btn: "Skanerlashni boshlash",
-  onboarding_modal_details:
-    "Hujjat yetarlicha yoritilganiga ishonch hosil qiling. Hujjatning barcha maydonlari kamera ekranida koʻrinishi kerak.",
-  onboarding_modal_details_desktop:
-    "Kamera linzasi tozaligiga, hujjat esa yaxshi yoritilganligiga ishonch hosil qiling. Kamera ekranida barcha hujjat satrlari ko‘rinib turishi kerak.",
-  onboarding_modal_title: "Barcha tafsilotlar koʻrinib tursin",
-  onboarding_modal_title_desktop: "Skanerlashga tayyorlaning",
-  resume_scanning: "Skanerlashni davom etish",
-  scan_data_page: "Hujjatning maʼlumotlar sahifasini skanerlang",
-  scan_last_page_barcode: "Oxirgi sahifadan shtrix-kodni skanerlang",
-  scan_left_page: "Chap sahifani skanerlang",
-  scan_right_page: "Oʻng sahifani skanerlang",
-  scan_the_back_side: "Hujjatning orqa tomonini skanerlang",
-  scan_the_barcode: "Shtrix-kodni skanerlash",
-  scan_the_front_side: "Hujjatning old tomonini skanerlang",
-  scan_top_page: "Yuqori sahifani skanerlang",
-  scan_unsuccessful: "Skanerlandi",
-  scan_unsuccessful_details: "Hujjatni oʻqish imkonsiz. Qayta urining.",
-  scanning_help: "Skanerlashda yordam",
-  scanning_instructions: "Skanerlash yo‘riqnomasi",
-  scanning_screen: "Hujjat skanerlash ekrani",
-  too_bright: "Yorugʻligi kamroq joyga oling",
-  too_dark: "Yorugʻroq joyga oling",
-  wrong_left: "Chap sahifaga oʻting",
-  wrong_right: "Oʻng sahifaga oʻting",
-  wrong_top: "Yuqori sahifaga oʻting",
+  document_filtered_modal: {
+    details: "Boshqa hujjatni skanerlab koʻring",
+    title: "Hujjat qabul qilinmadi",
+  },
+  document_not_recognized_modal: {
+    details: "Dastaklanadigan hujjatning old tomonini skanerlang",
+    title: "Hujjat aniqlanmadi",
+  },
+  error_modal: { cancel_btn: "Bekor qilish", retry_btn: "Qayta urining" },
+  feedback_messages: {
+    blur_detected: "Hujjat va telefonni qimirlatmang",
+    camera_angle_too_steep: "Hujjatni telefonga baravar ushlang",
+    document_scanned_aria: "Muvaffaqiyat! Hujjat skanerlandi",
+    document_too_close_to_edge: "Uzoqlashtiring",
+    face_photo_not_fully_visible: "Yuz surati toʻliq koʻrinib tursin",
+    flip_document: "Hujjatni boshqa tomonga aylantiring",
+    flip_to_back_side: "Orqa tomonga aylantiring",
+    front_side_scanned_aria: "Muvaffaqiyat! Old tomon skanerlandi",
+    glare_detected:
+      "Akslanishni olib tashlash uchun hujjatni eging yoki siljiting",
+    keep_document_parallel: "Hujjatni ekranga parallel ushlang",
+    keep_document_still: "Hujjat va qurilmani qimirlatmang",
+    keep_still: "Qimirlatmang",
+    move_closer: "Yaqinlashtiring",
+    move_farther: "Uzoqlashtiring",
+    move_left: "Chapdagi sahifaga oʻting",
+    move_right: "Oʻngdagi sahifaga oʻting",
+    move_top: "Tepadagi sahifaga oʻting",
+    occluded: "Hujjat toʻliq koʻrinsin",
+    scan_data_page: "Hujjatning maʼlumotlar sahifasini skanerlang",
+    scan_last_page_barcode: "Oxirgi sahifadan shtrix-kodni skanerlang",
+    scan_left_page: "Chap sahifani skanerlang",
+    scan_right_page: "Oʻng sahifani skanerlang",
+    scan_the_back_side: "Hujjatning orqa tomonini skanerlang",
+    scan_the_barcode: "Shtrix-kodni skanerlash",
+    scan_the_barcode_side: "Hujjatning shtrix-kodli tomonini skanerlang",
+    scan_the_front_side: "Hujjatning old tomonini skanerlang",
+    scan_top_page: "Yuqori sahifani skanerlang",
+    too_bright: "Yorugʻligi kamroq joyga oling",
+    too_dark: "Yorugʻroq joyga oling",
+    wrong_left: "Chap sahifaga oʻting",
+    wrong_right: "Oʻng sahifaga oʻting",
+    wrong_top: "Yuqori sahifaga oʻting",
+  },
+  help_button: { aria_label: "Yordam", tooltip: "Yordam kerakmi?" },
+  help_modal: {
+    aria: "Skanerlashda yordam",
+    back_btn: "Ortga",
+    barcode_only: {
+      blur: {
+        details:
+          "Skanerlayotganda telefon va shtrix-kodni qimirlatmang. Qimirlash rasm xira olinishiga va shtrix-kod tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        details_desktop:
+          "Skanerlayotganda qimirlamang. Qimirlash rasm xira olinishiga va shtrix-kod tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        title: "Skanerlayotganda qimirlatmang",
+        title_desktop: "Skanerlayotganda qimirlatmang",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kamerangiz obyektivida dogʻ yoki chang yoʻqligini tekshiring. Obyektiv toza boʻlmasa, yakuniy rasm xira olinib, shtrix-kod tushunarsiz chiqishi va maʼlumotlarni skanerlashga xalal berishi mumkin.",
+        title_desktop: "Kamerangiz obyektivini tozalang",
+      },
+      lighting: {
+        details:
+          "Yorqin yorugʻlik bevosita tushmasin, chunki u shtrix-kodda aks etadi va skanerlashni qiyinlashtirishi mumkin. Shtrix-kod sizga aniq koʻrinmayotgan boʻlsa, kamera uni yaxshi ololmayotgan boʻlishi mumkin.",
+        details_desktop:
+          "Yorqin yorugʻlik bevosita tushmasin, chunki u shtrix-kodda aks etadi va skanerlashni qiyinlashtirishi mumkin. Shtrix-kod sizga aniq koʻrinmayotgan boʻlsa, kamera uni yaxshi ololmayotgan boʻlishi mumkin.",
+        title: "Kuchli yorugʻlik tushmasin",
+        title_desktop: "Kuchli yorugʻlik tushmasin",
+      },
+      visibility: {
+        details:
+          "Barmogʻingiz shtrix-kodning ayrim qismlarini berkitib qoʻymasin. Shtrix-kod boʻylab oʻtadigan va uni tushunarsiz chiqishiga sabab boʻladigan akslanishlarga ham diqqat qarating.",
+        details_desktop:
+          "Barmogʻingiz shtrix-kodning ayrim qismlarini berkitib qoʻymasin. Shtrix-kod boʻylab oʻtadigan va uni tushunarsiz chiqishiga sabab boʻladigan akslanishlarga ham diqqat qarating.",
+        title: "Shtrix-kod koʻrinib tursin",
+        title_desktop: "Shtrix-kod koʻrinib tursin",
+      },
+    },
+    document_with_barcode: {
+      blur: {
+        details:
+          "Skanerlaganda telefon va hujjatni qimirlatmang. Ulardan istalgan birining qimirlashi rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        details_desktop:
+          "Skanerlaganda qimirlamang. Qimirlash rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        title: "Skanerlayotganda qimirlatmang",
+        title_desktop: "Skanerlayotganda qimirlatmang",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kamera linzasida dog‘ yoki chang yo‘qligini tekshiring. Kirlangan linza yakuniy tasvirni xiralashtiradi, bu hujjatdagi maʼlumotlarni o‘qib bo‘lmaydigan qiladi va ma’lumotlarni muvaffaqiyatli skanerlashga to‘sqinlik qiladi.",
+        title_desktop: "Kamerangiz obyektivini tozalang",
+      },
+      lighting: {
+        details:
+          "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
+        details_desktop:
+          "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
+        title: "Kuchli yorugʻlik tushmasin",
+        title_desktop: "Kuchli yorugʻlik tushmasin",
+      },
+      visibility: {
+        details:
+          "Barmogʻingiz shtrix-kodning ayrim qismlarini berkitib qoʻymasin. Shtrix-kod boʻylab oʻtadigan va uni tushunarsiz chiqishiga sabab boʻladigan akslanishlarga ham diqqat qarating.",
+        details_desktop:
+          "Barmogʻingiz shtrix-kodning ayrim qismlarini berkitib qoʻymasin. Shtrix-kod boʻylab oʻtadigan va uni tushunarsiz chiqishiga sabab boʻladigan akslanishlarga ham diqqat qarating.",
+        title: "Shtrix-kod koʻrinib tursin",
+        title_desktop: "Shtrix-kod koʻrinib tursin",
+      },
+    },
+    done_btn: "Tayyor",
+    done_btn_aria: "Skanerlashni davom etish",
+    full_document: {
+      blur: {
+        details:
+          "Skanerlaganda telefon va hujjatni qimirlatmang. Ulardan istalgan birining qimirlashi rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        details_desktop:
+          "Skanerlaganda qimirlamang. Qimirlash rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        title: "Skanerlayotganda qimirlatmang",
+        title_desktop: "Skanerlayotganda qimirlatmang",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kamera linzasida dog‘ yoki chang yo‘qligini tekshiring. Kirlangan linza yakuniy tasvirni xiralashtiradi, bu hujjatdagi maʼlumotlarni o‘qib bo‘lmaydigan qiladi va ma’lumotlarni muvaffaqiyatli skanerlashga to‘sqinlik qiladi.",
+        title_desktop: "Kamerangiz obyektivini tozalang",
+      },
+      lighting: {
+        details:
+          "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
+        details_desktop:
+          "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
+        title: "Kuchli yorugʻlik tushmasin",
+        title_desktop: "Kuchli yorugʻlik tushmasin",
+      },
+      visibility: {
+        details:
+          "Barmogʻingiz hujjatning ayrim qismlarini, jumladan, pastki qatorlarni berkitib qoʻymasin. Hujjat maydoni boʻylab oʻtadigan gologramma aks etishiga ham diqqat qarating.",
+        details_desktop:
+          "Barmogʻingiz hujjatning ayrim qismlarini, jumladan, pastki qatorlarni berkitib qoʻymasin. Hujjat maydoni boʻylab oʻtadigan gologramma aks etishiga ham diqqat qarating.",
+        title: "Barcha maydonlar koʻrinib tursin",
+        title_desktop: "Barcha maydonlar koʻrinib tursin",
+      },
+    },
+    next_btn: "Keyingisi",
+  },
+  onboarding_modal: {
+    aria: "Skanerlash yo‘riqnomasi",
+    barcode_only: {
+      details:
+        "Shtrix-kodni toping (qora chiziqlar qatori yoki kvadrat ichidagi kod). Kamerangizni unga qarating va qimirlatmay turing – skanerlash avtomatik bajariladi.",
+      details_desktop:
+        "Shtrix-kodni toping (qora chiziqlar qatori yoki kvadrat ichidagi kod). Kamerangiz obyektivi toza va shtrix-kod yaxshi yoritilgan boʻlsin.",
+      title: "Shtrix-kodni toping va skanerlang",
+      title_desktop: "Obyektivni tozalang va shtrix-kodni toping",
+    },
+    btn: "Skanerlashni boshlash",
+    document_with_barcode: {
+      details:
+        "Turli ID hujjatlarida shtrix-kod formatlari va joylari ham har xil boʻlishi mumkin. Shtrix-kodni ID hujjatning old va orqa tomonidan qidiring.",
+      details_desktop:
+        "Shtrix-kod uchun ID hujjatning old va orqa tomonini tekshiring. Kamera obyektivi tozaligiga, hujjat esa yaxshi yoritilganligiga ishonch hosil qiling.",
+      title: "ID hujjatda shtrix-kodni toping",
+      title_desktop: "Obyektivni tozalang va shtrix-kodni toping",
+    },
+    full_document: {
+      details:
+        "Hujjat yetarlicha yoritilganiga ishonch hosil qiling. Hujjatning barcha maydonlari kamera ekranida koʻrinishi kerak.",
+      details_desktop:
+        "Kamera linzasi tozaligiga, hujjat esa yaxshi yoritilganligiga ishonch hosil qiling. Kamera ekranida barcha hujjat satrlari ko‘rinib turishi kerak.",
+      title: "Barcha tafsilotlar koʻrinib tursin",
+      title_desktop: "Skanerlashga tayyorlaning",
+    },
+  },
+  sdk_aria: "Hujjat skanerlash ekrani",
+  timeout_modal: {
+    details: "Hujjatni oʻqish imkonsiz. Qayta urining.",
+    title: "Skanerlandi",
+  },
 } as const;

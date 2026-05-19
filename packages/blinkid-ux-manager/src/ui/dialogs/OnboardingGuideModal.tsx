@@ -6,21 +6,65 @@ import { Modal } from "@microblink/shared-components/Modal";
 import { type Component, createEffect, on } from "solid-js";
 import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
 
+import BarcodeOnly from "../assets/onboarding/barcode_only.svg?component-solid";
+import BarcodeOnlyDesktop from "../assets/onboarding/barcode_only_desktop.svg?component-solid";
 import CorrectFraming from "../assets/onboarding/correct_framing.svg?component-solid";
 import CorrectFramingDesktop from "../assets/onboarding/correct_framing_desktop.svg?component-solid";
+import DocumentWithBarcode from "../assets/onboarding/document_with_barcode.svg?component-solid";
+import DocumentWithBarcodeDesktop from "../assets/onboarding/document_with_barcode_desktop.svg?component-solid";
 
 import { Dialog } from "@ark-ui/solid";
 import { Dynamic } from "solid-js/web";
 import { useLocalization } from "../LocalizationContext";
+import {
+  type BlinkIdModalExtractionMode,
+  type BlinkIdModalLocaleGroup,
+} from "./modalExtractionMode";
+
+type OnboardingImageComponent = typeof CorrectFraming;
+type OnboardingImagePair = {
+  mobile: OnboardingImageComponent;
+  desktop: OnboardingImageComponent;
+};
+
+type OnboardingModalContent = {
+  localeGroup: BlinkIdModalLocaleGroup;
+  images: OnboardingImagePair;
+};
+
+export const onboardingModalContentByExtractionMode = {
+  "full-document": {
+    localeGroup: "full_document",
+    images: {
+      mobile: CorrectFraming,
+      desktop: CorrectFramingDesktop,
+    },
+  },
+  "document-with-barcode": {
+    localeGroup: "document_with_barcode",
+    images: {
+      mobile: DocumentWithBarcode,
+      desktop: DocumentWithBarcodeDesktop,
+    },
+  },
+  "barcode-only": {
+    localeGroup: "barcode_only",
+    images: {
+      mobile: BarcodeOnly,
+      desktop: BarcodeOnlyDesktop,
+    },
+  },
+} as const satisfies Record<BlinkIdModalExtractionMode, OnboardingModalContent>;
 
 /**
  * The OnboardingGuideModal component.
  *
  * @returns The OnboardingGuideModal component.
  */
-export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
-  props,
-) => {
+export const OnboardingGuideModal: Component<{
+  isDesktop: boolean;
+  extractionMode: BlinkIdModalExtractionMode;
+}> = (props) => {
   const { t } = useLocalization();
 
   const { store, updateStore } = useBlinkIdUiStore();
@@ -29,6 +73,11 @@ export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
   const hideModal = () => {
     updateStore({ showOnboardingGuide: false });
   };
+  const modalContent = () =>
+    onboardingModalContentByExtractionMode[props.extractionMode];
+  const content = () => t.onboarding_modal[modalContent().localeGroup];
+  const image = () =>
+    modalContent().images[props.isDesktop ? "desktop" : "mobile"];
 
   createEffect(
     on(
@@ -47,10 +96,10 @@ export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
       open={modalVisible()}
       modalStyle="large"
       role="alertdialog"
-      aria-label={t.scanning_instructions}
+      aria-label={t.onboarding_modal.aria}
       actions={{
         primary: {
-          label: t.onboarding_modal_btn,
+          label: t.onboarding_modal.btn,
           onClick: () => hideModal(),
         },
       }}
@@ -63,9 +112,7 @@ export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
               compact:grid-rows-[minmax(0,1fr)]"
           >
             <Dynamic
-              component={
-                props.isDesktop ? CorrectFramingDesktop : CorrectFraming
-              }
+              component={image()}
               aria-hidden="true"
               class="w-full max-w-[17.5rem] m-x-auto compact:col-start-1
                 compact:self-start compact:max-w-[11.25rem]"
@@ -75,15 +122,13 @@ export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
                 compact:overflow-y-auto"
             >
               <Dialog.Title class="dialog-title compact:!text-left">
-                {props.isDesktop
-                  ? t.onboarding_modal_title_desktop
-                  : t.onboarding_modal_title}
+                {props.isDesktop ? content().title_desktop : content().title}
               </Dialog.Title>
               <Dialog.Description class="dialog-description compact:!text-left">
                 <p>
                   {props.isDesktop
-                    ? t.onboarding_modal_details_desktop
-                    : t.onboarding_modal_details}
+                    ? content().details_desktop
+                    : content().details}
                 </p>
               </Dialog.Description>
             </div>

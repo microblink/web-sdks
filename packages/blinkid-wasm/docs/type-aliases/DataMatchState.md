@@ -8,5 +8,4 @@
 
 > **DataMatchState** = `"not-performed"` \| `"failed"` \| `"success"`
 
-Result of the data matching algorithm for scanned parts/sides of the
-document.
+Represents the state of the data match.

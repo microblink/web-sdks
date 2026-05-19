@@ -5,138 +5,136 @@
 import { DateResult, DriverLicenceDetailedInfo } from "../../utils";
 import { DependentInfo } from "../DependentInfo";
 import { StringResult } from "../StringResult";
-import { ParentInfo } from "../ParentInfo";
 
 /** VizResult contains data extracted from the Visual Inspection Zone. */
 export type VizResult = {
-  /** The first name of the document owner */
-  firstName?: StringResult;
-  /** The last name of the document owner */
-  lastName?: StringResult;
-  /** The full name of the document owner */
-  fullName?: StringResult;
-  /** The additional name information of the document owner */
-  additionalNameInformation?: StringResult;
-  /** The localized name of the document owner */
-  localizedName?: StringResult;
-  /** The father's name of the document owner */
-  fathersName?: StringResult;
-  /** The mother's name of the document owner */
-  mothersName?: StringResult;
-
-  /** The address of the document owner */
-  address?: StringResult;
   /** The additional address information of the document owner */
-  additionalAddressInformation?: StringResult;
+  additionalAddressInformation: StringResult | null;
+  /** The additional name information of the document owner */
+  additionalNameInformation: StringResult | null;
   /** Additional optional address information of the document owner */
-  additionalOptionalAddressInformation?: StringResult;
-  /** The place of birth of the document owner */
-  placeOfBirth?: StringResult;
-  /** The nationality of the document owner */
-  nationality?: StringResult;
-
-  /** The race of the document owner */
-  race?: StringResult;
-  /** The religion of the document owner */
-  religion?: StringResult;
-  /** The profession of the document owner */
-  profession?: StringResult;
-  /** The marital status of the document owner */
-  maritalStatus?: StringResult;
-  /** The residential status of the document owner */
-  residentialStatus?: StringResult;
-  /** The employer of the document owner */
-  employer?: StringResult;
-  /** The sex of the document owner */
-  sex?: StringResult;
-  /** The sponsor of the document owner */
-  sponsor?: StringResult;
-  /** The blood type of the document owner */
-  bloodType?: StringResult;
-
-  /** The date of birth of the document owner */
-  dateOfBirth?: DateResult<StringResult>;
-  /** The date of issue of the document */
-  dateOfIssue?: DateResult<StringResult>;
-  /** The date of expiry of the document */
-  dateOfExpiry?: DateResult<StringResult>;
-  /** The date of entry of the document owner */
-  dateOfEntry?: DateResult<StringResult>;
-  /** Determines if date of expiry is permanent */
-  dateOfExpiryPermanent?: boolean;
-
-  /** The document number */
-  documentNumber?: StringResult;
-  /** The personal identification number */
-  personalIdNumber?: StringResult;
-  /** The additional number of the document */
-  documentAdditionalNumber?: StringResult;
-  /** Additional optional number of the document */
-  documentOptionalAdditionalNumber?: StringResult;
+  additionalOptionalAddressInformation: StringResult | null;
   /** The additional personal identification number */
-  additionalPersonalIdNumber?: StringResult;
-  /** The issuing authority of the document */
-  issuingAuthority?: StringResult;
-  /** The visa type of the document */
-  visaType?: StringResult;
+  additionalPersonalIdNumber: StringResult | null;
+  /** The address of the document owner */
+  address: StringResult | null;
+  /** The blood type of the document owner */
+  bloodType: StringResult | null;
+  /** The date of birth of the document owner */
+  dateOfBirth: DateResult<StringResult> | null;
+  /** The date of expiry of the document */
+  dateOfExpiry: DateResult<StringResult> | null;
+  /** The date of issue of the document */
+  dateOfIssue: DateResult<StringResult> | null;
+  /** The additional number of the document */
+  documentAdditionalNumber: StringResult | null;
+  /** The document number */
+  documentNumber: StringResult | null;
+  /** Additional optional number of the document */
+  documentOptionalAdditionalNumber: StringResult | null;
   /** The driver license detailed info */
-  driverLicenseDetailedInfo?: DriverLicenceDetailedInfo<StringResult>;
-
-  /** The transcription of the document subtype */
-  documentSubtype?: StringResult;
-  /** The effective date of the document */
-  effectiveDate?: DateResult<StringResult>;
-  /** The remarks on the residence permit */
-  remarks?: StringResult;
-  /** The residence permit type */
-  residencePermitType?: StringResult;
-  /** The manufacturing year */
-  manufacturingYear?: StringResult;
-  /** The vehicle type */
-  vehicleType?: StringResult;
-  /** The eligibility category */
-  eligibilityCategory?: StringResult;
-  /** The husband name of the document owner */
-  husbandName?: StringResult;
-  /** The legal status of the document owner */
-  legalStatus?: StringResult;
-  /** The specific document validity */
-  specificDocumentValidity?: StringResult;
-  /** The dependents info */
-  dependentsInfo?: DependentInfo[];
-  /** The vehicle owner */
-  vehicleOwner?: StringResult;
-  /** The certificate number of the document owner */
-  certificateNumber?: StringResult;
+  driverLicenseDetailedInfo: DriverLicenceDetailedInfo<StringResult> | null;
+  /** The employer of the document owner */
+  employer: StringResult | null;
+  /** The father's name of the document owner */
+  fathersName: StringResult | null;
+  /** The first name of the document owner */
+  firstName: StringResult | null;
+  /** The full name of the document owner */
+  fullName: StringResult | null;
+  /** The issuing authority of the document */
+  issuingAuthority: StringResult | null;
+  /** The last name of the document owner */
+  lastName: StringResult | null;
+  /** The marital status of the document owner */
+  maritalStatus: StringResult | null;
+  /** The mother's name of the document owner */
+  mothersName: StringResult | null;
+  /** The nationality of the document owner */
+  nationality: StringResult | null;
+  /** The personal identification number */
+  personalIdNumber: StringResult | null;
+  /** The place of birth of the document owner */
+  placeOfBirth: StringResult | null;
+  /** The profession of the document owner */
+  profession: StringResult | null;
+  /** The race of the document owner */
+  race: StringResult | null;
+  /** The religion of the document owner */
+  religion: StringResult | null;
+  /** The residential status of the document owner */
+  residentialStatus: StringResult | null;
+  /** The sex of the document owner */
+  sex: StringResult | null;
+  /** The sponsor of the document owner */
+  sponsor: StringResult | null;
+  /** The visa type of the document */
+  visaType: StringResult | null;
   /** The card access number of the document owner */
-  cardAccessNumber?: StringResult;
+  cardAccessNumber: StringResult | null;
+  /** The certificate number of the document owner */
+  certificateNumber: StringResult | null;
   /** The country code of the document owner */
-  countryCode?: StringResult;
-  /** The national insurance number of the document owner */
-  nationalInsuranceNumber?: StringResult;
+  countryCode: StringResult | null;
+  /** The date of entry of the document owner */
+  dateOfEntry: DateResult<StringResult> | null;
+  /** The dependents info */
+  dependentsInfo: DependentInfo[] | null;
+  /** The transcription of the document subtype */
+  documentSubtype: StringResult | null;
+  /** The effective date of the document */
+  effectiveDate: DateResult<StringResult> | null;
+  /** The eligibility category */
+  eligibilityCategory: StringResult | null;
+  /** The husband's name of the document owner */
+  husbandName: StringResult | null;
+  /** The legal status of the document owner */
+  legalStatus: StringResult | null;
   /** The locality code of the document owner */
-  localityCode?: StringResult;
+  localityCode: StringResult | null;
   /** The maiden name of the document owner */
-  maidenName?: StringResult;
+  maidenName: StringResult | null;
+  /** The manufacturing year */
+  manufacturingYear: StringResult | null;
   /** The municipality code of the document owner */
-  municipalityCode?: StringResult;
+  municipalityCode: StringResult | null;
   /** The municipality of registration of the document owner */
-  municipalityOfRegistration?: StringResult;
+  municipalityOfRegistration: StringResult | null;
+  /** The national insurance number of the document owner */
+  nationalInsuranceNumber: StringResult | null;
+  /** The parents info */
+  parentsInfo:
+    | {
+        firstName: StringResult | null;
+        lastName: StringResult | null;
+      }[]
+    | null;
   /** The polling station code of the document owner */
-  pollingStationCode?: StringResult;
+  pollingStationCode: StringResult | null;
   /** The registration center code of the document owner */
-  registrationCenterCode?: StringResult;
+  registrationCenterCode: StringResult | null;
+  /** The remarks on the residence permit */
+  remarks: StringResult | null;
+  /** The residence permit type */
+  residencePermitType: StringResult | null;
   /** The section code of the document owner */
-  sectionCode?: StringResult;
+  sectionCode: StringResult | null;
   /** The social security status of the document owner */
-  socialSecurityStatus?: StringResult;
+  socialSecurityStatus: StringResult | null;
+  /** The specific document validity */
+  specificDocumentValidity: StringResult | null;
   /** The state code of the document owner */
-  stateCode?: StringResult;
+  stateCode: StringResult | null;
   /** The state of the document owner */
-  stateName?: StringResult;
+  stateName: StringResult | null;
+  /** The vehicle owner */
+  vehicleOwner: StringResult | null;
+  /** The vehicle type */
+  vehicleType: StringResult | null;
   /** The work restriction of the document owner */
-  workRestriction?: StringResult;
-
-  /** The parents info of the document owner */
-  parentsInfo?: ParentInfo[];
+  workRestriction: StringResult | null;
+  /** Determines if date of expiry is permanent */
+  dateOfExpiryPermanent: boolean;
+  /** The localized name of the document owner */
+  localizedName: StringResult | null;
 };

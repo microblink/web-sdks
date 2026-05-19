@@ -3,17 +3,27 @@
  */
 
 import { BlinkIdUiStateKey } from "../core/blinkid-ui-state";
+import type { BlinkIdExtractionMode } from "../core/extractionMode";
 import { LocalizationStrings } from "./LocalizationContext";
 
 /**
  * The feedback messages.
  */
 export const feedbackMessages: Partial<
-  Record<BlinkIdUiStateKey, (isDesktop?: boolean) => keyof LocalizationStrings>
+  Record<
+    BlinkIdUiStateKey,
+    (
+      isDesktop?: boolean,
+      blinkIdExtractionMode?: BlinkIdExtractionMode,
+    ) => keyof LocalizationStrings["feedback_messages"]
+  >
 > = {
   // intro states
   INTRO_DATA_PAGE: () => "scan_data_page",
-  INTRO_FRONT_PAGE: () => "scan_the_front_side",
+  INTRO_FRONT_PAGE: (_, blinkIdExtractionMode) =>
+    blinkIdExtractionMode === "document-with-barcode"
+      ? "scan_the_barcode_side"
+      : "scan_the_front_side",
   INTRO_BACK_PAGE: () => "scan_the_back_side",
   INTRO_TOP_PAGE: () => "scan_top_page",
   INTRO_LEFT_PAGE: () => "scan_left_page",
@@ -47,7 +57,10 @@ export const feedbackMessages: Partial<
   DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP: (isDesktop?: boolean) =>
     isDesktop ? "keep_document_parallel" : "camera_angle_too_steep",
   // no document
-  FRONT_PAGE_NOT_IN_FRAME: () => "scan_the_front_side",
+  FRONT_PAGE_NOT_IN_FRAME: (_, blinkIdExtractionMode) =>
+    blinkIdExtractionMode === "document-with-barcode"
+      ? "scan_the_barcode_side"
+      : "scan_the_front_side",
   BACK_PAGE_NOT_IN_FRAME: () => "scan_the_back_side",
   DATA_PAGE_NOT_IN_FRAME: () => "scan_data_page",
   TOP_PAGE_NOT_IN_FRAME: () => "scan_top_page",
@@ -58,8 +71,8 @@ export const feedbackMessages: Partial<
   TOO_DARK: () => "too_dark",
   TOO_BRIGHT: () => "too_bright",
   // done
-  PAGE_CAPTURED: () => "front_side_scanned",
-  DOCUMENT_CAPTURED: () => "document_scanned",
+  PAGE_CAPTURED: () => "front_side_scanned_aria",
+  DOCUMENT_CAPTURED: () => "document_scanned_aria",
 
   // new stuff
   BARCODE_NOT_IN_FRAME: () => "scan_the_barcode",

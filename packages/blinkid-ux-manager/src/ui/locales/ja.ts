@@ -6,73 +6,181 @@
  * Localization strings for ja.
  */
 export default {
-  alert_cancel_btn: "キャンセル",
-  alert_retry_btn: "再試行",
-  blur_detected: "書類とスマートフォンを動かさないでください",
-  camera_angle_too_steep: "書類をスマートフォンと平行にしてください",
-  document_filtered: "書類が受け付けられません",
-  document_filtered_details: "別の書類をスキャンしてみてください",
-  document_not_recognized: "ドキュメントが認識されません",
-  document_not_recognized_details:
-    "サポートされている書類の表側をスキャンしてください。",
-  document_scanned: "成功！ドキュメントをスキャンしました",
-  document_too_close_to_edge: "遠くへ移動",
-  face_photo_not_fully_visible: "顔写真が完全に見えるようにしてください",
-  flip_document: "書類を反転してください",
-  flip_to_back_side: "裏面にしてください",
-  front_side_scanned: "成功！表面をスキャンしました",
-  glare_detected: "書類を傾けたり移動したりして反射を除去する",
-  help_aria_label: "ヘルプ",
-  help_modal_back_btn: "戻る",
-  help_modal_blur_details_desktop:
-    "スキャン中は、端末とドキュメントをできるだけ動かさないでください。どちらかが動くと画像がぼやけ、ドキュメントの情報が読み取れなくなる場合があります。",
-  help_modal_camera_lens_details:
-    "カメラのレンズに汚れやホコリが付いていないか確認してください。レンズが汚れていると最終画像がぼやけ、ドキュメントの詳細が読み取れなくなり、データのスキャンに失敗する原因になります。",
-  help_modal_camera_lens_title: "カメラのレンズを拭いてください",
-  help_modal_details_1:
-    "書類の下部の線も含め,指で書類の一部を覆わないようにしてください。また,書類のフィールドを覆うホログラムの反射にもご注意ください。",
-  help_modal_details_2:
-    "強い光が書類に反射し,一部が判読できなくなる可能性があるため,直射日光は避けてください。書類上のデータが読み取れない場合は,カメラにも映りません。",
-  help_modal_details_3:
-    "スキャン中は,スマートフォンと書類を動かさないようにしてください。どちらかが動くと,画像がぼやけて書類上のデータが判読できなくなる可能性があります。",
-  help_modal_done_btn: "完了",
-  help_modal_next_btn: "次へ",
-  help_modal_title_1: "すべてのフィールドが見えるようにしてください",
-  help_modal_title_2: "強い光にご注意ください",
-  help_modal_title_3: "スキャン中は動かさないでください",
-  help_tooltip: "ヘルプが必要ですか？",
-  keep_document_parallel: "ドキュメントを画面と平行に保ってください",
-  keep_document_still: "ドキュメントと端末を動かさないでください",
-  move_closer: "近くへ移動",
-  move_farther: "遠くへ移動",
-  move_left: "左のページへ移動する",
-  move_right: "右のページへ移動する",
-  move_top: "上のページへ移動する",
-  occluded: "書類全体が見えるようにしてください",
-  onboarding_modal_btn: "スキャンを開始",
-  onboarding_modal_details:
-    "書類を十分に明るく保ち,カメラの画面に書類のすべての項目が映っていることを確認してください。",
-  onboarding_modal_details_desktop:
-    "カメラのレンズを清潔に保ち、ドキュメントが十分明る口なるようにしてください。ドキュメントのすべての項目がカメラの画面内ににおさまるようにしてください。",
-  onboarding_modal_title: "すべての詳細が見えるようにしてください",
-  onboarding_modal_title_desktop: "スキャンの準備",
-  resume_scanning: "スキャンを再開",
-  scan_data_page: "書類のデータページをスキャンしてください",
-  scan_last_page_barcode: "最後のページからバーコードをスキャンしてください",
-  scan_left_page: "左のページをスキャンする",
-  scan_right_page: "右のページをスキャンする",
-  scan_the_back_side: "書類の裏面をスキャンしてください。",
-  scan_the_barcode: "バーコードをスキャンしてください",
-  scan_the_front_side: "書類の表側をスキャンしてください",
-  scan_top_page: "上のページをスキャンする",
-  scan_unsuccessful: "スキャンに失敗しました",
-  scan_unsuccessful_details: "書類を読み取れません。もう一度お試しください。",
-  scanning_help: "スキャンに関するヘルプ",
-  scanning_instructions: "スキャンの手順",
-  scanning_screen: "ドキュメントスキャン画面",
-  too_bright: "暗い場所に移動してください",
-  too_dark: "明るい場所に移動してください",
-  wrong_left: "左ページへ移動",
-  wrong_right: "右ページへ移動",
-  wrong_top: "トップページへ移動",
+  document_filtered_modal: {
+    details: "別の書類をスキャンしてみてください",
+    title: "書類が受け付けられません",
+  },
+  document_not_recognized_modal: {
+    details: "サポートされている書類の表側をスキャンしてください。",
+    title: "ドキュメントが認識されません",
+  },
+  error_modal: { cancel_btn: "キャンセル", retry_btn: "再試行" },
+  feedback_messages: {
+    blur_detected: "書類とスマートフォンを動かさないでください",
+    camera_angle_too_steep: "書類をスマートフォンと平行にしてください",
+    document_scanned_aria: "成功！ドキュメントをスキャンしました",
+    document_too_close_to_edge: "遠くへ移動",
+    face_photo_not_fully_visible: "顔写真が完全に見えるようにしてください",
+    flip_document: "書類を反転してください",
+    flip_to_back_side: "裏面にしてください",
+    front_side_scanned_aria: "成功！表面をスキャンしました",
+    glare_detected: "書類を傾けたり移動したりして反射を除去する",
+    keep_document_parallel: "ドキュメントを画面と平行に保ってください",
+    keep_document_still: "ドキュメントと端末を動かさないでください",
+    keep_still: "動かさないでください",
+    move_closer: "近くへ移動",
+    move_farther: "遠くへ移動",
+    move_left: "左のページへ移動する",
+    move_right: "右のページへ移動する",
+    move_top: "上のページへ移動する",
+    occluded: "書類全体が見えるようにしてください",
+    scan_data_page: "書類のデータページをスキャンしてください",
+    scan_last_page_barcode: "最後のページからバーコードをスキャンしてください",
+    scan_left_page: "左のページをスキャンする",
+    scan_right_page: "右のページをスキャンする",
+    scan_the_back_side: "書類の裏面をスキャンしてください。",
+    scan_the_barcode: "バーコードをスキャンしてください",
+    scan_the_barcode_side: "書類のバーコード面をスキャンしてください",
+    scan_the_front_side: "書類の表側をスキャンしてください",
+    scan_top_page: "上のページをスキャンする",
+    too_bright: "暗い場所に移動してください",
+    too_dark: "明るい場所に移動してください",
+    wrong_left: "左ページへ移動",
+    wrong_right: "右ページへ移動",
+    wrong_top: "トップページへ移動",
+  },
+  help_button: { aria_label: "ヘルプ", tooltip: "ヘルプが必要ですか？" },
+  help_modal: {
+    aria: "スキャンに関するヘルプ",
+    back_btn: "戻る",
+    barcode_only: {
+      blur: {
+        details:
+          "スキャン中はスマートフォンとバーコードを動かさないでください。片方でも動くと画像がぼやけ、バーコードが読み取れなくなる恐れがあります。",
+        details_desktop:
+          "スキャン中は動かさないでください。片方でも動くと画像がぼやけ、バーコードが読み取れなくなる恐れがあります。",
+        title: "スキャン中は動かさないでください",
+        title_desktop: "スキャン中は動かさないでください",
+      },
+      camera_lens: {
+        details_desktop:
+          "カメラレンズに汚れやほこりがないか確認してください。レンズが汚れていると、撮影画像がぼやけてバーコードが読み取れなくなり、データのスキャンが正常に行えなくなります。",
+        title_desktop: "カメラのレンズを拭いてください",
+      },
+      lighting: {
+        details:
+          "強い光を直接当てるとバーコードに反射してスキャンできなくなる可能性があるため、避けてください。バーコードがはっきり目視できない場合、カメラも読み取れない可能性があります。",
+        details_desktop:
+          "強い光を直接当てるとバーコードに反射してスキャンできなくなる可能性があるため、避けてください。バーコードがはっきり目視できない場合、カメラも読み取れない可能性があります。",
+        title: "強い光にご注意ください",
+        title_desktop: "強い光にご注意ください",
+      },
+      visibility: {
+        details:
+          "バーコードの一部を指で覆わないようにしてください。また、バーコードにかかる反射にもご注意ください。読み取れなくなる可能性があります。",
+        details_desktop:
+          "バーコードの一部を指で覆わないようにしてください。また、バーコードにかかる反射にもご注意ください。読み取れなくなる可能性があります。",
+        title: "バーコードをはっきりと写してください",
+        title_desktop: "バーコードをはっきりと写してください",
+      },
+    },
+    document_with_barcode: {
+      blur: {
+        details:
+          "スキャン中は,スマートフォンと書類を動かさないようにしてください。どちらかが動くと,画像がぼやけて書類上のデータが判読できなくなる可能性があります。",
+        details_desktop:
+          "スキャン中は、動かさないようにしてください。どちらかが動くと,画像がぼやけて書類上のデータが判読できなくなる可能性があります。",
+        title: "スキャン中は動かさないでください",
+        title_desktop: "スキャン中は動かさないでください",
+      },
+      camera_lens: {
+        details_desktop:
+          "カメラのレンズに汚れやホコリが付いていないか確認してください。レンズが汚れていると最終画像がぼやけ、ドキュメントの詳細が読み取れなくなり、データのスキャンに失敗する原因になります。",
+        title_desktop: "カメラのレンズを拭いてください",
+      },
+      lighting: {
+        details:
+          "強い光が書類に反射し,一部が判読できなくなる可能性があるため,直射日光は避けてください。書類上のデータが読み取れない場合は,カメラにも映りません。",
+        details_desktop:
+          "強い光が書類に反射し,一部が判読できなくなる可能性があるため,直射日光は避けてください。書類上のデータが読み取れない場合は,カメラにも映りません。",
+        title: "強い光にご注意ください",
+        title_desktop: "強い光にご注意ください",
+      },
+      visibility: {
+        details:
+          "バーコードの一部を指で覆わないようにしてください。また、バーコードにかかる反射にもご注意ください。読み取れなくなる可能性があります。",
+        details_desktop:
+          "バーコードの一部を指で覆わないようにしてください。また、バーコードにかかる反射にもご注意ください。読み取れなくなる可能性があります。",
+        title: "バーコードをはっきりと写してください",
+        title_desktop: "バーコードをはっきりと写してください",
+      },
+    },
+    done_btn: "完了",
+    done_btn_aria: "スキャンを再開",
+    full_document: {
+      blur: {
+        details:
+          "スキャン中は,スマートフォンと書類を動かさないようにしてください。どちらかが動くと,画像がぼやけて書類上のデータが判読できなくなる可能性があります。",
+        details_desktop:
+          "スキャン中は、動かさないようにしてください。どちらかが動くと,画像がぼやけて書類上のデータが判読できなくなる可能性があります。",
+        title: "スキャン中は動かさないでください",
+        title_desktop: "スキャン中は動かさないでください",
+      },
+      camera_lens: {
+        details_desktop:
+          "カメラのレンズに汚れやホコリが付いていないか確認してください。レンズが汚れていると最終画像がぼやけ、ドキュメントの詳細が読み取れなくなり、データのスキャンに失敗する原因になります。",
+        title_desktop: "カメラのレンズを拭いてください",
+      },
+      lighting: {
+        details:
+          "強い光が書類に反射し,一部が判読できなくなる可能性があるため,直射日光は避けてください。書類上のデータが読み取れない場合は,カメラにも映りません。",
+        details_desktop:
+          "強い光が書類に反射し,一部が判読できなくなる可能性があるため,直射日光は避けてください。書類上のデータが読み取れない場合は,カメラにも映りません。",
+        title: "強い光にご注意ください",
+        title_desktop: "強い光にご注意ください",
+      },
+      visibility: {
+        details:
+          "書類の下部の線も含め,指で書類の一部を覆わないようにしてください。また,書類のフィールドを覆うホログラムの反射にもご注意ください。",
+        details_desktop:
+          "書類の下部の線も含め,指で書類の一部を覆わないようにしてください。また,書類のフィールドを覆うホログラムの反射にもご注意ください。",
+        title: "すべてのフィールドが見えるようにしてください",
+        title_desktop: "すべてのフィールドが見えるようにしてください",
+      },
+    },
+    next_btn: "次へ",
+  },
+  onboarding_modal: {
+    aria: "スキャンの手順",
+    barcode_only: {
+      details:
+        "バーコード（黒い線が並んだものまたは四角いコード）を探してください。カメラをバーコードの方に向けて動かさないでください。スキャンが自動的に実行されます。",
+      details_desktop:
+        "バーコード（黒い線が並んだものまたは四角いコード）を探してください。カメラのレンズを清潔に保ち、バーコードが十分明るくなるようにしてください。",
+      title: "バーコードを見つけてスキャンします",
+      title_desktop: "レンズをきれいにしてバーコードを見つけます",
+    },
+    btn: "スキャンを開始",
+    document_with_barcode: {
+      details:
+        "IDの種類が異なると、バーコードの形式と位置も異なる可能性があります。IDの表面と裏面のバーコードを確認してください。",
+      details_desktop:
+        "IDの表面と裏面のバーコードをチェックしてください。カメラのレンズを清潔に保ち、ドキュメントが十分明るくなるようにしてください。",
+      title: "IDのバーコードを見つけます",
+      title_desktop: "レンズをきれいにしてバーコードを見つけます",
+    },
+    full_document: {
+      details:
+        "書類を十分に明るく保ち,カメラの画面に書類のすべての項目が映っていることを確認してください。",
+      details_desktop:
+        "カメラのレンズを清潔に保ち、ドキュメントが十分明る口なるようにしてください。ドキュメントのすべての項目がカメラの画面内ににおさまるようにしてください。",
+      title: "すべての詳細が見えるようにしてください",
+      title_desktop: "スキャンの準備",
+    },
+  },
+  sdk_aria: "ドキュメントスキャン画面",
+  timeout_modal: {
+    details: "書類を読み取れません。もう一度お試しください。",
+    title: "スキャンに失敗しました",
+  },
 } as const;

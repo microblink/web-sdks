@@ -249,7 +249,7 @@ export const App: Component = () => {
         cameraManager,
         scanningSession,
       );
-      blinkIdUxManager.setTimeoutDuration(15000); // 15 seconds timeout
+      blinkIdUxManager.setTimeoutConfiguration({ inactivityTimeoutMs: 15000 });
 
       // Create and configure camera UI
       cameraManagerComponent = await createCameraManagerUi(

@@ -36,11 +36,44 @@ Adds a callback function to be called when an error occurs.
 
 ***
 
+### addOnFrameProcessCallback
+
+> **addOnFrameProcessCallback**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)\[`"addOnFrameProcessCallback"`\]
+
+Adds a callback function to be called when a frame is processed.
+
+The callback receives the current `BlinkIdProcessResult`,
+`advanceToNextStep()` for custom scan-step advancement or finishing once
+the frame contains all data your integration needs,
+`triggerStepTimeout()` for forcing the active step through the timeout path,
+and `getLastFrame()` for reading the raw frame `ArrayBuffer`.
+
+***
+
+### addOnProgressCallback
+
+> **addOnProgressCallback**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)\[`"addOnProgressCallback"`\]
+
+Adds a callback function to receive BlinkID progress snapshots.
+
+***
+
 ### addOnResultCallback
 
 > **addOnResultCallback**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)\[`"addOnResultCallback"`\]
 
 Adds a callback function to be called when a result is obtained.
+
+***
+
+### addOnUiStateChangedCallback
+
+> **addOnUiStateChangedCallback**: [`BlinkIdUxManagerType`](BlinkIdUxManagerType.md)\[`"addOnUiStateChangedCallback"`\]
+
+Adds a callback function to be called when the UI state changes.
+
+The callback receives the stabilized visible `BlinkIdUiState`, including
+the current `key` and reticle metadata used by the built-in feedback UI.
 
 ***
 

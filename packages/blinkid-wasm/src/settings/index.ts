@@ -2,12 +2,8 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
-export type * from "./AnonymizationMode";
-export type * from "./CroppedImageSettings";
 export type * from "./DetailedFieldType";
-export type * from "./DetectionLevel";
-export type * from "./DocumentAnonymizationSettings";
-export type * from "./DocumentFilter";
-export type * from "./DocumentRules";
-export type * from "./RecognitionModeFilter";
+export type * from "./RedactionMode";
+export type * from "./RedactionSettings";
+export type * from "./SensitivityLevel";
 export type * from "./ScanningSettings";

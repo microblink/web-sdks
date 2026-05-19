@@ -14,7 +14,6 @@ import type { BlinkIdUxManager } from "./BlinkIdUxManager";
 import {
   createProcessResult,
   createScanningResult,
-  createSessionSettings,
 } from "./__testdata/blinkidTestFixtures";
 import {
   createBlinkIdIntegrationContext,
@@ -54,7 +53,7 @@ describe("BlinkIdUxManager integration smoke", () => {
         videoResolution: { width: 1920, height: 1080 },
       },
     },
-    sessionSettings: createSessionSettings(),
+    sessionSettings: {},
     showDemoOverlay: false,
     showProductionOverlay: false,
   };
@@ -66,7 +65,6 @@ describe("BlinkIdUxManager integration smoke", () => {
         documentClassInfo: { country: "usa", type: "dl" },
         documentDetectionStatus: "success",
       },
-      resultCompleteness: { scanningStatus: "document-scanned" },
     });
     const result = createScanningResult();
     const context = await createBlinkIdIntegrationContext({
@@ -74,6 +72,10 @@ describe("BlinkIdUxManager integration smoke", () => {
       sessionOverrides: {
         process: vi.fn().mockResolvedValue(processResult),
         getResult: vi.fn().mockResolvedValue(result),
+        getScanningStatus: vi
+          .fn()
+          .mockResolvedValueOnce("scanning-side-in-progress")
+          .mockResolvedValue("document-scanned"),
       },
     });
     const manager = trackManager(context.manager);
@@ -101,13 +103,20 @@ describe("BlinkIdUxManager integration smoke", () => {
         documentClassInfo: { country: "usa", type: "dl" },
         documentDetectionStatus: "success",
       },
-      resultCompleteness: { scanningStatus: "side-scanned" },
     });
     const context = await createBlinkIdIntegrationContext({
       ...defaultContextOptions,
-      sessionSettings: createSessionSettings({ skipImagesWithBlur: true }),
+      sessionSettings: {
+        scanningSettings: {
+          documentCaptureModule: { imageWithBlurRejected: true },
+        },
+      },
       sessionOverrides: {
         process: vi.fn().mockResolvedValue(sideScannedProcessResult),
+        getScanningStatus: vi
+          .fn()
+          .mockResolvedValueOnce("scanning-side-in-progress")
+          .mockResolvedValue("side-scanned"),
       },
     });
     const manager = trackManager(context.manager);
@@ -138,7 +147,7 @@ describe("BlinkIdUxManager integration smoke", () => {
       ...defaultContextOptions,
     });
     const manager = trackManager(context.manager);
-    manager.setTimeoutDuration(100);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: 100 });
 
     const errorSpy = vi.fn();
     manager.addOnErrorCallback(errorSpy);
@@ -196,13 +205,16 @@ describe("BlinkIdUxManager integration smoke", () => {
         documentClassInfo: { country: "usa", type: "dl" },
         documentDetectionStatus: "success",
       },
-      resultCompleteness: { scanningStatus: "document-scanned" },
     });
     const context = await createBlinkIdIntegrationContext({
       ...defaultContextOptions,
       sessionOverrides: {
         process: vi.fn().mockResolvedValue(processResult),
         getResult: vi.fn().mockRejectedValue(new Error("Worker RPC failure")),
+        getScanningStatus: vi
+          .fn()
+          .mockResolvedValueOnce("scanning-side-in-progress")
+          .mockResolvedValue("document-scanned"),
       },
     });
     const manager = trackManager(context.manager);

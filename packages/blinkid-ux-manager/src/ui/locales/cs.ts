@@ -6,74 +6,182 @@
  * Localization strings for cs.
  */
 export default {
-  alert_cancel_btn: "Storno",
-  alert_retry_btn: "Opakovat",
-  blur_detected: "Držte dokument a telefon v klidu",
-  camera_angle_too_steep: "Držte dokument rovnoběžně s telefonem",
-  document_filtered: "Dokument nebyl přijat",
-  document_filtered_details: "Zkuste naskenovat jiný dokument.",
-  document_not_recognized: "Dokument nebyl rozpoznán",
-  document_not_recognized_details:
-    "Naskenujte přední stranu podporovaného dokumentu.",
-  document_scanned: "Úspěch! Dokument byl naskenován",
-  document_too_close_to_edge: "Kousek dál",
-  face_photo_not_fully_visible:
-    "Zachovejte úplnou viditelnost fotografie obličeje",
-  flip_document: "Překlopit dokument",
-  flip_to_back_side: "Otočte dokument",
-  front_side_scanned: "Úspěch! Čelní strana byla naskenována",
-  glare_detected: "Nakloňte nebo přesuňte dokument pro odstranění odrazů",
-  help_aria_label: "Nápověda",
-  help_modal_back_btn: "Zpět",
-  help_modal_blur_details_desktop:
-    "Při skenování se snažte držet zařízení a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
-  help_modal_camera_lens_details:
-    "Zkontrolujte, zda na objektivu fotoaparátu nejsou šmouhy nebo prach. Špinavý objektiv způsobuje rozmazání výsledného obrazu, což znemožňuje přečtení údajů v dokumentu a úspěšné naskenování dat.",
-  help_modal_camera_lens_title: "Vyčistěte objektiv fotoaparátu",
-  help_modal_details_1:
-    "Ujistěte se, že prstem nezakrýváte části dokumentu, včetně spodních řádků. Dávejte si také pozor na hologramové odlesky, které přesahují pole dokumentu.",
-  help_modal_details_2:
-    "Vyhněte se přímému ostrému světlu, protože se odráží od dokumentu a může způsobit, že části dokumentu nebudou čitelné. Pokud nelze údaje na dokumentu přečíst, nebudou viditelné ani pro fotoaparát.",
-  help_modal_details_3:
-    "Při skenování se snažte držet telefon a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
-  help_modal_done_btn: "Hotovo",
-  help_modal_next_btn: "Další",
-  help_modal_title_1: "Všechna pole musejí být ve viditelném stavu",
-  help_modal_title_2: "Dávejte pozor na ostré světlo",
-  help_modal_title_3: "Při skenování se nehýbejte",
-  help_tooltip: "Potřebujete pomoct?",
-  keep_document_parallel: "Držte dokument rovnoběžně s obrazovkou",
-  keep_document_still: "Držte dokument a zařízení v klidu",
-  move_closer: "Kousek blíž",
-  move_farther: "Kousek dál",
-  move_left: "Přesuňte se na stránku vlevo",
-  move_right: "Přesunout se na stránku vpravo",
-  move_top: "Přesuňte se na stránku nahoře",
-  occluded: "Ponechat dokument zcela viditelný",
-  onboarding_modal_btn: "Spustit skenování",
-  onboarding_modal_details:
-    "Ujistěte se, že je dokument dobře osvětlen. Na obrazovce fotoaparátu by měla být vidět všechna pole dokumentu.",
-  onboarding_modal_details_desktop:
-    "Ujistěte se, že je objektiv fotoaparátu čistý a dokument je dobře osvětlen. Na obrazovce fotoaparátu by měla být vidět všechna pole dokumentu.",
-  onboarding_modal_title: "Všechny detaily musejí být ve viditelném stavu",
-  onboarding_modal_title_desktop: "Připravte se na skenování",
-  resume_scanning: "Pokračovat ve skenování",
-  scan_data_page: "Naskenujte datovou stránku dokumentu",
-  scan_last_page_barcode: "Naskenujte čárový kód z poslední stránky",
-  scan_left_page: "Naskenujte levou stránku",
-  scan_right_page: "Naskenujte pravou stránku",
-  scan_the_back_side: "Naskenujte zadní stranu dokumentu",
-  scan_the_barcode: "Naskenujte čárový kód",
-  scan_the_front_side: "Naskenujte přední\\nstranu dokumentu.",
-  scan_top_page: "Naskenujte horní stránku",
-  scan_unsuccessful: "Skenování neúspěšné",
-  scan_unsuccessful_details: "Dokument se nepodařilo přečíst. Zkuste to znovu.",
-  scanning_help: "Nápověda pro skenování",
-  scanning_instructions: "Pokyny pro skenování",
-  scanning_screen: "Obrazovka skenování dokumentu",
-  too_bright: "Přesuňte se na méně osvětlené místo",
-  too_dark: "Přesuňte se na lépe osvětlené místo",
-  wrong_left: "Přesuňte se na levou stránku",
-  wrong_right: "Přesuňte se na pravou stránku",
-  wrong_top: "Přesuňte se na horní stránku",
+  document_filtered_modal: {
+    details: "Zkuste naskenovat jiný dokument.",
+    title: "Dokument nebyl přijat",
+  },
+  document_not_recognized_modal: {
+    details: "Naskenujte přední stranu podporovaného dokumentu.",
+    title: "Dokument nebyl rozpoznán",
+  },
+  error_modal: { cancel_btn: "Storno", retry_btn: "Opakovat" },
+  feedback_messages: {
+    blur_detected: "Držte dokument a telefon v klidu",
+    camera_angle_too_steep: "Držte dokument rovnoběžně s telefonem",
+    document_scanned_aria: "Úspěch! Dokument byl naskenován",
+    document_too_close_to_edge: "Kousek dál",
+    face_photo_not_fully_visible:
+      "Zachovejte úplnou viditelnost fotografie obličeje",
+    flip_document: "Překlopit dokument",
+    flip_to_back_side: "Otočte dokument",
+    front_side_scanned_aria: "Úspěch! Čelní strana byla naskenována",
+    glare_detected: "Nakloňte nebo přesuňte dokument pro odstranění odrazů",
+    keep_document_parallel: "Držte dokument rovnoběžně s obrazovkou",
+    keep_document_still: "Držte dokument a zařízení v klidu",
+    keep_still: "Nehýbat",
+    move_closer: "Kousek blíž",
+    move_farther: "Kousek dál",
+    move_left: "Přesuňte se na stránku vlevo",
+    move_right: "Přesunout se na stránku vpravo",
+    move_top: "Přesuňte se na stránku nahoře",
+    occluded: "Ponechat dokument zcela viditelný",
+    scan_data_page: "Naskenujte datovou stránku dokumentu",
+    scan_last_page_barcode: "Naskenujte čárový kód z poslední stránky",
+    scan_left_page: "Naskenujte levou stránku",
+    scan_right_page: "Naskenujte pravou stránku",
+    scan_the_back_side: "Naskenujte zadní stranu dokumentu",
+    scan_the_barcode: "Naskenujte čárový kód",
+    scan_the_barcode_side: "Naskenujte stranu dokumentu s čárovým kódem",
+    scan_the_front_side: "Naskenujte přední\\nstranu dokumentu.",
+    scan_top_page: "Naskenujte horní stránku",
+    too_bright: "Přesuňte se na méně osvětlené místo",
+    too_dark: "Přesuňte se na lépe osvětlené místo",
+    wrong_left: "Přesuňte se na levou stránku",
+    wrong_right: "Přesuňte se na pravou stránku",
+    wrong_top: "Přesuňte se na horní stránku",
+  },
+  help_button: { aria_label: "Nápověda", tooltip: "Potřebujete pomoct?" },
+  help_modal: {
+    aria: "Nápověda pro skenování",
+    back_btn: "Zpět",
+    barcode_only: {
+      blur: {
+        details:
+          "Při skenování se snažte držet telefon a čárový kód v klidu. Pohyb může obraz rozmazat a způsobit, že čárový kód nebude čitelný.",
+        details_desktop:
+          "Při skenování se snažte nehýbat. Pohyb může obraz rozmazat a čárový kód pak může být obtížně čitelný.",
+        title: "Při skenování se nehýbejte",
+        title_desktop: "Při skenování se nehýbejte",
+      },
+      camera_lens: {
+        details_desktop:
+          "Zkontrolujte, zda na objektivu fotoaparátu nejsou šmouhy nebo prach. Špinavý objektiv způsobuje rozmazání výsledného obrazu, což znemožňuje přečtení čárového kódu a úspěšné naskenování dat.",
+        title_desktop: "Vyčistěte objektiv fotoaparátu",
+      },
+      lighting: {
+        details:
+          "Vyhněte se přímému ostrému světlu, protože by mohlo způsobit odlesky na čárovém kódu a ztížit jeho naskenování. Pokud čárový kód dobře nevidíte, nemusí být dobře čitelný ani pro fotoaparát.",
+        details_desktop:
+          "Vyhněte se přímému ostrému světlu, protože by mohlo způsobit odlesky na čárovém kódu a ztížit jeho naskenování. Pokud čárový kód dobře nevidíte, nemusí být dobře čitelný ani pro fotoaparát.",
+        title: "Dávejte pozor na ostré světlo",
+        title_desktop: "Dávejte pozor na ostré světlo",
+      },
+      visibility: {
+        details:
+          "Zkontrolujte, zda část čárového kódu nezakrýváte prstem. Také dejte pozor na odlesky, které by mohly zapříčinit, že bude nečitelný.",
+        details_desktop:
+          "Zkontrolujte, zda část čárového kódu nezakrýváte prstem. Také dejte pozor na odlesky, které by mohly zapříčinit, že bude nečitelný.",
+        title: "Nezakrývejte čárový kód",
+        title_desktop: "Nezakrývejte čárový kód",
+      },
+    },
+    document_with_barcode: {
+      blur: {
+        details:
+          "Při skenování se snažte držet telefon a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+        details_desktop:
+          "Při skenování se snažte nebýhat. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+        title: "Při skenování se nehýbejte",
+        title_desktop: "Při skenování se nehýbejte",
+      },
+      camera_lens: {
+        details_desktop:
+          "Zkontrolujte, zda na objektivu fotoaparátu nejsou šmouhy nebo prach. Špinavý objektiv způsobuje rozmazání výsledného obrazu, což znemožňuje přečtení údajů v dokumentu a úspěšné naskenování dat.",
+        title_desktop: "Vyčistěte objektiv fotoaparátu",
+      },
+      lighting: {
+        details:
+          "Vyhněte se přímému ostrému světlu, protože se odráží od dokumentu a může způsobit, že části dokumentu nebudou čitelné. Pokud nelze údaje na dokumentu přečíst, nebudou viditelné ani pro fotoaparát.",
+        details_desktop:
+          "Vyhněte se přímému ostrému světlu, protože se odráží od dokumentu a může způsobit, že části dokumentu nebudou čitelné. Pokud nelze údaje na dokumentu přečíst, nebudou viditelné ani pro fotoaparát.",
+        title: "Dávejte pozor na ostré světlo",
+        title_desktop: "Dávejte pozor na ostré světlo",
+      },
+      visibility: {
+        details:
+          "Zkontrolujte, zda část čárového kódu nezakrýváte prstem. Také dejte pozor na odlesky, které by mohly zapříčinit, že bude nečitelný.",
+        details_desktop:
+          "Zkontrolujte, zda část čárového kódu nezakrýváte prstem. Také dejte pozor na odlesky, které by mohly zapříčinit, že bude nečitelný.",
+        title: "Nezakrývejte čárový kód",
+        title_desktop: "Nezakrývejte čárový kód",
+      },
+    },
+    done_btn: "Hotovo",
+    done_btn_aria: "Pokračovat ve skenování",
+    full_document: {
+      blur: {
+        details:
+          "Při skenování se snažte držet telefon a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+        details_desktop:
+          "Při skenování se snažte nebýhat. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+        title: "Při skenování se nehýbejte",
+        title_desktop: "Při skenování se nehýbejte",
+      },
+      camera_lens: {
+        details_desktop:
+          "Zkontrolujte, zda na objektivu fotoaparátu nejsou šmouhy nebo prach. Špinavý objektiv způsobuje rozmazání výsledného obrazu, což znemožňuje přečtení údajů v dokumentu a úspěšné naskenování dat.",
+        title_desktop: "Vyčistěte objektiv fotoaparátu",
+      },
+      lighting: {
+        details:
+          "Vyhněte se přímému ostrému světlu, protože se odráží od dokumentu a může způsobit, že části dokumentu nebudou čitelné. Pokud nelze údaje na dokumentu přečíst, nebudou viditelné ani pro fotoaparát.",
+        details_desktop:
+          "Vyhněte se přímému ostrému světlu, protože se odráží od dokumentu a může způsobit, že části dokumentu nebudou čitelné. Pokud nelze údaje na dokumentu přečíst, nebudou viditelné ani pro fotoaparát.",
+        title: "Dávejte pozor na ostré světlo",
+        title_desktop: "Dávejte pozor na ostré světlo",
+      },
+      visibility: {
+        details:
+          "Ujistěte se, že prstem nezakrýváte části dokumentu, včetně spodních řádků. Dávejte si také pozor na hologramové odlesky, které přesahují pole dokumentu.",
+        details_desktop:
+          "Ujistěte se, že prstem nezakrýváte části dokumentu, včetně spodních řádků. Dávejte si také pozor na hologramové odlesky, které přesahují pole dokumentu.",
+        title: "Všechna pole musejí být ve viditelném stavu",
+        title_desktop: "Všechna pole musejí být ve viditelném stavu",
+      },
+    },
+    next_btn: "Další",
+  },
+  onboarding_modal: {
+    aria: "Pokyny pro skenování",
+    barcode_only: {
+      details:
+        "Najděte čárový kód (řadu černých čar nebo čtvercový kód). Nasměrujte na něj fotoaparát a nehýbejte s ním – skenování proběhne automaticky.",
+      details_desktop:
+        "Najděte čárový kód (řadu černých čar nebo čtvercový kód). Ujistěte se, že je objektiv fotoaparátu čistý a čárový kód je dobře osvětlený.",
+      title: "Najděte a naskenujte čárový kód",
+      title_desktop: "Vyčistěte objektiv a najděte čárový kód",
+    },
+    btn: "Spustit skenování",
+    document_with_barcode: {
+      details:
+        "Různé typy průkazů totožnosti se mohou lišit formátem a umístěním čárového kódu. Kód může být jak na přední, tak na zadní straně průkazu totožnosti.",
+      details_desktop:
+        "Najděte čárový kód na přední nebo zadní straně průkazu totožnosti. Ujistěte se, že je objektiv fotoaparátu čistý a dokument je dobře osvětlený.",
+      title: "Vyhledejte na průkazu totožnosti čárový kód",
+      title_desktop: "Vyčistěte objektiv a najděte čárový kód",
+    },
+    full_document: {
+      details:
+        "Ujistěte se, že je dokument dobře osvětlen. Na obrazovce fotoaparátu by měla být vidět všechna pole dokumentu.",
+      details_desktop:
+        "Ujistěte se, že je objektiv fotoaparátu čistý a dokument je dobře osvětlen. Na obrazovce fotoaparátu by měla být vidět všechna pole dokumentu.",
+      title: "Všechny detaily musejí být ve viditelném stavu",
+      title_desktop: "Připravte se na skenování",
+    },
+  },
+  sdk_aria: "Obrazovka skenování dokumentu",
+  timeout_modal: {
+    details: "Dokument se nepodařilo přečíst. Zkuste to znovu.",
+    title: "Skenování neúspěšné",
+  },
 } as const;
