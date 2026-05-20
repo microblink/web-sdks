@@ -1,5 +1,17 @@
 # @microblink/blinkid-verify
 
+## 3.21.0
+
+### Minor Changes
+
+- Update of internal dependencies in blinkid-verify-wasm
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-verify-core@3.21.0
+  - @microblink/blinkid-verify-ux-manager@3.21.0
+
 ## 3.20.3
 
 ### Patch Changes

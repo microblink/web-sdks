@@ -1,26 +1,26 @@
 {
   "wasm": {
     "basic": {
-      "lightweight": 3503840,
-      "full": 3463916
+      "full": 3464483,
+      "lightweight": 3503820
     },
     "advanced": {
-      "lightweight": 3502656,
-      "full": 3464935
+      "full": 3464959,
+      "lightweight": 3503088
     },
     "advanced-threads": {
-      "full": 3518342,
-      "lightweight": 3554515
+      "full": 3518627,
+      "lightweight": 3554361
     }
   },
   "data": {
     "basic": {
-      "lightweight": 12173753,
-      "full": 13806438
+      "full": 13806438,
+      "lightweight": 12173753
     },
     "advanced": {
-      "lightweight": 12173753,
-      "full": 13806438
+      "full": 13806438,
+      "lightweight": 12173753
     },
     "advanced-threads": {
       "full": 13806438,
