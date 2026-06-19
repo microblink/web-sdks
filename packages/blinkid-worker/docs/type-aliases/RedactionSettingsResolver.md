@@ -6,11 +6,11 @@
 
 # Type Alias: RedactionSettingsResolver()
 
-> **RedactionSettingsResolver** = (`classInfo`) => `RedactionSettings` \| `null` \| `undefined` \| `Promise`\<`RedactionSettings` \| `null` \| `undefined`\>
+> **RedactionSettingsResolver** = (`classInfo`, `getDefaultRedactionSettings`) => `RedactionSettingsResolverReturn` \| `null` \| `Promise`\<`RedactionSettingsResolverReturn` \| `null`\>
 
 Resolves custom result redaction settings for a classified document.
 
-Return `null` or `undefined` to keep the SDK default redaction behavior.
+Return `null` to keep the SDK default redaction behavior.
 
 ## Parameters
 
@@ -18,6 +18,10 @@ Return `null` or `undefined` to keep the SDK default redaction behavior.
 
 `DocumentClassInfo`
 
+### getDefaultRedactionSettings
+
+(`options`) => `Promise`\<`RedactionSettings`\>
+
 ## Returns
 
-`RedactionSettings` \| `null` \| `undefined` \| `Promise`\<`RedactionSettings` \| `null` \| `undefined`\>
+`RedactionSettingsResolverReturn` \| `null` \| `Promise`\<`RedactionSettingsResolverReturn` \| `null`\>

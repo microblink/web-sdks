@@ -137,11 +137,11 @@ pass to `createBlinkId`. There is no separate UI option for this: the UX manager
 derives an extraction mode from `scanningMode` and the enabled extraction
 modules.
 
-| UX extraction mode | When it is used | UI behavior |
-| ------------------ | --------------- | ----------- |
-| `full-document` | Default document capture flow, including document capture, MRZ, VIZ, mixed extraction, optional barcode, or multi-side extraction. | Shows standard document capture guidance. |
+| UX extraction mode      | When it is used                                                                                                                                        | UI behavior                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| `full-document`         | Default document capture flow, including document capture, MRZ, VIZ, mixed extraction, optional barcode, or multi-side extraction.                     | Shows standard document capture guidance.                                             |
 | `document-with-barcode` | `scanningMode: "single"` with `documentCaptureModule` enabled, `barcodeModule.presenceMandatory: true`, and both `mrzModule` and `vizModule` disabled. | Shows document capture guidance focused on scanning the barcode side of the document. |
-| `barcode-only` | `documentCaptureModule`, `mrzModule`, and `vizModule` are disabled, while `barcodeModule` is enabled. | Shows barcode-only onboarding, help, and feedback copy. |
+| `barcode-only`          | `documentCaptureModule`, `mrzModule`, and `vizModule` are disabled, while `barcodeModule` is enabled.                                                  | Shows barcode-only onboarding, help, and feedback copy.                               |
 
 Example: single-side document capture where barcode presence is mandatory:
 
@@ -183,11 +183,14 @@ You can choose result redaction per classified document with
 ```js
 const blinkid = await createBlinkId({
   licenseKey: import.meta.env.VITE_LICENCE_KEY,
-  redactionSettingsResolver: (documentClassInfo) => {
+  redactionSettingsResolver: async (documentClassInfo, getDefaultSettings) => {
     if (
       documentClassInfo.country === "germany" &&
       documentClassInfo.type === "id"
     ) {
+      // Optionally use the SDK defaults for this document class.
+      const defaults = await getDefaultSettings(documentClassInfo);
+
       return {
         mode: "full-result",
         fields: ["documentNumber"],
@@ -196,7 +199,7 @@ const blinkid = await createBlinkId({
           suffixDigitsVisible: 4,
         },
         redactMrz: true,
-        redactBarcode: false,
+        redactBarcode: defaults.redactBarcode,
       };
     }
 
@@ -210,7 +213,7 @@ const blinkid = await createBlinkId({
 settings (`scanningSettings.anonymizationMode` and
 `scanningSettings.customDocumentAnonymizationSettings`). The resolver receives
 the classified `DocumentClassInfo`; return `RedactionSettings` for custom
-redaction or `null` / `undefined` to keep the SDK defaults. See the
+redaction or `null` to keep the SDK defaults. See the
 [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000)
 for the full migration.
 
@@ -321,8 +324,7 @@ BlinkID proceeds to the final result. Return `true` to allow the document and
 const removeDocumentClassFilter = blinkid.addDocumentClassFilter(
   (documentClassInfo) => {
     return (
-      documentClassInfo.country === "usa" &&
-      documentClassInfo.type === "dl"
+      documentClassInfo.country === "usa" && documentClassInfo.type === "dl"
     );
   },
 );
@@ -399,6 +401,65 @@ To build the package locally:
    ```
 
 The output files will be available in the `dist/`, `types/`, and `public/resources/` directories.
+
+## Browser Support
+
+BlinkID supports camera-based scanning in these browser versions and newer:
+
+- Chrome / Chromium 96 (desktop and Android)
+- Edge 96
+- Opera 84
+- Firefox 132 (desktop)
+- Safari 16.4 (macOS)
+- iOS Safari 16.4
+
+The SDK must run in a
+[secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts)
+because browsers only expose camera APIs such as `getUserMedia()` on HTTPS or
+localhost.
+
+### WebAssembly runtime
+
+The SDK ships three Wasm build variants (`basic`, `advanced`, and
+`advanced-threads`). The runtime selects the best supported variant automatically.
+
+#### `basic`
+
+Requires mutable globals, reference types, bulk memory, non-trapping float-to-int
+conversions, and sign-extension operators.
+
+#### `advanced`
+
+Requires all `basic` features plus
+[fixed-width SIMD](https://web-platform-dx.github.io/web-features-explorer/features/wasm-simd/).
+
+#### `advanced-threads`
+
+Requires all `advanced` features plus
+[Wasm threads and atomics](https://caniuse.com/wasm-threads). Multithreaded Wasm
+also requires cross-origin isolation headers
+(`Cross-Origin-Opener-Policy: same-origin` and
+`Cross-Origin-Embedder-Policy: require-corp`).
+
+Safari is excluded from `advanced-threads` even when it reports Wasm thread
+support. Emscripten `advanced-threads` builds use pthreads that spawn workers
+from inside a worker, and Safari historically lacked reliable nested worker
+support when Wasm threads shipped in Safari 16. There are also known Safari
+issues with shared memory in Emscripten pthread builds
+([emscripten-core/emscripten#19374](https://github.com/emscripten-core/emscripten/issues/19374)).
+For these reasons the runtime falls back to the single-threaded `advanced`
+variant on Safari instead of loading `advanced-threads`.
+
+### Firefox for Android
+
+Firefox for Android is not supported for camera-based scanning. The SDK uses
+`@microblink/camera-manager`, and Firefox Android can hide video input devices
+from `navigator.mediaDevices.enumerateDevices()` before an active camera
+capture. This makes camera device discovery and permission handling unreliable.
+Mozilla tracks this behavior as intentional and resolved it as `WONTFIX` because
+exposing device information before camera access has fingerprinting
+implications:
+[Bugzilla 1611998](https://bugzilla.mozilla.org/show_bug.cgi?id=1611998).
 
 ## More Information
 

@@ -2,6 +2,7 @@
   "name": "@microblink/repo-utils",
   "private": true,
   "scripts": {
+    "lint:browserslist": "tsx browser-support.mts",
     "test": "vitest run --silent",
     "test:watch": "vitest --silent"
   },
@@ -9,7 +10,9 @@
   "module": "utils.mts",
   "types": "utils.mts",
   "devDependencies": {
+    "browserslist-to-esbuild": "^2.1.1",
     "@types/node": "^25.2.3",
+    "tsx": "^4.21.0",
     "typescript": "5.8.3",
     "vitest": "^3.0.8",
     "zx": "^8.8.5"

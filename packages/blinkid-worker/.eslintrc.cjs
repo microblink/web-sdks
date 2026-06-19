@@ -11,8 +11,12 @@ module.exports = defineConfig({
   overrides: [
     {
       files: ["src/**/*.{ts,tsx}"],
+      env: {
+        browser: true,
+        worker: true,
+      },
       parser: "@typescript-eslint/parser",
-      plugins: ["@typescript-eslint"],
+      plugins: ["@typescript-eslint", "compat"],
       parserOptions: {
         tsconfigRootDir: __dirname,
         project: ["./tsconfig.json"],
@@ -21,6 +25,7 @@ module.exports = defineConfig({
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended-type-checked",
         "plugin:@typescript-eslint/stylistic-type-checked",
+        "plugin:compat/recommended",
         "prettier",
       ],
       rules: {

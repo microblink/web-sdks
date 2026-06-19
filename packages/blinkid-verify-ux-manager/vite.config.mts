@@ -1,4 +1,5 @@
 import UnoCSS from "unocss/vite";
+import { getBrowserslistEsbuildTarget } from "@microblink/repo-utils";
 import { defineConfig, PluginOption } from "vite";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import externalize from "vite-plugin-externalize-dependencies";
@@ -18,7 +19,7 @@ export default defineConfig((config) => ({
   build: {
     sourcemap: config.mode === "development",
     minify: config.mode === "production",
-    target: "es2022",
+    target: getBrowserslistEsbuildTarget(),
     lib: {
       formats: ["es"],
       entry: "./src/index.ts",

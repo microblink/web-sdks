@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid",
   "description": "All-in-one BlinkID browser SDK for fast and accurate ID document scanning and recognition in web applications.",
-  "version": "8000.0.0",
+  "version": "8000.0.1",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -76,5 +76,14 @@
     "zx": "^8.8.5"
   },
   "keywords": [],
-  "license": "ISC"
+  "license": "ISC",
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 132",
+    "Safari >= 16.4",
+    "iOS >= 16.4"
+  ]
 }

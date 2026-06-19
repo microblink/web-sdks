@@ -20,12 +20,14 @@ permissions:
 jobs:
   ci-check:
     name: CI Check
+    if: github.repository == 'microblink/web-sdks' || github.repository == 'Microblink/web-sdks'
     uses: ./.github/workflows/main-ci.yml
     secrets: inherit
 
   publish-npm:
     name: Publish to NPM
     needs: ci-check
+    if: github.repository == 'microblink/web-sdks' || github.repository == 'Microblink/web-sdks'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

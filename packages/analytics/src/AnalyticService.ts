@@ -275,6 +275,28 @@ export class AnalyticService {
     });
   }
 
+  logWarning(logMessage: string) {
+    return this.#safePing({
+      schemaName: "ping.log",
+      schemaVersion: "1.0.0",
+      data: {
+        logLevel: "Warning",
+        logMessage,
+      },
+    });
+  }
+
+  logInfo(logMessage: string) {
+    return this.#safePing({
+      schemaName: "ping.log",
+      schemaVersion: "1.0.0",
+      data: {
+        logLevel: "Info",
+        logMessage,
+      },
+    });
+  }
+
   logErrorEvent({
     origin,
     error,

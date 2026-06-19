@@ -2,6 +2,7 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import { deepClone } from "./deepClone";
 import { getKeyWithHighestValue } from "./utils";
 
 /**
@@ -111,7 +112,7 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
    * @returns A copy of the current event queue.
    */
   getEventQueue() {
-    return structuredClone(this.eventQueue);
+    return deepClone(this.eventQueue);
   }
 
   /**
@@ -120,7 +121,7 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
    * @returns A copy of the current event queue.
    */
   getSingleEventQueue() {
-    return structuredClone(this.singleEventQueue);
+    return deepClone(this.singleEventQueue);
   }
 
   /**
@@ -129,7 +130,7 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
    * @returns The current summed scores for each state.
    */
   getScores() {
-    return structuredClone(this.summedScores);
+    return deepClone(this.summedScores);
   }
 
   /**
@@ -138,7 +139,7 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
    * @returns The score history for each state.
    */
   getScoreBoard() {
-    return structuredClone(this.scoreBoard);
+    return deepClone(this.scoreBoard);
   }
 
   /**

@@ -83,3 +83,62 @@ To build the package locally:
    ```
 
 The output files will be available in the `dist/`, `types/`, and `public/resources/` directories.
+
+## Browser Support
+
+BlinkCard supports camera-based scanning in these browser versions and newer:
+
+- Chrome / Chromium 96 (desktop and Android)
+- Edge 96
+- Opera 84
+- Firefox 132 (desktop)
+- Safari 16.4 (macOS)
+- iOS Safari 16.4
+
+The SDK must run in a
+[secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts)
+because browsers only expose camera APIs such as `getUserMedia()` on HTTPS or
+localhost.
+
+### WebAssembly runtime
+
+The SDK ships three Wasm build variants (`basic`, `advanced`, and
+`advanced-threads`). The runtime selects the best supported variant automatically.
+
+#### `basic`
+
+Requires mutable globals, reference types, bulk memory, non-trapping float-to-int
+conversions, and sign-extension operators.
+
+#### `advanced`
+
+Requires all `basic` features plus
+[fixed-width SIMD](https://web-platform-dx.github.io/web-features-explorer/features/wasm-simd/).
+
+#### `advanced-threads`
+
+Requires all `advanced` features plus
+[Wasm threads and atomics](https://caniuse.com/wasm-threads). Multithreaded Wasm
+also requires cross-origin isolation headers
+(`Cross-Origin-Opener-Policy: same-origin` and
+`Cross-Origin-Embedder-Policy: require-corp`).
+
+Safari is excluded from `advanced-threads` even when it reports Wasm thread
+support. Emscripten `advanced-threads` builds use pthreads that spawn workers
+from inside a worker, and Safari historically lacked reliable nested worker
+support when Wasm threads shipped in Safari 16. There are also known Safari
+issues with shared memory in Emscripten pthread builds
+([emscripten-core/emscripten#19374](https://github.com/emscripten-core/emscripten/issues/19374)).
+For these reasons the runtime falls back to the single-threaded `advanced`
+variant on Safari instead of loading `advanced-threads`.
+
+### Firefox for Android
+
+Firefox for Android is not supported for camera-based scanning. The SDK uses
+`@microblink/camera-manager`, and Firefox Android can hide video input devices
+from `navigator.mediaDevices.enumerateDevices()` before an active camera
+capture. This makes camera device discovery and permission handling unreliable.
+Mozilla tracks this behavior as intentional and resolved it as `WONTFIX` because
+exposing device information before camera access has fingerprinting
+implications:
+[Bugzilla 1611998](https://bugzilla.mozilla.org/show_bug.cgi?id=1611998).

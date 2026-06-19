@@ -78,6 +78,7 @@
 - [ExtractionStatus](type-aliases/ExtractionStatus.md)
 - [FieldType](type-aliases/FieldType.md)
 - [FormFactor](type-aliases/FormFactor.md)
+- [GetDefaultRedactionSettingsOptions](type-aliases/GetDefaultRedactionSettingsOptions.md)
 - [GpuInfo](type-aliases/GpuInfo.md)
 - [ImageAnalysisDetectionStatus](type-aliases/ImageAnalysisDetectionStatus.md)
 - [ImageAnalysisLightingStatus](type-aliases/ImageAnalysisLightingStatus.md)
@@ -156,6 +157,7 @@
 
 ## Variables
 
+- [DEFAULT\_REDACTION\_SETTINGS](variables/DEFAULT_REDACTION_SETTINGS.md)
 - [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)

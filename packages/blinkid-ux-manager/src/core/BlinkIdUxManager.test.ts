@@ -9,6 +9,9 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 // ============================================================================
 
 const mockSleep = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
+const mockSubscribeToDeviceOrientation = vi.hoisted(() =>
+  vi.fn(() => () => undefined),
+);
 
 // Mock the sleep utility to resolve immediately, preventing tests from hanging
 // when code awaits sleep() with fake timers enabled
@@ -20,6 +23,10 @@ vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
     sleep: mockSleep,
   };
 });
+
+vi.mock("@microblink/ux-common/deviceOrientationAnalytics", () => ({
+  subscribeToDeviceOrientation: mockSubscribeToDeviceOrientation,
+}));
 
 import type {
   BlinkIdScanningResult,
@@ -132,6 +139,13 @@ beforeEach(() => {
 });
 
 describe("BlinkIdUxManager - startup and camera analytics", () => {
+  test("subscribes to device orientation changes for analytics", async () => {
+    const { manager } = await createBlinkIdTestContext();
+
+    expect(manager).toBeDefined();
+    expect(mockSubscribeToDeviceOrientation).toHaveBeenCalledTimes(1);
+  });
+
   test("logs device info and playback events", async () => {
     const { cameraHarness, manager, scanningSession } =
       await createBlinkIdTestContext();

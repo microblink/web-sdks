@@ -4,6 +4,8 @@
 
 import type { Ping } from "@microblink/analytics/ping";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { mergeRedactionSettings } from "./utils";
+import { RedactionSettings } from "@microblink/blinkid-wasm";
 
 /**
  * Test purpose:
@@ -91,5 +93,51 @@ describe("BlinkIdWorker", () => {
       "No Wasm module loaded during worker termination. Skipping cleanup.",
     );
     expect(self.close).toHaveBeenCalled();
+  });
+
+  it("verifies expected behaviour of the mergeRedactionSettings function", () => {
+    const defaultSettings: RedactionSettings = {
+      fields: [],
+      mode: "full-result",
+      redactBarcode: false,
+      redactMrz: false,
+    };
+
+    const partialSettings: Partial<RedactionSettings> = {
+      mode: "none",
+      fields: ["firstName"],
+    };
+
+    let mergeResults = mergeRedactionSettings(defaultSettings, partialSettings);
+
+    expect(mergeResults).toStrictEqual({
+      ...defaultSettings,
+      ...partialSettings,
+    });
+
+    const fullSettings: RedactionSettings = {
+      mode: "full-result",
+      fields: ["firstName"],
+      redactBarcode: true,
+      redactMrz: false,
+      documentNumberRedactionSettings: {
+        prefixDigitsVisible: 1,
+        suffixDigitsVisible: 1,
+      },
+    };
+
+    mergeResults = mergeRedactionSettings(defaultSettings, fullSettings);
+
+    expect(mergeResults).toStrictEqual(fullSettings);
+
+    mergeResults = mergeRedactionSettings(defaultSettings, {
+      redactBarcode: undefined,
+      fields: undefined,
+      redactMrz: undefined,
+      mode: undefined,
+    });
+
+    // Keep default settings when undefined is provided
+    expect(mergeResults).toStrictEqual(defaultSettings);
   });
 });

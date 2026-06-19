@@ -508,4 +508,34 @@ describe("AnalyticsService", () => {
       consoleWarnSpy.mockRestore();
     });
   });
+
+  describe("log events", () => {
+    it("should log warning messages", async () => {
+      await analyticsService.logWarning(
+        "Device orientation analytics unavailable",
+      );
+
+      expect(mockPingFn).toHaveBeenCalledWith({
+        schemaName: "ping.log",
+        schemaVersion: "1.0.0",
+        data: {
+          logLevel: "Warning",
+          logMessage: "Device orientation analytics unavailable",
+        },
+      });
+    });
+
+    it("should log info messages", async () => {
+      await analyticsService.logInfo("Device orientation analytics available");
+
+      expect(mockPingFn).toHaveBeenCalledWith({
+        schemaName: "ping.log",
+        schemaVersion: "1.0.0",
+        data: {
+          logLevel: "Info",
+          logMessage: "Device orientation analytics available",
+        },
+      });
+    });
+  });
 });

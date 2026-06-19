@@ -3,7 +3,7 @@
   "description": "All-in-one BlinkID Verify browser SDK for fast and accurate ID verification in web applications.",
   "author": "Microblink",
   "license": "ISC",
-  "version": "3.21.0",
+  "version": "3.21.1",
   "type": "module",
   "main": "dist/blinkid-verify.js",
   "module": "./dist/blinkid-verify.js",
@@ -48,6 +48,8 @@
     "@microblink/repo-utils": "workspace:*",
     "@microblink/test-utils": "workspace:*",
     "@microsoft/api-extractor": "^7.52.4",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "10.1.8",
@@ -94,5 +96,14 @@
     "video",
     "wasm",
     "webassembly"
+  ],
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 132",
+    "Safari >= 16.4",
+    "iOS >= 16.4"
   ]
 }

@@ -1,5 +1,27 @@
-// @ts-check
+import browserslistToEsbuild from "browserslist-to-esbuild";
+import type browserslist from "browserslist";
 import { $, fs, path } from "zx";
+
+type BrowserslistToEsbuild = (
+  browserslistConfig?: string | readonly string[],
+  options?: browserslist.Options,
+) => string[];
+
+const convertBrowserslistToEsbuild =
+  browserslistToEsbuild as unknown as BrowserslistToEsbuild;
+
+/**
+ * Vite/esbuild `build.target` for published SDK packages, derived from the
+ * package-local Browserslist config.
+ * Internal apps under `apps/` should use `es2022`.
+ */
+export function getBrowserslistEsbuildTarget(
+  packageRoot: string = process.cwd(),
+): string[] {
+  return convertBrowserslistToEsbuild(undefined, {
+    path: packageRoot,
+  });
+}
 
 /**
  * Returns the path to the resources directory of the package.

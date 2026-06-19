@@ -1,13 +1,13 @@
 {
   "name": "@microblink/blinkcard-wasm",
   "private": true,
-  "version": "3000.0.7",
+  "version": "3000.0.8",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",
     "clean": "rimraf .turbo types",
     "docs:api": "typedoc",
-    "lint": "pnpm lint:types",
+    "lint": "pnpm run lint:types",
     "lint:types": "tsc --emitDeclarationOnly false --noEmit"
   },
   "type": "module",

@@ -25,6 +25,7 @@ import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
 import { createLicenseUnlockResult } from "@microblink/test-utils/mocks/licensing";
 import { createScanningSessionMock } from "@microblink/test-utils/mocks/scanningSession";
 import { BlinkIdWasmModule } from "@microblink/blinkid-wasm";
+import { type RedactionSettingsResolver } from "./BlinkIdWorker";
 
 const getCrossOriginWorkerURLMock = vi.fn();
 const downloadResourceBufferMock = vi.fn();
@@ -702,7 +703,10 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     proxySession.process(createFakeImageData());
     await proxySession.getResult();
 
-    expect(redactionSettingsResolver).toHaveBeenCalledWith(documentClassInfo);
+    expect(redactionSettingsResolver).toHaveBeenCalledWith(
+      documentClassInfo,
+      expect.any(Function),
+    );
     expect(session.getResult).toHaveBeenCalledWith(redactionSettings);
   });
 
@@ -722,7 +726,8 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
         documentRotation: "not-available",
       },
     } as BlinkIdProcessResult;
-    const redactionSettingsResolver = vi.fn(() => undefined);
+    const redactionSettingsResolver = vi.fn(() => null);
+
     const session = createScanningSessionMock<BlinkIdScanningSession>({
       process: vi.fn(() => processResult),
       getResult: vi.fn(),
@@ -742,7 +747,10 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     proxySession.process(createFakeImageData());
     await proxySession.getResult();
 
-    expect(redactionSettingsResolver).toHaveBeenCalledWith(documentClassInfo);
+    expect(redactionSettingsResolver).toHaveBeenCalledWith(
+      documentClassInfo,
+      expect.any(Function),
+    );
     expect(session.getResult).toHaveBeenCalledWith();
   });
 
@@ -833,6 +841,135 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     await expect(proxySession.getResult()).rejects.toThrow("resolver-failed");
     expect(session.getResult).not.toHaveBeenCalled();
+  });
+
+  it("getDefaultRedactionSettings is correctly passed to the resolver by the worker", async () => {
+    const documentClassInfo = {
+      country: "germany",
+      region: undefined,
+      type: "id",
+      countryName: "Germany",
+      isoNumericCountryCode: "276",
+      isoAlpha2CountryCode: "DE",
+      isoAlpha3CountryCode: "DEU",
+    } satisfies DocumentClassInfo;
+    const processResult = {
+      inputImageAnalysisResult: {
+        documentClassInfo,
+        documentRotation: "not-available",
+      },
+    } as BlinkIdProcessResult;
+
+    const defaultRedactionSettings = {
+      fields: ["firstName"],
+      mode: "full-result",
+      redactBarcode: false,
+      redactMrz: false,
+    } satisfies RedactionSettings;
+
+    const redactionSettingsResolver = vi.fn<RedactionSettingsResolver>(
+      async (classInfo, getDefaultSettings) => {
+        const defaultSettings = await getDefaultSettings(classInfo);
+
+        return {
+          ...defaultSettings,
+          redactBarcode: true,
+          fields: [...(defaultSettings?.fields ?? []), "lastName"],
+        };
+      },
+    );
+
+    const session = createScanningSessionMock<BlinkIdScanningSession>({
+      process: vi.fn(() => processResult),
+      getResult: vi.fn(),
+    });
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      createScanningSession: vi.fn(() => session),
+      getDefaultRedactionSettings: () => defaultRedactionSettings,
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+
+    await worker.initBlinkId(baseInitSettings);
+
+    const proxySession = worker.createScanningSession(undefined, {
+      redactionSettingsResolver,
+    });
+    proxySession.process(createFakeImageData());
+
+    await proxySession.getResult();
+
+    expect(session.getResult).toHaveBeenCalledWith({
+      ...defaultRedactionSettings,
+      redactBarcode: true,
+      fields: ["firstName", "lastName"],
+    });
+  });
+
+  it("explicit undefined field in redactionSettingsResolver keeps the default", async () => {
+    const documentClassInfo = {
+      country: "germany",
+      region: undefined,
+      type: "id",
+      countryName: "Germany",
+      isoNumericCountryCode: "276",
+      isoAlpha2CountryCode: "DE",
+      isoAlpha3CountryCode: "DEU",
+    } satisfies DocumentClassInfo;
+    const processResult = {
+      inputImageAnalysisResult: {
+        documentClassInfo,
+        documentRotation: "not-available",
+      },
+    } as BlinkIdProcessResult;
+
+    const defaultRedactionSettings = {
+      fields: ["firstName"],
+      mode: "full-result",
+      redactBarcode: false,
+      redactMrz: false,
+    } satisfies RedactionSettings;
+
+    const redactionSettingsResolver = vi.fn<RedactionSettingsResolver>(
+      async (classInfo, getDefaultSettings) => {
+        const defaultSettings = await getDefaultSettings(classInfo);
+
+        return {
+          ...defaultSettings,
+          mode: undefined,
+          redactBarcode: undefined,
+          redactMrz: undefined,
+        };
+      },
+    );
+
+    const session = createScanningSessionMock<BlinkIdScanningSession>({
+      process: vi.fn(() => processResult),
+      getResult: vi.fn(),
+    });
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      createScanningSession: vi.fn(() => session),
+      getDefaultRedactionSettings: () => defaultRedactionSettings,
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+
+    await worker.initBlinkId(baseInitSettings);
+
+    const proxySession = worker.createScanningSession(undefined, {
+      redactionSettingsResolver,
+    });
+    proxySession.process(createFakeImageData());
+
+    await proxySession.getResult();
+
+    expect(session.getResult).toHaveBeenCalledWith({
+      ...defaultRedactionSettings,
+    });
   });
 
   it("reports reset failures as non-fatal pinglets", async () => {

@@ -8,6 +8,22 @@ This package provides the Web Worker script for the BlinkID browser SDK. It is u
 - Used by higher-level packages such as [`@microblink/blinkid-core`](https://www.npmjs.com/package/@microblink/blinkid-core) and [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid).
 - Not intended for direct use by end-users.
 
+## Browser Support
+
+This package supports image processing in these browser versions and newer:
+
+- Chrome / Chromium 96 (desktop and Android)
+- Edge 96
+- Opera 84
+- Firefox 114 (desktop and Android)
+- Safari 15.1 (macOS)
+- iOS Safari 15.1
+
+These minimums come from the combination of Emscripten-generated WebAssembly,
+required baseline Wasm features, and the module Web Worker used by
+`@microblink/blinkid-core`. This package does not include camera capture or UX components.
+If you use `@microblink/blinkid` or the UX manager package, see the browser support section in those packages instead.
+
 ## Migration from v7 to v8000
 
 For breaking changes and upgrade steps in the BlinkID package line, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).

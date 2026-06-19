@@ -11,7 +11,10 @@ module.exports = defineConfig({
   overrides: [
     {
       files: ["src/**/*.{ts,tsx}"],
-      plugins: ["@typescript-eslint", "solid"],
+      env: {
+        browser: true,
+      },
+      plugins: ["@typescript-eslint", "solid", "compat"],
       parser: "@typescript-eslint/parser",
       // have to duplicate in override...
       rules: {
@@ -34,6 +37,7 @@ module.exports = defineConfig({
         "plugin:solid/typescript",
         "plugin:@typescript-eslint/recommended-type-checked",
         "plugin:@typescript-eslint/stylistic-type-checked",
+        "plugin:compat/recommended",
         "prettier",
         // "@unocss",
       ],

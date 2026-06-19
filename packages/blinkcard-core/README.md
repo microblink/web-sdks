@@ -9,6 +9,22 @@ This package provides the core BlinkCard functionality for browser-based card sc
 - Can be used directly by end users for advanced use cases.
 - Used internally by [`@microblink/blinkcard`](https://www.npmjs.com/package/@microblink/blinkcard).
 
+## Browser Support
+
+This package supports image processing in these browser versions and newer:
+
+- Chrome / Chromium 96 (desktop and Android)
+- Edge 96
+- Opera 84
+- Firefox 114 (desktop and Android)
+- Safari 15.1 (macOS)
+- iOS Safari 15.1
+
+These minimums come from the combination of Emscripten-generated WebAssembly,
+required baseline Wasm features, and the module Web Worker used by
+`@microblink/blinkcard-core`. This package does not include camera capture or UX components.
+If you use `@microblink/blinkcard` or the UX manager package, see the browser support section in those packages instead.
+
 ## Installation
 
 Install from npm using your preferred package manager:

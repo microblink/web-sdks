@@ -307,7 +307,7 @@ export const blinkIdUiStateMap: BlinkIdUiStateMap = {
   },
   BARCODE_NOT_IN_FRAME: {
     key: "BARCODE_NOT_IN_FRAME",
-    reticleType: "searching",
+    reticleType: "error",
     minDuration: ERROR_DURATION,
   },
   DOCUMENT_FRAMING_CAMERA_TOO_FAR: {

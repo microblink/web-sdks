@@ -1,6 +1,10 @@
 # @microblink/blinkid-verify-wasm
 
-## 3.21.0
+## 3.21.1
+
+### Patch Changes
+
+- Version bump for consistency with other packages
 
 ### Minor Changes
 

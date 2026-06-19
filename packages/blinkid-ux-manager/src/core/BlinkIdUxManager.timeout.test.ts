@@ -112,6 +112,7 @@ const partiallySupportedBarcodeResult = () =>
 
 const createManager = (
   timeoutConfiguration?: Partial<BlinkIdTimeoutConfiguration>,
+  managerSessionSettings: BlinkIdSessionSettings = sessionSettings,
 ) => {
   const cameraManager = new FakeCameraManager();
   const scanningSession = createFakeScanningSession<
@@ -120,7 +121,7 @@ const createManager = (
     BlinkIdScanningResult,
     ScanningStatus
   >({
-    settings: sessionSettings,
+    settings: managerSessionSettings,
     processResult: frontPageNotInFrameResult(),
     scanningStatus: "scanning-side-in-progress",
   });
@@ -130,7 +131,7 @@ const createManager = (
     cameraManager as unknown as CameraManager,
     scanningSession as unknown as RemoteScanningSession,
     { timeoutConfiguration },
-    sessionSettings,
+    managerSessionSettings,
     false,
     false,
     {} as DeviceInfo,
@@ -503,6 +504,47 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(scanningSession.resolveCurrentStep).toHaveBeenCalledTimes(1);
     expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
     expect(cameraManager.stopFrameCapture).toHaveBeenCalledTimes(1);
+  });
+
+  test("does not resolve partially supported barcode step when barcode presence is mandatory", async () => {
+    const mandatoryBarcodeSessionSettings = {
+      ...sessionSettings,
+      scanningSettings: {
+        ...sessionSettings.scanningSettings,
+        barcodeModule: { presenceMandatory: true },
+      },
+    } as BlinkIdSessionSettings;
+    const { cameraManager, scanningSession, manager, getLatestProgress } =
+      createManager(
+        {
+          inactivityTimeoutMs: null,
+          scanStepTimeoutMs: null,
+          partiallySupportedBarcodeResolveTimeoutMs: 100,
+        },
+        mandatoryBarcodeSessionSettings,
+      );
+    managers.add(manager);
+
+    scanningSession.process.mockResolvedValue(
+      partiallySupportedBarcodeResult(),
+    );
+    scanningSession.getScanningStatus.mockResolvedValue(
+      "scanning-barcode-in-progress",
+    );
+
+    cameraManager.emitPlaybackState("capturing");
+    await cameraManager.emitFrame(createFakeImageData());
+    await flushUiRaf();
+
+    expect(getLatestProgress().partiallySupportedBarcodeResolve).toEqual({
+      configuredMs: 100,
+      remainingMs: 100,
+      status: "idle",
+    });
+
+    await vi.advanceTimersByTimeAsync(1_000);
+
+    expect(scanningSession.resolveCurrentStep).not.toHaveBeenCalled();
   });
 
   test.each<{

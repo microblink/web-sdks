@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-verify-ux-manager",
   "description": "BlinkID Verify UX Manager provides user feedback based on the blinkid-verify process results.",
-  "version": "3.21.0",
+  "version": "3.21.1",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -12,6 +12,9 @@
     "build:types": "tsc",
     "clean": "rimraf .turbo types dist publish public/resources/* *.tgz",
     "docs:api": "typedoc",
+    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
+    "lint:eslint": "eslint ./src --max-warnings 0",
+    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
     "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
@@ -57,6 +60,7 @@
     "@microblink/repo-utils": "workspace:*",
     "@microsoft/api-extractor": "^7.52.4",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "@unocss/eslint-config": "^66.6.5",
     "@unocss/preset-uno": "^66.6.5",
     "concurrently": "^9.1.2",
@@ -114,5 +118,14 @@
     "wasm",
     "webassembly"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 132",
+    "Safari >= 16.4",
+    "iOS >= 16.4"
+  ]
 }

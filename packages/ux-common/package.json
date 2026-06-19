@@ -24,6 +24,10 @@
       "types": "./types/cameraAnalyticsMappers.d.ts",
       "import": "./dist/cameraAnalyticsMappers.js"
     },
+    "./deviceOrientationAnalytics": {
+      "types": "./types/deviceOrientationAnalytics.d.ts",
+      "import": "./dist/deviceOrientationAnalytics.js"
+    },
     "./RafLoop": {
       "types": "./types/RafLoop.d.ts",
       "import": "./dist/RafLoop.js"
