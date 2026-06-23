@@ -1,5 +1,11 @@
 # @microblink/blinkcard-wasm
 
+## 3000.0.8
+
+### Patch Changes
+
+- Version bump for consistency with other packages
+
 ## 3000.0.7
 
 ### Patch Changes

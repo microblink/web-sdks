@@ -1,5 +1,13 @@
 # @microblink/blinkid-verify-ux-manager
 
+## 3.21.1
+
+### Patch Changes
+
+- Fixed UX manager creation failing when `screen.orientation` is unavailable (e.g. iOS Safari and some WebViews). Device orientation analytics now use a guarded subscription with legacy fallback and log warning when reporting is unavailable.
+- Updated dependencies
+  - @microblink/blinkid-verify-core@3.21.1
+
 ## 3.21.0
 
 ### Minor Changes

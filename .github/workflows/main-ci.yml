@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       debug:
-        description: 'Enable debug mode'
+        description: "Enable debug mode"
         required: false
         type: boolean
         default: false
@@ -26,7 +26,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # Skip CI on draft PRs unless manually triggered
-    if: github.event.pull_request.draft == false || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    if: >-
+      (github.repository == 'microblink/web-sdks' || github.repository == 'Microblink/web-sdks') &&
+      (github.event_name != 'pull_request' || github.event.pull_request.draft == false)
 
     steps:
       - name: Checkout
@@ -37,7 +39,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: "24.15.0"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4

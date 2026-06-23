@@ -6,6 +6,7 @@ import { Owner } from "solid-js";
 import { createWithSignal } from "solid-zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
+import { deepClone } from "../utils/deepClone";
 
 /**
  * The camera UI refs.
@@ -33,7 +34,7 @@ const initialState: CameraUiRefs = {
  */
 export const cameraUiRefStore = createStore<CameraUiRefs>()(
   // this is important! Otherwise, solid-zustand will start mutating the initial state
-  subscribeWithSelector(() => structuredClone(initialState)),
+  subscribeWithSelector(() => deepClone(initialState)),
 );
 
 /**

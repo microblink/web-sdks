@@ -6,6 +6,7 @@ import { subscribeWithSelector } from "zustand/middleware";
 import { createStore as createZustandStore } from "zustand/vanilla";
 import { Camera, FacingMode, Resolution } from "./Camera";
 import { CameraError } from "./cameraError";
+import { deepClone } from "../utils/deepClone";
 import { ExtractionArea } from "./VideoFrameProcessor";
 
 /**
@@ -120,7 +121,7 @@ const initialState: CameraManagerStore = {
  */
 export const cameraManagerStore = createZustandStore<CameraManagerStore>()(
   // this is important! Otherwise solid-zustand will start mutating the initial state
-  subscribeWithSelector(() => structuredClone(initialState)),
+  subscribeWithSelector(() => deepClone(initialState)),
 );
 
 /**
@@ -134,5 +135,5 @@ export const resetCameraManagerStore = () => {
   cameraManagerStore.getState().cameras.forEach((camera) => {
     camera.stopStream();
   });
-  cameraManagerStore.setState(structuredClone(initialState));
+  cameraManagerStore.setState(deepClone(initialState));
 };

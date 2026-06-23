@@ -21,6 +21,24 @@ This package provides user experience management and feedback UI for the BlinkID
 - Includes haptic feedback system for mobile devices.
 - Used by [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid) and can be used directly for custom UI integrations.
 
+## Browser Support
+
+This package supports these browser versions and newer:
+
+- Chrome / Chromium 96 (desktop and Android)
+- Edge 96
+- Opera 84
+- Firefox 132 (desktop)
+- Safari 16.4 (macOS)
+- iOS Safari 16.4
+
+This package depends on `@microblink/camera-manager` and `@microblink/blinkid-core`.
+For the full SDK with camera capture, see `@microblink/blinkid`.
+
+Firefox for Android is not supported for camera-based scanning because camera
+device discovery and permission handling are unreliable there; see
+[Bugzilla 1611998](https://bugzilla.mozilla.org/show_bug.cgi?id=1611998).
+
 ## Migration from v7 to v8000
 
 For breaking changes and upgrade steps, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).
@@ -83,12 +101,12 @@ hapticManager.stop(); // Stop all vibration
 
 **⚠️ Important:** Haptic feedback uses the [Web Vibration API](https://developer.mozilla.org/en-US/docs/Web/API/Vibration_API), which has **limited browser support**:
 
-| Browser | Support |
-| ------- | ------- |
-| Chrome for Android | ✅ Supported |
-| Firefox for Android | ✅ Supported |
-| Safari (iOS) | ❌ Not supported |
-| Desktop browsers | ❌ Not supported |
+| Browser             | Support          |
+| ------------------- | ---------------- |
+| Chrome for Android  | ✅ Supported     |
+| Firefox for Android | ✅ Supported     |
+| Safari (iOS)        | ❌ Not supported |
+| Desktop browsers    | ❌ Not supported |
 
 The API is designed primarily for **Android devices using Chrome**, where it works reliably. On unsupported platforms `isHapticFeedbackSupported()` returns `false` and vibration calls are silently ignored.
 
@@ -323,11 +341,11 @@ Top-level groups in `en.ts`:
 
 `BlinkIdExtractionMode` (see [`src/core/extractionMode.ts`](src/core/extractionMode.ts)) drives which subtree under `help_modal` and `onboarding_modal` is shown. The mapping matches [`helpModalContentByExtractionMode`](src/ui/dialogs/HelpModal.tsx) and [`onboardingModalContentByExtractionMode`](src/ui/dialogs/OnboardingGuideModal.tsx):
 
-| Extraction mode           | `help_modal` / `onboarding_modal` group |
-| ------------------------- | ---------------------------------------- |
-| `full-document`           | `full_document`                          |
-| `document-with-barcode` | `document_with_barcode`                    |
-| `barcode-only`            | `barcode_only`                                |
+| Extraction mode         | `help_modal` / `onboarding_modal` group |
+| ----------------------- | --------------------------------------- |
+| `full-document`         | `full_document`                         |
+| `document-with-barcode` | `document_with_barcode`                 |
+| `barcode-only`          | `barcode_only`                          |
 
 Feedback strings that depend on extraction mode (for example front vs barcode side) are selected in code via [`src/ui/feedbackMessages.ts`](src/ui/feedbackMessages.ts); new keys include `scan_the_barcode_side` and `keep_still` (used for the desktop blur path as a shorter “keep still” hint).
 

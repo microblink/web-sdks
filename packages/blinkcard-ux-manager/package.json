@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkcard-ux-manager",
   "description": "BlinkCard UX Manager provides user feedback based on the blinkcard process results.",
-  "version": "3000.0.7",
+  "version": "3000.0.8",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -112,5 +112,14 @@
     "typescript",
     "sdk"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 132",
+    "Safari >= 16.4",
+    "iOS >= 16.4"
+  ]
 }

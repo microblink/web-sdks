@@ -293,6 +293,22 @@ Provides a clean interface for tracking user interactions and events
 
 ***
 
+### logInfo()
+
+> **logInfo**(`logMessage`): `Promise`\<`void`\>
+
+#### Parameters
+
+##### logMessage
+
+`string`
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
 ### logOnboardingDisplayedEvent()
 
 > **logOnboardingDisplayedEvent**(): `Promise`\<`void`\>
@@ -306,6 +322,22 @@ Provides a clean interface for tracking user interactions and events
 ### logStepTimeoutEvent()
 
 > **logStepTimeoutEvent**(): `Promise`\<`void`\>
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
+### logWarning()
+
+> **logWarning**(`logMessage`): `Promise`\<`void`\>
+
+#### Parameters
+
+##### logMessage
+
+`string`
 
 #### Returns
 

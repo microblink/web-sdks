@@ -8,6 +8,32 @@ This package provides camera management for web applications. It handles camera 
 - Provides access to video frames for downstream processing.
 - Can be used standalone or with the included UI components.
 
+## Browser Support
+
+This package supports camera-based flows in these browser versions and newer:
+
+- Chrome / Chromium 91 (desktop and Android)
+- Edge 91
+- Opera 84
+- Firefox 132 (desktop)
+- Safari 15.4 (macOS)
+- iOS Safari 15.4
+
+The package must run in a
+[secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts)
+because browsers only expose camera APIs such as `getUserMedia()` on HTTPS or
+localhost.
+
+### Firefox for Android
+
+Firefox for Android is not supported for camera-based flows. Its
+`navigator.mediaDevices.enumerateDevices()` behavior can hide video input
+devices before an active camera capture, which makes camera device discovery and
+permission handling unreliable for this package. Mozilla tracks this behavior as
+intentional and resolved it as `WONTFIX` because exposing device information
+before camera access has fingerprinting implications:
+[Bugzilla 1611998](https://bugzilla.mozilla.org/show_bug.cgi?id=1611998).
+
 ## Installation
 
 Install from npm using your preferred package manager:
@@ -81,15 +107,11 @@ cameraUi.dismount();
 You can customize UI strings either when creating the camera UI or at runtime:
 
 ```typescript
-const cameraUi = await createCameraManagerUi(
-  cameraManager,
-  undefined,
-  {
-    localizationStrings: {
-      selected_camera: "My Updated String",
-    },
+const cameraUi = await createCameraManagerUi(cameraManager, undefined, {
+  localizationStrings: {
+    selected_camera: "My Updated String",
   },
-);
+});
 ```
 
 At runtime:
@@ -98,7 +120,6 @@ At runtime:
 cameraUi.updateLocalization({
   select_camera: "My updated string",
 });
-
 ```
 
 #### Provided Translations

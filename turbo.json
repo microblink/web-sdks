@@ -13,6 +13,9 @@
     "lint": {
       "cache": false
     },
+    "lint:browserslist": {
+      "cache": false
+    },
     "publish-test": {
       "dependsOn": ["^build:publish"],
       "cache": false

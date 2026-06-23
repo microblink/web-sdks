@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-verify-core",
   "description": "BlinkID Verify Core SDK",
-  "version": "3.21.0",
+  "version": "3.21.1",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -105,5 +105,15 @@
     "wasm",
     "webassembly"
   ],
-  "license": "ISC"
+  "license": "ISC",
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 114",
+    "FirefoxAndroid >= 114",
+    "Safari >= 15.1",
+    "iOS >= 15.1"
+  ]
 }

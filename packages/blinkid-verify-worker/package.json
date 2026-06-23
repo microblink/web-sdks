@@ -2,7 +2,7 @@
   "name": "@microblink/blinkid-verify-worker",
   "description": "Provides a worker which runs the BlinkID WebAssembly in separate thread",
   "private": true,
-  "version": "3.21.0",
+  "version": "3.21.1",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
     "build:dev": "concurrently pnpm:build:js-dev pnpm:build:types",
@@ -11,7 +11,8 @@
     "build:publish": "pnpm build",
     "build:types": "tsc",
     "clean": "rimraf .turbo types dist public/resources/*",
-    "lint": "pnpm run lint:types",
+    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
+    "lint:eslint": "eslint ./src --max-warnings 0",
     "lint:types": "tsc --emitDeclarationOnly false --noEmit",
     "docs:api": "typedoc",
     "watch": "concurrently pnpm:watch:js pnpm:watch:types",
@@ -41,6 +42,7 @@
     "@microblink/tsconfig": "workspace:*",
     "@microblink/repo-utils": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "10.1.8",
@@ -53,5 +55,15 @@
     "vite": "^6.2.1",
     "vitest": "^3.0.8",
     "zx": "^8.8.5"
-  }
+  },
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 114",
+    "FirefoxAndroid >= 114",
+    "Safari >= 15.1",
+    "iOS >= 15.1"
+  ]
 }

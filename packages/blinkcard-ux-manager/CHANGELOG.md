@@ -1,5 +1,13 @@
 # @microblink/blinkcard-ux-manager
 
+## 3000.0.8
+
+### Patch Changes
+
+- Fixed UX manager creation failing when `screen.orientation` is unavailable (e.g. iOS Safari and some WebViews). Device orientation analytics now use a guarded subscription with legacy fallback and log warning when reporting is unavailable.
+- Updated dependencies
+  - @microblink/blinkcard-core@3000.0.8
+
 ## 3000.0.7
 
 ### Patch Changes

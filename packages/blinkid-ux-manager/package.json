@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-ux-manager",
   "description": "BlinkID UX Manager provides user feedback based on the blinkid process results.",
-  "version": "8000.0.0",
+  "version": "8000.0.1",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -100,5 +100,14 @@
     "solid-zustand": "^1.8.1"
   },
   "keywords": [],
-  "license": "ISC"
+  "license": "ISC",
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 132",
+    "Safari >= 16.4",
+    "iOS >= 16.4"
+  ]
 }

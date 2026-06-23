@@ -46,23 +46,46 @@ import {
   ServerPermissionError,
 } from "@microblink/worker-common/errors";
 import { installWorkerCrashReporter } from "@microblink/worker-common/workerCrashReporter";
+import { mergeRedactionSettings } from "./utils";
 
 export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
 
 /**
+ * Default redaction settings used when @type {RedactionSettingsResolver} returns a partial/incomplete setting
+ */
+export const DEFAULT_REDACTION_SETTINGS = {
+  fields: [],
+  mode: "full-result",
+  redactBarcode: false,
+  redactMrz: false,
+} as const satisfies RedactionSettings;
+
+/**
  * Resolves custom result redaction settings for a classified document.
  *
- * Return `null` or `undefined` to keep the SDK default redaction behavior.
+ * Return `null` to keep the SDK default redaction behavior.
  */
 export type RedactionSettingsResolver = (
   classInfo: DocumentClassInfo,
+  getDefaultRedactionSettings: (
+    options: GetDefaultRedactionSettingsOptions,
+  ) => Promise<RedactionSettings>,
 ) =>
-  | RedactionSettings
+  | RedactionSettingsResolverReturn
   | null
-  | undefined
-  | Promise<RedactionSettings | null | undefined>;
+  | Promise<RedactionSettingsResolverReturn | null>;
+
+type RedactionSettingsResolverReturn = Partial<RedactionSettings>;
+
+export type GetDefaultRedactionSettingsOptions = Omit<
+  DocumentClassInfo,
+  | "isoNumericCountryCode"
+  | "isoAlpha2CountryCode"
+  | "isoAlpha3CountryCode"
+  | "countryName"
+>;
 
 /**
  * Options applied by BlinkID Worker when creating a scanning session.
@@ -627,17 +650,42 @@ export class BlinkIdWorker {
             return session.getResult();
           }
 
-          const resolvedRedactionSettings =
-            await redactionSettingsResolver(cachedClassInfo);
+          /**
+           * The local implementation is synchronous, but consumers call it through
+           * Comlink, where proxied functions are exposed as async. So we wrap the value
+           * in a promise so the callback matches @type {RedactionSettingsResolver}.
+           */
+          const getDefaultRedactionSettings = (
+            opts: GetDefaultRedactionSettingsOptions,
+          ) =>
+            Promise.resolve(
+              this.getDefaultRedactionSettings({
+                country: opts.country,
+                region: opts.region,
+                type: opts.type,
+                countryName: "",
+                isoAlpha2CountryCode: "",
+                isoAlpha3CountryCode: "",
+                isoNumericCountryCode: "",
+              }),
+            );
 
-          if (
-            resolvedRedactionSettings === null ||
-            resolvedRedactionSettings === undefined
-          ) {
+          const resolvedPartialRedactionSettings =
+            await redactionSettingsResolver(
+              cachedClassInfo,
+              proxy(getDefaultRedactionSettings),
+            );
+
+          if (!resolvedPartialRedactionSettings) {
             return session.getResult();
           }
 
-          return session.getResult(resolvedRedactionSettings);
+          return session.getResult(
+            mergeRedactionSettings(
+              DEFAULT_REDACTION_SETTINGS,
+              resolvedPartialRedactionSettings,
+            ),
+          );
         } catch (error) {
           if (!this.#wasmModule) {
             throw error;

@@ -1,13 +1,13 @@
 {
   "name": "@microblink/blinkid-verify-wasm",
   "private": true,
-  "version": "3.21.0",
+  "version": "3.21.1",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",
     "clean": "rimraf .turbo types",
     "docs:api": "typedoc",
-    "lint": "pnpm lint:types",
+    "lint": "pnpm run lint:types",
     "lint:types": "tsc --emitDeclarationOnly false --noEmit"
   },
   "type": "module",

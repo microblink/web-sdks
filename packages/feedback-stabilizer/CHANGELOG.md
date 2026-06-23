@@ -1,5 +1,11 @@
 # @microblink/feedback-stabilizer
 
+## 7.1.4
+
+### Patch Changes
+
+- Updates debug snapshot getters to use a browser-compatible fallback when `structuredClone` is unavailable. This keeps `getEventQueue()`, `getSingleEventQueue()`, `getScores()`, and `getScoreBoard()` working across supported browser baselines.
+
 ## 7.1.3
 
 ### Patch Changes

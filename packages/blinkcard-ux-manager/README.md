@@ -18,6 +18,24 @@ This package provides user experience management and feedback UI for the BlinkCa
 - Includes haptic feedback system for mobile devices.
 - Used by [`@microblink/blinkcard`](https://www.npmjs.com/package/@microblink/blinkcard) and can be used directly for custom UI integrations.
 
+## Browser Support
+
+This package supports these browser versions and newer:
+
+- Chrome / Chromium 96 (desktop and Android)
+- Edge 96
+- Opera 84
+- Firefox 132 (desktop)
+- Safari 16.4 (macOS)
+- iOS Safari 16.4
+
+This package depends on `@microblink/camera-manager` and `@microblink/blinkcard-core`.
+For the full SDK with camera capture, see `@microblink/blinkcard`.
+
+Firefox for Android is not supported for camera-based scanning because camera
+device discovery and permission handling are unreliable there; see
+[Bugzilla 1611998](https://bugzilla.mozilla.org/show_bug.cgi?id=1611998).
+
 ## Installation
 
 Install from npm using your preferred package manager:
@@ -115,9 +133,9 @@ You can customize UI strings when creating the feedback UI:
 
 ```typescript
 createBlinkCardFeedbackUi(uxManager, cameraUi, {
-   localizationStrings: {
-      scan_the_barcode: "Please scan the barcode"
-   }
+  localizationStrings: {
+    scan_the_barcode: "Please scan the barcode",
+  },
 });
 ```
 

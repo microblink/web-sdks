@@ -1,5 +1,11 @@
 # @microblink/blinkid-wasm
 
+## 8000.0.1
+
+### Patch Changes
+
+- Improved barcode scanning for iOS devices
+
 ## 8000.0.0
 
 ### Major Changes

@@ -1,4 +1,8 @@
-import { getPackagePath, linkResources } from "@microblink/repo-utils";
+import {
+  getPackagePath,
+  linkResources,
+  getBrowserslistEsbuildTarget,
+} from "@microblink/repo-utils";
 import { defineConfig } from "vite";
 import { dependencies } from "./package.json";
 import { fs, path } from "zx";
@@ -9,7 +13,7 @@ export default defineConfig((config) => ({
   build: {
     sourcemap: config.mode === "development",
     minify: config.mode === "production",
-    target: "es2022",
+    target: getBrowserslistEsbuildTarget(),
     lib: {
       formats: ["es"],
       entry: "./src/index.ts",

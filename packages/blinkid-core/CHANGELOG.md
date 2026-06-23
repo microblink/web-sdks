@@ -1,5 +1,15 @@
 # @microblink/blinkid-core
 
+## 8000.0.1
+
+### Patch Changes
+
+- Improves the redaction resolver api by adding a second argument to the resolver function which allows the user the get the SDK default redaction settings for a specific DocumentClassInfo
+- Also changes the return type of the resolver to Partial<RedactionSettings> this is so the user doesn't have to specify all the properties if he's only interested in one, we then merge this partial result with the default settings
+- Updated dependencies
+  - @microblink/blinkid-wasm@8000.0.1
+  - @microblink/blinkid-worker@8000.0.1
+
 ## 8000.0.0
 
 ### Major Changes

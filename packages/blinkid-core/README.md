@@ -9,6 +9,22 @@ This package provides the core BlinkID functionality for browser-based document 
 - Can be used directly by end users for advanced use cases.
 - Used internally by [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid).
 
+## Browser Support
+
+This package supports image processing in these browser versions and newer:
+
+- Chrome / Chromium 96 (desktop and Android)
+- Edge 96
+- Opera 84
+- Firefox 114 (desktop and Android)
+- Safari 15.1 (macOS)
+- iOS Safari 15.1
+
+These minimums come from the combination of Emscripten-generated WebAssembly,
+required baseline Wasm features, and the module Web Worker used by
+`@microblink/blinkid-core`. This package does not include camera capture or UX components.
+If you use `@microblink/blinkid` or the UX manager package, see the browser support section in those packages instead.
+
 ## Migration from v7 to v8000
 
 For breaking changes and upgrade steps, see the [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000).
@@ -36,7 +52,10 @@ Use `createScanningSession` (available via the `BlinkIdCore` proxy) to start a s
 ```javascript
 import { loadBlinkIdCore } from "@microblink/blinkid-core";
 
-const core = await loadBlinkIdCore({ licenseKey: "your-license-key", resourcesLocation: "/resources" });
+const core = await loadBlinkIdCore({
+  licenseKey: "your-license-key",
+  resourcesLocation: "/resources",
+});
 const session = await core.createScanningSession();
 ```
 
@@ -74,11 +93,48 @@ const session = await core.createScanningSession(
 );
 ```
 
+To get the specific document default redaction settings, use the second argument of redactionSettingsResolver
+
+```javascript
+const session = await core.createScanningSession(
+  {
+    scanningMode: "automatic",
+  },
+  {
+    redactionSettingsResolver: async (
+      documentClassInfo,
+      getDefaultRedactionSettings,
+    ) => {
+      if (
+        documentClassInfo.country === "germany" &&
+        documentClassInfo.type === "id"
+      ) {
+        const defaults = await getDefaultRedactionSettings(documentClassInfo);
+
+        return {
+          mode: "full-result",
+          fields: ["documentNumber"],
+          documentNumberRedactionSettings: {
+            prefixDigitsVisible: 0,
+            suffixDigitsVisible: 4,
+          },
+          redactMrz: defaults.redactMrz,
+          redactBarcode: defaults.redactBarcode,
+        };
+      }
+
+      // Return null to keep SDK default redaction settings.
+      return null;
+    },
+  },
+);
+```
+
 `redactionSettingsResolver` replaces the v7 session-level anonymization
 settings (`scanningSettings.anonymizationMode` and
 `scanningSettings.customDocumentAnonymizationSettings`). The resolver receives
 the classified `DocumentClassInfo`; return `RedactionSettings` for custom
-redaction or `null` / `undefined` to keep the SDK defaults. See the
+redaction or `null` to keep the SDK defaults. See the
 [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000)
 for the full migration.
 

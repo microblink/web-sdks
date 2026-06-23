@@ -1,5 +1,11 @@
 # @microblink/camera-manager
 
+## 7.3.3
+
+### Patch Changes
+
+- Updates internal state cloning to use a browser-compatible fallback when `structuredClone` is unavailable. This keeps `CameraManager` store resets, media mocks, localization initialization, and UI ref state initialization working across supported browser baselines.
+
 ## 7.3.2
 
 ### Patch Changes

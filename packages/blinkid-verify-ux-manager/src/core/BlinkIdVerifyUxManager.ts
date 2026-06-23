@@ -12,7 +12,6 @@ import {
   type BlinkIdVerifyScanningResult,
   type BlinkIdVerifySessionSettings,
   type PingCameraInputInfoData,
-  type PingScanningConditionsData,
   type ProcessResultWithBuffer,
   type RemoteScanningSession,
 } from "@microblink/blinkid-verify-core";
@@ -27,6 +26,7 @@ import {
   convertCameraToPingCamera,
   hasCameraListChanged,
 } from "@microblink/ux-common/cameraAnalyticsMappers";
+import { subscribeToDeviceOrientation } from "@microblink/ux-common/deviceOrientationAnalytics";
 import { HapticFeedbackManager } from "@microblink/ux-common/hapticFeedback";
 import { RafLoop } from "@microblink/ux-common/RafLoop";
 import { invokeCallbacks, sleep } from "@microblink/ux-common/utils";
@@ -104,8 +104,8 @@ export class BlinkIdVerifyUxManager {
   #initialUiStateKey: BlinkIdVerifyUiStateKey = "INTRO_FRONT_PAGE";
   #firstProcessedFrameAt?: number;
 
-  #barcodeOnlyTimeoutExceeded: boolean = false;
-  #barcodeOnlyTimeoutDuration: number = 3000;
+  #barcodeOnlyTimeoutExceeded = false;
+  #barcodeOnlyTimeoutDuration = 3000;
   #barcodeOnlyTimeoutId?: number;
 
   /** Protects worker message channel from concurrent/terminal process calls. */
@@ -344,44 +344,7 @@ export class BlinkIdVerifyUxManager {
 
     this.#cleanupCallbacks.add(unsubscribeCameraPermission);
 
-    // Orientation pings
-    const reportOrientation = (orientation: ScreenOrientation) => {
-      let deviceOrientation: PingScanningConditionsData["deviceOrientation"];
-
-      switch (orientation.type) {
-        case "portrait-primary":
-          deviceOrientation = "Portrait";
-          break;
-        case "portrait-secondary":
-          deviceOrientation = "PortraitUpside";
-          break;
-        case "landscape-primary":
-          deviceOrientation = "LandscapeLeft";
-          break;
-        case "landscape-secondary":
-          deviceOrientation = "LandscapeRight";
-          break;
-      }
-
-      void this.#analytics.logDeviceOrientation(deviceOrientation);
-    };
-
-    const orientationChangeHandler = (event: Event) => {
-      const target = event.target as ScreenOrientation;
-      reportOrientation(target);
-    };
-
-    screen.orientation.addEventListener("change", orientationChangeHandler);
-
-    // initial report
-    reportOrientation(screen.orientation);
-
-    this.#cleanupCallbacks.add(() => {
-      screen.orientation.removeEventListener(
-        "change",
-        orientationChangeHandler,
-      );
-    });
+    this.#cleanupCallbacks.add(this.#subscribeToDeviceOrientationAnalytics());
 
     const unsubTorch = this.cameraManager.subscribe(
       (state) => state.selectedCamera?.torchEnabled,
@@ -417,6 +380,17 @@ export class BlinkIdVerifyUxManager {
     this.#cleanupCallbacks.add(() => {
       this.stopUiUpdateLoop();
     });
+  }
+
+  #subscribeToDeviceOrientationAnalytics(): () => void {
+    return subscribeToDeviceOrientation(
+      (deviceOrientation) => {
+        void this.#analytics.logDeviceOrientation(deviceOrientation);
+      },
+      (logMessage) => {
+        void this.#analytics.logWarning(logMessage);
+      },
+    );
   }
 
   #handleCameraPermissionChange = (
@@ -854,7 +828,7 @@ export class BlinkIdVerifyUxManager {
     }
 
     if (this.#barcodeOnlyTimeoutExceeded) {
-      this.scanningSession.allowBarcodeStep();
+      void this.scanningSession.allowBarcodeStep();
     }
 
     if (

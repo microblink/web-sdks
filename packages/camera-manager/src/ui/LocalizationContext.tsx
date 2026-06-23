@@ -5,6 +5,7 @@
 import { ParentComponent, createContext, onMount, useContext } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
 
+import { deepClone } from "../utils/deepClone";
 import enLocaleStrings from "./locales/en";
 
 /**
@@ -43,7 +44,7 @@ export const LocalizationProvider: ParentComponent<{
   const [localizationStore, updateLocalizationStore] =
     createStore<CameraUiLocalizationStrings>(
       // we structure clone to avoid proxying to the original object
-      structuredClone({
+      deepClone({
         ...enLocaleStrings,
         // we don't care on init
         // eslint-disable-next-line solid/reactivity

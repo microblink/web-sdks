@@ -6,6 +6,7 @@ import { FacingMode } from "../core/Camera";
 import { createMockInputDeviceInfo } from "./createInputDeviceInfo";
 import { defineProperty } from "./defineProperty";
 import { ExtendedCameraInfo, fakeDevices } from "./fake-devices";
+import { deepClone } from "../utils/deepClone";
 import { getResolutionFromConstraints } from "./utils";
 
 /**
@@ -38,7 +39,7 @@ class MediaMocker {
   constructor(options?: MediaMockerOptions) {
     this.fakeDevice = options?.device ?? this.fakeDevice;
     this.facing = options?.facing ?? this.facing;
-    this.cameras = structuredClone(fakeDevices[this.fakeDevice].cameras);
+    this.cameras = deepClone(fakeDevices[this.fakeDevice].cameras);
 
     if (options?.reverseCameraOrder) {
       this.cameras.reverse();
@@ -68,7 +69,7 @@ class MediaMocker {
    */
   setDevice(device: keyof typeof fakeDevices) {
     this.fakeDevice = device;
-    this.cameras = structuredClone(fakeDevices[this.fakeDevice].cameras);
+    this.cameras = deepClone(fakeDevices[this.fakeDevice].cameras);
   }
 
   /**
@@ -79,7 +80,7 @@ class MediaMocker {
   configure(options: MediaMockerOptions) {
     if (options.device) {
       this.fakeDevice = options.device;
-      this.cameras = structuredClone(fakeDevices[this.fakeDevice].cameras);
+      this.cameras = deepClone(fakeDevices[this.fakeDevice].cameras);
     }
 
     if (options.facing) {
@@ -226,7 +227,7 @@ class MediaMocker {
       getSettings: () => {
         const { width, height } = getResolutionFromConstraints(constraints);
 
-        const settings: MediaTrackSettings = structuredClone(
+        const settings: MediaTrackSettings = deepClone(
           mockCamera.mediaTrackSettings,
         );
 

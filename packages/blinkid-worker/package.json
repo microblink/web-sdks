@@ -2,7 +2,7 @@
   "name": "@microblink/blinkid-worker",
   "description": "Provides a worker which runs the BlinkID WebAssembly in separate thread",
   "private": true,
-  "version": "8000.0.0",
+  "version": "8000.0.1",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
     "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
@@ -36,9 +36,7 @@
     "@microblink/analytics": "workspace:^",
     "@microblink/blinkid-wasm": "workspace:*",
     "@microblink/worker-common": "workspace:*",
-    "comlink": "^4.4.2",
-    "merge-anything": "^6.0.3",
-    "type-fest": "^4.35.0"
+    "comlink": "^4.4.2"
   },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
@@ -58,5 +56,15 @@
     "vite": "^6.2.1",
     "vitest": "^3.0.8",
     "zx": "^8.8.5"
-  }
+  },
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 114",
+    "FirefoxAndroid >= 114",
+    "Safari >= 15.1",
+    "iOS >= 15.1"
+  ]
 }

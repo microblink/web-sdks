@@ -1,6 +1,10 @@
+import nodeFs from "node:fs";
+import os from "node:os";
+import nodePath from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fs, path, type ProcessOutput } from "zx";
 import {
+  getBrowserslistEsbuildTarget,
   getPackagePath,
   getResourcesPath,
   linkResources,
@@ -10,6 +14,19 @@ import {
 /** Helper to create a mock ProcessOutput with just the text() method we need */
 function mockProcessOutput(output: string) {
   return { text: () => output } as unknown as ProcessOutput;
+}
+
+function createPackageWithBrowserslist(browserslist: string[]): string {
+  const packageRoot = nodeFs.mkdtempSync(
+    nodePath.join(os.tmpdir(), "browserslist-target-"),
+  );
+
+  nodeFs.writeFileSync(
+    nodePath.join(packageRoot, "package.json"),
+    `${JSON.stringify({ browserslist }, null, 2)}\n`,
+  );
+
+  return packageRoot;
 }
 
 // Hoist the mock function so it can be used in vi.mock factory
@@ -204,6 +221,58 @@ describe("Utils", () => {
       await expect(moveResources(packagePath, moveTo)).rejects.toThrow(
         `Resources directory does not exist at ${path.join(mockPkgPath, "dist", "resources")}. Make sure ${packagePath} is built first.`,
       );
+    });
+  });
+
+  describe("getBrowserslistEsbuildTarget", () => {
+    it("should convert package-local browserslist to esbuild targets", () => {
+      const packageRoot = createPackageWithBrowserslist([
+        "Chrome >= 96",
+        "ChromeAndroid >= 96",
+        "Edge >= 96",
+        "Opera >= 84",
+        "Firefox >= 114",
+        "Safari >= 16.4",
+        "iOS >= 16.4",
+      ]);
+
+      try {
+        expect(getBrowserslistEsbuildTarget(packageRoot)).toEqual([
+          "chrome96",
+          "edge96",
+          "firefox114",
+          "ios16.4",
+          "opera84",
+          "safari16.4",
+        ]);
+      } finally {
+        nodeFs.rmSync(packageRoot, { recursive: true, force: true });
+      }
+    });
+
+    it("should reflect the current package-local browser minimums", () => {
+      const packageRoot = createPackageWithBrowserslist([
+        "Chrome >= 91",
+        "ChromeAndroid >= 91",
+        "Edge >= 91",
+        "Opera >= 84",
+        "Firefox >= 89",
+        "Safari >= 15.0",
+        "iOS >= 15.0",
+      ]);
+
+      try {
+        expect(getBrowserslistEsbuildTarget(packageRoot)).toEqual([
+          "chrome91",
+          "edge91",
+          "firefox89",
+          "ios15",
+          "opera84",
+          "safari15",
+        ]);
+      } finally {
+        nodeFs.rmSync(packageRoot, { recursive: true, force: true });
+      }
     });
   });
 });

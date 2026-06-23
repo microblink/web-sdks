@@ -1,8 +1,8 @@
 {
   "wasm": {
-    "basic": 2255260,
-    "advanced": 2258211,
-    "advanced-threads": 2282883
+    "basic": 2255156,
+    "advanced": 2258252,
+    "advanced-threads": 2282482
   },
   "data": {
     "basic": 8578325,

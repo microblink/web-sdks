@@ -1,5 +1,13 @@
 # @microblink/blinkid-verify
 
+## 3.21.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-verify-ux-manager@3.21.1
+  - @microblink/blinkid-verify-core@3.21.1
+
 ## 3.21.0
 
 ### Minor Changes
