@@ -11,10 +11,10 @@ This package contains the WebAssembly (Wasm) and native bindings for the BlinkID
 
 ## Browser Support (Wasm Runtime)
 
-This package ships two Wasm build variants (`advanced` and
-`advanced-threads`). The runtime selects the best supported variant automatically.
+This package ships two Wasm build variants (`simd` and `simd-threads`). The
+runtime selects the best supported variant automatically.
 
-### `advanced`
+### `simd`
 
 Requires the Emscripten-generated Wasm feature set used by the SDK plus
 [fixed-width SIMD](https://web-platform-dx.github.io/web-features-explorer/features/wasm-simd/).
@@ -26,9 +26,9 @@ Requires the Emscripten-generated Wasm feature set used by the SDK plus
 - Safari 16.4 (macOS)
 - iOS Safari 16.4
 
-### `advanced-threads`
+### `simd-threads`
 
-Requires all `advanced` features plus
+Requires all `simd` features plus
 [Wasm threads and atomics](https://caniuse.com/wasm-threads). Multithreaded Wasm
 also requires cross-origin isolation headers
 (`Cross-Origin-Opener-Policy: same-origin` and
@@ -38,17 +38,17 @@ also requires cross-origin isolation headers
 - Edge 96
 - Opera 82
 - Firefox 89 (desktop and Android)
-- Safari (macOS): not selected (uses `advanced`)
-- iOS Safari: not selected (uses `advanced`)
+- Safari (macOS): not selected (uses `simd`)
+- iOS Safari: not selected (uses `simd`)
 
 Safari is excluded even when it reports Wasm thread support. Emscripten
-`advanced-threads` builds use pthreads that spawn workers from inside a worker,
+`simd-threads` builds use pthreads that spawn workers from inside a worker,
 and Safari historically lacked reliable nested worker support when Wasm threads
 shipped in Safari 16. There are also known Safari issues with shared memory in
 Emscripten pthread builds
 ([emscripten-core/emscripten#19374](https://github.com/emscripten-core/emscripten/issues/19374)).
-For these reasons the runtime falls back to the single-threaded `advanced`
-variant on Safari instead of loading `advanced-threads`.
+For these reasons the runtime falls back to the single-threaded `simd`
+variant on Safari instead of loading `simd-threads`.
 
 These minimums combine Emscripten 4.0.16 generated runtime defaults (see
 [`src/settings.js`](https://raw.githubusercontent.com/emscripten-core/emscripten/4.0.16/src/settings.js)

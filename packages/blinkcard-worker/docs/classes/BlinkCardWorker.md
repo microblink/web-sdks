@@ -64,7 +64,7 @@ set to `Video`.
 
 ###### scanningSettings?
 
-`Partial`\<\{ `anonymizationSettings`: `Partial`\<`OverrideProperties`\<`AnonymizationSettings`, \{ `cardNumberAnonymizationSettings`: `Partial`\<`CardNumberAnonymizationSettings`\>; \}\>\>; `croppedImageSettings`: `Partial`\<`CroppedImageSettings`\>; `extractionSettings`: `Partial`\<`ExtractionSettings`\>; `inputImageMargin`: `number`; `livenessSettings`: `Partial`\<`LivenessSettings`\>; `skipImagesWithBlur`: `boolean`; `tiltDetectionLevel`: `DetectionLevel`; \}\>
+`Partial`\<\{ `croppedImageSettings`: `Partial`\<`CroppedImageSettings`\>; `extractionSettings`: `Partial`\<`ExtractionSettings`\>; `inputImageMargin`: `number`; `livenessSettings`: `Partial`\<`LivenessSettings`\>; `redactionSettings`: `Partial`\<`OverrideProperties`\<`RedactionSettings`, \{ `cardNumberRedactionSettings`: `Partial`\<`CardNumberRedactionSettings`\>; \}\>\>; `skipImagesWithBlur`: `boolean`; `tiltSensitivityLevel`: `SensitivityLevel`; \}\>
 
 #### Returns
 

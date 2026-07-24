@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "¡Completado! Lado frontal escaneado",
     glare_detected: "Inclinar o mover el documento para evitar reflejos",
     keep_document_parallel: "Mantén el documento paralelo a la pantalla.",
-    keep_document_still: "Mantén el documento y el dispositivo quietos.",
     keep_still: "Manténgase quieto",
     move_closer: "Acercar más",
     move_farther: "Alejar más",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode_side:
       "Escanea el código de carras a un lado del documento",
     scan_the_front_side: "Escanear la parte delantera del documento",
+    scan_the_mrz_side: "Escanee el lado del documento con la MRZ",
     scan_top_page: "Escanear la página principal",
     too_bright: "Mover a un sitio con menos luz",
     too_dark: "Mover a un sitio con más luz",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Mantenga su código de barras visible",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Trata de no mover el celular ni el documento mientras se esté escaneando. Si se mueven, puede desenfocarse la imagen y provocar que el documento no pueda leerse.",
+        details_desktop:
+          "Trate de mantenerse quieto mientras escanea. Al moverse puede hacer que la imagen se vea borrosa y esto hará que los datos del documento sean ilegibles.",
+        title: "No mover durante el escaneo",
+        title_desktop: "No mover durante el escaneo",
+      },
+      camera_lens: {
+        details_desktop:
+          "Revisa si hay manchas o polvo en la lente de la cámara. Si la lente está sucia, la imagen final saldrá borrosa, por lo que los detalles del documento serán ilegibles y no se podrán escanear los datos correctamente.",
+        title_desktop: "Limpie la lente de la cámara",
+      },
+      lighting: {
+        details:
+          "Evita el exceso de luz directa, ya que se refleja en el documento y puede provocar que algunas partes no puedan leerse. Si no alcanzas a leer los datos del documento, tampoco serán visibles para la cámara.",
+        details_desktop:
+          "Evita el exceso de luz directa, ya que se refleja en el documento y puede provocar que algunas partes no puedan leerse. Si no alcanzas a leer los datos del documento, tampoco serán visibles para la cámara.",
+        title: "Atención al exceso de luz",
+        title_desktop: "Atención al exceso de luz",
+      },
+      visibility: {
+        details:
+          "Asegúrate de no cubrir partes de la MRZ con un dedo. También, tenga cuidado con los reflejos que puedan pasar sobre la MRZ, ya que podrían hacerla ilegible.",
+        details_desktop:
+          "Asegúrate de no cubrir partes de la MRZ con un dedo. También, tenga cuidado con los reflejos que puedan pasar sobre la MRZ, ya que podrían hacerla ilegible.",
+        title: "Mantenga la MRZ visible",
+        title_desktop: "Mantenga la MRZ visible",
+      },
+    },
     done_btn: "Finalizar",
     done_btn_aria: "Escaneo de currículums",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Comience a escanear",
     document_with_barcode: {
       details:
-        "Diferentes tipos de ID pueden tener diferentes formatos de código de barras así como su ubicación. Busque al frente y por detrás por el código de barras de la ID.",
+        "Diferentes tipos de documentos pueden tener diferentes formatos de códigos de barras y ubicaciones. Revise el frente y reverso del documento para verificar si tiene un código de barras.",
       details_desktop:
-        "Busque un código de barras por delante y por detrás de la ID. Asegúrese de mantener el lente de su cámara limpio y el código de barras bien iluminado.",
-      title: "Ubique el código de barras en la ID",
+        "Revise el frente y el reverso del documento para verificar si tiene un código de barras. Asegúrese de mantener el lente de su cámara limpio y el documento bien iluminado.",
+      title: "Localice el código de barras en el documento",
       title_desktop: "Limpie su lente y ubique el código de barras.",
+    },
+    document_with_mrz: {
+      details:
+        "Encontrará una larga cadena de caracteres en la parte inferior del frente o el reverso del documento, dividida en 2 o 3 líneas y separada por flechas (<< o >>).",
+      details_desktop:
+        "Revisa el frente y el reverso del documento para verificar si tiene una MRZ. Busca 2 o 3 líneas de caracteres con símbolos de flecha (<<) en la parte inferior del documento. Asegúrese de mantener el lente de la cámara limpio y el documento bien iluminado.",
+      title: "Localice la MRZ en el documento",
+      title_desktop: "Limpie su lente y localice la MRZ",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Pantalla para escanear documentos",
   timeout_modal: {
-    details: "No se puede leer el documento. Inténtalo de nuevo.",
-    title: "Error de escaneo",
+    details:
+      "Asegúrese de que el documento esté bien iluminado, completamente visible y libre de reflejos.",
+    details_desktop:
+      "Asegúrese de que el lente de su cámara esté limpio y que el documento sea completamente visible, enfocado y bien iluminado.",
+    title: "No se pudo leer el documento",
   },
 } as const;

@@ -9,4 +9,5 @@ export type BlinkIdModalExtractionMode = BlinkIdExtractionMode;
 export type BlinkIdModalLocaleGroup =
   | "full_document"
   | "document_with_barcode"
+  | "document_with_mrz"
   | "barcode_only";

@@ -1,5 +1,12 @@
 # @microblink/worker-common
 
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/wasm-common@2.2.0
+
 ## 1.0.4
 
 ### Patch Changes

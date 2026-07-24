@@ -1,23 +1,38 @@
 {
   "$schema": "https://v2-8-9.turborepo.dev/schema.json",
+  "globalDependencies": [
+    "packages/tsconfig/**"
+  ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "types/**"],
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        "types/**"
+      ],
       "outputLogs": "new-only"
     },
     "build:publish": {
-      "dependsOn": ["^build:publish"],
+      "dependsOn": [
+        "^build:publish"
+      ],
       "cache": false
     },
     "lint": {
-      "cache": false
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": []
     },
     "lint:browserslist": {
       "cache": false
     },
     "publish-test": {
-      "dependsOn": ["^build:publish"],
+      "dependsOn": [
+        "build:publish"
+      ],
       "cache": false
     },
     "test": {

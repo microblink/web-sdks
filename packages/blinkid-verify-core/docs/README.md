@@ -96,7 +96,6 @@
 - [VerificationContext](type-aliases/VerificationContext.md)
 - [VerificationPolicy](type-aliases/VerificationPolicy.md)
 - [WasmBuildType](type-aliases/WasmBuildType.md)
-- [WasmSimdVariant](type-aliases/WasmSimdVariant.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 - [WorkerScanningSession](type-aliases/WorkerScanningSession.md)
 
@@ -105,7 +104,6 @@
 - [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
-- [wasmSimdVariants](variables/wasmSimdVariants.md)
 - [wasmVariants](variables/wasmVariants.md)
 
 ## Functions

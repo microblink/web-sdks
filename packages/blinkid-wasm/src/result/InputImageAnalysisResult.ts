@@ -12,8 +12,10 @@ import { FieldType } from "./FieldType";
 import { ImageAnalysisDetectionStatus } from "./ImageAnalysisDetectionStatus";
 import { ImageAnalysisLightingStatus } from "./ImageAnalysisLightingStatus";
 import { ImageExtractionType } from "./ImageExtractionType";
+import { InputImageCropAnalysis } from "./InputImageCropAnalysis";
 import { ProcessingStatus } from "./ProcessingStatus";
 import { ScanningSide } from "./ScanningSide";
+import { VizExtractionType } from "./VizExtractionType";
 
 /**
  * Represents the results of processing and analyzing an input image.
@@ -44,6 +46,13 @@ export type InputImageAnalysisResult = {
   /** List of failed image extractions */
   imageExtractionFailures: ImageExtractionType[];
 
+  /**
+   * Type or availability status of VIZ extraction for this input image.
+   *
+   * The value is `"not-available"` until a document is scanned.
+   */
+  vizExtractionType: VizExtractionType;
+
   /** Side of the document being scanned */
   scanningSide: ScanningSide;
 
@@ -53,8 +62,13 @@ export type InputImageAnalysisResult = {
   /** The location of the detected document within an image */
   documentLocation?: Quadrilateral;
 
-  /** Information about the document class */
-  documentClassInfo: DocumentClassInfo;
+  /**
+   * Information about the document class.
+   *
+   * Absent when the document could not be classified (for example, for
+   * unsupported documents without any extracted class info).
+   */
+  documentClassInfo?: DocumentClassInfo;
 
   /** The status of blur detection */
   blurDetectionStatus: ImageAnalysisDetectionStatus;
@@ -91,4 +105,14 @@ export type InputImageAnalysisResult = {
 
   /** The rotation of the document in the frame */
   documentRotation: DocumentRotation;
+
+  /**
+   * Records the conclusion drawn about whether the input image was already
+   * cropped and perspective-corrected.
+   *
+   * Only meaningful when the document capture module `cropType` was set to
+   * `"unknown"` and the input source is `Photo`; otherwise always
+   * `"not-available"`.
+   */
+  inputImageCropAnalysis: InputImageCropAnalysis;
 };

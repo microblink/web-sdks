@@ -7,7 +7,7 @@
  *
  * This structure defines various parameters and policies related to the
  * scanning process, including image quality handling, data extraction,
- * anonymization, and liveness detection, along with options for frame
+ * redaction, and liveness detection, along with options for frame
  * processing and image extraction.
  */
 export type ScanningSettings = {
@@ -21,14 +21,13 @@ export type ScanningSettings = {
    */
   skipImagesWithBlur: boolean;
 
-  /**
-   * The level of allowed detected tilt of the card in the image.
-   *
-   * Defines the severity of allowed detected tilt of the card in the image, as
-   * defined in `DetectionLevel`. Values range from `Off` (detection turned off)
-   * to higher levels of allowed tilt.
-   */
-  tiltDetectionLevel: DetectionLevel;
+    /**
+     * The level of allowed detected tilt of the card in the image.
+     *
+     * Defines the severity of allowed detected tilt of the card in the image, as defined in `SensitivityLevel`.
+     * Values range from `Off` (detection turned off) to higher levels of allowed tilt.
+     */
+  tiltSensitivityLevel: SensitivityLevel;
 
   /**
    * Defines the minimum required margin (in percentage) between the edge of the
@@ -66,22 +65,22 @@ export type ScanningSettings = {
   livenessSettings: LivenessSettings;
 
   /**
-   * Represents the configurable settings for data anonymization.
+   * Represents the configurable settings for data redaction.
    *
    * This structure defines various parameters and policies related to the
-   * anonymization of sensitive data extracted from the payment cards.
+   * redaction of sensitive data extracted from the payment cards.
    */
-  anonymizationSettings: AnonymizationSettings;
+  redactionSettings: RedactionSettings;
 };
 
 /**
- * Represents the different levels of detection sensitivity.
+ * Represents the sensitivity levels for document quality analysis.
  *
- * This type is used to configure detection thresholds and enable or disable
- * detection functionality. The levels range from turning detection off
- * completely to setting various levels of sensitivity (Low, Mid, High).
+ * This enum class is used to configure detection sensitivity thresholds and enable or
+ * disable detection functionality. The levels range from turning detection
+ * off completely to setting various levels of sensitivity (Low, Mid, High).
  */
-export type DetectionLevel = "off" | "low" | "mid" | "high";
+export type SensitivityLevel = "off" | "low" | "mid" | "high";
 
 /**
  * Controls which fields and images should be extracted from the payment card.
@@ -220,11 +219,11 @@ export type StrictnessLevel =
   | "level-10";
 
 /**
- * AnonymizationMode is used to define level of anonymization performed on
+ * RedactionMode is used to define level of redaction performed on
  * recognizer result.
  */
-export type AnonymizationMode =
-  // Anonymization will not be performed.
+export type RedactionMode =
+  // Redaction will not be performed.
   | "none"
   // DocumentImage is anonymized with black boxes
   // covering sensitive data.
@@ -234,38 +233,38 @@ export type AnonymizationMode =
   // This mode is combination of ImageOnly and ResultFieldsOnly modes.
   | "full-result";
 
-/** Holds the settings which control card number anonymization. */
-export type CardNumberAnonymizationSettings = {
-  /** Defines the mode of card number anonymization. */
-  mode: AnonymizationMode;
+/** Holds the settings which control card number redaction. */
+export type CardNumberRedactionSettings = {
+  /** Defines the mode of card number redaction. */
+  mode: RedactionMode;
 
   /**
    * Defines how many digits at the beginning of the card number remain visible
-   * after anonymization.
+   * after redaction.
    */
   prefixDigitsVisible: number;
 
   /**
    * Defines how many digits at the end of the card number remain visible after
-   * anonymization.
+   * redaction.
    */
   suffixDigitsVisible: number;
 };
 
-/** Holds the settings which control the anonymization of returned data. */
-export type AnonymizationSettings = {
-  /** Defines the parameters of card number anonymization. */
-  cardNumberAnonymizationSettings: CardNumberAnonymizationSettings;
+/** Holds the settings which control the redaction of returned data. */
+export type RedactionSettings = {
+  /** Defines the parameters of card number redaction. */
+  cardNumberRedactionSettings: CardNumberRedactionSettings;
 
-  /** Defines the mode of card number prefix anonymization. */
-  cardNumberPrefixAnonymizationMode: AnonymizationMode;
+  /** Defines the mode of card number prefix redaction. */
+  cardNumberPrefixRedactionMode: RedactionMode;
 
-  /** Defines the mode of CVV anonymization. */
-  cvvAnonymizationMode: AnonymizationMode;
+  /** Defines the mode of CVV redaction. */
+  cvvRedactionMode: RedactionMode;
 
-  /** Defines the mode of IBAN anonymization. */
-  ibanAnonymizationMode: AnonymizationMode;
+  /** Defines the mode of IBAN redaction. */
+  ibanRedactionMode: RedactionMode;
 
-  /** Defines the mode of cardholder name anonymization. */
-  cardholderNameAnonymizationMode: AnonymizationMode;
+  /** Defines the mode of cardholder name redaction. */
+  cardholderNameRedactionMode: RedactionMode;
 };

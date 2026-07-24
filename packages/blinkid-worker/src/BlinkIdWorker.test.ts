@@ -32,6 +32,15 @@ vi.mock("comlink", () => {
   };
 });
 
+vi.mock("./otaResources", () => ({
+  BLINK_ID_OTA_RESOURCES_DIRECTORY: "ota-resources",
+  BLINK_ID_OTA_RESOURCES_PATH: "/microblink/blinkid-ota",
+  resolveBlinkIdOtaResources: vi.fn(),
+  resolveBlinkIdOtaResourcesFromLocation: vi.fn(),
+  selectBlinkIdOtaResources: vi.fn(),
+  writeBlinkIdOtaResourcesToMemfs: vi.fn(),
+}));
+
 let BlinkIdWorker: typeof import("./BlinkIdWorker").BlinkIdWorker;
 
 describe("BlinkIdWorker", () => {
@@ -57,11 +66,12 @@ describe("BlinkIdWorker", () => {
     const worker = new BlinkIdWorker();
     const pinglet: Ping = {
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.3.0",
+      schemaVersion: "2.0.0",
       sessionNumber: 0,
       data: {
         product: "BlinkID",
         platform: "Emscripten",
+        // TODO: update this after pinglets schema is updated
         platformDetails: "advanced-threads",
         packageName: "example.com",
         userId: "test-user",

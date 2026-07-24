@@ -196,6 +196,14 @@ The employer of the document owner
 
 ***
 
+### ethnicity
+
+> **ethnicity**: [`StringResult`](StringResult.md) \| `null`
+
+The ethnicity of the document owner
+
+***
+
 ### fathersName
 
 > **fathersName**: [`StringResult`](StringResult.md) \| `null`

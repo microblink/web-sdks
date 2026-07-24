@@ -31,8 +31,8 @@ const createMockBlinkIdScanningResult = (
   overrides = {},
 ): BlinkIdScanningResult => ({
   documentClassInfo: {
-    country: "usa",
-    type: "id",
+    country: { id: "usa", rawValue: "USA" },
+    documentType: { id: "id", rawValue: "ID" },
     region: undefined,
     countryName: "",
     isoNumericCountryCode: "",
@@ -54,6 +54,7 @@ const createMockBlinkIdScanningResult = (
   dateOfExpiry: undefined,
   dateOfIssue: undefined,
   dependentsInfo: undefined,
+  ethnicity: undefined,
   documentAdditionalNumber: undefined,
   documentNumber: undefined,
   documentOptionalAdditionalNumber: undefined,

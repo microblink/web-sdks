@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Sucesso! Frente digitalizada",
     glare_detected: "Incline ou mova o documento para remover o reflexo",
     keep_document_parallel: "Mantenha o documento paralelo à tela",
-    keep_document_still: "Mantenha o documento e o dispositivo imóveis",
     keep_still: "Mantenha o celular imóvel",
     move_closer: "Aproxime",
     move_farther: "Afaste",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode_side:
       "Digitalize o lado do documento que contém o código de barras",
     scan_the_front_side: "Digitalize a frente do documento",
+    scan_the_mrz_side: "Digitalize o lado do documento que contém a MRZ",
     scan_top_page: "Digitalize a página superior",
     too_bright: "Mova para um local com menos iluminação",
     too_dark: "Mova para um local mais claro",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Mantenha o código de barras visível",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Tente manter o celular e o documento imóveis durante a digitalização. Mover qualquer um deles poderá borrar a imagem e tornar os dados do documento ilegíveis.",
+        details_desktop:
+          "Tente manter o celular imóvel durante a digitalização. Movimentos podem desfocar a imagem e tornar os dados do documento ilegíveis.",
+        title: "Mantenha-se imóvel durante a digitalização",
+        title_desktop: "Mantenha-se imóvel durante a digitalização",
+      },
+      camera_lens: {
+        details_desktop:
+          "Verifique se a lente da câmera está limpa e sem poeira. Uma lente suja pode desfocar a imagem final, tornando os detalhes do documento ilegíveis e impedindo o escaneamento correto dos dados.",
+        title_desktop: "Limpe a lente da câmera",
+      },
+      lighting: {
+        details:
+          "Evite luz forte direta, pois ela reflete no documento e pode tornar partes dele ilegíveis. Se você não conseguir ler os dados no documento, ele também não ficará visível para a câmera.",
+        details_desktop:
+          "Evite luz forte direta, pois ela reflete no documento e pode tornar partes dele ilegíveis. Se você não conseguir ler os dados no documento, ele também não ficará visível para a câmera.",
+        title: "Cuidado com a luz forte",
+        title_desktop: "Cuidado com a luz forte",
+      },
+      visibility: {
+        details:
+          "Certifique-se de não cobrir nenhuma parte da MRZ com os dedos. Além disso, evite reflexos sobre a MRZ, pois eles podem torná-la ilegível.",
+        details_desktop:
+          "Certifique-se de não cobrir nenhuma parte da MRZ com os dedos. Além disso, evite reflexos sobre a MRZ, pois eles podem torná-la ilegível.",
+        title: "Mantenha a MRZ visível",
+        title_desktop: "Mantenha a MRZ visível",
+      },
+    },
     done_btn: "Concluído",
     done_btn_aria: "Retomar escaneamento",
     full_document: {
@@ -167,8 +198,16 @@ export default {
         "Diferentes tipos de documentos podem ter formatos e localizações de código de barras diferentes. Verifique a frente e o verso do documento em busca de um código de barras.",
       details_desktop:
         "Verifique a frente e o verso do documento em busca de um código de barras. Certifique-se de manter a lente da câmera limpa e o documento bem iluminado.",
-      title: "Localize o código de barras no documento de identidade",
+      title: "Localize o código de barras no documento",
       title_desktop: "Limpe a lente da câmera e localize o código de barras",
+    },
+    document_with_mrz: {
+      details:
+        "Você encontrará uma longa sequência de caracteres na parte inferior da frente ou do verso do documento, dividida em 2 ou 3 linhas e separada por símbolos de seta (<< ou >>).",
+      details_desktop:
+        "Verifique a frente e o verso do documento em busca da MRZ. Procure por 2 ou 3 linhas de caracteres e símbolos de seta (<<) na parte inferior do documento. Certifique-se de manter a lente da câmera limpa e o documento bem iluminado.",
+      title: "Localize a MRZ no documento",
+      title_desktop: "Limpe a lente da câmera e localize a MRZ.",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Tela de escaneamento de documento",
   timeout_modal: {
-    details: "Não foi possível ler o documento. Tente novamente.",
-    title: "Falha na digitalização",
+    details:
+      "Certifique-se de que o documento esteja bem iluminado, totalmente visível e sem reflexos.",
+    details_desktop:
+      "Certifique-se de que a lente da câmera esteja limpa e que o documento esteja totalmente visível, em foco e bem iluminado.",
+    title: "Não foi possível ler o documento.",
   },
 } as const;

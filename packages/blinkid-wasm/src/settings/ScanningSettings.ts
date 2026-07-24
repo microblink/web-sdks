@@ -5,6 +5,45 @@
 import { SensitivityLevel } from "./SensitivityLevel";
 
 /**
+ * Specifies whether the input image is already cropped, likely cropped, or not
+ * cropped.
+ *
+ * - `"not-cropped"`: The image is considered raw and goes through document
+ *   detection and perspective correction.
+ * - `"unknown"`: The image may already be cropped. The recognizer first tries
+ *   cropped processing and falls back to detection if extraction fails.
+ * - `"cropped"`: The input image must contain only the cropped and
+ *   perspective-corrected document.
+ */
+export type InputImageCropType = "not-cropped" | "unknown" | "cropped";
+
+/**
+ * Represents the strategy used to select the best input image from a pool of
+ * stable input images.
+ *
+ * Before selecting the best-quality image, a sequence of stable input images
+ * must be collected. From this pool, the one with the highest quality is
+ * selected. An input image is considered stable when the image analysis results
+ * are consistent across a consecutive stream of input images.
+ *
+ * A larger pool size increases the likelihood of capturing a high-quality image
+ * but may introduce a slight delay, as more stable input images need to be
+ * collected.
+ *
+ * - `"single-image"`: Selects the first acceptable stable input image.
+ * - `"optimize-for-speed"`: Faster processing, but may select a lower-quality
+ *   image because a smaller pool of stable input images is considered.
+ * - `"default"`: Trade-off between quality and speed.
+ * - `"optimize-for-quality"`: Slower processing in order to select a high-quality
+ *   input image, because a larger pool of stable input images is considered.
+ */
+export type InputImageSelectionStrategy =
+  | "single-image"
+  | "optimize-for-speed"
+  | "balanced"
+  | "optimize-for-quality";
+
+/**
  * Settings for the document capture module.
  *
  * This module is responsible for the initial document detection, image
@@ -23,20 +62,22 @@ import { SensitivityLevel } from "./SensitivityLevel";
  */
 export type DocumentCaptureModuleSettings = {
   /**
-   * Indicates whether the input image is already cropped and
-   * perspective-corrected.
+   * Specifies whether the input image is already cropped, likely cropped, or
+   * not cropped.
    *
-   * If `true`, the input image must consist solely of the already cropped and
-   * corrected document.
+   * When set to `"cropped"`, the input image must consist solely of the already
+   * cropped and corrected document.
    *
-   * Default value is `false`.
+   * When set to `"unknown"`, the recognizer first attempts extraction as if the
+   * image is cropped, then falls back to the regular localization pipeline if
+   * extraction fails.
    *
-   * This setting is not applicable to `Video` sources and will cause a
-   * validation error if set to true.
+   * `"cropped"` and `"unknown"` are applicable only to `Photo` sources and will
+   * cause a validation error for `Video`.
    *
-   * @default false
+   * @default "not-cropped"
    */
-  inputImageCropped: boolean;
+  cropType: InputImageCropType;
   /**
    * Enables the scanning and processing of unsupported document types.
    *
@@ -268,16 +309,32 @@ export type DocumentCaptureModuleSettings = {
    * detected, `ProcessingStatus` will be `ImagePreprocessingFailed` and hand
    * occlusion status will be reported in the `ProcessResult`.
    *
-   * Default behavior depends on `inputImageCropped`:
+   * Default behavior depends on `cropType`:
    *
-   * - `true`: Defaults to `false`. This setting is not applicable. Setting this
-   *   to `true` while `inputImageCropped` is also `true` will result in a
-   *   settings validation failure.
-   * - `false`: Defaults to `true`. Images with hand occlusion are rejected.
+   * - `"cropped"`: Defaults to `false`. This setting is not applicable. Setting
+   *   this to `true` while `cropType` is `"cropped"` will result in a settings
+   *   validation failure.
+   * - `"not-cropped"` and `"unknown"`: Defaults to `true`. Images with hand
+   *   occlusion are rejected.
    *
    * @default true
    */
   imageWithHandOcclusionRejected: boolean;
+  /**
+   * Represents the strategy used to select the best input image from a pool of
+   * stable input images.
+   *
+   * Available strategies are `"single-image"`, `"optimize-for-speed"`,
+   * `"default"`, and `"optimize-for-quality"`. The `"default"` strategy
+   * represents a trade-off between speed and quality, while
+   * `"optimize-for-speed"` and `"optimize-for-quality"` are optimized for speed
+   * and quality respectively.
+   *
+   * This setting is only applicable for the `Video` input image source.
+   *
+   * @default "default"
+   */
+  inputImageSelectionStrategy: InputImageSelectionStrategy;
 };
 
 /**
@@ -417,6 +474,14 @@ export type BarcodeModuleSettings = {
    * @default false
    */
   dataMatrixScanningEnabled: boolean;
+  /**
+   * Enables the scanning and processing of Aztec barcodes.
+   *
+   * This setting can be enabled only if `documentCaptureEnabled` is disabled.
+   *
+   * @default false
+   */
+  aztecScanningEnabled: boolean;
 };
 
 /**

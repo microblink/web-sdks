@@ -56,6 +56,17 @@ The URL of the Microblink proxy server. This proxy handles requests to Microblin
 
 ***
 
+### otaResources?
+
+> `optional` **otaResources**: [`BlinkIdOtaResourceSettings`](BlinkIdOtaResourceSettings.md)
+
+Optional browser-only OTA resource settings.
+
+Hosted baseline resources are always loaded. Provider update checks are
+enabled by default; set `checkForUpdates` to `false` to skip the provider.
+
+***
+
 ### resourcesLocation?
 
 > `optional` **resourcesLocation**: `string`

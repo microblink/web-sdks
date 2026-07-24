@@ -954,7 +954,7 @@ export class BlinkIdVerifyUxManager {
       uiState.key === "FLIP_CARD" &&
       this.#barcodeOnlyTimeoutId === undefined
     ) {
-      this.#barcodeOnlyTimeoutId = setTimeout(() => {
+      this.#barcodeOnlyTimeoutId = window.setTimeout(() => {
         this.#barcodeOnlyTimeoutExceeded = true;
       }, this.#barcodeOnlyTimeoutDuration);
     }

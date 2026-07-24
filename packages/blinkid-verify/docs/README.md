@@ -146,7 +146,6 @@
 - [VideoFrameProcessorInitOptions](type-aliases/VideoFrameProcessorInitOptions.md)
 - [VideoResolutionName](type-aliases/VideoResolutionName.md)
 - [WasmBuildType](type-aliases/WasmBuildType.md)
-- [WasmSimdVariant](type-aliases/WasmSimdVariant.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 - [WorkerScanningSession](type-aliases/WorkerScanningSession.md)
 
@@ -169,7 +168,6 @@
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [videoResolutions](variables/videoResolutions.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
-- [wasmSimdVariants](variables/wasmSimdVariants.md)
 - [wasmVariants](variables/wasmVariants.md)
 
 ## Functions

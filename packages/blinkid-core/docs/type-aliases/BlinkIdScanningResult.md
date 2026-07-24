@@ -157,11 +157,14 @@ The additional number of the document
 
 ***
 
-### documentClassInfo
+### documentClassInfo?
 
-> **documentClassInfo**: [`DocumentClassInfo`](DocumentClassInfo.md)
+> `optional` **documentClassInfo**: [`DocumentClassInfo`](DocumentClassInfo.md)
 
-The document class information
+The document class information.
+
+Absent when the document could not be classified (for example, for
+unsupported documents without any extracted class info).
 
 ***
 
@@ -226,6 +229,14 @@ The eligibility category
 > **employer**: [`StringResult`](StringResult.md) \| `undefined`
 
 The employer of the document owner
+
+***
+
+### ethnicity
+
+> **ethnicity**: [`StringResult`](StringResult.md) \| `undefined`
+
+The ethnicity of the document owner
 
 ***
 

@@ -26,6 +26,7 @@ import { createLicenseUnlockResult } from "@microblink/test-utils/mocks/licensin
 import { createScanningSessionMock } from "@microblink/test-utils/mocks/scanningSession";
 import { BlinkIdWasmModule } from "@microblink/blinkid-wasm";
 import { type RedactionSettingsResolver } from "./BlinkIdWorker";
+import type { BlinkIdOtaResource } from "./otaResources";
 
 const getCrossOriginWorkerURLMock = vi.fn();
 const downloadResourceBufferMock = vi.fn();
@@ -33,12 +34,18 @@ const detectWasmFeaturesMock = vi.fn();
 const validateLicenseProxyPermissionsMock = vi.fn();
 const sanitizeProxyUrlsMock = vi.fn();
 const obtainNewServerPermissionMock = vi.fn();
+const resolveBlinkIdOtaResourcesMock = vi.fn();
+const resolveBlinkIdOtaResourcesFromLocationMock = vi.fn();
+const selectBlinkIdOtaResourcesMock = vi.fn();
+const writeBlinkIdOtaResourcesToMemfsMock = vi.fn();
 let workerEventListeners = new Map<string, EventListener[]>();
 
 /** Deterministic values for stubbed globals and mock return shapes. */
 const hostName = "example.com" as const;
 const userId = "test-user" as const;
-const wasmVariant = "advanced-threads" as const;
+const wasmVariant = "simd-threads" as const;
+const otaResourcesPath = "/microblink/blinkid-ota" as const;
+const defaultOtaProviderUrl = "https://blinkid-ota.microblink.com";
 
 vi.mock("comlink", () => {
   const finalizer = Symbol("finalizer");
@@ -82,6 +89,16 @@ vi.mock("@microblink/worker-common/licencing", () => ({
   obtainNewServerPermission: obtainNewServerPermissionMock,
 }));
 
+vi.mock("./otaResources", () => ({
+  BLINK_ID_OTA_RESOURCES_DIRECTORY: "ota-resources",
+  BLINK_ID_OTA_RESOURCES_PATH: otaResourcesPath,
+  resolveBlinkIdOtaResources: resolveBlinkIdOtaResourcesMock,
+  resolveBlinkIdOtaResourcesFromLocation:
+    resolveBlinkIdOtaResourcesFromLocationMock,
+  selectBlinkIdOtaResources: selectBlinkIdOtaResourcesMock,
+  writeBlinkIdOtaResourcesToMemfs: writeBlinkIdOtaResourcesToMemfsMock,
+}));
+
 let BlinkIdWorker: typeof import("./BlinkIdWorker").BlinkIdWorker;
 
 const getLatestWorkerListener = (type: string) => {
@@ -122,6 +139,10 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     validateLicenseProxyPermissionsMock.mockReset();
     sanitizeProxyUrlsMock.mockReset();
     obtainNewServerPermissionMock.mockReset();
+    resolveBlinkIdOtaResourcesMock.mockReset();
+    resolveBlinkIdOtaResourcesFromLocationMock.mockReset();
+    selectBlinkIdOtaResourcesMock.mockReset();
+    writeBlinkIdOtaResourcesToMemfsMock.mockReset();
 
     workerEventListeners = new Map();
 
@@ -157,6 +178,29 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     getCrossOriginWorkerURLMock.mockResolvedValue(factoryUrl);
     detectWasmFeaturesMock.mockResolvedValue(wasmVariant);
     downloadResourceBufferMock.mockResolvedValue(new ArrayBuffer(0));
+    const providerResources = [
+      {
+        filename: "template-database.zzip",
+        version: "1.0.1",
+        url: "provider-template-url",
+      },
+    ];
+    resolveBlinkIdOtaResourcesMock.mockResolvedValue(providerResources);
+    const hostedResources = [
+      {
+        filename: "template-database.zzip",
+        version: "1.0.0",
+        url: "https://example.com/resources/ota-resources/template-database_1.0.zzip",
+      },
+    ];
+    resolveBlinkIdOtaResourcesFromLocationMock.mockResolvedValue(
+      hostedResources,
+    );
+    selectBlinkIdOtaResourcesMock.mockImplementation(
+      (_hosted: BlinkIdOtaResource[], provider: BlinkIdOtaResource[]) =>
+        provider,
+    );
+    writeBlinkIdOtaResourcesToMemfsMock.mockResolvedValue(otaResourcesPath);
     sanitizeProxyUrlsMock.mockReturnValue({
       ping: "https://proxy.example.com/ping",
       baltazar: "https://proxy.example.com/api/v2/status/check",
@@ -236,6 +280,358 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(spies.setPingProxyUrl.mock.invocationCallOrder[0]).toBeLessThan(
       spies.initializeSdk.mock.invocationCallOrder[0],
     );
+  });
+
+  it("loads OTA resources by default using the default provider URL and recognizer version", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      getRecognizerVersion: vi.fn(() => "2.3.4"),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId(baseInitSettings);
+
+    expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
+      resourceProviderUrl: defaultOtaProviderUrl,
+      genericVersion: "2.3.4",
+    });
+    expect(resolveBlinkIdOtaResourcesFromLocationMock).toHaveBeenCalledWith({
+      resourcesLocation: "https://example.com/resources/ota-resources",
+      timeoutMilis: undefined,
+    });
+    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
+      module,
+      resources: [
+        {
+          filename: "template-database.zzip",
+          version: "1.0.1",
+          url: "provider-template-url",
+        },
+      ],
+      directory: otaResourcesPath,
+      fallbackOnError: true,
+      timeoutMilis: undefined,
+    });
+    expect(spies.initializeSdk).toHaveBeenCalledOnce();
+  });
+
+  it("writes the resources selected from hosted and provider manifests", async () => {
+    const selectedResources = [
+      {
+        filename: "template-database.zzip",
+        version: "1.0.2",
+        url: "provider-template-url",
+        fallbackUrl: "hosted-template-url",
+      },
+    ];
+    selectBlinkIdOtaResourcesMock.mockReturnValue(selectedResources);
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId(baseInitSettings);
+
+    expect(selectBlinkIdOtaResourcesMock).toHaveBeenCalledWith(
+      [
+        {
+          filename: "template-database.zzip",
+          version: "1.0.0",
+          url: "https://example.com/resources/ota-resources/template-database_1.0.zzip",
+        },
+      ],
+      [
+        {
+          filename: "template-database.zzip",
+          version: "1.0.1",
+          url: "provider-template-url",
+        },
+      ],
+    );
+    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
+      module,
+      resources: selectedResources,
+      directory: otaResourcesPath,
+      fallbackOnError: true,
+      timeoutMilis: undefined,
+    });
+    expect(spies.initializeSdk).toHaveBeenCalledOnce();
+  });
+
+  it("loads hosted resources without contacting the provider when checkForUpdates is false", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId({
+      ...baseInitSettings,
+      otaResources: {
+        checkForUpdates: false,
+      },
+    });
+
+    expect(resolveBlinkIdOtaResourcesMock).not.toHaveBeenCalled();
+    expect(selectBlinkIdOtaResourcesMock).not.toHaveBeenCalled();
+    expect(resolveBlinkIdOtaResourcesFromLocationMock).toHaveBeenCalledWith({
+      resourcesLocation: "https://example.com/resources/ota-resources",
+      timeoutMilis: undefined,
+    });
+    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
+      module,
+      resources: [
+        {
+          filename: "template-database.zzip",
+          version: "1.0.0",
+          url: "https://example.com/resources/ota-resources/template-database_1.0.zzip",
+        },
+      ],
+      directory: otaResourcesPath,
+      fallbackOnError: true,
+      timeoutMilis: undefined,
+    });
+    expect(spies.initializeSdk).toHaveBeenCalledOnce();
+  });
+
+  it("uses a custom hosted location and still checks the configured provider", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId({
+      ...baseInitSettings,
+      otaResources: {
+        checkForUpdates: true,
+        resourcesLocation: "  https://cdn.example.com/ota  ",
+        otaResourceProviderUrl: "https://ota.example.com",
+      },
+    });
+
+    expect(resolveBlinkIdOtaResourcesFromLocationMock).toHaveBeenCalledWith({
+      resourcesLocation: "https://cdn.example.com/ota",
+      timeoutMilis: undefined,
+    });
+    expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
+      resourceProviderUrl: "https://ota.example.com",
+      genericVersion: "1.0.0",
+    });
+    expect(spies.getRecognizerVersion).toHaveBeenCalledOnce();
+    expect(spies.initializeSdk).toHaveBeenCalledOnce();
+  });
+
+  it("loads OTA resources before initializing the SDK", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId({
+      ...baseInitSettings,
+      otaResources: {
+        checkForUpdates: true,
+        otaResourceProviderUrl: "https://ota.example.com",
+      },
+    });
+
+    expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
+      resourceProviderUrl: "https://ota.example.com",
+      genericVersion: "1.0.0",
+    });
+    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
+      module,
+      resources: [
+        {
+          filename: "template-database.zzip",
+          version: "1.0.1",
+          url: "provider-template-url",
+        },
+      ],
+      directory: otaResourcesPath,
+      fallbackOnError: true,
+      timeoutMilis: undefined,
+    });
+    expect(
+      writeBlinkIdOtaResourcesToMemfsMock.mock.invocationCallOrder[0],
+    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+  });
+
+  it("trims OTA provider URL and recognizer version before resolving resources", async () => {
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      getRecognizerVersion: vi.fn(() => "  2.3.4  "),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId({
+      ...baseInitSettings,
+      otaResources: {
+        checkForUpdates: true,
+        otaResourceProviderUrl: "  https://ota.example.com  ",
+      },
+    });
+
+    expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
+      resourceProviderUrl: "https://ota.example.com",
+      genericVersion: "2.3.4",
+    });
+  });
+
+  it("uses the default OTA provider URL when the override is blank", async () => {
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId({
+      ...baseInitSettings,
+      otaResources: {
+        checkForUpdates: true,
+        otaResourceProviderUrl: "   ",
+      },
+    });
+
+    expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
+      resourceProviderUrl: defaultOtaProviderUrl,
+      genericVersion: "1.0.0",
+    });
+  });
+
+  it("falls back to hosted resources when recognizer version is blank", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      getRecognizerVersion: vi.fn(() => "   "),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId(baseInitSettings);
+
+    expect(resolveBlinkIdOtaResourcesMock).not.toHaveBeenCalled();
+    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
+      module,
+      resources: [
+        {
+          filename: "template-database.zzip",
+          version: "1.0.0",
+          url: "https://example.com/resources/ota-resources/template-database_1.0.zzip",
+        },
+      ],
+      directory: otaResourcesPath,
+      fallbackOnError: true,
+      timeoutMilis: undefined,
+    });
+    expect(spies.initializeWithLicenseKey).toHaveBeenCalledOnce();
+    expect(spies.initializeSdk).toHaveBeenCalledOnce();
+  });
+
+  it("does not pass the loaded OTA resources path to created scanning sessions", async () => {
+    const session = createScanningSessionMock<BlinkIdScanningSession>();
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      createScanningSession: vi.fn(() => session),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId({
+      ...baseInitSettings,
+      otaResources: {
+        checkForUpdates: true,
+        otaResourceProviderUrl: "https://ota.example.com",
+      },
+    });
+    worker.createScanningSession({ inputImageSource: "photo" });
+
+    expect(spies.createScanningSession).toHaveBeenCalledWith(
+      {
+        inputImageSource: "photo",
+      },
+      userId,
+    );
+  });
+
+  it("falls back to hosted resources when the provider request fails", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+    resolveBlinkIdOtaResourcesMock.mockRejectedValue(new Error("ota-failed"));
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId({
+      ...baseInitSettings,
+      otaResources: {
+        checkForUpdates: true,
+        otaResourceProviderUrl: "https://ota.example.com",
+      },
+    });
+
+    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
+      module,
+      resources: [
+        {
+          filename: "template-database.zzip",
+          version: "1.0.0",
+          url: "https://example.com/resources/ota-resources/template-database_1.0.zzip",
+        },
+      ],
+      directory: otaResourcesPath,
+      fallbackOnError: true,
+      timeoutMilis: undefined,
+    });
+    expect(spies.initializeWithLicenseKey).toHaveBeenCalledOnce();
+    expect(spies.initializeSdk).toHaveBeenCalledOnce();
+  });
+
+  it("fails initialization when the hosted manifest is unavailable", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+    resolveBlinkIdOtaResourcesFromLocationMock.mockRejectedValue(
+      new Error("manifest-missing"),
+    );
+
+    const worker = new BlinkIdWorker();
+    await expect(worker.initBlinkId(baseInitSettings)).rejects.toThrow(
+      "manifest-missing",
+    );
+
+    expect(resolveBlinkIdOtaResourcesMock).not.toHaveBeenCalled();
+    expect(writeBlinkIdOtaResourcesToMemfsMock).not.toHaveBeenCalled();
+    expect(spies.initializeWithLicenseKey).not.toHaveBeenCalled();
+    expect(spies.initializeSdk).not.toHaveBeenCalled();
+  });
+
+  it("fails initialization when strict OTA fails", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+    resolveBlinkIdOtaResourcesMock.mockRejectedValue(new Error("ota-failed"));
+
+    const worker = new BlinkIdWorker();
+    await expect(
+      worker.initBlinkId({
+        ...baseInitSettings,
+        otaResources: {
+          checkForUpdates: true,
+          otaResourceProviderUrl: "https://ota.example.com",
+          strict: true,
+        },
+      }),
+    ).rejects.toThrow("ota-failed");
+
+    expect(spies.initializeWithLicenseKey).not.toHaveBeenCalled();
+    expect(spies.initializeSdk).not.toHaveBeenCalled();
   });
 
   it("uses ping and baltazar proxies without flushing pinglets on successful init", async () => {
@@ -663,9 +1059,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
   it("resolves redaction settings in worker from cached class info before getResult", async () => {
     const documentClassInfo = {
-      country: "germany",
+      country: { id: "germany", rawValue: "GERMANY" },
       region: undefined,
-      type: "id",
+      documentType: { id: "id", rawValue: "ID" },
       countryName: "Germany",
       isoNumericCountryCode: "276",
       isoAlpha2CountryCode: "DE",
@@ -712,9 +1108,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
   it("keeps SDK default redaction when resolver returns undefined", async () => {
     const documentClassInfo = {
-      country: "germany",
+      country: { id: "germany", rawValue: "GERMANY" },
       region: undefined,
-      type: "id",
+      documentType: { id: "id", rawValue: "ID" },
       countryName: "Germany",
       isoNumericCountryCode: "276",
       isoAlpha2CountryCode: "DE",
@@ -756,9 +1152,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
   it("does not resolve redaction settings after reset clears cached class info", async () => {
     const documentClassInfo = {
-      country: "germany",
+      country: { id: "germany", rawValue: "GERMANY" },
       region: undefined,
-      type: "id",
+      documentType: { id: "id", rawValue: "ID" },
       countryName: "Germany",
       isoNumericCountryCode: "276",
       isoAlpha2CountryCode: "DE",
@@ -804,9 +1200,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
   it("rejects getResult when redaction resolver rejects", async () => {
     const documentClassInfo = {
-      country: "germany",
+      country: { id: "germany", rawValue: "GERMANY" },
       region: undefined,
-      type: "id",
+      documentType: { id: "id", rawValue: "ID" },
       countryName: "Germany",
       isoNumericCountryCode: "276",
       isoAlpha2CountryCode: "DE",
@@ -845,9 +1241,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
   it("getDefaultRedactionSettings is correctly passed to the resolver by the worker", async () => {
     const documentClassInfo = {
-      country: "germany",
+      country: { id: "germany", rawValue: "GERMANY" },
       region: undefined,
-      type: "id",
+      documentType: { id: "id", rawValue: "ID" },
       countryName: "Germany",
       isoNumericCountryCode: "276",
       isoAlpha2CountryCode: "DE",
@@ -910,9 +1306,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
   it("explicit undefined field in redactionSettingsResolver keeps the default", async () => {
     const documentClassInfo = {
-      country: "germany",
+      country: { id: "germany", rawValue: "GERMANY" },
       region: undefined,
-      type: "id",
+      documentType: { id: "id", rawValue: "ID" },
       countryName: "Germany",
       isoNumericCountryCode: "276",
       isoAlpha2CountryCode: "DE",
@@ -970,6 +1366,138 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(session.getResult).toHaveBeenCalledWith({
       ...defaultRedactionSettings,
     });
+  });
+
+  it("does not reproject cached class info after a detection-failed document swap", async () => {
+    const documentClassInfo = {
+      country: { id: "germany", rawValue: "GERMANY" },
+      region: undefined,
+      documentType: { id: "id", rawValue: "ID" },
+      countryName: "Germany",
+      isoNumericCountryCode: "276",
+      isoAlpha2CountryCode: "DE",
+      isoAlpha3CountryCode: "DEU",
+    } satisfies DocumentClassInfo;
+    const classifiedResult = {
+      inputImageAnalysisResult: {
+        processingStatus: "awaiting-other-side",
+        documentClassInfo,
+        documentRotation: "not-available",
+      },
+    } as unknown as BlinkIdProcessResult;
+    const swapResult = {
+      inputImageAnalysisResult: {
+        processingStatus: "detection-failed",
+        documentClassInfo: undefined,
+        documentRotation: "not-available",
+      },
+    } as unknown as BlinkIdProcessResult;
+    const session = createScanningSessionMock<BlinkIdScanningSession>({
+      process: vi
+        .fn()
+        .mockReturnValueOnce(classifiedResult)
+        .mockReturnValueOnce(swapResult),
+    });
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      createScanningSession: vi.fn(() => session),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId(baseInitSettings);
+
+    const proxySession = worker.createScanningSession();
+    proxySession.process(createFakeImageData());
+    const swapProcessResult = proxySession.process(
+      createFakeImageData(),
+    ) as BlinkIdProcessResult;
+
+    expect(
+      swapProcessResult.inputImageAnalysisResult.documentClassInfo,
+    ).toBeUndefined();
+  });
+
+  it("does not reproject cached class info after a stability-test-failed document swap", async () => {
+    const documentClassInfo = {
+      country: { id: "germany", rawValue: "GERMANY" },
+      region: undefined,
+      documentType: { id: "id", rawValue: "ID" },
+      countryName: "Germany",
+      isoNumericCountryCode: "276",
+      isoAlpha2CountryCode: "DE",
+      isoAlpha3CountryCode: "DEU",
+    } satisfies DocumentClassInfo;
+    const classifiedResult = {
+      inputImageAnalysisResult: {
+        processingStatus: "awaiting-other-side",
+        documentClassInfo,
+        documentRotation: "not-available",
+      },
+    } as unknown as BlinkIdProcessResult;
+    const swapResult = {
+      inputImageAnalysisResult: {
+        processingStatus: "stability-test-failed",
+        documentClassInfo: undefined,
+        documentRotation: "not-available",
+      },
+    } as unknown as BlinkIdProcessResult;
+    const session = createScanningSessionMock<BlinkIdScanningSession>({
+      process: vi
+        .fn()
+        .mockReturnValueOnce(classifiedResult)
+        .mockReturnValueOnce(swapResult),
+    });
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      createScanningSession: vi.fn(() => session),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId(baseInitSettings);
+
+    const proxySession = worker.createScanningSession();
+    proxySession.process(createFakeImageData());
+    const swapProcessResult = proxySession.process(
+      createFakeImageData(),
+    ) as BlinkIdProcessResult;
+
+    expect(
+      swapProcessResult.inputImageAnalysisResult.documentClassInfo,
+    ).toBeUndefined();
+  });
+
+  it("does not resolve redaction settings when documentClassInfo is absent", async () => {
+    const processResult = {
+      inputImageAnalysisResult: {
+        processingStatus: "detection-failed",
+        documentClassInfo: undefined,
+        documentRotation: "not-available",
+      },
+    } as unknown as BlinkIdProcessResult;
+    const redactionSettingsResolver = vi.fn();
+    const session = createScanningSessionMock<BlinkIdScanningSession>({
+      process: vi.fn(() => processResult),
+      getResult: vi.fn(),
+    });
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+      createScanningSession: vi.fn(() => session),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId(baseInitSettings);
+
+    const proxySession = worker.createScanningSession(undefined, {
+      redactionSettingsResolver,
+    });
+    proxySession.process(createFakeImageData());
+    await proxySession.getResult();
+
+    expect(redactionSettingsResolver).not.toHaveBeenCalled();
+    expect(session.getResult).toHaveBeenCalledWith();
   });
 
   it("reports reset failures as non-fatal pinglets", async () => {

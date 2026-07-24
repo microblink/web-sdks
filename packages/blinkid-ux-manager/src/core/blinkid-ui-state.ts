@@ -755,6 +755,16 @@ export function getUiStateKey(
         () => "PROCESSING_BARCODE",
       )
 
+      // Explicit non-terminal status: core is collecting more stable input
+      // images (video) before extraction. Keep the active scan running without
+      // surfacing a new UI state.
+      .with(
+        {
+          processingStatus: "awaiting-more-stable-input-images",
+        },
+        () => undefined,
+      )
+
       // fallback
       .otherwise(() => {
         // most likely stability test failing which should be a no-op

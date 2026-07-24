@@ -27,7 +27,6 @@ export default {
     glare_detected:
       "Akslanishni olib tashlash uchun hujjatni eging yoki siljiting",
     keep_document_parallel: "Hujjatni ekranga parallel ushlang",
-    keep_document_still: "Hujjat va qurilmani qimirlatmang",
     keep_still: "Qimirlatmang",
     move_closer: "Yaqinlashtiring",
     move_farther: "Uzoqlashtiring",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "Shtrix-kodni skanerlash",
     scan_the_barcode_side: "Hujjatning shtrix-kodli tomonini skanerlang",
     scan_the_front_side: "Hujjatning old tomonini skanerlang",
+    scan_the_mrz_side: "Hujjatning MRZ mavjud tomonini skanerlang",
     scan_top_page: "Yuqori sahifani skanerlang",
     too_bright: "Yorugʻligi kamroq joyga oling",
     too_dark: "Yorugʻroq joyga oling",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Shtrix-kod koʻrinib tursin",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Skanerlaganda telefon va hujjatni qimirlatmang. Ulardan istalgan birining qimirlashi rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        details_desktop:
+          "Skanerlaganda qimirlamang. Qimirlash rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        title: "Skanerlayotganda qimirlatmang",
+        title_desktop: "Skanerlayotganda qimirlatmang",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kamera linzasida dog‘ yoki chang yo‘qligini tekshiring. Kirlangan linza yakuniy tasvirni xiralashtiradi, bu hujjatdagi maʼlumotlarni o‘qib bo‘lmaydigan qiladi va ma’lumotlarni muvaffaqiyatli skanerlashga to‘sqinlik qiladi.",
+        title_desktop: "Kamerangiz obyektivini tozalang",
+      },
+      lighting: {
+        details:
+          "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
+        details_desktop:
+          "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
+        title: "Kuchli yorugʻlik tushmasin",
+        title_desktop: "Kuchli yorugʻlik tushmasin",
+      },
+      visibility: {
+        details:
+          "MRZ qismini barmogʻingiz bilan toʻsmayotganligingizga ishonch hosil qiling. Shuningdek, MRZ ustiga tushib, uni oʻqib boʻlmaydigan qilib qoʻyishi mumkin boʻlgan akslanishlardan ehtiyot boʻling.",
+        details_desktop:
+          "MRZ qismini barmogʻingiz bilan toʻsmayotganligingizga ishonch hosil qiling. Shuningdek, MRZ ustiga tushib, uni oʻqib boʻlmaydigan qilib qoʻyishi mumkin boʻlgan akslanishlardan ehtiyot boʻling.",
+        title: "MRZ koʻrinib tursin",
+        title_desktop: "MRZ koʻrinib tursin",
+      },
+    },
     done_btn: "Tayyor",
     done_btn_aria: "Skanerlashni davom etish",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Skanerlashni boshlash",
     document_with_barcode: {
       details:
-        "Turli ID hujjatlarida shtrix-kod formatlari va joylari ham har xil boʻlishi mumkin. Shtrix-kodni ID hujjatning old va orqa tomonidan qidiring.",
+        "Har xil turdagi hujjatlarda shtrixkod formati va joylashuvi turlicha boʻlishi mumkin. Shtrixkodni hujjatning old va orqa tomonidan qidiring.",
       details_desktop:
-        "Shtrix-kod uchun ID hujjatning old va orqa tomonini tekshiring. Kamera obyektivi tozaligiga, hujjat esa yaxshi yoritilganligiga ishonch hosil qiling.",
-      title: "ID hujjatda shtrix-kodni toping",
+        "Hujjatning old va orqa tomonida shtrixkod borligini tekshiring. Kamera linzangizni toza tuting va hujjat yaxshi yoritilganiga ishonch hosil qiling.",
+      title: "Hujjatdagi shtrixkodni toping",
       title_desktop: "Obyektivni tozalang va shtrix-kodni toping",
+    },
+    document_with_mrz: {
+      details:
+        "Hujjatning old yoki orqa tomonining pastki qismida 2 yoki 3 qatorga boʻlingan va strelkalar (<< yoki >>) bilan ajratilgan uzun belgilar qatorini topasiz.",
+      details_desktop:
+        "Hujjatning old va orqa tomonida MRZ borligini tekshiring. Hujjatning pastki qismidagi 2–3 qatorli belgilar va strelka (<<) belgilarini qidiring. Kamera linzasini toza saqlang va hujjat yaxshi yoritilganiga ishonch hosil qiling.",
+      title: "Hujjatdan MRZ'ni toping",
+      title_desktop: "Linzani tozalab, MRZ qismini toping",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Hujjat skanerlash ekrani",
   timeout_modal: {
-    details: "Hujjatni oʻqish imkonsiz. Qayta urining.",
-    title: "Skanerlandi",
+    details:
+      "Hujjat yaxshi yoritilgan, toʻliq koʻrinadigan va unda yaltiroq joylar yoʻq ekanligiga ishonch hosil qiling.",
+    details_desktop:
+      "Kamera linzangiz tozaligiga, hujjat esa toʻliq koʻrinadigan, fokusda va yaxshi yoritilganligiga ishonch hosil qiling.",
+    title: "Hujjatni oʻqish imkonsiz",
   },
 } as const;

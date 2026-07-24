@@ -35,6 +35,59 @@ This package is bundled and distributed as part of the BlinkID browser SDK. If y
 - [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid)
 - [`@microblink/blinkid-core`](https://www.npmjs.com/package/@microblink/blinkid-core)
 
+## OTA Document Support Updates
+
+The worker loads BlinkID document-support resources during initialization.
+Every SDK build hosts a baseline under `resources/ota-resources/`, separate from
+`BlinkIdModule.data`.
+
+The hosted directory contains `ota-resources.json` and the canonical files:
+
+```jsonc
+{
+  "resources": [
+    {
+      "filename": "knowledge-database.zzip",
+      "version": "2.0.1",
+      "url": "knowledge-database.zzip",
+    },
+  ],
+}
+```
+
+Applications can override the hosted baseline and provider URLs:
+
+```ts
+const initSettings = {
+  licenseKey: "your-license-key",
+  otaResources: {
+    resourcesLocation: "https://cdn.example.com/blinkid-ota",
+    otaResourceProviderUrl: "https://your-proxy.example.com/blinkid-ota",
+  },
+};
+```
+
+The provider URL can point to Microblink's OTA resource provider or to a proxy
+service owned by your application. A proxy service is useful when you need to
+route OTA traffic through your own domain, network policy, or CORS
+configuration.
+
+The provider or proxy must expose the OTA versions endpoint:
+
+```text
+GET {otaResourceProviderUrl}/api/v1/versions?generic_version={recognizerVersion}
+```
+
+The worker obtains `generic_version` from the BlinkID recognizer and selects a
+provider resource only when it is newer than the hosted version. It writes the
+selected files under `/microblink/blinkid-ota` before SDK initialization.
+Provider failures fall back to the hosted file unless `strict: true` is set.
+Hosted baseline failures are always fatal. Set `checkForUpdates: false` to skip
+the provider check while still loading the hosted baseline.
+
+The OTA provider URL is separate from `microblinkProxyUrl`, which is used for
+Microblink license and analytics proxying.
+
 ## Development
 
 To build the worker locally:

@@ -12,6 +12,7 @@ export const blankProcessResult: ProcessResultWithBuffer = {
     invalidCharacterFields: [],
     extraPresentFields: [],
     imageExtractionFailures: [],
+    vizExtractionType: "not-available",
     scanningSide: "first",
     documentDetectionStatus: "failed",
     documentClassInfo: {
@@ -19,7 +20,7 @@ export const blankProcessResult: ProcessResultWithBuffer = {
       isoNumericCountryCode: "",
       isoAlpha2CountryCode: "",
       isoAlpha3CountryCode: "",
-      type: undefined,
+      documentType: undefined,
       country: undefined,
       region: undefined,
     },
@@ -35,6 +36,7 @@ export const blankProcessResult: ProcessResultWithBuffer = {
     documentHandOcclusionStatus: "not-available",
     documentOrientation: "not-available",
     documentRotation: "not-available",
+    inputImageCropAnalysis: "not-available",
   },
   resultCompleteness: {
     viz: [],

@@ -91,6 +91,11 @@ export async function linkResources(
     }
     await fs.ensureSymlink(sourcePath, destinationPath);
   } catch (error) {
+    const symlinkError = error as NodeJS.ErrnoException;
+    if (symlinkError.code === "EEXIST" && fs.existsSync(destinationPath)) {
+      return;
+    }
+
     // If symlinking fails, fall back to copying
     console.log(
       `Symlinking failed, falling back to copying: ${(error as Error).message}`,

@@ -184,6 +184,7 @@ export type VizFieldsCompleteness = {
   documentSubtype?: StringResultCompleteness;
   effectiveDate?: DateResultCompleteness;
   eligibilityCategory?: StringResultCompleteness;
+  ethnicity?: StringResultCompleteness;
   husbandName?: StringResultCompleteness;
   legalStatus?: StringResultCompleteness;
   localityCode?: StringResultCompleteness;

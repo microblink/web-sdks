@@ -12,6 +12,8 @@ import CorrectFraming from "../assets/onboarding/correct_framing.svg?component-s
 import CorrectFramingDesktop from "../assets/onboarding/correct_framing_desktop.svg?component-solid";
 import DocumentWithBarcode from "../assets/onboarding/document_with_barcode.svg?component-solid";
 import DocumentWithBarcodeDesktop from "../assets/onboarding/document_with_barcode_desktop.svg?component-solid";
+import DocumentWithMrz from "../assets/onboarding/document_with_mrz.svg?component-solid";
+import DocumentWithMrzDesktop from "../assets/onboarding/document_with_mrz_desktop.svg?component-solid";
 
 import { Dialog } from "@ark-ui/solid";
 import { Dynamic } from "solid-js/web";
@@ -52,6 +54,13 @@ export const onboardingModalContentByExtractionMode = {
     images: {
       mobile: BarcodeOnly,
       desktop: BarcodeOnlyDesktop,
+    },
+  },
+  "document-with-mrz": {
+    localeGroup: "document_with_mrz",
+    images: {
+      mobile: DocumentWithMrz,
+      desktop: DocumentWithMrzDesktop,
     },
   },
 } as const satisfies Record<BlinkIdModalExtractionMode, OnboardingModalContent>;

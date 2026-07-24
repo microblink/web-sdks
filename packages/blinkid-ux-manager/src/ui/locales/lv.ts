@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Priekšpuse noskenēta veiksmīgi!",
     glare_detected: "Sasvērt vai pārvietot dokumentu, lai novērstu atspīdumu",
     keep_document_parallel: "Turiet dokumentu paralēli ekrānam",
-    keep_document_still: "Nekustiniet dokumentu un ierīci",
     keep_still: "Nekustieties",
     move_closer: "Pārvietot tuvāk",
     move_farther: "Pārvietot tālāk",
@@ -42,6 +41,7 @@ export default {
     scan_the_barcode: "Skenēt svītrkodu",
     scan_the_barcode_side: "Skenējiet dokumenta svītrkoda pusi",
     scan_the_front_side: "Skenēt dokumenta priekšpusi",
+    scan_the_mrz_side: "Noskenējiet to dokumenta pusi, kurā ir MRZ",
     scan_top_page: "Skenēt augšējo lapu",
     too_bright: "Pārvietot uz vietu ar mazāku apgaismojumu",
     too_dark: "Pārvietot uz vietu ar spilgtāku apgaismojumu",
@@ -115,6 +115,37 @@ export default {
         title_desktop: "Turiet dokumentu tā, lai svītrkods būtu redzams",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Skenēšanas laikā mēģiniet tālruni un dokumentu turēt nekustīgu. Pārvietojot vienu vai otru, attēls var būt izplūdis, un dokumenta dati var kļūt nesalasāmi.",
+        details_desktop:
+          "Skenēšanas laikā nekustieties. Pretējā gadījumā attēls var būt izplūdis, un dokumenta dati var kļūt nesalasāmi.",
+        title: "Skenēšanas laikā turēt nekustīgu",
+        title_desktop: "Skenēšanas laikā turēt nekustīgu",
+      },
+      camera_lens: {
+        details_desktop:
+          "Pārbaudiet, vai uz kameras objektīva nav traipu vai putekļu. Ar netīru objektīvu uzņemts attēls būs izplūdis, un informācija dokumentā nebūs salasāma un noskenējama.",
+        title_desktop: "Notīriet kameras objektīvu",
+      },
+      lighting: {
+        details:
+          "Izvairieties no tiešas spilgtas gaismas, jo tā atstarojas no dokumenta un var padarīt atsevišķas dokumenta daļas nelasāmas. Ja nevarat izlasīt dokumentā esošos datus, tos neredz arī kamera.",
+        details_desktop:
+          "Izvairieties no tiešas spilgtas gaismas, jo tā atstarojas no dokumenta un var padarīt atsevišķas dokumenta daļas nelasāmas. Ja nevarat izlasīt dokumentā esošos datus, tos neredz arī kamera.",
+        title: "Uzmanieties no spilgtas gaismas",
+        title_desktop: "Uzmanieties no spilgtas gaismas",
+      },
+      visibility: {
+        details:
+          "Pārliecinieties, ka neaizsedzat daļu MRZ ar pirkstu. Pārbaudiet arī to, vai MRZ neietekmē atspīdumi, kas var neļaut to nolasīt.",
+        details_desktop:
+          "Pārliecinieties, ka neaizsedzat daļu MRZ ar pirkstu. Pārbaudiet arī to, vai MRZ neietekmē atspīdumi, kas var neļaut to nolasīt.",
+        title: "Turiet dokumentu tā, lai būtu redzama MRZ",
+        title_desktop: "",
+      },
+    },
     done_btn: "Gatavs",
     done_btn_aria: "Atsākt skenēšanu",
     full_document: {
@@ -163,11 +194,19 @@ export default {
     btn: "Sāciet skenēšanu",
     document_with_barcode: {
       details:
-        "Dažādiem personu apliecinošajiem dokumentiem var būt dažādi svītrkoda formāti un atrašanās vietas. Lai atrastu svītrkodu, aplūkojiet personu apliecinošā dokumenta priekšpusi un aizmuguri.",
+        "Dažādiem dokumentiem var būt dažādi svītrkoda formāti un atrašanās vietas. Lai atrastu svītrkodu, aplūkojiet dokumenta priekšpusi un aizmuguri.",
       details_desktop:
-        "Lai atrastu svītrkodu, pārbaudiet personu apliecinošā dokumenta priekšpusi un aizmuguri. Pārliecinieties, ka kameras objektīvs ir tīrs, un svītrkods ir labi apgaismots.",
-      title: "Atrodiet svītrkodu uz personu apliecinošā dokumenta",
+        "Lai atrastu svītrkodu, pārbaudiet dokumenta priekšpusi un aizmuguri. Pārliecinieties, ka kameras objektīvs ir tīrs un dokuments ir labi apgaismots.",
+      title: "Atrodiet dokumentā svītrkodu",
       title_desktop: "Notīriet objektīvu un atrodiet svītrkodu",
+    },
+    document_with_mrz: {
+      details:
+        "Dokumenta priekšpuses vai aizmugures apakšdaļā jūs atradīsiet garu virkni rakstzīmju, kas ir izvietota 2–3 rindās un sadalīta ar bultiņām (<< vai >>).",
+      details_desktop:
+        "Lai atrastu MRZ, pārbaudiet dokumenta priekšpusi un aizmuguri. Meklējiet dokumenta apakšdaļā 2-3 rindas rakstzīmju un bultiņu simbolu  (<<). Pārliecinieties, ka kameras objektīvs ir tīrs un dokuments ir labi apgaismots.",
+      title: "Atrodiet dokumentā MRZ",
+      title_desktop: "Notīriet kameras objektīvu un atrodiet MRZ",
     },
     full_document: {
       details:
@@ -180,7 +219,10 @@ export default {
   },
   sdk_aria: "Dokumenta skenēšanas ekrāns",
   timeout_modal: {
-    details: "Nevar nolasīt dokumentu. Lūdzu, mēģiniet vēlreiz.",
-    title: "Skenēšana neizdevās",
+    details:
+      "Pārliecinieties, ka dokuments ir labi apgaismots, pilnībā redzams un to neietekmē atspīdums.",
+    details_desktop:
+      "Pārliecinieties, ka kameras objektīvs ir tīrs un dokuments ir pilnībā redzams, fokusā un labi apgaismots.",
+    title: "Nevar nolasīt dokumentu",
   },
 } as const;

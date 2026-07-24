@@ -6,7 +6,7 @@
 
 # Type Alias: ProcessingStatus
 
-> **ProcessingStatus** = `"success"` \| `"detection-failed"` \| `"image-preprocessing-failed"` \| `"stability-test-failed"` \| `"scanning-wrong-side"` \| `"field-identification-failed"` \| `"mandatory-field-missing"` \| `"invalid-characters-found"` \| `"image-return-failed"` \| `"barcode-recognition-failed"` \| `"mrz-parsing-failed"` \| `"unsupported-document"` \| `"awaiting-other-side"` \| `"not-scanned"` \| `"barcode-detection-failed"` \| `"mrz-detection-failed"` \| `"input-image-not-focused"` \| `"canceled"`
+> **ProcessingStatus** = `"success"` \| `"detection-failed"` \| `"image-preprocessing-failed"` \| `"stability-test-failed"` \| `"scanning-wrong-side"` \| `"field-identification-failed"` \| `"mandatory-field-missing"` \| `"invalid-characters-found"` \| `"image-return-failed"` \| `"barcode-recognition-failed"` \| `"mrz-parsing-failed"` \| `"unsupported-document"` \| `"awaiting-other-side"` \| `"not-scanned"` \| `"barcode-detection-failed"` \| `"mrz-detection-failed"` \| `"input-image-not-focused"` \| `"awaiting-more-stable-input-images"` \| `"canceled"`
 
 Represents the status of the document processing.
 
@@ -45,4 +45,7 @@ stages of the recognition and extraction process.
 - `mrz-detection-failed` The MRZ was not found on the image. This processing
   status can only occur if document has mandatory MRZ.
 - `input-image-not-focused` Input image is not focused.
+- `awaiting-more-stable-input-images` More stable input images are required to
+  proceed to data and image extraction. Available only for `Video` input
+  source. An input image is stable if it passed the stability test.
 - `canceled` Scanning was terminated by cancel delegate.

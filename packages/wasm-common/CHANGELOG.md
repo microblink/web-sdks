@@ -1,5 +1,14 @@
 # @microblink/wasm-common
 
+## 2.2.0
+
+### Minor Changes
+
+- Removed the `basic` Wasm variant from `wasmVariants` and build profiles.
+  - Renamed Wasm variant identifiers: `advanced` → `simd` and `advanced-threads` → `simd-threads`.
+  - Removed the redundant `WasmSimdVariant` type and `wasmSimdVariants` constant; use `WasmVariant` instead.
+- Added a non-asserting `tryFromStringView` to the generated enum binder, returning `std::optional` (empty on unknown values) instead of asserting.
+
 ## 2.1.0
 
 ### Minor Changes
@@ -11,9 +20,9 @@
 ### Major Changes
 
 - Typescript:
-    - Added `WasmSimdVariant` type for all products
+  - Added `WasmSimdVariant` type for all products
 - Cplusplus:
-    - Updated internal imporevements for cleaner binding of types
+  - Updated internal imporevements for cleaner binding of types
 
 ## 1.0.1
 

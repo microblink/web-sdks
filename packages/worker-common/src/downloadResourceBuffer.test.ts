@@ -55,7 +55,7 @@ describe("downloadResourceBuffer", () => {
       {
         url: mockUrl,
         fileType: "wasm",
-        variant: "basic",
+        variant: "simd",
       },
       getExpectedSize,
     );
@@ -72,7 +72,7 @@ describe("downloadResourceBuffer", () => {
       {
         url: mockUrl,
         fileType: "wasm",
-        variant: "basic",
+        variant: "simd",
         progressCallback,
       },
       getExpectedSize,
@@ -104,7 +104,7 @@ describe("downloadResourceBuffer", () => {
       {
         url: mockUrl,
         fileType: "wasm",
-        variant: "basic",
+        variant: "simd",
         progressCallback,
       },
       getExpectedSize,
@@ -112,7 +112,7 @@ describe("downloadResourceBuffer", () => {
 
     expect(getExpectedSize).toHaveBeenCalledWith({
       fileType: "wasm",
-      variant: "basic",
+      variant: "simd",
       buildType: undefined,
     });
     expect(progressCallback).toHaveBeenNthCalledWith(1, {
@@ -133,7 +133,7 @@ describe("downloadResourceBuffer", () => {
       {
         url: mockUrl,
         fileType: "data",
-        variant: "advanced",
+        variant: "simd",
         buildType: "lightweight",
         progressCallback,
       },
@@ -142,7 +142,7 @@ describe("downloadResourceBuffer", () => {
 
     expect(getExpectedSize).toHaveBeenCalledWith({
       fileType: "data",
-      variant: "advanced",
+      variant: "simd",
       buildType: "lightweight",
     });
   });
@@ -161,7 +161,7 @@ describe("downloadResourceBuffer", () => {
         {
           url: mockUrl,
           fileType: "wasm",
-          variant: "basic",
+          variant: "simd",
           progressCallback,
         },
         getExpectedSize,
@@ -181,7 +181,7 @@ describe("downloadResourceBuffer", () => {
       {
         url: mockUrl,
         fileType: "wasm",
-        variant: "basic",
+        variant: "simd",
         progressCallback,
       },
       getExpectedSize,
@@ -206,7 +206,7 @@ describe("downloadResourceBuffer", () => {
         {
           url: mockUrl,
           fileType: "wasm",
-          variant: "basic",
+          variant: "simd",
         },
         getExpectedSize,
       ),

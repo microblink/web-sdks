@@ -1,5 +1,14 @@
 # @microblink/blinkid-verify
 
+## 3.22.0-next
+
+### Minor Changes
+
+- Updated the minimum browser requirements after removing the non-SIMD `basic` Wasm build. The SDKs now require WebAssembly SIMD support: Chrome/Edge 91+, Firefox 89+, Safari/iOS Safari 16.4+, and Samsung Internet 16+.
+- Updated dependencies
+  - @microblink/blinkid-verify-core@3.22.0-next
+  - @microblink/blinkid-verify-ux-manager@3.22.0-next
+
 ## 3.21.1
 
 ### Patch Changes

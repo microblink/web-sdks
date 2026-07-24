@@ -27,7 +27,6 @@ export default {
     glare_detected:
       "Nagnite ili premjestite dokument kako biste uklonili refleksiju",
     keep_document_parallel: "Držite dokument paralelno sa zaslonom",
-    keep_document_still: "Držite dokument i uređaj mirno",
     keep_still: "Ostanite mirni",
     move_closer: "Približite dokument",
     move_farther: "Udaljite dokument",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "Skenirajte barkod",
     scan_the_barcode_side: "Skenirajte stranu dokumenta s barkodom",
     scan_the_front_side: "Skenirajte prednju stranu dokumenta",
+    scan_the_mrz_side: "Skenirajte stranu dokumenta s MRZ kodom",
     scan_top_page: "Skenirajte gornju stranicu",
     too_bright: "Pomaknite se na slabije osvijetljeno mjesto",
     too_dark: "Pomaknite se na više osvijetljeno mjesto",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Držite barkod vidljivim",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Pokušajte za vrijeme skeniranja što mirnije držati telefon i dokument. Pomicanjem može doći do zamućenja slike zbog čega podaci postaju nečitljivi.",
+        details_desktop:
+          "Pokušajte za vrijeme skeniranja biti što mirniji. Pomicanjem može doći do zamućenja slike zbog čega podaci postaju nečitljivi.",
+        title: "Mirno držite dokument",
+        title_desktop: "Mirno držite dokument",
+      },
+      camera_lens: {
+        details_desktop:
+          "Provjerite je li kamera čista. Prljava kamera uzrokuje zamućenje slike pa podaci na dokumentu postaju nečitljivi i nemoguće ih je uspješno skenirati.",
+        title_desktop: "Očistite kameru",
+      },
+      lighting: {
+        details:
+          "Izbjegavajte izravnu jaku svjetlost jer se reflektira s dokumenta i može učiniti dijelove dokumenta nečitljivima. Ako vi ne možete pročitati podatke na dokumentu, ni kamera ih neće moći vidjeti.",
+        details_desktop:
+          "Izbjegavajte izravnu jaku svjetlost jer se reflektira s dokumenta i može učiniti dijelove dokumenta nečitljivima. Ako vi ne možete pročitati podatke na dokumentu, ni kamera ih neće moći vidjeti.",
+        title: "Pazite na direktno osvjetljenje",
+        title_desktop: "Pazite na direktno osvjetljenje",
+      },
+      visibility: {
+        details:
+          "Pripazite da ne prekrivate dijelove MRZ-a prstom. Također, pazite na refleksije koje mogu prelaziti preko MRZ-a i učiniti ga nečitljivim.",
+        details_desktop:
+          "Pripazite da ne prekrivate dijelove MRZ-a prstom. Također, pazite na refleksije koje mogu prelaziti preko MRZ-a i učiniti ga nečitljivim.",
+        title: "Držite MRZ vidljivim",
+        title_desktop: "Držite MRZ vidljivim",
+      },
+    },
     done_btn: "OK",
     done_btn_aria: "Nastavi skeniranje",
     full_document: {
@@ -170,6 +201,14 @@ export default {
       title: "Locirajte barkod na dokumentu",
       title_desktop: "Očistite kameru i locirajte barkod",
     },
+    document_with_mrz: {
+      details:
+        "Na dnu prednje ili stražnje strane dokumenta pronaći ćete dugačak niz znakova, raspoređen u 2 ili 3 retka i odvojen strelicama (<< ili >>).",
+      details_desktop:
+        "Provjerite prednju i stražnju stranu dokumenta kako biste pronašli MRZ. Potražite 2–3 retka znakova i simbola strelica (<<) pri dnu dokumenta. Pazite da je kamera čista i dokument dobro osvijetljen.",
+      title: "Locirajte MRZ na dokumentu",
+      title_desktop: "Očistite kameru i locirajte MRZ",
+    },
     full_document: {
       details:
         "Pripazite da dokument bude dovoljno osvijetljen. Svi podaci s dokumenta trebaju biti vidljivi na ekranu vašeg uređaja.",
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Zaslon za skeniranje dokumenta",
   timeout_modal: {
-    details: "Dokument nije moguće očitati. Molimo pokušajte ponovo.",
-    title: "Skeniranje nije uspjelo",
+    details:
+      "Pripazite da je dokument dobro osvijetljen, u potpunosti vidljiv i bez odsjaja.",
+    details_desktop:
+      "Pobrinite se da je kamera čista te da je dokument u potpunosti vidljiv, izoštren i dobro osvijetljen.",
+    title: "Dokument nije moguće očitati.",
   },
 } as const;

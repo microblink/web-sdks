@@ -11,6 +11,7 @@
 
 ## Interfaces
 
+- [MemFSModule](interfaces/MemFSModule.md)
 - [PingBase](interfaces/PingBase.md)
 - [UADataValues](interfaces/UADataValues.md)
 - [WasmBindings](interfaces/WasmBindings.md)
@@ -34,6 +35,7 @@
 - [BlinkIdCore](type-aliases/BlinkIdCore.md)
 - [BlinkIdCreateScanningSessionOptions](type-aliases/BlinkIdCreateScanningSessionOptions.md)
 - [BlinkIdInitSettings](type-aliases/BlinkIdInitSettings.md)
+- [BlinkIdOtaResourceSettings](type-aliases/BlinkIdOtaResourceSettings.md)
 - [BlinkIdProcessResult](type-aliases/BlinkIdProcessResult.md)
 - [BlinkIdScanningResult](type-aliases/BlinkIdScanningResult.md)
 - [BlinkIdScanningSession](type-aliases/BlinkIdScanningSession.md)
@@ -63,7 +65,11 @@
 - [DeviceInfo](type-aliases/DeviceInfo.md)
 - [DeviceScreenInfo](type-aliases/DeviceScreenInfo.md)
 - [DocumentCaptureModuleSettings](type-aliases/DocumentCaptureModuleSettings.md)
+- [DocumentClassComponent](type-aliases/DocumentClassComponent.md)
+- [DocumentClassCountry](type-aliases/DocumentClassCountry.md)
+- [DocumentClassDocumentType](type-aliases/DocumentClassDocumentType.md)
 - [DocumentClassInfo](type-aliases/DocumentClassInfo.md)
+- [DocumentClassRegion](type-aliases/DocumentClassRegion.md)
 - [DocumentImageColor](type-aliases/DocumentImageColor.md)
 - [DocumentNumberRedactionSettings](type-aliases/DocumentNumberRedactionSettings.md)
 - [DocumentOrientation](type-aliases/DocumentOrientation.md)
@@ -85,6 +91,9 @@
 - [ImageCompleteness](type-aliases/ImageCompleteness.md)
 - [ImageExtractionType](type-aliases/ImageExtractionType.md)
 - [InputImageAnalysisResult](type-aliases/InputImageAnalysisResult.md)
+- [InputImageCropAnalysis](type-aliases/InputImageCropAnalysis.md)
+- [InputImageCropType](type-aliases/InputImageCropType.md)
+- [InputImageSelectionStrategy](type-aliases/InputImageSelectionStrategy.md)
 - [InputImageSource](type-aliases/InputImageSource.md)
 - [LicenseRequest](type-aliases/LicenseRequest.md)
 - [LicenseTokenState](type-aliases/LicenseTokenState.md)
@@ -147,21 +156,21 @@
 - [VehicleClassInfo](type-aliases/VehicleClassInfo.md)
 - [VehicleClassInfoCompleteness](type-aliases/VehicleClassInfoCompleteness.md)
 - [VizCompleteness](type-aliases/VizCompleteness.md)
+- [VizExtractionType](type-aliases/VizExtractionType.md)
 - [VizFieldsCompleteness](type-aliases/VizFieldsCompleteness.md)
 - [VizModuleSettings](type-aliases/VizModuleSettings.md)
 - [VizResult](type-aliases/VizResult.md)
 - [WasmBuildType](type-aliases/WasmBuildType.md)
-- [WasmSimdVariant](type-aliases/WasmSimdVariant.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 - [WorkerScanningSession](type-aliases/WorkerScanningSession.md)
 
 ## Variables
 
+- [DEFAULT\_BLINK\_ID\_OTA\_RESOURCE\_PROVIDER\_URL](variables/DEFAULT_BLINK_ID_OTA_RESOURCE_PROVIDER_URL.md)
 - [DEFAULT\_REDACTION\_SETTINGS](variables/DEFAULT_REDACTION_SETTINGS.md)
 - [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
-- [wasmSimdVariants](variables/wasmSimdVariants.md)
 - [wasmVariants](variables/wasmVariants.md)
 
 ## Functions

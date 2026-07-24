@@ -1,7 +1,7 @@
 {
   "name": "@microblink/camera-manager",
   "description": "Manages cameras and stream, provides both a headless component and a UI component",
-  "version": "7.3.3",
+  "version": "7.3.4",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -17,7 +17,7 @@
     "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
-    "publish-test": "pnpm build:publish && pnpm prepare-publish && pnpm pack-check",
+    "publish-test": "pnpm prepare-publish && pnpm pack-check",
     "test": "vitest run",
     "test:watch": "vitest",
     "type-rollup": "api-extractor run --local",
@@ -55,7 +55,7 @@
     "type-fest": "^4.35.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
+    "@arethetypeswrong/cli": "0.18.3",
     "@iconify-json/material-symbols": "^1.2.14",
     "@iconify-json/mdi": "^1.2.3",
     "@microblink/repo-utils": "workspace:*",

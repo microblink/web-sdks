@@ -32,11 +32,14 @@ The status of blur detection
 
 ***
 
-### documentClassInfo
+### documentClassInfo?
 
-> **documentClassInfo**: [`DocumentClassInfo`](DocumentClassInfo.md)
+> `optional` **documentClassInfo**: [`DocumentClassInfo`](DocumentClassInfo.md)
 
-Information about the document class
+Information about the document class.
+
+Absent when the document could not be classified (for example, for
+unsupported documents without any extracted class info).
 
 ***
 
@@ -144,6 +147,19 @@ List of failed image extractions
 
 ***
 
+### inputImageCropAnalysis
+
+> **inputImageCropAnalysis**: [`InputImageCropAnalysis`](InputImageCropAnalysis.md)
+
+Records the conclusion drawn about whether the input image was already
+cropped and perspective-corrected.
+
+Only meaningful when the document capture module `cropType` was set to
+`"unknown"` and the input source is `Photo`; otherwise always
+`"not-available"`.
+
+***
+
 ### invalidCharacterFields
 
 > **invalidCharacterFields**: [`FieldType`](FieldType.md)[]
@@ -190,3 +206,13 @@ The status of real ID detection
 > **scanningSide**: [`ScanningSide`](ScanningSide.md)
 
 Side of the document being scanned
+
+***
+
+### vizExtractionType
+
+> **vizExtractionType**: [`VizExtractionType`](VizExtractionType.md)
+
+Type or availability status of VIZ extraction for this input image.
+
+The value is `"not-available"` until a document is scanned.

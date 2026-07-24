@@ -1,5 +1,20 @@
 # @microblink/blinkid-worker
 
+## 8001.0.0
+
+### Major Changes
+
+- **Breaking:** `DocumentClassInfo.country`, `region`, and `type` are now wrapper objects (`{ id?, rawValue }`) instead of plain string values. `id` carries the strongly-typed kebab-case value (`Country` / `Region` / `DocumentType`) when the document class is known at build time; `rawValue` always carries the raw classification token from the document knowledge database, including OTA-delivered document classes unknown at build time. Update comparisons such as `documentClassInfo.country === "usa"` to `documentClassInfo.country?.id === "usa"`, and use `id ?? rawValue` when displaying values. This affects `redactionSettingsResolver`, `addDocumentClassFilter`, `addOnDocumentFilteredCallback`, and the `documentClassInfo` fields on process and scanning results.
+  - Added the `DocumentClassComponent`, `DocumentClassCountry`, `DocumentClassRegion`, and `DocumentClassDocumentType` types.
+  - `countryName` and the ISO country-code fields on `DocumentClassInfo` are unchanged (plain strings, empty when unknown), and `documentClassInfo` on results remains non-optional — an unclassified document still yields `undefined` components and empty strings.
+  - Updated the native bindings to the new document classification API (enum identifiers renamed to `CountryID` / `RegionID` / `DocumentTypeID`; document class construction now goes through the document knowledge database). Unrecognized classification strings passed to `getDefaultRedactionSettings` no longer abort the Wasm module; they are forwarded as raw values instead.
+- Renamed `DocumentClassInfo.type` to `DocumentClassInfo.documentType` to align with other platforms.
+  - Migration: replace `documentClassInfo.type` with `documentClassInfo.documentType`.
+- Updated dependencies
+  - @microblink/analytics@2.0.2
+  - @microblink/blinkid-wasm@8001.0.0
+  - @microblink/worker-common@1.0.5
+
 ## 8000.0.1
 
 ### Patch Changes

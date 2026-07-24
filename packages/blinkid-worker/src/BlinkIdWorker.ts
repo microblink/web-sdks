@@ -46,11 +46,93 @@ import {
   ServerPermissionError,
 } from "@microblink/worker-common/errors";
 import { installWorkerCrashReporter } from "@microblink/worker-common/workerCrashReporter";
+import {
+  BLINK_ID_OTA_RESOURCES_DIRECTORY,
+  BLINK_ID_OTA_RESOURCES_PATH,
+  resolveBlinkIdOtaResources,
+  resolveBlinkIdOtaResourcesFromLocation,
+  selectBlinkIdOtaResources,
+  type BlinkIdOtaResource,
+  writeBlinkIdOtaResourcesToMemfs,
+} from "./otaResources";
 import { mergeRedactionSettings } from "./utils";
 
 export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
+export const DEFAULT_BLINK_ID_OTA_RESOURCE_PROVIDER_URL =
+  "https://blinkid-ota.microblink.com";
+
+export type BlinkIdOtaResourceSettings = {
+  /**
+   * Check the OTA provider for newer resources during SDK initialization.
+   *
+   * The hosted baseline resources are always loaded.
+   *
+   * @defaultValue `true`
+   */
+  checkForUpdates?: boolean;
+
+  /**
+   * Fail SDK initialization when OTA resolve or download fails.
+   *
+   * @defaultValue `false`
+   */
+  strict?: boolean;
+
+  /**
+   * Base URL of the OTA resource provider service.
+   *
+   * Use this when the SDK should ask an OTA API service for the current
+   * resource download URLs.
+   *
+   * @defaultValue `"https://blinkid-ota.microblink.com"`
+   */
+  otaResourceProviderUrl?: string;
+
+  /**
+   * Base URL where the baseline OTA resource files are hosted.
+   *
+   * When omitted, the worker loads them from the SDK's
+   * `resources/ota-resources` directory.
+   */
+  resourcesLocation?: string;
+
+  /**
+   * @default 20_000
+   * OTA resource download timeout.
+   *
+   * If strict is @true the SDK will throw TimeoutError DOMException on initialization if the download times out.
+   */
+  timeoutMilis?: number;
+};
+
+type ResolvedBlinkIdOtaResourceSettings = {
+  checkForUpdates: boolean;
+  strict: boolean;
+  otaResourceProviderUrl: string;
+  resourcesLocation?: string;
+};
+
+function resolveOtaSettings(
+  settings: BlinkIdOtaResourceSettings | undefined,
+): ResolvedBlinkIdOtaResourceSettings {
+  const configuredResourcesLocation = settings?.resourcesLocation?.trim();
+  const configuredOtaResourceProviderUrl =
+    settings?.otaResourceProviderUrl?.trim();
+  const otaResourceProviderUrl = configuredOtaResourceProviderUrl
+    ? configuredOtaResourceProviderUrl
+    : DEFAULT_BLINK_ID_OTA_RESOURCE_PROVIDER_URL;
+
+  return {
+    checkForUpdates: settings?.checkForUpdates ?? true,
+    otaResourceProviderUrl,
+    ...(configuredResourcesLocation
+      ? { resourcesLocation: configuredResourcesLocation }
+      : {}),
+    strict: settings?.strict ?? false,
+  };
+}
 
 /**
  * Default redaction settings used when @type {RedactionSettingsResolver} returns a partial/incomplete setting
@@ -124,12 +206,6 @@ export class BlinkIdWorker {
    * Active scanning session created by this worker.
    */
   #activeSession?: BlinkIdScanningSession;
-  /**
-   * The default session settings.
-   *
-   * Must be initialized when calling initBlinkId.
-   */
-  #defaultSessionSettings!: BlinkIdSessionSettings;
   /**
    * The progress status callback.
    */
@@ -226,7 +302,7 @@ export class BlinkIdWorker {
     const wasmMemory = new WebAssembly.Memory({
       initial: mbToWasmPages(initialMemory),
       maximum: mbToWasmPages(2048),
-      shared: wasmVariant === "advanced-threads",
+      shared: wasmVariant === "simd-threads",
     });
 
     // Create progress trackers for each download
@@ -334,7 +410,7 @@ export class BlinkIdWorker {
      */
     this.#wasmModule = await createModule({
       locateFile: (path) => {
-        return `${variantUrl}/${wasmVariant}/${path}`;
+        return `${variantUrl}/${path}`;
       },
       onAbort: (what) => {
         if (!this.#wasmModule) {
@@ -376,6 +452,9 @@ export class BlinkIdWorker {
       },
       // pthreads build breaks without this:
       // "Failed to execute 'createObjectURL' on 'URL': Overload resolution failed."
+      // Emscripten 6.x's native `-sCROSS_ORIGIN` was evaluated as a replacement
+      // for this userspace cross-origin worker workaround but rejected: it is
+      // incompatible with our `-sDYNAMIC_EXECUTION=0` (no-eval) CSP hardening.
       mainScriptUrlOrBlob: crossOriginWorkerUrl,
       wasmBinary: preloadedWasm,
       getPreloadedPackage() {
@@ -388,6 +467,74 @@ export class BlinkIdWorker {
     if (!this.#wasmModule) {
       throw new Error("Failed to load Wasm module");
     }
+  }
+
+  async #prepareOtaResources(
+    settings: BlinkIdOtaResourceSettings | undefined,
+    resourcesLocation: string,
+  ): Promise<void> {
+    const otaSettings = resolveOtaSettings(settings);
+
+    if (!this.#wasmModule) {
+      throw new Error("Wasm module not loaded");
+    }
+
+    const hostedResourcesLocation =
+      otaSettings.resourcesLocation ??
+      buildResourcePath(resourcesLocation, BLINK_ID_OTA_RESOURCES_DIRECTORY);
+    const hostedResources = await resolveBlinkIdOtaResourcesFromLocation({
+      resourcesLocation: hostedResourcesLocation,
+      timeoutMilis: settings?.timeoutMilis,
+    });
+
+    let resources: BlinkIdOtaResource[] = hostedResources;
+    if (otaSettings.checkForUpdates) {
+      try {
+        const providerResources = await this.#resolveOtaResourcesFromProvider(
+          otaSettings.otaResourceProviderUrl,
+          settings?.timeoutMilis,
+        );
+        resources = selectBlinkIdOtaResources(
+          hostedResources,
+          providerResources,
+        );
+      } catch (error) {
+        if (otaSettings.strict) {
+          throw error;
+        }
+
+        console.warn(
+          "BlinkID OTA provider resources were not loaded. Using hosted resources.",
+          error,
+        );
+      }
+    }
+
+    await writeBlinkIdOtaResourcesToMemfs({
+      module: this.#wasmModule,
+      resources,
+      directory: BLINK_ID_OTA_RESOURCES_PATH,
+      fallbackOnError: !otaSettings.strict,
+      timeoutMilis: settings?.timeoutMilis,
+    });
+  }
+
+  async #resolveOtaResourcesFromProvider(
+    otaResourceProviderUrl: string,
+    timeoutMilis?: number,
+  ) {
+    const genericVersion = this.#wasmModule!.getRecognizerVersion().trim();
+    if (!genericVersion) {
+      throw new Error(
+        "Loaded BlinkID Wasm module returned an empty recognizer version",
+      );
+    }
+
+    return resolveBlinkIdOtaResources({
+      resourceProviderUrl: otaResourceProviderUrl,
+      genericVersion,
+      timeoutMilis: timeoutMilis,
+    });
   }
 
   reportPinglet(pinglet: Ping) {
@@ -451,6 +598,8 @@ export class BlinkIdWorker {
       throw new Error("Wasm module not loaded");
     }
 
+    await this.#prepareOtaResources(settings.otaResources, resourcesPath);
+
     // Initialize with license key
     const licenseUnlockResult = this.#wasmModule.initializeWithLicenseKey(
       settings.licenseKey,
@@ -461,12 +610,13 @@ export class BlinkIdWorker {
     // Queue init pinglet before remote license check; flush only if init fails.
     this.reportPinglet({
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.3.0",
+      schemaVersion: "2.0.0",
       sessionNumber: 0,
       data: {
         packageName: self.location.hostname,
         platform: "Emscripten",
-        platformDetails: `${featureVariant}-${wasmVariant}`,
+        // TODO: update this after pinglets schema is updated
+        platformDetails: `${featureVariant}-${wasmVariant === "simd" ? "advanced" : "advanced-threads"}`,
         product: "BlinkID",
         userId: this.#userId,
         ...getMicroblinkProxyPingFlags(
@@ -662,7 +812,7 @@ export class BlinkIdWorker {
               this.getDefaultRedactionSettings({
                 country: opts.country,
                 region: opts.region,
-                type: opts.type,
+                documentType: opts.documentType,
                 countryName: "",
                 isoAlpha2CountryCode: "",
                 isoAlpha3CountryCode: "",
@@ -728,45 +878,54 @@ export class BlinkIdWorker {
 
             // not an error: processResult is ProcessResultWithBuffer
           } else {
+            const analysisResult = processResult.inputImageAnalysisResult;
+
             /**
-             * As documentClassInfo is not an optional property, assume that `type` being
-             * defined means the whole object is defined and can be cached.
+             * When core signals a potential document swap - the document left
+             * the frame (`detection-failed`) or a newly presented document
+             * destabilised the classification window (`stability-test-failed`) -
+             * drop the cached classification and rotation so we don't reintroduce
+             * stale document data for the newly presented document.
              */
-            if (processResult.inputImageAnalysisResult.documentClassInfo.type) {
+            if (
+              analysisResult.processingStatus === "detection-failed" ||
+              analysisResult.processingStatus === "stability-test-failed"
+            ) {
+              cachedClassInfo = null;
+              cachedRotation = null;
+            }
+
+            /**
+             * documentClassInfo is optional; a defined `type` means the
+             * classification is available and can be cached.
+             */
+            if (analysisResult.documentClassInfo?.documentType) {
               // cache class info for future use
-              cachedClassInfo =
-                processResult.inputImageAnalysisResult.documentClassInfo;
+              cachedClassInfo = analysisResult.documentClassInfo;
             }
 
             /**
              * Cache rotation, assume that rotation remains the same if document is not detected,
              * i.e. rotation is only updated when detection is successful.
              */
-            if (
-              processResult.inputImageAnalysisResult.documentRotation !==
-              "not-available"
-            ) {
+            if (analysisResult.documentRotation !== "not-available") {
               // cache rotation for future use
-              cachedRotation =
-                processResult.inputImageAnalysisResult.documentRotation;
+              cachedRotation = analysisResult.documentRotation;
             }
 
             if (
               cachedClassInfo &&
-              cachedClassInfo?.type !==
-                processResult.inputImageAnalysisResult.documentClassInfo.type
+              cachedClassInfo.documentType?.rawValue !==
+                analysisResult.documentClassInfo?.documentType?.rawValue
             ) {
-              processResult.inputImageAnalysisResult.documentClassInfo =
-                cachedClassInfo;
+              analysisResult.documentClassInfo = cachedClassInfo;
             }
 
             if (
               cachedRotation &&
-              cachedRotation !==
-                processResult.inputImageAnalysisResult.documentRotation
+              cachedRotation !== analysisResult.documentRotation
             ) {
-              processResult.inputImageAnalysisResult.documentRotation =
-                cachedRotation;
+              analysisResult.documentRotation = cachedRotation;
             }
           }
 
@@ -1152,6 +1311,14 @@ export type BlinkIdWorkerInitSettings = {
    * Defaults to `window.location.href`, at the root of the current page.
    */
   resourcesLocation?: string;
+
+  /**
+   * Optional browser-only OTA resource settings.
+   *
+   * Hosted baseline resources are always loaded. Provider update checks are
+   * enabled by default; set `checkForUpdates` to `false` to skip the provider.
+   */
+  otaResources?: BlinkIdOtaResourceSettings;
 
   /**
    * A unique identifier for the user/session.

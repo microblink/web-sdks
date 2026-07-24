@@ -176,8 +176,14 @@ describe("createBlinkId", () => {
       licenseKey: "my-license",
       microblinkProxyUrl: "https://proxy.example.com",
       initialMemory: 32,
+      otaResources: {
+        checkForUpdates: true,
+        otaResourceProviderUrl: "https://ota.example.com",
+        resourcesLocation: "https://cdn.example.com/blinkid-ota",
+        strict: true,
+      },
       resourcesLocation: "https://resources.example.com",
-      wasmVariant: "basic",
+      wasmVariant: "simd",
       useLightweightBuild: true,
     });
 
@@ -186,8 +192,14 @@ describe("createBlinkId", () => {
       licenseKey: "my-license",
       microblinkProxyUrl: "https://proxy.example.com",
       initialMemory: 32,
+      otaResources: {
+        checkForUpdates: true,
+        otaResourceProviderUrl: "https://ota.example.com",
+        resourcesLocation: "https://cdn.example.com/blinkid-ota",
+        strict: true,
+      },
       resourcesLocation: "https://resources.example.com",
-      wasmVariant: "basic",
+      wasmVariant: "simd",
       useLightweightBuild: true,
     });
   });

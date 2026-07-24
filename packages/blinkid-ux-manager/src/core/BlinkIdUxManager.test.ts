@@ -449,7 +449,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     // Add filter that rejects USA documents
     const filterCleanup = manager.addDocumentClassFilter((docInfo) => {
-      return docInfo.country !== "usa";
+      return docInfo.country?.id !== "usa";
     });
 
     await emitFrame(createFakeImageData());
@@ -485,7 +485,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     // Add filter that rejects USA documents
     const filterCleanup = manager.addDocumentClassFilter((docInfo) => {
-      return docInfo.country === "usa";
+      return docInfo.country?.id === "usa";
     });
 
     await emitFrame(createFakeImageData());
@@ -964,8 +964,8 @@ describe("BlinkIdUxManager - session lifecycle: reset behavior", () => {
       inputImageAnalysisResult: {
         processingStatus: "success",
         documentClassInfo: {
-          country: "usa",
-          type: "dl",
+          country: { id: "usa" },
+          documentType: { id: "dl" },
         },
         documentDetectionStatus: "success",
       },
@@ -1024,7 +1024,7 @@ describe("BlinkIdUxManager - timeout behavior", () => {
     // Advance timer to trigger timeout (fake timers: instant, no real wait)
     vi.advanceTimersByTime(timeoutDuration);
 
-    expect(errorCallback).toHaveBeenCalledWith("timeout");
+    expect(errorCallback).toHaveBeenCalledWith("inactivity_timeout");
     expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
   });
 
@@ -1092,8 +1092,8 @@ describe("BlinkIdUxManager - timeout behavior", () => {
       inputImageAnalysisResult: {
         processingStatus: "success",
         documentClassInfo: {
-          country: "usa",
-          type: "dl",
+          country: { id: "usa" },
+          documentType: { id: "dl" },
         },
         documentDetectionStatus: "success",
       },
@@ -1190,7 +1190,10 @@ describe(
       const mockSuccessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1227,7 +1230,10 @@ describe(
       const mockProcessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1267,7 +1273,10 @@ describe(
       const mockProcessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
           blurDetectionStatus: "detected",
         },
@@ -1304,7 +1313,10 @@ describe(
       const mockSuccessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1325,7 +1337,10 @@ describe(
       const mockSuccessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1349,7 +1364,10 @@ describe(
       const mockSuccessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1429,7 +1447,10 @@ describe(
       const mockProcessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1525,7 +1546,10 @@ describe(
         // Mock process result for a captured side (not the full document)
         const mockProcessResult = createProcessResult({
           inputImageAnalysisResult: {
-            documentClassInfo: { country: "usa", type: "dl" },
+            documentClassInfo: {
+              country: { id: "usa" },
+              documentType: { id: "dl" },
+            },
             documentDetectionStatus: "success",
           },
         });
@@ -1562,7 +1586,10 @@ describe(
         createProcessResult({
           inputImageAnalysisResult: {
             processingStatus: "success",
-            documentClassInfo: { country: "usa", type: "dl" },
+            documentClassInfo: {
+              country: { id: "usa" },
+              documentType: { id: "dl" },
+            },
             documentDetectionStatus: "success",
           },
         }),
@@ -1594,7 +1621,10 @@ describe(
 
       const mockProcessResult = createProcessResult({
         inputImageAnalysisResult: {
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1620,7 +1650,10 @@ describe(
       // Mock process result for a fully scanned document
       const mockProcessResult = createProcessResult({
         inputImageAnalysisResult: {
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1648,7 +1681,10 @@ describe(
       const mockProcessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "failed",
         },
       });
@@ -1670,7 +1706,10 @@ describe(
       const mockProcessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1704,7 +1743,10 @@ describe(
       const resolvedProcessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1800,7 +1842,10 @@ describe(
       const mockProcessResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "success",
-          documentClassInfo: { country: "usa", type: "dl" },
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
           documentDetectionStatus: "success",
         },
       });
@@ -1833,7 +1878,7 @@ describe(
 
       // Verify timeout handling
       expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
-      expect(errorCallback).toHaveBeenCalledWith("timeout");
+      expect(errorCallback).toHaveBeenCalledWith("inactivity_timeout");
       expect(mockScanningSession.getResult).not.toHaveBeenCalled();
     });
 

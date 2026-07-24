@@ -63,16 +63,14 @@ import {
   mapErrorStateKeyToAnalyticsType,
   type PingableErrorUiStateKey,
 } from "./uxAnalyticsMappers";
-import {
-  defaultBlinkIdTimeoutConfiguration,
-  normalizeBlinkIdTimeoutConfiguration,
-} from "./BlinkIdTimeoutConfiguration";
+import { normalizeBlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
 import type { BlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
 import type { BlinkIdUxManagerOptions } from "./createBlinkIdUxManager";
 import {
   getBlinkIdExtractionMode,
   type BlinkIdExtractionMode,
 } from "./extractionMode";
+import { match } from "ts-pattern";
 
 type ProcessingLifecycleState = "ready" | "busy" | "terminal";
 type ScanTimeoutKind = "inactivity" | "scan-step";
@@ -192,25 +190,17 @@ export class BlinkIdUxManager {
   /** True after destroy() is called; used to suppress late async work during teardown. */
   #isDestroyed = false;
   /** BlinkID timeout configuration. */
-  #timeoutConfiguration: BlinkIdTimeoutConfiguration =
-    defaultBlinkIdTimeoutConfiguration;
+  #timeoutConfiguration: BlinkIdTimeoutConfiguration;
   /** Last stabilized UI state key that reset the inactivity timer. */
   #inactivityResetUiStateKey?: BlinkIdUiStateKey;
   /** Whether the current scan step should be timing. */
   #isTimingActiveScanStep = false;
   /** State of the inactivity timeout timer. */
-  #inactivityTimeoutState: ScanTimerState = {
-    remainingMs: defaultBlinkIdTimeoutConfiguration.inactivityTimeoutMs,
-  };
+  #inactivityTimeoutState: ScanTimerState;
   /** State of the scan-step timeout timer. */
-  #scanStepTimeoutState: ScanTimerState = {
-    remainingMs: defaultBlinkIdTimeoutConfiguration.scanStepTimeoutMs,
-  };
+  #scanStepTimeoutState: ScanTimerState;
   /** State of the partially supported barcode resolve timer. */
-  #partiallySupportedBarcodeResolveTimeoutState: ScanTimerState = {
-    remainingMs:
-      defaultBlinkIdTimeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
-  };
+  #partiallySupportedBarcodeResolveTimeoutState: ScanTimerState;
   /** Whether the partially supported barcode resolve timer has been started. */
   #partiallySupportedBarcodeResolveTimerStarted = false;
   /** Prevents repeated resolve attempts for the same barcode step. */
@@ -274,9 +264,24 @@ export class BlinkIdUxManager {
     this.showProductionOverlay = showProductionOverlay;
     this.deviceInfo = deviceInfo;
     this.#extractionMode = getBlinkIdExtractionMode(sessionSettings);
+
     this.#timeoutConfiguration = normalizeBlinkIdTimeoutConfiguration(
       options.timeoutConfiguration,
+      this.#isDesktop,
     );
+
+    this.#inactivityTimeoutState = {
+      remainingMs: this.#timeoutConfiguration.inactivityTimeoutMs,
+    };
+
+    this.#scanStepTimeoutState = {
+      remainingMs: this.#timeoutConfiguration.scanStepTimeoutMs,
+    };
+
+    this.#partiallySupportedBarcodeResolveTimeoutState = {
+      remainingMs:
+        this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
+    };
 
     if (options.initialUiStateKey) {
       this.#initialUiStateKey = options.initialUiStateKey;
@@ -335,6 +340,10 @@ export class BlinkIdUxManager {
 
   stopUiUpdateLoop() {
     this.#rafLoop.stop();
+  }
+
+  get #isDesktop() {
+    return this.deviceInfo.derivedDeviceInfo.formFactors.includes("Desktop");
   }
 
   #setupObservers() {
@@ -766,7 +775,7 @@ export class BlinkIdUxManager {
    *
    * @example
    * const cleanup = manager.addDocumentClassFilter((docClassInfo) => {
-   *   return docClassInfo.country === 'usa';
+   *   return docClassInfo.country?.id === 'usa';
    * });
    *
    * // Later, to remove the callback:
@@ -991,10 +1000,13 @@ export class BlinkIdUxManager {
   setTimeoutConfiguration(
     timeoutConfiguration: Partial<BlinkIdTimeoutConfiguration>,
   ) {
-    this.#timeoutConfiguration = normalizeBlinkIdTimeoutConfiguration({
-      ...this.#timeoutConfiguration,
-      ...timeoutConfiguration,
-    });
+    this.#timeoutConfiguration = normalizeBlinkIdTimeoutConfiguration(
+      {
+        ...this.#timeoutConfiguration,
+        ...timeoutConfiguration,
+      },
+      this.#isDesktop,
+    );
 
     if (this.#isTimingActiveScanStep) {
       this.#resetScanTimeoutsForCurrentStep();
@@ -1239,6 +1251,8 @@ export class BlinkIdUxManager {
     );
     this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs = 0;
 
+    void this.#analytics.logUnsupportedBarcodeTimeout();
+
     try {
       await this.#advanceToNextStep();
     } catch (error) {
@@ -1355,13 +1369,26 @@ export class BlinkIdUxManager {
       return;
     }
 
+    const processingTimeoutError: BlinkIdProcessingError = match<
+      ScanTimeoutKind,
+      BlinkIdProcessingError
+    >(timeoutKind)
+      .with("inactivity", () => {
+        void this.#analytics.logInactivityTimeoutEvent();
+        return "inactivity_timeout";
+      })
+      .with("scan-step", () => {
+        void this.#analytics.logStepTimeoutEvent();
+        return "scan_step_timeout";
+      })
+      .exhaustive();
+
     console.debug(`⏳🟢 ${timeoutKind} timeout triggered`);
     this.clearScanTimeout();
     this.cameraManager.stopFrameCapture();
 
-    this.#invokeOnErrorCallbacks("timeout");
+    this.#invokeOnErrorCallbacks(processingTimeoutError);
 
-    void this.#analytics.logStepTimeoutEvent();
     void this.#analytics.sendPinglets();
 
     void this.resetScanningSession(false);

@@ -130,6 +130,74 @@ console.log(blinkid.cameraUi);
 await blinkid.destroy();
 ```
 
+### OTA Document Support Updates
+
+BlinkID can download document-support resources over the air (OTA) during SDK
+initialization. This lets Microblink add or update supported document resources
+without requiring a new SDK release or an application package update.
+
+Every SDK build ships baseline OTA files under:
+
+```text
+{resourcesLocation}/resources/ota-resources/
+```
+
+The worker reads `ota-resources.json` from that directory and writes the listed
+files into the BlinkID Wasm filesystem before SDK initialization. The manifest
+records the version while preserving the canonical filenames required by
+BlinkID:
+
+```jsonc
+{
+  "resources": [
+    {
+      "filename": "serialized-embedder-database.bin",
+      "version": "1.0.14",
+      "url": "serialized-embedder-database.bin",
+    },
+  ],
+}
+```
+
+By default, BlinkID also asks `https://blinkid-ota.microblink.com` for compatible
+updates and uses a provider file only when its semantic version is newer than
+the hosted baseline. You can override the baseline and provider locations:
+
+```js
+const blinkid = await createBlinkId({
+  licenseKey: import.meta.env.VITE_LICENCE_KEY,
+  otaResources: {
+    resourcesLocation: "https://cdn.example.com/blinkid-ota",
+    otaResourceProviderUrl: "https://your-proxy.example.com/blinkid-ota",
+  },
+});
+```
+
+The provider or proxy endpoint must serve the BlinkID OTA versions API:
+
+```text
+GET {otaResourceProviderUrl}/api/v1/versions?generic_version={recognizerVersion}
+```
+
+The SDK supplies `generic_version` automatically from the BlinkID recognizer.
+The OTA settings are separate from top-level `resourcesLocation`, which points
+to the static SDK `resources` directory, and from `microblinkProxyUrl`, which
+proxies licensing and analytics traffic. Provider failures fall back to the
+hosted baseline unless `strict: true` is set. The hosted baseline is required
+because these files are not embedded in `BlinkIdModule.data`.
+
+To load the hosted baseline without contacting the provider, set
+`checkForUpdates: false`:
+
+```js
+const blinkid = await createBlinkId({
+  licenseKey: import.meta.env.VITE_LICENCE_KEY,
+  otaResources: {
+    checkForUpdates: false,
+  },
+});
+```
+
 ### UX Extraction Modes
 
 BlinkID chooses the feedback UI flow automatically from the session settings you
@@ -139,8 +207,9 @@ modules.
 
 | UX extraction mode      | When it is used                                                                                                                                        | UI behavior                                                                           |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
-| `full-document`         | Default document capture flow, including document capture, MRZ, VIZ, mixed extraction, optional barcode, or multi-side extraction.                     | Shows standard document capture guidance.                                             |
+| `full-document`         | Default document capture flow, including document capture, optional MRZ, VIZ, mixed extraction, optional barcode, or multi-side extraction.            | Shows standard document capture guidance.                                             |
 | `document-with-barcode` | `scanningMode: "single"` with `documentCaptureModule` enabled, `barcodeModule.presenceMandatory: true`, and both `mrzModule` and `vizModule` disabled. | Shows document capture guidance focused on scanning the barcode side of the document. |
+| `document-with-mrz`     | `scanningMode: "single"` with `documentCaptureModule` enabled, `mrzModule` enabled, and `mrzModule.presenceMandatory: true`.                          | Shows document capture guidance focused on scanning the MRZ side of the document.     |
 | `barcode-only`          | `documentCaptureModule`, `mrzModule`, and `vizModule` are disabled, while `barcodeModule` is enabled.                                                  | Shows barcode-only onboarding, help, and feedback copy.                               |
 
 Example: single-side document capture where barcode presence is mandatory:
@@ -177,6 +246,8 @@ const blinkid = await createBlinkId({
 The selected extraction mode controls feedback messages, onboarding content,
 help modal copy, and extraction-specific illustrations in the built-in UI.
 
+### Redaction Settings
+
 You can choose result redaction per classified document with
 `redactionSettingsResolver`:
 
@@ -185,8 +256,8 @@ const blinkid = await createBlinkId({
   licenseKey: import.meta.env.VITE_LICENCE_KEY,
   redactionSettingsResolver: async (documentClassInfo, getDefaultSettings) => {
     if (
-      documentClassInfo.country === "germany" &&
-      documentClassInfo.type === "id"
+      documentClassInfo.country?.id === "germany" &&
+      documentClassInfo.type?.id === "id"
     ) {
       // Optionally use the SDK defaults for this document class.
       const defaults = await getDefaultSettings(documentClassInfo);
@@ -213,7 +284,10 @@ const blinkid = await createBlinkId({
 settings (`scanningSettings.anonymizationMode` and
 `scanningSettings.customDocumentAnonymizationSettings`). The resolver receives
 the classified `DocumentClassInfo`; return `RedactionSettings` for custom
-redaction or `null` to keep the SDK defaults. See the
+redaction or `null` to keep the SDK defaults. The `country`, `region`, and
+`type` fields are wrapper objects: `id` holds the strongly-typed value when the
+document class is known at build time, while `rawValue` always carries the raw
+classification token (including OTA-delivered classes without an `id`). See the
 [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000)
 for the full migration.
 
@@ -324,7 +398,8 @@ BlinkID proceeds to the final result. Return `true` to allow the document and
 const removeDocumentClassFilter = blinkid.addDocumentClassFilter(
   (documentClassInfo) => {
     return (
-      documentClassInfo.country === "usa" && documentClassInfo.type === "dl"
+      documentClassInfo.country?.id === "usa" &&
+      documentClassInfo.type?.id === "dl"
     );
   },
 );
@@ -364,6 +439,7 @@ Explore example applications in the GitHub repository for ready-to-run demos:
 - **[blinkid-simple](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-simple)**: Minimal integration with default UI.
 - **[blinkid-core-api](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-core-api)**: Low-level usage of the core API.
 - **[blinkid-advanced-setup](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-advanced-setup)**: Custom UI and advanced configuration.
+- **[blinkid-ota-setup](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-ota-setup)**: Configuring over-the-air document-support resource updates.
 - **[blinkid-preload](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-preload)**: Preloading resources for faster startup.
 - **[blinkid-photo-upload](https://github.com/microblink/web-sdks/tree/main/apps/examples/blinkid-photo-upload)**: Uploading photos example.
 
@@ -420,35 +496,30 @@ localhost.
 
 ### WebAssembly runtime
 
-The SDK ships three Wasm build variants (`basic`, `advanced`, and
-`advanced-threads`). The runtime selects the best supported variant automatically.
+The SDK ships two Wasm build variants (`simd` and `simd-threads`). The runtime
+selects the best supported variant automatically.
 
-#### `basic`
+#### `simd`
 
-Requires mutable globals, reference types, bulk memory, non-trapping float-to-int
-conversions, and sign-extension operators.
-
-#### `advanced`
-
-Requires all `basic` features plus
+Requires the Emscripten-generated Wasm feature set used by the SDK plus
 [fixed-width SIMD](https://web-platform-dx.github.io/web-features-explorer/features/wasm-simd/).
 
-#### `advanced-threads`
+#### `simd-threads`
 
-Requires all `advanced` features plus
+Requires all `simd` features plus
 [Wasm threads and atomics](https://caniuse.com/wasm-threads). Multithreaded Wasm
 also requires cross-origin isolation headers
 (`Cross-Origin-Opener-Policy: same-origin` and
 `Cross-Origin-Embedder-Policy: require-corp`).
 
-Safari is excluded from `advanced-threads` even when it reports Wasm thread
-support. Emscripten `advanced-threads` builds use pthreads that spawn workers
+Safari is excluded from `simd-threads` even when it reports Wasm thread
+support. Emscripten `simd-threads` builds use pthreads that spawn workers
 from inside a worker, and Safari historically lacked reliable nested worker
 support when Wasm threads shipped in Safari 16. There are also known Safari
 issues with shared memory in Emscripten pthread builds
 ([emscripten-core/emscripten#19374](https://github.com/emscripten-core/emscripten/issues/19374)).
-For these reasons the runtime falls back to the single-threaded `advanced`
-variant on Safari instead of loading `advanced-threads`.
+For these reasons the runtime falls back to the single-threaded `simd`
+variant on Safari instead of loading `simd-threads`.
 
 ### Firefox for Android
 

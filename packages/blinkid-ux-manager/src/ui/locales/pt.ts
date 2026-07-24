@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Lado da frente digitalizado com sucesso!",
     glare_detected: "Incline ou desloque o documento para eliminar o reflexo",
     keep_document_parallel: "Mantenha o documento paralelo ao ecrã",
-    keep_document_still: "Mantenha o documento e o dispositivo imóveis",
     keep_still: "Mantenha imóvel",
     move_closer: "Aproxime",
     move_farther: "Afaste",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode_side:
       "Digitalizar o lado do documento com um código de barras",
     scan_the_front_side: "Digitalize a frente\\nde um documento",
+    scan_the_mrz_side: "Digitalize o lado MRZ de um documento",
     scan_top_page: "Digitalizar a página superior",
     too_bright: "Desloque-se para um local com menos iluminação",
     too_dark: "Desloque-se para um local com mais iluminação",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Mantenha o código de barras visível",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Tente manter o telefone e o documento imóveis enquanto digitaliza. A deslocação de qualquer um deles pode desfocar a imagem e tornar ilegíveis os dados no documento.",
+        details_desktop:
+          "Tente manter-se imóvel enquanto digitaliza, caso contrário a imagem poderá ficar desfocada e os dados do documento poderão tornar-se ilegíveis.",
+        title: "Mantenha-se imóvel enquanto digitaliza",
+        title_desktop: "Mantenha-se imóvel enquanto digitaliza",
+      },
+      camera_lens: {
+        details_desktop:
+          "Verifique se não há manchas ou poeiras na lente da sua câmara. Uma lente suja torna a imagem final desfocada, deixando os detalhes do documento ilegíveis e impedindo a digitalização correta dos dados.",
+        title_desktop: "Limpe a lente da câmara",
+      },
+      lighting: {
+        details:
+          "Evite a luz direta e intensa porque reflete a partir do documento e pode tornar ilegíveis partes do documento. Se não conseguir ler os dados no documento, também não serão visíveis para a câmara.",
+        details_desktop:
+          "Evite a luz direta e intensa porque reflete a partir do documento e pode tornar ilegíveis partes do documento. Se não conseguir ler os dados no documento, também não serão visíveis para a câmara.",
+        title: "Cuidado com a luz intensa",
+        title_desktop: "Cuidado com a luz intensa",
+      },
+      visibility: {
+        details:
+          "Certifique-se de que não está a cobrir partes do MRZ com um dedo. Além disso, tenha em atenção os reflexos que se sobrepõem ao MRZ e que poderão torná-lo ilegível.",
+        details_desktop:
+          "Certifique-se de que não está a cobrir partes do MRZ com um dedo. Além disso, tenha em atenção os reflexos que se sobrepõem ao MRZ e que poderão torná-lo ilegível.",
+        title: "Mantenha o MRZ visível",
+        title_desktop: "Mantenha o MRZ visível",
+      },
+    },
     done_btn: "Concluído",
     done_btn_aria: "Retomar digitalização",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Começar a digitalizar",
     document_with_barcode: {
       details:
-        "Os formatos e a localização dos códigos de barras podem variar conforme o tipo de documento. Procure um código de barras na frente e no verso do documento.",
+        "Diferentes tipos de documentos podem ter diferentes formatos e localizações de códigos de barras. Procure um código de barras na frente e no verso do documento.",
       details_desktop:
-        "Procure um código de barras na frente e no verso de um documento. Mantenha a lente da sua câmara limpa e o código de barras bem iluminado.",
-      title: "Procure o código de barras no documento",
+        "Procure um código de barras na frente e no verso do documento. Mantenha a lente da sua câmara limpa e o documento bem iluminado.",
+      title: "Localize o código de barras no documento",
       title_desktop: "Limpe a lente e procure o código de barras",
+    },
+    document_with_mrz: {
+      details:
+        "Encontrará uma longa sequência de carateres na parte inferior da frente ou do verso do documento, dividida em 2 ou 3 linhas e separada por setas (<< ou >>).",
+      details_desktop:
+        "Procure um MRZ na frente e no verso do documento. Procure 2–3 linhas de caracteres e símbolos direcionais (<<) no fundo do documento. Certifique-se de que a lente da sua câmara esteja limpa e o documento bem iluminado.",
+      title: "Localize o MRZ no documento",
+      title_desktop: "Limpe a sua lente e localize o MRZ",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Ecrã de digitalização de documentos",
   timeout_modal: {
-    details: "Não foi possível ler o documento. Tente novamente.",
-    title: "A digitalização falhou",
+    details:
+      "Garanta que o documento esteja bem iluminado, totalmente visível e sem reflexos.",
+    details_desktop:
+      "Garanta que a lente da sua câmara esteja limpa e o documento totalmente visível, focado e bem iluminado.",
+    title: "Não foi possível ler o documento",
   },
 } as const;

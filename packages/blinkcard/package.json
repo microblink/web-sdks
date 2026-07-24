@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkcard",
   "description": "All-in-one BlinkCard browser SDK for fast and accurate debit and credit card scanning and recognition in web applications.",
-  "version": "3000.0.8",
+  "version": "3000.1.0-next",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -19,7 +19,7 @@
     "test:watch": "vitest",
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
-    "publish-test": "pnpm build:publish && pnpm pack-check",
+    "publish-test": "pnpm pack-check",
     "type-rollup": "api-extractor run --local",
     "watch": "concurrently pnpm:watch:js pnpm:watch:types",
     "watch:js": "pnpm run build:js --watch --mode development",
@@ -51,14 +51,14 @@
     "type-fest": "^4.35.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
+    "@arethetypeswrong/cli": "0.18.3",
+    "@microblink/repo-utils": "workspace:*",
     "@microblink/test-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",
-    "@vitest/browser": "^3.0.8",
-    "@microblink/repo-utils": "workspace:*",
     "@microsoft/api-extractor": "^7.52.4",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
+    "@vitest/browser": "^3.0.8",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "10.1.8",

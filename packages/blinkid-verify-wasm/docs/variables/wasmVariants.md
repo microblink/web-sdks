@@ -6,4 +6,4 @@
 
 # Variable: wasmVariants
 
-> `const` **wasmVariants**: readonly \[`"basic"`, `"advanced"`, `"advanced-threads"`\]
+> `const` **wasmVariants**: readonly \[`"simd"`, `"simd-threads"`\]

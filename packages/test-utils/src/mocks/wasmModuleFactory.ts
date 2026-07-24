@@ -9,7 +9,6 @@
 import type { WasmModule } from "@microblink/wasm-common";
 import { vi } from "vitest";
 
-
 let wasmModuleMock: WasmModule<any, any> | null = null;
 let lastModuleOverrides: Record<string, unknown> | undefined;
 
@@ -34,8 +33,8 @@ type WasmModuleSpies<T extends WasmModule<any, any>> = {
 export function createWasmModuleMock<T extends WasmModule<any, any>>(
   overrides?: Partial<T>,
 ): {
-    spies: WasmModuleSpies<T>;
-    module: T;
+  spies: WasmModuleSpies<T>;
+  module: T;
 } {
   const spies: WasmModuleSpies<T> = {
     createScanningSession: vi.fn(),
@@ -44,6 +43,7 @@ export function createWasmModuleMock<T extends WasmModule<any, any>>(
     getActiveLicenseTokenInfo: vi.fn(),
     setPingProxyUrl: vi.fn(),
     initializeSdk: vi.fn(),
+    getRecognizerVersion: vi.fn().mockReturnValue("1.0.0"),
     terminateSdk: vi.fn(),
     sendPinglets: vi.fn(),
     arePingRequestsInProgress: vi.fn(),
@@ -55,8 +55,8 @@ export function createWasmModuleMock<T extends WasmModule<any, any>>(
   return {
     spies,
     module: {
-        ...spies,
-    }
+      ...spies,
+    },
   } as unknown as {
     spies: WasmModuleSpies<T>;
     module: T;
@@ -78,9 +78,7 @@ export function getWasmModuleMock(): Promise<WasmModule<any, any>> {
  */
 export default function createMockModule(
   moduleOverrides?: Record<string, unknown>,
-): Promise<
-  WasmModule<any, any>
-> {
+): Promise<WasmModule<any, any>> {
   lastModuleOverrides = moduleOverrides;
   if (!wasmModuleMock) {
     throw new Error(

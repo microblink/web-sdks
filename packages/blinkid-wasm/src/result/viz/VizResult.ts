@@ -86,6 +86,8 @@ export type VizResult = {
   effectiveDate: DateResult<StringResult> | null;
   /** The eligibility category */
   eligibilityCategory: StringResult | null;
+  /** The ethnicity of the document owner */
+  ethnicity: StringResult | null;
   /** The husband's name of the document owner */
   husbandName: StringResult | null;
   /** The legal status of the document owner */
@@ -107,6 +109,7 @@ export type VizResult = {
     | {
         firstName: StringResult | null;
         lastName: StringResult | null;
+        fullName: StringResult | null;
       }[]
     | null;
   /** The polling station code of the document owner */

@@ -4,8 +4,8 @@
 
 import type { OverrideProperties } from "type-fest";
 import type {
-  AnonymizationSettings,
-  CardNumberAnonymizationSettings,
+  RedactionSettings,
+  CardNumberRedactionSettings,
   CroppedImageSettings,
   ExtractionSettings,
   LivenessSettings,
@@ -48,11 +48,11 @@ export type PartialScanningSettingsInput = Partial<
       croppedImageSettings: Partial<CroppedImageSettings>;
       extractionSettings: Partial<ExtractionSettings>;
       livenessSettings: Partial<LivenessSettings>;
-      anonymizationSettings: Partial<
+      redactionSettings: Partial<
         OverrideProperties<
-          AnonymizationSettings,
+          RedactionSettings,
           {
-            cardNumberAnonymizationSettings: Partial<CardNumberAnonymizationSettings>;
+            cardNumberRedactionSettings: Partial<CardNumberRedactionSettings>;
           }
         >
       >;

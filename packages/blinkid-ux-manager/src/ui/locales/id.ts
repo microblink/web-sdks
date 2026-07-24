@@ -28,7 +28,6 @@ export default {
     glare_detected:
       "Miringkan atau pindahkan dokumen untuk menghilangkan pantulan",
     keep_document_parallel: "Pastikan dokumen sejajar dengan layar",
-    keep_document_still: "Pastikan dokumen dan perangkat tidak goyang",
     keep_still: "Jangan bergerak",
     move_closer: "Mohon dekatkan",
     move_farther: "Mohon jauhkan",
@@ -44,6 +43,7 @@ export default {
     scan_the_barcode: "Pindai kode batang",
     scan_the_barcode_side: "Pindai sisi kode batang dokumen",
     scan_the_front_side: "Pindai sisi depan\\ndokumen.",
+    scan_the_mrz_side: "Pindai sisi MRZ dokumen",
     scan_top_page: "Pindai halaman atas",
     too_bright: "Pindah ke tempat dengan pencahayaan yang lebih sedikit",
     too_dark: "Pindah ke tempat yang lebih terang",
@@ -117,6 +117,37 @@ export default {
         title_desktop: "Pastikan kode batang tetap terlihat",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Pastikan ponsel dan dokumen tidak bergerak saat pemindaian. Jika bergerak, gambar bisa kabur atau data di dokumen tidak terbaca.",
+        details_desktop:
+          "Usahakan tidak bergerak saat memindai. Jika bergerak, gambar menjadi buram dan data di dokumen tidak terbaca.",
+        title: "Pastikan dokumen tidak bergerak saat pemindaian",
+        title_desktop: "Pastikan dokumen tidak bergerak saat pemindaian",
+      },
+      camera_lens: {
+        details_desktop:
+          "Pastikan tidak ada noda atau debu pada lensa kamera. Jika lensa kotor, hasil gambar menjadi buram. Akibatnya, detail dokumen tidak dapat terbaca dan data gagal dipindai.",
+        title_desktop: "Bersihkan lensa kamera",
+      },
+      lighting: {
+        details:
+          "Hindari sorot cahaya tajam karena dapat memantul dari dokumen dan menyebabkan bagian dokumen tidak terbaca. Akibatnya, data di dokumen juga tidak akan terlihat di kamera.",
+        details_desktop:
+          "Hindari sorot cahaya tajam karena dapat memantul dari dokumen dan menyebabkan bagian dokumen tidak terbaca. Akibatnya, data di dokumen juga tidak akan terlihat di kamera.",
+        title: "Waspadai cahaya tajam",
+        title_desktop: "Waspadai cahaya tajam",
+      },
+      visibility: {
+        details:
+          "Pastikan jari Anda tidak menutupi bagian MRZ. Selain itu, hindari pantulan cahaya pada MRZ yang dapat menjadikannya tidak terbaca.",
+        details_desktop:
+          "Pastikan jari Anda tidak menutupi bagian MRZ. Selain itu, hindari pantulan cahaya pada MRZ yang dapat menjadikannya tidak terbaca.",
+        title: "Pastikan MRZ tetap terlihat",
+        title_desktop: "Pastikan MRZ tetap terlihat",
+      },
+    },
     done_btn: "Selesai",
     done_btn_aria: "Lanjutkan pemindaian",
     full_document: {
@@ -165,11 +196,19 @@ export default {
     btn: "Mulai Pemindaian",
     document_with_barcode: {
       details:
-        "Jenis ID berbeda dapat memiliki format dan lokasi kode batang yang berbeda juga. Lihat sisi depan dan belakang ID untuk menemukannya.",
+        "Jenis dokumen berbeda dapat memiliki format dan lokasi kode batang yang berbeda juga. Lihat sisi depan dan belakang dokumen untuk menemukannya.",
       details_desktop:
-        "Periksa sisi depan dan belakang ID untuk menemukan kode batang. Pastikan lensa kamera bersih dan dokumen cukup terang.",
-      title: "Temukan kode batang di ID",
+        "Periksa sisi depan dan belakang dokumen untuk menemukan kode batang. Pastikan lensa kamera bersih dan dokumen cukup terang.",
+      title: "Temukan kode batang pada dokumen",
       title_desktop: "Bersihkan lensa kamera dan temukan kode batang",
+    },
+    document_with_mrz: {
+      details:
+        "Anda akan menemukan deretan karakter panjang di bagian bawah sisi depan atau belakang dokumen, terbagi menjadi 2 atau 3 baris dan dipisahkan oleh tanda panah (<< atau >>).",
+      details_desktop:
+        "Periksa sisi depan dan belakang dokumen untuk menemukan MRZ. Cari 2–3 baris karakter dan simbol panah (<<) di bagian bawah dokumen. Pastikan lensa kamera bersih dan dokumen cukup terang.",
+      title: "Temukan MRZ pada dokumen",
+      title_desktop: "Bersihkan lensa kamera dan temukan MRZ",
     },
     full_document: {
       details:
@@ -182,7 +221,10 @@ export default {
   },
   sdk_aria: "Layar pemindaian dokumen",
   timeout_modal: {
-    details: "Tak dapat membaca dokumen. Silakan coba lagi.",
-    title: "Pemindaian gagal",
+    details:
+      "Pastikan dokumen cukup terang, terlihat sepenuhnya, dan bebas dari silau cahaya.",
+    details_desktop:
+      "Pastikan lensa kamera bersih dan dokumen terlihat sepenuhnya, fokus, dan cukup terang.",
+    title: "Tidak dapat membaca dokumen",
   },
 } as const;

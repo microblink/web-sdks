@@ -27,7 +27,6 @@ export default {
     front_side_scanned_aria: "Udało się! Zeskanowano przednią stronę",
     glare_detected: "Przechyl lub przesuń dokument, aby usunąć odbicie światła",
     keep_document_parallel: "Trzymaj dokument równolegle do ekranu",
-    keep_document_still: "Trzymaj dokument i urządzenie nieruchomo",
     keep_still: "Nie ruszaj się",
     move_closer: "Przesuń bliżej",
     move_farther: "Przesuń dalej",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "Zeskanuj kod kreskowy",
     scan_the_barcode_side: "Zeskanuj stronę dokumentu z kodem kreskowym",
     scan_the_front_side: "Zeskanuj przednią stronę dokumentu",
+    scan_the_mrz_side: "Zeskanuj stronę dokumentu ze strefą MRZ",
     scan_top_page: "Zeskanuj górną stronę",
     too_bright: "Przejdź w mniej oświetlone miejsce",
     too_dark: "Przejdź w jaśniejsze miejsce",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Upewnij się, że kod kreskowy jest widoczny",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Staraj się trzymać telefon i dokument nieruchomo podczas skanowania. Poruszanie którymkolwiek z nich może spowodować rozmazanie obrazu i uniemożliwić odczyt danych z dokumentu.",
+        details_desktop:
+          "Staraj się nie ruszać podczas skanowania. Ruch może rozmyć obraz i sprawić, że dane na dokumencie staną się nieczytelne.",
+        title: "Nie ruszaj się podczas skanowania",
+        title_desktop: "Nie ruszaj się podczas skanowania",
+      },
+      camera_lens: {
+        details_desktop:
+          "Sprawdź, czy obiektyw aparatu nie jest zabrudzony lub zakurzony. Zabrudzenia mogą powodować rozmycie obrazu, przez co szczegóły dokumentu stają się nieczytelne, a ich zeskanowanie niemożliwe.",
+        title_desktop: "Wyczyść obiektyw aparatu",
+      },
+      lighting: {
+        details:
+          "Unikaj bezpośredniego silnego światła, ponieważ odbija się od dokumentu i niektóre jego części mogą stać się nieczytelne. Jeśli nie możesz odczytać danych z dokumentu, nie będą one widoczne również dla aparatu.",
+        details_desktop:
+          "Unikaj bezpośredniego silnego światła, ponieważ odbija się od dokumentu i niektóre jego części mogą stać się nieczytelne. Jeśli nie możesz odczytać danych z dokumentu, nie będą one widoczne również dla aparatu.",
+        title: "Uważaj na silne światło",
+        title_desktop: "Uważaj na silne światło",
+      },
+      visibility: {
+        details:
+          "Upewnij się, że nie zasłaniasz palcem żadnej części strefy MRZ. Uważaj też na odbicia światła na strefie MRZ, które mogą utrudnić jej odczytanie.",
+        details_desktop:
+          "Upewnij się, że nie zasłaniasz palcem żadnej części strefy MRZ. Uważaj też na odbicia światła na strefie MRZ, które mogą utrudnić jej odczytanie.",
+        title: "Upewnij się, że strefa MRZ jest widoczna",
+        title_desktop: "Upewnij się, że strefa MRZ jest widoczna",
+      },
+    },
     done_btn: "Gotowe",
     done_btn_aria: "Wznów skanowanie",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Rozpocznij skanowanie",
     document_with_barcode: {
       details:
-        "Różne typy dokumentów tożsamości mogą mieć odmienne formaty kodów kreskowych oraz ich umiejscowienie. Obejrzyj przód i tył dokumentu, aby znaleźć kod kreskowy.",
+        "Różne typy dokumentów mogą mieć odmienne formaty kodów kreskowych oraz ich umiejscowienie. Obejrzyj przód i tył dokumentu, aby znaleźć kod kreskowy.",
       details_desktop:
-        "Sprawdź przód i tył dokumentu tożsamości, aby znaleźć kod kreskowy. Upewnij się, że obiektyw aparatu jest czysty, a dokument dobrze oświetlony.",
-      title: "Znajdź kod kreskowy na dowodzie tożsamości",
+        "Sprawdź przód i tył dokumentu, aby znaleźć kod kreskowy. Upewnij się, że obiektyw aparatu jest czysty, a dokument dobrze oświetlony.",
+      title: "Zlokalizuj kod kreskowy na dokumencie",
       title_desktop: "Wyczyść obiektyw i znajdź kod kreskowy",
+    },
+    document_with_mrz: {
+      details:
+        "Na dole przedniej lub tylnej strony dokumentu znajdziesz długi ciąg znaków, podzielony na 2 lub 3 wiersze i oddzielony strzałkami (<< lub >>).",
+      details_desktop:
+        "Sprawdź przód i tył dokumentu pod kątem strefy MRZ. Poszukaj 2–3 linii znaków i symboli strzałek (<<) na dole dokumentu. Upewnij się, że obiektyw aparatu jest czysty, a dokument dobrze oświetlony.",
+      title: "Znajdź strefę MRZ na dokumencie",
+      title_desktop: "Wyczyść obiektyw i zlokalizuj strefę MRZ",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Ekran skanowania dokumentów",
   timeout_modal: {
-    details: "Nie można odczytać dokumentu. Spróbuj ponownie.",
-    title: "Nieudane skanowanie",
+    details:
+      "Upewnij się, że dokument jest dobrze oświetlony, w pełni widoczny i bez odblasków.",
+    details_desktop:
+      "Upewnij się, że obiektyw aparatu jest czysty, a dokument w pełni widoczny, wyraźny i dobrze oświetlony.",
+    title: "Nie można odczytać dokumentu.",
   },
 } as const;

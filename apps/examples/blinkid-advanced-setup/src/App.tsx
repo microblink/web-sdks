@@ -85,11 +85,6 @@ export const App: Component = () => {
      * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid-core/docs/type-aliases/BlinkIdSessionSettings.md
      */
     const session = await blinkIdCore.createScanningSession({
-      /*
-       * For default settings look at defaultSessionSettings
-       *
-       * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid-core/src/defaultSessionSettings.ts
-       */
       scanningSettings: {
         documentCaptureModule: {
           passportDataPageScanOnly: false,

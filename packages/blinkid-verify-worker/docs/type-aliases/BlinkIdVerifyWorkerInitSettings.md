@@ -76,7 +76,7 @@ Used for analytics and tracking purposes.
 
 ### wasmVariant?
 
-> `optional` **wasmVariant**: `WasmSimdVariant`
+> `optional` **wasmVariant**: `WasmVariant`
 
 The WebAssembly module variant to use.
 Different variants may offer different performance/size tradeoffs.

@@ -1,5 +1,13 @@
 # @microblink/blinkcard-wasm
 
+## 3000.1.0-next
+
+### Minor Changes
+
+- Removed the `basic` Wasm build.
+  - Renamed shipped Wasm build directories: `advanced` → `simd` and `advanced-threads` → `simd-threads`.
+- Updated the Emscripten toolchain used to build the BlinkCard WebAssembly module to v6.x.
+
 ## 3000.0.8
 
 ### Patch Changes

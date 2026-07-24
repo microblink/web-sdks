@@ -26,4 +26,4 @@ The load Wasm params.
 
 ### wasmVariant
 
-> **wasmVariant**: [`WasmSimdVariant`](WasmSimdVariant.md)
+> **wasmVariant**: [`WasmVariant`](WasmVariant.md)

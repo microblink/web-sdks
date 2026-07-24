@@ -278,7 +278,7 @@ export const App: Component = () => {
        * @param error Type of error that occurred during scanning
        */
       blinkIdUxManager.addOnErrorCallback((error: BlinkIdProcessingError) => {
-        if (error === "timeout") {
+        if (error === "scan_step_timeout" || error === "inactivity_timeout") {
           setTimeoutError(true);
         }
       });
@@ -307,8 +307,8 @@ export const App: Component = () => {
       blinkIdUxManager.addDocumentClassFilter(
         (documentClassInfo: DocumentClassInfo) => {
           return !(
-            documentClassInfo.country === "usa" &&
-            documentClassInfo.type === "passport"
+            documentClassInfo.country?.id === "usa" &&
+            documentClassInfo.documentType?.id === "passport"
           );
         },
       );
@@ -325,7 +325,7 @@ export const App: Component = () => {
       blinkIdUxManager.addOnDocumentFilteredCallback(
         (documentClassInfo: DocumentClassInfo) => {
           setFilteredDocumentError(
-            `Document filtered: ${documentClassInfo.type} from ${documentClassInfo.country} is not supported. Please use a US passport.`,
+            `Document filtered: ${documentClassInfo.documentType?.id ?? documentClassInfo.documentType?.rawValue} from ${documentClassInfo.country?.id ?? documentClassInfo.country?.rawValue} is not supported. Please use a US passport.`,
           );
         },
       );

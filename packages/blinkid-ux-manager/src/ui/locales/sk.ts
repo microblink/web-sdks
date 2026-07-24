@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Úspech! Naskenovaná predná strana",
     glare_detected: "Nakloňte alebo posuňte dokument, aby ste odstránili odraz",
     keep_document_parallel: "Držte dokument paralelne s obrazovkou",
-    keep_document_still: "Držte dokument a zariadenie v pokoji",
     keep_still: "Nehýbte sa",
     move_closer: "Posuňte sa bližšie",
     move_farther: "Posuňte sa ďalej",
@@ -42,6 +41,8 @@ export default {
     scan_the_barcode: "Naskenovať čiarový kód",
     scan_the_barcode_side: "Naskenujte čiarový kód dokumentu",
     scan_the_front_side: "Naskenujte prednú stranu \\n preukazu",
+    scan_the_mrz_side:
+      "Naskenujte stranu dokumentu so strojovo čitateľnou oblasťou (MRZ)",
     scan_top_page: "Oskenujte stránku hore",
     too_bright: "Presuňte sa na miesto s menším osvetlením",
     too_dark: "Presuňte sa na svetlejšie miesto",
@@ -115,6 +116,37 @@ export default {
         title_desktop: "Udržujte čiarový kód viditeľný",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Skúste počas snímania ponechať telefón a dokument v pokoji. Pohyb môže rozmazať obraz a spôsobiť, že údaje v dokumente budú nečitateľné.",
+        details_desktop:
+          "Počas snímania sa snažte nehýbať. Pohyb môže rozmazať obraz a spôsobiť nečitateľnosť údajov na dokumente.",
+        title: "Počas snímania zostaňte v pokoji",
+        title_desktop: "Počas snímania zostaňte v pokoji",
+      },
+      camera_lens: {
+        details_desktop:
+          "Skontrolujte, či na objektíve kamery nie sú šmuhy alebo prach. Ak je objektív znečistený, výsledný obraz bude rozmazaný, údaje na dokumente sa nebudú dať prečítať a skenovanie údajov sa nepodarí.",
+        title_desktop: "Vyčistite objektív kamery",
+      },
+      lighting: {
+        details:
+          "Vyhnite sa priamemu ostrému svetlu, pretože sa odráža od dokumentu a môže spôsobiť, že časti dokumentu budú nečitateľné. Ak vy nedokážete čítať údaje v dokumente, neuvidí ich ani fotoaparát.",
+        details_desktop:
+          "Vyhnite sa priamemu ostrému svetlu, pretože sa odráža od dokumentu a môže spôsobiť, že časti dokumentu budú nečitateľné. Ak vy nedokážete čítať údaje v dokumente, neuvidí ich ani fotoaparát.",
+        title: "Pozor na ostré svetlo",
+        title_desktop: "Pozor na ostré svetlo",
+      },
+      visibility: {
+        details:
+          "Uistite sa, že časti strojovo čitateľnej oblasti (MRZ) nezakrývate prstom. Dávajte si tiež pozor na odrazy, ktoré prechádzajú cez túto oblasť a môžu spôsobiť, že bude nečitateľná.",
+        details_desktop:
+          "Uistite sa, že časti strojovo čitateľnej oblasti (MRZ) nezakrývate prstom. Dávajte si tiež pozor na odrazy, ktoré prechádzajú cez túto oblasť a môžu spôsobiť, že bude nečitateľná.",
+        title: "Udržujte strojovo čitateľnú oblasť (MRZ) viditeľnú",
+        title_desktop: "Udržujte strojovo čitateľnú oblasť (MRZ) viditeľnú",
+      },
+    },
     done_btn: "Hotovo",
     done_btn_aria: "Obnoviť skenovanie",
     full_document: {
@@ -163,11 +195,20 @@ export default {
     btn: "Spustiť skenovanie",
     document_with_barcode: {
       details:
-        "Rôzne typy preukazov totožnosti môžu mať rôzne formáty čiarových kódov a rôzne umiestnenia. Pozrite sa na prednú a zadnú stranu preukazov totožnosti, kde nájdete čiarový kód.",
+        "Rôzne typy dokumentov môžu mať rôzne formáty a umiestnenia čiarových kódov. Vyhľadajte čiarový kód na prednej alebo zadnej strane dokumentu.",
       details_desktop:
-        "Skontrolujte, či je na prednej a zadnej strane preukazu totožnosti čiarový kód. Uistite sa, že je objektív fotoaparátu čistý a dokument dobre osvetlený.",
-      title: "Nájdite na preukaze totožnosti čiarový kód",
+        "Skontrolujte, či je na prednej a zadnej strane dokumentu čiarový kód. Uistite sa, že je objektív fotoaparátu čistý a dokument dobre osvetlený.",
+      title: "Nájdite na dokumente čiarový kód",
       title_desktop: "Vyčistite objektív kamery a nájdite čiarový kód",
+    },
+    document_with_mrz: {
+      details:
+        "V spodnej časti prednej alebo zadnej strany dokumentu nájdete dlhý reťazec znakov. Je rozdelená na 2 alebo 3 riadky a oddelená šípkami (<< alebo >>).",
+      details_desktop:
+        "Skontrolujte, či je na prednej a zadnej strane dokumentu strojovo čitateľná oblasť (MRZ). Vyhľadajte 2 až 3 riadky znakov a symboly šípok (<<) na spodnej strane dokumentu. Uistite sa, že je objektív fotoaparátu čistý a dokument dobre osvetlený.",
+      title: "Nájdite na dokumente strojovo čitateľnú oblasť (MRZ)",
+      title_desktop:
+        "Vyčistite objektív kamery a nájdite strojovo čitateľnú oblasť",
     },
     full_document: {
       details:
@@ -180,7 +221,10 @@ export default {
   },
   sdk_aria: "Obrazovka skenovania dokumentu",
   timeout_modal: {
-    details: "Dokument sa nepodarilo prečítať. Prosím, skúste znova.",
-    title: "Skenovanie neúspešné",
+    details:
+      "Uistite sa, že je dokument dobre osvetlený, plne viditeľný a bez odleskov.",
+    details_desktop:
+      "Uistite sa, že objektív fotoaparátu je čistý a dokument je plne viditeľný, zaostrený a dobre osvetlený.",
+    title: "Dokument sa nedá prečítať",
   },
 } as const;

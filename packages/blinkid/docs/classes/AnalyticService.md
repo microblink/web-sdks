@@ -293,6 +293,16 @@ Provides a clean interface for tracking user interactions and events
 
 ***
 
+### logInactivityTimeoutEvent()
+
+> **logInactivityTimeoutEvent**(): `Promise`\<`void`\>
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
 ### logInfo()
 
 > **logInfo**(`logMessage`): `Promise`\<`void`\>
@@ -322,6 +332,16 @@ Provides a clean interface for tracking user interactions and events
 ### logStepTimeoutEvent()
 
 > **logStepTimeoutEvent**(): `Promise`\<`void`\>
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
+### logUnsupportedBarcodeTimeout()
+
+> **logUnsupportedBarcodeTimeout**(): `Promise`\<`void`\>
 
 #### Returns
 

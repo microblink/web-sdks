@@ -1,10 +1,10 @@
 {
   "wasm": {
-    "advanced": 5117133,
-    "advanced-threads": 5202126
+    "simd": 5944324,
+    "simd-threads": 6020823
   },
   "data": {
-    "advanced": 14381309,
-    "advanced-threads": 14381309
+    "simd": 20519559,
+    "simd-threads": 20519559
   }
 }

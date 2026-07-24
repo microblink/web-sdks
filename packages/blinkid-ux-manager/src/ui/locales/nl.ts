@@ -27,7 +27,6 @@ export default {
     glare_detected:
       "Kantel of verplaats het document om de reflectie te verwijderen",
     keep_document_parallel: "Houd het document parallel aan het scherm",
-    keep_document_still: "Houd het document en het toestel stil",
     keep_still: "Niet bewegen",
     move_closer: "Beweeg dichterbij",
     move_farther: "Beweeg verder weg",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "Scan de barcode",
     scan_the_barcode_side: "Scan de kant van het document met de barcode",
     scan_the_front_side: "Scan de voorzijde\\nvan een document",
+    scan_the_mrz_side: "Scan de MRZ-zijde van een document",
     scan_top_page: "Scan de bovenste pagina",
     too_bright: "Ga na een plek met minder licht",
     too_dark: "Ga naar een lichtere plek",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Zorg dat de barcode zichtbaar is.",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Probeer de telefoon en het document tijdens het scannen stil te houden. Als u een van beide beweegt, kan de afbeelding wazig worden en kunnen gegevens op het document onleesbaar worden.",
+        details_desktop:
+          "Probeer niet te bewegen tijdens het scannen. Door beweging kan de afbeelding onscherp worden en de gegevens op het document onleesbaar.",
+        title: "Beweeg niet tijdens het scannen",
+        title_desktop: "Beweeg niet tijdens het scannen",
+      },
+      camera_lens: {
+        details_desktop:
+          "Controleer dat er geen vlekken of stof op de lens van uw camera zitten. Een vuile lens zorgt ervoor dat de uiteindelijke afbeelding wazig wordt, waardoor de documentgegevens onleesbaar worden en de gegevens niet goed kunnen worden gescand.",
+        title_desktop: "Maak de lens van uw camera schoon",
+      },
+      lighting: {
+        details:
+          "Vermijd direct fel licht, omdat dat vanaf het document weerspiegelt en delen van het document onleesbaar kan maken. Als u gegevens op het document niet kunt lezen, zijn ze voor de camera ook niet zichtbaar.",
+        details_desktop:
+          "Vermijd direct fel licht, omdat dat vanaf het document weerspiegelt en delen van het document onleesbaar kan maken. Als u gegevens op het document niet kunt lezen, zijn ze voor de camera ook niet zichtbaar.",
+        title: "Pas op voor fel licht",
+        title_desktop: "Pas op voor fel licht",
+      },
+      visibility: {
+        details:
+          "Zorg ervoor dat u geen delen van de MRZ met een vinger bedekt. Pas ook op voor reflecties die op de MRZ vallen en deze onleesbaar kunnen maken.",
+        details_desktop:
+          "Zorg ervoor dat u geen delen van de MRZ met een vinger bedekt. Pas ook op voor reflecties die op de MRZ vallen en deze onleesbaar kunnen maken.",
+        title: "Houd de MRZ zichtbaar",
+        title_desktop: "Houd de MRZ zichtbaar",
+      },
+    },
     done_btn: "Gereed",
     done_btn_aria: "Verder met scannen",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Beginnen met scannen",
     document_with_barcode: {
       details:
-        "Verschillende soorten ID's kunnen verschillende soorten barcodes hebben. Deze kunnen op verschillende plaatsen zitten. Kijk goed naar de voorkant en achterkant van de ID voor de barcode.",
+        "Verschillende soorten documenten kunnen verschillende formaten en locaties van de streepjescode hebben. Kijk op de voor- en achterzijde van het document voor een streepjescode.",
       details_desktop:
-        "Zoek aan de voorkant of achterkant van de ID voor een barcode. Zorg ervoor dat je cameralens schoon is en het document goed belicht is.",
-      title: "Zoek de barcode op de ID.",
+        "Zoek aan de voorkant of achterkant van het document voor een barcode. Zorg ervoor dat je cameralens schoon is en het document goed belicht is.",
+      title: "Lokaliseer de streepjescode op het document",
       title_desktop: "Maak je lens schoon en zoek de barcode.",
+    },
+    document_with_mrz: {
+      details:
+        "U zult een lange reeks tekens vinden onderaan de voor- of achterzijde van het document, verdeeld over 2 of 3 lijnen en gescheiden door pijlen (<< of >>).",
+      details_desktop:
+        "Zoek aan de voor- en achterkant van het document naar een MRZ. Let op 2–3 lijnen met tekens en pijltjes (<<) onderaan het document. Zoek aan de voorkant of achterkant van het document voor een barcode. Zorg ervoor dat je cameralens schoon is en het document goed belicht is.",
+      title: "Lokaliseer MRZ op het document",
+      title_desktop: "Maak je lens schoon en zoek de MRZ.",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Scherm voor documenten scannen",
   timeout_modal: {
-    details: "Kon het document niet lezen. Probeer het alstublieft opnieuw.",
-    title: "Scan niet gelukt",
+    details:
+      "Zorg ervoor dat het document goed verlicht en volledig zichtbaar is en of er geen schitteringen op te zien zijn.",
+    details_desktop:
+      "Zorg ervoor dat de cameralens schoon is en dat het document helemaal zichtbaar, scherp en goed verlicht is.",
+    title: "Kan het document niet lezen.",
   },
 } as const;

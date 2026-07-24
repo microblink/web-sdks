@@ -25,10 +25,41 @@ export type BlinkIdTimeoutConfiguration = {
 /**
  * The default BlinkID timeout configuration.
  */
-export const defaultBlinkIdTimeoutConfiguration: BlinkIdTimeoutConfiguration = {
+export const defaultBlinkIdTimeoutConfiguration = {
+  inactivityTimeoutMs: 10_000,
+  scanStepTimeoutMs: 60_000,
+  partiallySupportedBarcodeResolveTimeoutMs: 3_000,
+} as const satisfies BlinkIdTimeoutConfiguration;
+
+export const defaultBlinkIdDesktopTimeoutConfiguration = {
   inactivityTimeoutMs: 10_000,
   scanStepTimeoutMs: 60_000,
   partiallySupportedBarcodeResolveTimeoutMs: 8_000,
+} as const satisfies BlinkIdTimeoutConfiguration;
+
+const resolveTimeoutConfiguration = (
+  timeoutConfiguration: Partial<BlinkIdTimeoutConfiguration>,
+  isDesktop: boolean,
+): BlinkIdTimeoutConfiguration => {
+  const defaultConfiguration = isDesktop
+    ? defaultBlinkIdDesktopTimeoutConfiguration
+    : defaultBlinkIdTimeoutConfiguration;
+
+  return {
+    inactivityTimeoutMs:
+      timeoutConfiguration.inactivityTimeoutMs === undefined
+        ? defaultConfiguration.inactivityTimeoutMs
+        : timeoutConfiguration.inactivityTimeoutMs,
+    partiallySupportedBarcodeResolveTimeoutMs:
+      timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs ===
+      undefined
+        ? defaultConfiguration.partiallySupportedBarcodeResolveTimeoutMs
+        : timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
+    scanStepTimeoutMs:
+      timeoutConfiguration.scanStepTimeoutMs === undefined
+        ? defaultConfiguration.scanStepTimeoutMs
+        : timeoutConfiguration.scanStepTimeoutMs,
+  };
 };
 
 /**
@@ -52,11 +83,12 @@ const validateTimeoutDuration = (
  */
 export const normalizeBlinkIdTimeoutConfiguration = (
   timeoutConfiguration: Partial<BlinkIdTimeoutConfiguration> = {},
+  isDekstop: boolean,
 ): BlinkIdTimeoutConfiguration => {
-  const normalizedTimeoutConfiguration = {
-    ...defaultBlinkIdTimeoutConfiguration,
-    ...timeoutConfiguration,
-  };
+  const normalizedTimeoutConfiguration = resolveTimeoutConfiguration(
+    timeoutConfiguration,
+    isDekstop,
+  );
 
   validateTimeoutDuration(
     "inactivityTimeoutMs",

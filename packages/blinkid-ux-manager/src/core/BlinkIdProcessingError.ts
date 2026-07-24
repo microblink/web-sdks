@@ -8,7 +8,8 @@
  */
 export type BlinkIdProcessingError =
   // processing
-  | "timeout"
+  | "inactivity_timeout"
+  | "scan_step_timeout"
   | "unsupported_document"
 
   // result retrieval failed after successful document capture

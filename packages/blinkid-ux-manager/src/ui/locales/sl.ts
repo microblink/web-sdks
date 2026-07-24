@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Uspelo! Skenirana sprednja stran",
     glare_detected: "Nagnite ali premaknite dokument, da odstranite odsev",
     keep_document_parallel: "Dokument naj bo vzporedno z zaslonom",
-    keep_document_still: "Držite dokument in napravo pri miru",
     keep_still: "Ne premikajte se",
     move_closer: "Približajte",
     move_farther: "Oddaljite",
@@ -42,6 +41,8 @@ export default {
     scan_the_barcode: "Optično preberite črtno kodo",
     scan_the_barcode_side: "Skenirajte stran dokumenta s črtno kodo.",
     scan_the_front_side: "Optično preberite sprednjo\\nstran dokumenta",
+    scan_the_mrz_side:
+      "Skenirajte stran dokumenta s strojno berljivim območjem",
     scan_top_page: "Skenirajte prvo stran",
     too_bright: "Premaknite se na mesto z manj svetlobe",
     too_dark: "Premaknite se na svetlejšo točko",
@@ -115,6 +116,37 @@ export default {
         title_desktop: "Črtna koda naj bo vidna",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Potrudite se, da bosta med optičnim branjem telefon in dokument pri miru. Če se kateri od njiju premakne, se lahko slika razmaže in dokument postane neberljiv.",
+        details_desktop:
+          "Med skeniranjem poskusite mirovati. Premikanje lahko zamegli sliko in oteži branje podatkov na dokumentu.",
+        title: "Držite pri miru med optičnim branjem",
+        title_desktop: "Držite pri miru med optičnim branjem",
+      },
+      camera_lens: {
+        details_desktop:
+          "Preverite, da ni morda na objektivu kamere kakšna umazanija ali prah. Če je objektiv umazan, dobite zamegljeno končno sliko, zato je potem vsebina dokumenta neberljiva in podatkov ni mogoče uspešno optično prebrati.",
+        title_desktop: "Očistite objektiv kamere",
+      },
+      lighting: {
+        details:
+          "Izogibajte se neposredni močni svetlobi, saj se ta odbija od dokumenta in lahko dele dokumenta naredi neberljive. Če ne morete prebrati podatkov na dokumentu, jih niti kamera ne bo mogla videti.",
+        details_desktop:
+          "Izogibajte se neposredni močni svetlobi, saj se ta odbija od dokumenta in lahko dele dokumenta naredi neberljive. Če ne morete prebrati podatkov na dokumentu, jih niti kamera ne bo mogla videti.",
+        title: "Svetloba ne sme biti premočna",
+        title_desktop: "Svetloba ne sme biti premočna",
+      },
+      visibility: {
+        details:
+          "Ne prekrivajte nobenega dela strojno berljivega območja s prstom. Prav tako bodite pozorni na odseve svetlobe na strojno berljivem območju, zaradi katerih bi lahko postalo neberljivo.",
+        details_desktop:
+          "Ne prekrivajte nobenega dela strojno berljivega območja s prstom. Prav tako bodite pozorni na odseve svetlobe na strojno berljivem območju, zaradi katerih bi lahko postalo neberljivo.",
+        title: "Strojno berljivo območje naj bo ves čas vidno.",
+        title_desktop: "Strojno berljivo območje naj bo ves čas vidno.",
+      },
+    },
     done_btn: "Končano",
     done_btn_aria: "Nadaljuj optično branje",
     full_document: {
@@ -163,11 +195,20 @@ export default {
     btn: "Začetek skeniranja",
     document_with_barcode: {
       details:
-        "Različne vrste osebnih dokumentov imajo lahko različne oblike in različna mesta črtnih kod. Na sprednji in zadnji strani dokumenta poiščite črtno kodo.",
+        "Različne vrste dokumentov imajo lahko različne oblike črtnih kod, ki so lahko na različnih mestih. Poiščite črtno kodo na sprednji ali zadnji strani dokumenta.",
       details_desktop:
-        "Preverite sprednjo in zadnjo stran osebnega dokumenta ter poiščite črtno kodo. Poskrbite, da bo objektiv kamere čist in dokument dobro osvetljen.",
-      title: "Poiščite črtno kodo na osebnem dokumentu",
+        "Preverite, ali je na sprednji ali zadnji strani dokumenta črtna koda. Poskrbite, da bo objektiv kamere čist in da bo dokument dobro osvetljen.",
+      title: "Poiščite črtno kodo na dokumentu",
       title_desktop: "Očistite objektiv kamere in poiščite črtno kodo",
+    },
+    document_with_mrz: {
+      details:
+        "Na spodnjem delu sprednje ali zadnje strani dokumenta boste našli dolg niz znakov, razdeljen v dve ali tri vrstice ter ločen s puščicami (<< ali >>).",
+      details_desktop:
+        "Na sprednji in zadnji strani dokumenta preverite, ali vključuje strojno berljivo območje. Na spodnjem delu dokumenta poiščite dve ali tri vrstice znakov in simbolov (<<). Poskrbite, da bo objektiv kamere čist in da bo dokument dobro osvetljen.",
+      title: "Poiščite strojno berljivo območje na dokumentu",
+      title_desktop:
+        "Očistite objektiv kamere in poiščite strojno berljivo območje",
     },
     full_document: {
       details:
@@ -180,7 +221,10 @@ export default {
   },
   sdk_aria: "Zaslon za optično branje dokumentov",
   timeout_modal: {
-    details: "Dokumenta ni mogoče prebrati. Poskusite znova.",
-    title: "Optično branje ni uspelo",
+    details:
+      "Poskrbite, da bo dokument dobro osvetljen, v celoti viden in brez odsevov.",
+    details_desktop:
+      "Poskrbite, da bo objektiv kamere čist ter da bo dokument v celoti viden, izostren in dobro osvetljen.",
+    title: "Dokumenta ni mogoče prebrati",
   },
 } as const;

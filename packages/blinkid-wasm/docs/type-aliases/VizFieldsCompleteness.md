@@ -142,6 +142,12 @@
 
 ***
 
+### ethnicity?
+
+> `optional` **ethnicity**: [`StringResultCompleteness`](StringResultCompleteness.md)
+
+***
+
 ### fathersName?
 
 > `optional` **fathersName**: [`StringResultCompleteness`](StringResultCompleteness.md)

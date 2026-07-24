@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Lyckades! Framsidan skannad",
     glare_detected: "Luta eller flytta dokumentet för att ta bort reflektionen",
     keep_document_parallel: "Håll dokumentet parallellt med skärmen",
-    keep_document_still: "Håll dokumentet och enheten stilla",
     keep_still: "Stå stilla",
     move_closer: "Flytta närmare",
     move_farther: "Flytta längre bort",
@@ -42,6 +41,7 @@ export default {
     scan_the_barcode: "Skanna streckkoden",
     scan_the_barcode_side: "Skanna streckkodssidan av ett dokument",
     scan_the_front_side: "Skanna dokumentets framsida",
+    scan_the_mrz_side: "Skanna den sida av dokumentet där MRZ-koden finns",
     scan_top_page: "Skanna den översta sidan",
     too_bright: "Flytta till mindre belyst plats",
     too_dark: "Flytta till mer belyst plats",
@@ -115,6 +115,37 @@ export default {
         title_desktop: "Håll streckkoden synlig",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Försök att hålla telefonen och dokumentet stilla under skanningen. Om du rör någotdera kan bilden bli suddig och informationen på dokumentet oläslig.",
+        details_desktop:
+          "Försök att stå stilla medan du skannar. Rörelse kan göra bilden suddig och göra informationen i dokumentet oläslig.",
+        title: "Håll stilla medan du skannar",
+        title_desktop: "Håll stilla medan du skannar",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kontrollera om kameralinsen är smutsig eller dammig. Om linsen är smutsig blir den färdiga bilden suddig, vilket innebär att kortuppgifterna blir oläsliga och skanningen misslyckas.",
+        title_desktop: "Rengör kameralinsen",
+      },
+      lighting: {
+        details:
+          "Undvik starkt direktljus eftersom det reflekteras från dokumentet och kan göra delar av det oläsliga. Om du inte kan läsa informationen på dokumentet kommer den inte heller att synas för kameran.",
+        details_desktop:
+          "Undvik starkt direktljus eftersom det reflekteras från dokumentet och kan göra delar av det oläsliga. Om du inte kan läsa informationen på dokumentet kommer den inte heller att synas för kameran.",
+        title: "Se upp för skarpt ljus",
+        title_desktop: "Se upp för skarpt ljus",
+      },
+      visibility: {
+        details:
+          "Kontrollera att du inte täcker delar av MRZ-koden med ett finger. Se också upp för reflektioner som kan göra MRZ-koden oläslig.",
+        details_desktop:
+          "Kontrollera att du inte täcker delar av MRZ-koden med ett finger. Se också upp för reflektioner som kan göra MRZ-koden oläslig.",
+        title: "Håll MRZ-koden synlig",
+        title_desktop: "Håll MRZ-koden synlig",
+      },
+    },
     done_btn: "Klart",
     done_btn_aria: "Återuppta skanning",
     full_document: {
@@ -163,11 +194,19 @@ export default {
     btn: "Börja skanna",
     document_with_barcode: {
       details:
-        "Olika typer av ID-kort kan ha olika streckkodsformat och placeringar. Titta på fram- och baksidan av ID-korten för att se om det finns en streckkod.",
+        "Olika typer av dokument kan ha olika streckkodsformat, och placeringen kan variera. Titta på båda sidorna av dokumentet för att hitta streckkoden.",
       details_desktop:
-        "Kontrollera fram- och baksidan av ID-kortet för en streckkod. Se till att hålla kameralinsen ren och dokumentet väl upplyst.",
-      title: "Leta reda på streckkoden på ID-kortet",
+        "Leta efter streckkoden på båda sidorna av dokumentet. Kontrollera att kameralinsen är ren och att dokumentet är väl belyst.",
+      title: "Leta reda på dokumentets streckkod",
       title_desktop: "Rengör linsen och leta reda på streckkoden",
+    },
+    document_with_mrz: {
+      details:
+        "Längst ner på dokumentets fram- eller baksida finns två eller tre rader med tecken som separeras av pilar (<< eller >>).",
+      details_desktop:
+        "Längst ner på dokumentets fram- eller baksida finns MRZ-koden, som består av två eller tre rader med tecken och pilar (<< ). Kontrollera att kameralinsen är ren och att dokumentet är väl belyst.",
+      title: "Leta reda på dokumentets MRZ-kod",
+      title_desktop: "Rengör kameralinsen och leta reda på MRZ-koden",
     },
     full_document: {
       details:
@@ -180,7 +219,10 @@ export default {
   },
   sdk_aria: "Skärm för dokumentskanning",
   timeout_modal: {
-    details: "Det gick inte att läsa dokumentet. Försök igen.",
-    title: "Skanningen misslyckades",
+    details:
+      "Kontrollera att belysningen är god och att hela dokumentet är synligt och fritt från reflektioner.",
+    details_desktop:
+      "Kontrollera att kameralinsen är ren och att hela dokumentet är synligt, i fokus och väl belyst.",
+    title: "Dokumentet kunde inte läsas",
   },
 } as const;

@@ -62,7 +62,10 @@ describe("BlinkIdUxManager integration smoke", () => {
     const processResult = createProcessResult({
       inputImageAnalysisResult: {
         processingStatus: "success",
-        documentClassInfo: { country: "usa", type: "dl" },
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
         documentDetectionStatus: "success",
       },
     });
@@ -100,7 +103,10 @@ describe("BlinkIdUxManager integration smoke", () => {
     const sideScannedProcessResult = createProcessResult({
       inputImageAnalysisResult: {
         processingStatus: "success",
-        documentClassInfo: { country: "usa", type: "dl" },
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
         documentDetectionStatus: "success",
       },
     });
@@ -154,7 +160,7 @@ describe("BlinkIdUxManager integration smoke", () => {
 
     context.fakeCameraManager.emitPlaybackState("capturing");
     await vi.advanceTimersByTimeAsync(100);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("inactivity_timeout");
     expect(context.fakeCameraManager.stopFrameCapture).toHaveBeenCalled();
 
     errorSpy.mockClear();
@@ -202,7 +208,10 @@ describe("BlinkIdUxManager integration smoke", () => {
     const processResult = createProcessResult({
       inputImageAnalysisResult: {
         processingStatus: "success",
-        documentClassInfo: { country: "usa", type: "dl" },
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
         documentDetectionStatus: "success",
       },
     });

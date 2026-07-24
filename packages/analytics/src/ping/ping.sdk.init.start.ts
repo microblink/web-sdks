@@ -1,8 +1,4 @@
 /**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
-
-/**
  * Copyright (c) Microblink. All rights reserved.
  *
  * AUTO-GENERATED FILE!!! DO NOT MODIFY!!!
@@ -34,7 +30,7 @@ type Product =
   | "DocumentVerification"
   | "Pdf417Mobi"
   | "PhotoPay"
-  | "BioBlink";
+  | "Biometrics";
 type Platform =
   | "iOS"
   | "Android"
@@ -58,6 +54,6 @@ type PlatformDetails =
  */
 export type PingSdkInitStart = PingBase<
   "ping.sdk.init.start",
-  "1.3.0",
+  "2.0.0",
   PingSdkInitStartData
 >;

@@ -1,5 +1,14 @@
 # @microblink/blinkcard
 
+## 3000.1.0-next
+
+### Minor Changes
+
+- Updated the minimum browser requirements after removing the non-SIMD `basic` Wasm build. The SDKs now require WebAssembly SIMD support: Chrome/Edge 91+, Firefox 89+, Safari/iOS Safari 16.4+, and Samsung Internet 16+.
+- Updated dependencies
+  - @microblink/blinkcard-core@3000.1.0-next
+  - @microblink/blinkcard-ux-manager@3000.1.0-next
+
 ## 3000.0.8
 
 ### Patch Changes
