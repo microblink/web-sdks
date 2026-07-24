@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-verify-wasm",
   "private": true,
-  "version": "3.21.1",
+  "version": "3.22.0-next",
   "scripts": {
     "build": "tsc",
     "build:publish": "tsc",
@@ -23,8 +23,8 @@
     "./package.json": "./package.json"
   },
   "imports": {
-    "#BlinkIdVerifyModule": "./dist/advanced/BlinkIdVerifyModule.js",
-    "#BlinkIdVerifyModuleTest": "./dist_test/advanced/BlinkIdVerifyModule_Test.js"
+    "#BlinkIdVerifyModule": "./dist/simd/BlinkIdVerifyModule.js",
+    "#BlinkIdVerifyModuleTest": "./dist_test/simd/BlinkIdVerifyModule_Test.js"
   },
   "files": [
     "dist",

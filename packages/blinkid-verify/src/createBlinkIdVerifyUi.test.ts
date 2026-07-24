@@ -156,7 +156,7 @@ describe("createBlinkIdVerify", () => {
       microblinkProxyUrl: "https://proxy.example.com",
       initialMemory: 32,
       resourcesLocation: "https://resources.example.com",
-      wasmVariant: "advanced",
+      wasmVariant: "simd",
     });
 
     expect(loadBlinkIdVerifyCore).toHaveBeenCalledTimes(1);
@@ -165,7 +165,7 @@ describe("createBlinkIdVerify", () => {
       microblinkProxyUrl: "https://proxy.example.com",
       initialMemory: 32,
       resourcesLocation: "https://resources.example.com",
-      wasmVariant: "advanced",
+      wasmVariant: "simd",
     });
   });
 

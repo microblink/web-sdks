@@ -56,31 +56,28 @@ export default async function checkThreadsSupport(): Promise<boolean> {
  * @returns The WASM variant.
  */
 export async function detectWasmFeatures(): Promise<WasmVariant> {
-  const basicSet = [
+  const minRequiredFeaturesSet = [
     mutableGlobals(),
     referenceTypes(),
     bulkMemory(),
     saturatedFloatToInt(),
     signExtensions(),
+    simd(),
   ];
 
-  const supportsBasic = (await Promise.all(basicSet)).every(Boolean);
+  const supportsMinRequiredFeaturesSet = (
+    await Promise.all(minRequiredFeaturesSet)
+  ).every(Boolean);
 
-  if (!supportsBasic) {
+  if (!supportsMinRequiredFeaturesSet) {
     throw new Error("Browser doesn't meet minimum requirements!");
   }
 
-  const supportsAdvanced = await simd();
+  const supportsThreads = await checkThreadsSupport();
 
-  if (!supportsAdvanced) {
-    return "basic";
+  if (!supportsThreads) {
+    return "simd";
   }
 
-  const supportsAdvancedThreads = await checkThreadsSupport();
-
-  if (!supportsAdvancedThreads) {
-    return "advanced";
-  }
-
-  return "advanced-threads";
+  return "simd-threads";
 }

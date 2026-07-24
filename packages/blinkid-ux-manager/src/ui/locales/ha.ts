@@ -28,7 +28,6 @@ export default {
     glare_detected:
       "A karkata ko a matsar da takarda domin a cire dau da hasken yake yi",
     keep_document_parallel: "Sanya takarda a saitin sikirin ɗin",
-    keep_document_still: "A daina motsa takarda da na'ura",
     keep_still: "A daina jijjigawa",
     move_closer: "Matsa kusa",
     move_farther: "Matsa baya",
@@ -45,6 +44,7 @@ export default {
     scan_the_barcode_side:
       "A ɗauki hoton ɓangaren takardar da ke ɗauke da barcode",
     scan_the_front_side: "A ɗauki hoton gaban takardar",
+    scan_the_mrz_side: "Yi sikanin gefen MRZ na takardar",
     scan_top_page: "Ɗauki hoton shafin sama",
     too_bright: "Matsa zuwa wuri mai ƙarancin haske",
     too_dark: "Matsa zuwa wuri mai haske",
@@ -118,6 +118,37 @@ export default {
         title_desktop: "A daidaita yadda za a iya kallon barcode ɗin",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "A daina motsa waya da takarda yayin ɗaukar hoto. Motsa ɗaya daga cikinsu zai sa hoton ya yi dishi-dishi sannan zai sa ba za a iya karanta bayanan da suke kan takardar ba.",
+        details_desktop:
+          "A daina motsawa yayin ɗaukar hoto. Motsawa zai sa hoton ya yi dishi-dishi sannan zai sa ba za a iya karanta bayanan da suke kan takardar ba.",
+        title: "Kada a motsa yayin ɗaukar hoto",
+        title_desktop: "Kada a motsa yayin ɗaukar hoto",
+      },
+      camera_lens: {
+        details_desktop:
+          "A duba domin tabbatar da gilashin kamerarku bai yi dishi-dishi ba, kuma ba ya ɗauke da ƙura. Gilashin kamera mai datti yakan sa hoton ya yi bishi-bishi, wanda hakan zai sa ba za a iya karanta bayanan da suke kan takardar ba sannan zai hana a ɗauki hoton bayanna yadda ya kamata.",
+        title_desktop: "Ku tsaftace gilashin kamerarku",
+      },
+      lighting: {
+        details:
+          "Kada a yi amfani da haske mai ƙarfi domin zai yi dau a kan takardar sannan zai sa ba za a iya karanta wasu ɓangarorin takardar ba. Idan ba za ku iya karanta bayanan da suke kan takardar ba, to kemara ma ba za ta iya ganin su ba.",
+        details_desktop:
+          "Kada a yi amfani da haske mai ƙarfi domin zai yi dau a kan takardar sannan zai sa ba za a iya karanta wasu ɓangarorin takardar ba. Idan ba za ku iya karanta bayanan da suke kan takardar ba, to kemara ma ba za ta iya ganin su ba.",
+        title: "A duba haske mai ƙarfi",
+        title_desktop: "A duba haske mai ƙarfi",
+      },
+      visibility: {
+        details:
+          "A tabbatar da cewa ba a rufe wasu ɓangarorin MRZ da yatsa ba. Bayan haka, a duba ko akwai wani dau na haske da ya hau kan MRZ ɗin wanda zai iya sa ba zai karantu ba.",
+        details_desktop:
+          "A tabbatar da cewa ba a rufe wasu ɓangarorin MRZ da yatsa ba. Bayan haka, a duba ko akwai wani dau na haske da ya hau kan MRZ ɗin wanda zai iya sa ba zai karantu ba.",
+        title: "Ajiye yadda za a iya kallon MRZ",
+        title_desktop: "Ajiye yadda za a iya kallon MRZ",
+      },
+    },
     done_btn: "Kammala",
     done_btn_aria: "Ci gaba da ɗaukar hoto",
     full_document: {
@@ -166,11 +197,19 @@ export default {
     btn: "Fara ɗaukar hoto",
     document_with_barcode: {
       details:
-        "Katunan shaida mabambanta suna iya zuwa da tsarin barcode mabambanta sanan a wuri daban-daban. A duba gaba da bayan katin shaida domin ganin barcode ɗin.",
+        "Takardu mabambanta suna iya zuwa da tsarin barcode mabambanta sanan da wuri daban-daban. A duba gaba da bayan takardar don barcode ɗin.",
       details_desktop:
-        "A duba gaba da bayan katin shaidar domin ganin barcode. Ku tabbatar da cewa gilashin kamerarku ba ya ɗauke da ƙura sannan a haska katin yadda ya kamata.",
-      title: "A dubo barcode a kan katin shaida",
+        "Duba gaba da bayan takardar don barcode. Tabbatar ka ajiye gilashin kemararku cikin tsabta kuma an haska takardar da kyau.",
+      title: "Nemi barcode akan takardar",
       title_desktop: "Ku tsaftace gilashin kamerarku sannan ku dubo barcode",
+    },
+    document_with_mrz: {
+      details:
+        "Za ka nemi dogon jerin haruffa a kasa a gaba ko bayan takardar, raba shi zuwa layuka 2 ko 3 kuma a raba da kibiyoyi (<< ko >>).",
+      details_desktop:
+        "A duba gaba da bayan takarda don MRZ. Nemi layuka 2-3 na haruffa da alomomin kibiyoyi (<<) a kasan takardar. Ku tabbatar da cewa kun ajiye gilashin kamerarku cikin tsabta sannan a haska takardar yadda ya kamata.",
+      title: "Nemi MRZ akan takardar",
+      title_desktop: "Goge gilashinku kuma ku nemi MRZ",
     },
     full_document: {
       details:
@@ -183,7 +222,10 @@ export default {
   },
   sdk_aria: "Sikirin na ɗaukar hoton takarda",
   timeout_modal: {
-    details: "An kasa karanta takardar. A sake gwadawa.",
-    title: "An yi nasarar ɗaukar hoto",
+    details:
+      "Tabbatar cewa an haska takardar da kyau, ana gani cikakke, kuma ba wani dishi-dishi.",
+    details_desktop:
+      "Tabbatar cewa gilashin kamerarku yana da tsabta kuma ana ganin takardar gabaɗaya, cikin kula, kuma an haska shi da kyau.",
+    title: "An gaza karanta takardar",
   },
 } as const;

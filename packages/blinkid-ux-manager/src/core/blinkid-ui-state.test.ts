@@ -100,15 +100,9 @@ describe("Passport utils", () => {
   describe("isPassportWithoutBarcode", () => {
     test("should return true for non-barcode passports", () => {
       expect(
-        isPassportWithoutBarcode({
-          type: "passport",
-          country: "croatia",
-          region: undefined,
-          countryName: "",
-          isoNumericCountryCode: "",
-          isoAlpha2CountryCode: "",
-          isoAlpha3CountryCode: "",
-        }),
+        isPassportWithoutBarcode(
+          createDocumentClassInfo({ type: "passport", country: "croatia" }),
+        ),
       ).toBe(true);
     });
 
@@ -436,7 +430,10 @@ describe("getUiStateKey", () => {
         const processResult = createProcessResult({
           inputImageAnalysisResult: {
             scanningSide: "second",
-            documentClassInfo: { type: "passport", country },
+            documentClassInfo: {
+              documentType: { id: "passport" },
+              country: country ? { id: country } : undefined,
+            },
             documentRotation: rotation,
           },
         });
@@ -487,7 +484,10 @@ describe("getUiStateKey", () => {
           inputImageAnalysisResult: {
             scanningSide: "second",
             processingStatus: "scanning-wrong-side",
-            documentClassInfo: { type: "passport", country },
+            documentClassInfo: {
+              documentType: { id: "passport" },
+              country: country ? { id: country } : undefined,
+            },
             documentRotation: rotation,
             documentDetectionStatus: "success",
           },
@@ -690,6 +690,23 @@ describe("getUiStateKey", () => {
 
       expect(result).toBe<BlinkIdUiStateKey>("FRONT_PAGE_NOT_IN_FRAME");
     });
+
+    test("should return undefined (no-op) while awaiting more stable input images", () => {
+      const processResult = createProcessResult({
+        inputImageAnalysisResult: {
+          processingStatus: "awaiting-more-stable-input-images",
+          documentDetectionStatus: "success",
+        },
+      });
+
+      const result = getUiStateKey(
+        "scanning-side-in-progress",
+        processResult.inputImageAnalysisResult,
+        getMergedScanningSettings(),
+      );
+
+      expect(result).toBeUndefined();
+    });
   });
 
   describe("Priority Rules", () => {
@@ -834,7 +851,7 @@ describe("getUiStateKey", () => {
       const processResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "awaiting-other-side",
-          documentClassInfo: { type: "passport" },
+          documentClassInfo: { documentType: { id: "passport" } },
           documentRotation: "zero",
         },
       });
@@ -855,7 +872,7 @@ describe("getUiStateKey", () => {
         inputImageAnalysisResult: {
           scanningSide: "second",
           processingStatus: "scanning-wrong-side",
-          documentClassInfo: { type: "passport" },
+          documentClassInfo: { documentType: { id: "passport" } },
           documentRotation: "zero",
         },
       });
@@ -874,7 +891,7 @@ describe("getUiStateKey", () => {
         inputImageAnalysisResult: {
           scanningSide: "second",
           processingStatus: "scanning-wrong-side",
-          documentClassInfo: { type: "passport" },
+          documentClassInfo: { documentType: { id: "passport" } },
           documentRotation: "zero",
           blurDetectionStatus: "detected",
           documentDetectionStatus: "success",

@@ -180,6 +180,7 @@ export const createBlinkId = async ({
   targetNode,
   cameraManagerUiOptions,
   initialMemory,
+  otaResources,
   resourcesLocation,
   scanningSettings,
   useLightweightBuild,
@@ -196,14 +197,17 @@ export const createBlinkId = async ({
 
   try {
     // we first initialize the direct API. This loads the WASM module and initializes the engine
-    blinkIdCore = await loadBlinkIdCore({
+    const initSettings: BlinkIdInitSettings = {
       licenseKey,
       microblinkProxyUrl,
       initialMemory,
+      otaResources,
       resourcesLocation,
       useLightweightBuild,
       wasmVariant,
-    });
+    };
+
+    blinkIdCore = await loadBlinkIdCore(initSettings);
 
     const sessionSettings = {
       scanningMode,

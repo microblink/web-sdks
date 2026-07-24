@@ -3,6 +3,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,macos,conan,cmake,c++,node
 
 .turbo
+
 # junk files
 vite.config.*.timestamp-*
 
@@ -300,8 +301,18 @@ Session.vim
 # JetBrains IDEs
 .idea
 
+# Clion bazel plugin files
+.clwb
+
 #mise local
 mise.local.toml
 
 # npmrc
 .npmrc
+
+# Bazel files
+/bazel-*
+/external
+
+automatic.bazelrc
+.bazeltargets

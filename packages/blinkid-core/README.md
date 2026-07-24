@@ -59,6 +59,51 @@ const core = await loadBlinkIdCore({
 const session = await core.createScanningSession();
 ```
 
+### OTA Document Support Updates
+
+BlinkID can download document-support resources over the air (OTA) during SDK
+initialization. Every SDK build hosts baseline resources at:
+
+```text
+{resourcesLocation}/resources/ota-resources/
+```
+
+The directory contains the canonical files and `ota-resources.json`:
+
+```jsonc
+{
+  "resources": [
+    {
+      "filename": "template-database.zzip",
+      "version": "1.0.1",
+      "url": "template-database.zzip",
+    },
+  ],
+}
+```
+
+Set `otaResources.resourcesLocation` to override the baseline directory. By
+default, BlinkID also asks `https://blinkid-ota.microblink.com` for updates and
+uses a provider resource only when its semantic version is newer. Override that
+service with `otaResources.otaResourceProviderUrl`.
+
+The provider must expose:
+
+```text
+GET {otaResourceProviderUrl}/api/v1/versions?generic_version={recognizerVersion}
+```
+
+The SDK supplies `generic_version` from the BlinkID recognizer. The OTA
+settings are separate from top-level `resourcesLocation`, which points to the
+static SDK `resources` directory, and from `microblinkProxyUrl`, which proxies
+licensing and analytics traffic. Provider failures use the hosted baseline by
+default; `otaResources.strict: true` makes them fatal. A missing hosted baseline
+is always fatal because OTA files are no longer embedded in
+`BlinkIdModule.data`. Set `otaResources.checkForUpdates` to `false` to load the
+hosted baseline without contacting the provider.
+
+### Redaction Settings
+
 You can also pass worker-side session options as the second argument. For
 example, use `redactionSettingsResolver` to choose result redaction per
 classified document:
@@ -71,8 +116,8 @@ const session = await core.createScanningSession(
   {
     redactionSettingsResolver: (documentClassInfo) => {
       if (
-        documentClassInfo.country === "germany" &&
-        documentClassInfo.type === "id"
+        documentClassInfo.country?.id === "germany" &&
+        documentClassInfo.type?.id === "id"
       ) {
         return {
           mode: "full-result",
@@ -106,8 +151,8 @@ const session = await core.createScanningSession(
       getDefaultRedactionSettings,
     ) => {
       if (
-        documentClassInfo.country === "germany" &&
-        documentClassInfo.type === "id"
+        documentClassInfo.country?.id === "germany" &&
+        documentClassInfo.type?.id === "id"
       ) {
         const defaults = await getDefaultRedactionSettings(documentClassInfo);
 
@@ -134,7 +179,10 @@ const session = await core.createScanningSession(
 settings (`scanningSettings.anonymizationMode` and
 `scanningSettings.customDocumentAnonymizationSettings`). The resolver receives
 the classified `DocumentClassInfo`; return `RedactionSettings` for custom
-redaction or `null` to keep the SDK defaults. See the
+redaction or `null` to keep the SDK defaults. The `country`, `region`, and
+`type` fields are wrapper objects: `id` holds the strongly-typed value when the
+document class is known at build time, while `rawValue` always carries the raw
+classification token (including OTA-delivered classes without an `id`). See the
 [BlinkID v8000 migration guide](https://docs.microblink.com/blinkid/migration-v8000)
 for the full migration.
 
@@ -156,6 +204,13 @@ You must host the `dist/resources` directory from this package without modificat
 - WebAssembly `.wasm` and `.data` files
 - Emscripten JS glue code
 - The `@microblink/blinkid-worker` Web Worker script
+- Baseline OTA document-support resources under `ota-resources/`, including
+  `ota-resources.json` and its canonical resource files
+
+Do not omit the `ota-resources/` directory: BlinkID always loads this hosted
+baseline before optionally checking the OTA provider for updates. To host the
+baseline separately, set `otaResources.resourcesLocation` to its directory URL
+and preserve the manifest-relative file paths.
 
 ### Hosting requirements
 

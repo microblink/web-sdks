@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Tókst! Framhlið skönnuð",
     glare_detected: "Hallið eða færið skjalið til að fjarlægja endurkast",
     keep_document_parallel: "Halldið skjalinu samhliða skjá",
-    keep_document_still: "Haldið skjali og tæki kyrru",
     keep_still: "Haltu kyrru",
     move_closer: "Færið nær",
     move_farther: "Færið fjær",
@@ -42,6 +41,7 @@ export default {
     scan_the_barcode: "Skannið strikamerkið",
     scan_the_barcode_side: "Skannaðu strikamerkjahlið skjals",
     scan_the_front_side: "Skannið framhliðina á skjalinu",
+    scan_the_mrz_side: "Skannaðu hlið véllesanlega svæði skjalsins",
     scan_top_page: "Skannið efstu síðuna",
     too_bright: "Farið á stað með minni lýsingu",
     too_dark: "Farið á bjartari stað",
@@ -115,6 +115,37 @@ export default {
         title_desktop: "Haltu strikamerkinu sýnilegu",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Reynið að halda símanum og skjalinu kyrrum á meðan skannað er. Að færa annað hvort getur gert myndina óskýra og gert gögnin í skjalinu ólæsileg.",
+        details_desktop:
+          "Reyndu að halda kyrru meðan verið er að skanna. Hreyfing getur gert myndina óskýra og gert gögn á skjalinu ólæsileg.",
+        title: "Verið kyrr á meðan skannað er",
+        title_desktop: "Verið kyrr á meðan skannað er",
+      },
+      camera_lens: {
+        details_desktop:
+          "Athugið hvort blettir eða ryk séu á myndavélalinsunni. Skítug linsa veldur því að lokamyndin verður óskýr, sem gerir skjalupplýsingarnar ólæsilegar og kemur í veg fyrir að hægt sé að skanna gögnin með góðum árangri.",
+        title_desktop: "Hreinsið myndavélalinsuna",
+      },
+      lighting: {
+        details:
+          "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
+        details_desktop:
+          "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
+        title: "Gætið að sterku ljósi",
+        title_desktop: "Gætið að sterku ljósi",
+      },
+      visibility: {
+        details:
+          "Gakktu úr skugga um að þú hyljir ekki hluta af véllesanlega svæðinu með fingri. Passaðu þig líka á endurskinsljósi sem fellur yfir véllesanlega svæðið og gæti gert það ólæsilegt.",
+        details_desktop:
+          "Gakktu úr skugga um að þú hyljir ekki hluta af véllesanlega svæðinu með fingri. Passaðu þig líka á endurskinsljósi sem fellur yfir véllesanlega svæðið og gæti gert það ólæsilegt.",
+        title: "Haltu véllesanlega svæðinu sýnilegu",
+        title_desktop: "Haltu véllesanlega svæðinu sýnilegu",
+      },
+    },
     done_btn: "Lokið",
     done_btn_aria: "Halda áfram að skanna",
     full_document: {
@@ -163,11 +194,19 @@ export default {
     btn: "Byrja að skanna",
     document_with_barcode: {
       details:
-        "Mismunandi gerðir skilríkja geta haft mismunandi strikamerkjaform og staðsetningar. Leitaðu að strikamerki á fram- og bakhlið skilríkisins.",
+        "Mismunandi gerðir skjala geta haft mismunandi strikamerkjasnið og staðsetningar. Leitaðu að strikamerki á fram- og bakhlið skjalsins.",
       details_desktop:
-        "Athugaðu fram- og bakhlið skilríkjanna fyrir strikamerki. Gakktu úr skugga um að linsa myndavélarinnar sé hrein og skjalið vel upplýst.",
-      title: "Finndu strikamerkið á skilríkinu",
+        "Athugaðu fram- og bakhlið skjalsins hvort þar sé strikamerki. Gakktu úr skugga um að linsa myndavélarinnar sé hrein og skjalið vel upplýst.",
+      title: "Finndu strikamerki skjalsins",
       title_desktop: "Hreinsaðu myndavélarlinsuna og finndu strikamerkið",
+    },
+    document_with_mrz: {
+      details:
+        "Þú finnur langa röð af táknum neðst á forsíðu eða bakhlið skjalsins, skipt í 2 eða 3 línur og aðskilin með örvum (&lt;&lt; eða &gt;&gt;).",
+      details_desktop:
+        "Athugaðu fram- og bakhlið skjalsins hvort þar sé véllesanlegt svæði. Leitaðu að 2–3 línum af stöfum og örvatáknum (<<) neðst á skjalinu. Gakktu úr skugga um að linsa myndavélarinnar sé hrein og skjalið vel upplýst.",
+      title: "Finndu véllesanlega svæði skjalsins",
+      title_desktop: "Hreinsaðu linsuna og finndu véllesanlega svæðið",
     },
     full_document: {
       details:
@@ -180,7 +219,10 @@ export default {
   },
   sdk_aria: "Skjalaskönnunarskjár",
   timeout_modal: {
-    details: "Ekki tókst að lesa skjalið. Reynið aftur.",
-    title: "Skönnun mistókst",
+    details:
+      "Gakktu úr skugga um að skjalið sé vel upplýst, fulllega sýnilegt og laust við endurskin.",
+    details_desktop:
+      "Gakktu úr skugga um að myndavélarlinsан sé hrein og skjalið sé fullkomlega sýnilegt, í fókus og vel upplýst.",
+    title: "Ekki tókst að lesa skjalið",
   },
 } as const;

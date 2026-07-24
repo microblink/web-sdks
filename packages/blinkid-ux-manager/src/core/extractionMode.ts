@@ -23,6 +23,7 @@ import type {
 export type BlinkIdExtractionMode =
   | "full-document"
   | "document-with-barcode"
+  | "document-with-mrz"
   | "barcode-only";
 
 /**
@@ -63,6 +64,7 @@ export function getBlinkIdExtractionMode(
     scanningSettings?.documentCaptureModule !== null;
   const barcodeEnabled = barcodeModule !== null;
   const mrzEnabled = scanningSettings?.mrzModule !== null;
+  const mrzModule = scanningSettings?.mrzModule;
   const vizEnabled = scanningSettings?.vizModule !== null;
   const isSingleSideScan = sessionSettings?.scanningMode === "single";
   const mandatoryBarcode = barcodeModule?.presenceMandatory === true;
@@ -76,6 +78,15 @@ export function getBlinkIdExtractionMode(
     !vizEnabled
   ) {
     return "document-with-barcode";
+  }
+
+  if (
+    isSingleSideScan &&
+    documentCaptureEnabled &&
+    mrzEnabled &&
+    mrzModule?.presenceMandatory
+  ) {
+    return "document-with-mrz";
   }
 
   if (!documentCaptureEnabled && barcodeEnabled && !mrzEnabled && !vizEnabled) {

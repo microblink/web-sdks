@@ -18,6 +18,7 @@ describe("modal extraction mode content", () => {
       "full-document": "full_document",
       "document-with-barcode": "document_with_barcode",
       "barcode-only": "barcode_only",
+      "document-with-mrz": "document_with_mrz",
     });
   });
 
@@ -32,6 +33,7 @@ describe("modal extraction mode content", () => {
       "full-document": "full_document",
       "document-with-barcode": "document_with_barcode",
       "barcode-only": "barcode_only",
+      "document-with-mrz": "document_with_mrz",
     });
   });
 

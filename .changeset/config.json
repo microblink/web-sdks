@@ -26,12 +26,12 @@
     ]
   ],
   "access": "public",
-  "baseBranch": "master",
+  "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
     "@microblink/*-example",
     "@microblink/*-qa-app",
     "@microblink/*-test",
-    "github-release"
+    "@microblink/public-repo-generator"
   ]
 }

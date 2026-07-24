@@ -11,7 +11,7 @@ import type {
   BlinkIdVerifyWasmModule,
   CapturedFrame,
   EmscriptenModuleFactory,
-  WasmSimdVariant,
+  WasmVariant,
   BlinkIdVerifyProcessResult,
 } from "@microblink/blinkid-verify-wasm";
 import type { Ping } from "@microblink/analytics/ping";
@@ -26,7 +26,6 @@ import {
 import { getCrossOriginWorkerURL } from "@microblink/worker-common/getCrossOriginWorkerURL";
 import {
   getWasmFileSize,
-  type SizeManifest,
   type GetWasmFileSizeParams,
 } from "@microblink/worker-common/getWasmFileSize";
 import { isIOS } from "@microblink/worker-common/isSafari";
@@ -161,7 +160,7 @@ export class BlinkIdVerifyWorker {
     const wasmMemory = new WebAssembly.Memory({
       initial: mbToWasmPages(initialMemory),
       maximum: mbToWasmPages(2048),
-      shared: wasmVariant === "advanced-threads",
+      shared: wasmVariant === "simd-threads",
     });
 
     // Create progress trackers for each download
@@ -222,7 +221,7 @@ export class BlinkIdVerifyWorker {
     };
 
     const getExpectedSize = (params: GetWasmFileSizeParams) =>
-      getWasmFileSize(params, sizeManifest as SizeManifest); //TODO(Modify SizeManifest type to avoid basic)
+      getWasmFileSize(params, sizeManifest);
 
     // Replace simple fetch with progress tracking for both wasm and data downloads
     const [preloadedWasm, preloadedData] = await Promise.all([
@@ -368,8 +367,7 @@ export class BlinkIdVerifyWorker {
     this.progressStatusCallback = progressCallback;
     this.#userId = settings.userId;
 
-    const wasmVariant = (settings.wasmVariant ??
-      (await detectWasmFeatures())) as WasmSimdVariant;
+    const wasmVariant = settings.wasmVariant ?? (await detectWasmFeatures());
 
     await this.#loadWasm({
       resourceUrl: resourcesPath,
@@ -392,12 +390,14 @@ export class BlinkIdVerifyWorker {
     // Queue init pinglet before remote license check; flush only if init fails
     this.reportPinglet({
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.3.0",
+      schemaVersion: "2.0.0",
       sessionNumber: 0,
       data: {
         packageName: self.location.hostname,
         platform: "Emscripten",
-        platformDetails: wasmVariant,
+        // TODO: update this after pinglets schema is updated
+        platformDetails:
+          wasmVariant === "simd" ? "advanced" : "advanced-threads",
         product: "DocumentVerification",
         userId: this.#userId,
         ...getMicroblinkProxyPingFlags(
@@ -898,7 +898,7 @@ export type BlinkIdVerifyWorkerInitSettings = {
    * The WebAssembly module variant to use.
    * Different variants may offer different performance/size tradeoffs.
    */
-  wasmVariant?: WasmSimdVariant;
+  wasmVariant?: WasmVariant;
 
   /**
    * The initial memory allocation for the Wasm module, in megabytes.
@@ -912,7 +912,7 @@ export type BlinkIdVerifyWorkerInitSettings = {
  */
 export type LoadWasmParams = {
   resourceUrl: string;
-  wasmVariant: WasmSimdVariant;
+  wasmVariant: WasmVariant;
   initialMemory?: number;
 };
 

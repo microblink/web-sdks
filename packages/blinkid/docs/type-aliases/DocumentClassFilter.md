@@ -24,6 +24,9 @@ marked as "unsupported-document".
 [`DocumentClassInfo`](DocumentClassInfo.md)
 
 Information about the document class, such as country and type.
+Each classification component is a wrapper object — compare against its `id`
+(e.g. `documentClassInfo.country?.id === "usa"`); `id` is absent for
+OTA-delivered classes unknown at build time (use `rawValue` for those).
 
 ## Returns
 

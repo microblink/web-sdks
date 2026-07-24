@@ -9,10 +9,10 @@ export default {
   feedback_messages: {
     blur_detected: "Držite mirno karticu i telefon",
     blur_detected_desktop: "Držite mirno karticu i uređaj",
-    camera_angle_too_steep: "Држите картицу паралелно са телефоном",
+    camera_angle_too_steep: "Držite karticu paralelno sa telefonom",
     camera_angle_too_steep_desktop: "Držite karticu paralelno s ekranom",
-    card_number_scanned: "Успешно! Страна са бројем картице је скенирана",
-    card_scanned: "Успешно! Картица је скенирана",
+    card_number_scanned: "Uspešno! Strana sa brojem kartice je skenirana",
+    card_scanned: "Uspešno! Kartica je skenirana",
     document_too_close_to_edge: "Udaljite",
     flip_card: "Preokrenite karticu",
     flip_to_back_side: "Preokrenite karticu",

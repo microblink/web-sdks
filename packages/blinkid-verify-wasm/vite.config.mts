@@ -3,7 +3,7 @@ import path from "path";
 import { playwright } from "@vitest/browser-playwright";
 
 export default defineConfig({
-  publicDir: path.resolve(__dirname, "dist/advanced"),
+  publicDir: path.resolve(__dirname, "dist/simd"),
   test: {
     browser: {
       provider: playwright(),

@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Skanning av forsiden vellykket!",
     glare_detected: "Vipp eller flytt dokumentet for å fjerne refleksjon",
     keep_document_parallel: "Hold dokumentet parallelt med skjermen",
-    keep_document_still: "Hold dokumentet og enheten i ro",
     keep_still: "Hold enheten i ro",
     move_closer: "Flytt nærmere",
     move_farther: "Flytt lenger bort",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode_side:
       "Skann siden av ID-en som strekkoden befinner seg på",
     scan_the_front_side: "Skann forsiden av dokumentet",
+    scan_the_mrz_side: "Skann MRZ-siden av et dokument",
     scan_top_page: "Skann den øverste siden",
     too_bright: "Flytt til et sted med mindre belysning",
     too_dark: "Flytt til et lysere sted",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Hold strekkoden synlig",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Forsøk å holde telefonen og dokumentet i ro under skanningen. Å bevege dem kan føre til at bildet blir uskarpt og dataene i dokumentet uleselige.",
+        details_desktop:
+          "Hold enheten i ro når du skanner. Bevegelse kan gjøre bildet uskarpt og føre til at dataene blir uleselige.",
+        title: "Stå i ro under skanningen",
+        title_desktop: "Stå i ro under skanningen",
+      },
+      camera_lens: {
+        details_desktop:
+          "Sjekk om det er støv eller flekker på kameralinsen. En skitten linse gjør at bildet blir uskarpt, noe som fører til at informasjonen i dokumentet blir uleselig og ikke skannes ordentlig.",
+        title_desktop: "Rens kameralinsen din",
+      },
+      lighting: {
+        details:
+          "Unngå direkte hardt lys fordi det gjenspeiles i dokumentet og kan føre til at deler av dokumentet blir uleselig. Hvis ikke du kan lese det som står i dokumentet, blir det heller ikke synlig for kamera.",
+        details_desktop:
+          "Unngå direkte hardt lys fordi det gjenspeiles i dokumentet og kan føre til at deler av dokumentet blir uleselig. Hvis ikke du kan lese det som står i dokumentet, blir det heller ikke synlig for kamera.",
+        title: "Se opp for hardt lys",
+        title_desktop: "Se opp for hardt lys",
+      },
+      visibility: {
+        details:
+          "Sørg for at du ikke dekker over deler av MRZ med fingeren. Vær også oppmerksom på refleksjoner som strekker seg over MRZ og kan gjøre sonen uleselig.",
+        details_desktop:
+          "Sørg for at du ikke dekker over deler av MRZ med fingeren. Vær også oppmerksom på refleksjoner som strekker seg over MRZ og kan gjøre sonen uleselig.",
+        title: "Hold MRZ synlig",
+        title_desktop: "Hold MRZ synlig",
+      },
+    },
     done_btn: "Ferdig",
     done_btn_aria: "Fortsett å skanne",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Start skanning",
     document_with_barcode: {
       details:
-        "Ulike typer ID-er har ulike typer strekkoder plassert på ulike steder. Strekkoden kan befinne seg på både forsiden og baksiden av ID-en.",
+        "Ulike typer dokumenter kan ha strekkoder i ulike formater og på ulike steder. Se etter en strekkode både på forsiden og baksiden av dokumentet.",
       details_desktop:
-        "Se etter en strekkode på forsiden eller baksiden av ID-en. Sørg for at kameralinsen er ren og at dokumentet er godt opplyst.",
-      title: "Finn strekkoden på ID-en",
+        "Se etter en strekkode på forsiden eller baksiden av dokumentet. Sørg for at kameralinsen er ren og at dokumentet er godt opplyst.",
+      title: "Finn strekkoden på dokumentet",
       title_desktop: "Tørk av kameralinsen og finn strekkoden",
+    },
+    document_with_mrz: {
+      details:
+        "Du finner en lang rekke med tegn på bunnen av forsiden eller baksiden av dokumentet, delt inn i 2–3 linjer og skilt med piler (<< eller >>).",
+      details_desktop:
+        "Sjekk om det er en MRZ på forsiden eller baksiden av dokumentet. Se etter 2–3 linjer med tegn og pilsymboler (<<) nederst på dokumentet. Sørg for at kameralinsen er ren og at dokumentet er godt opplyst.",
+      title: "Finn MRZ på dokumentet",
+      title_desktop: "Rens kameralinsen og finn MRZ",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Dokumentskanningside",
   timeout_modal: {
-    details: "Kunne ikke lese dokumentet. Prøv igjen.",
-    title: "Skanning mislyktes",
+    details:
+      "Sørg for at dokumentet er godt opplyst, helt synlig og uten gjenskinn.",
+    details_desktop:
+      "Sørg for at kameralinsen er ren og at dokumentet er helt synlig, godt opplyst og i fokus.",
+    title: "Kunne ikke lese dokumentet",
   },
 } as const;

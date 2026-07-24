@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-verify-core",
   "description": "BlinkID Verify Core SDK",
-  "version": "3.21.1",
+  "version": "3.22.0-next",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -17,7 +17,7 @@
     "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
-    "publish-test": "pnpm build:publish && pnpm prepare-publish && pnpm pack-check",
+    "publish-test": "pnpm prepare-publish && pnpm pack-check",
     "type-rollup": "api-extractor run --local",
     "watch": "concurrently pnpm:watch:js pnpm:watch:types",
     "watch:js": "pnpm run build:js --watch --mode development",
@@ -52,7 +52,7 @@
     "type-fest": "^4.35.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
+    "@arethetypeswrong/cli": "0.18.3",
     "@microblink/repo-utils": "workspace:*",
     "@microblink/test-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",

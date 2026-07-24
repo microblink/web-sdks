@@ -1,3 +1,6 @@
+/// <reference types="vitest/config" />
+/// <reference types="@vitest/browser/providers/playwright" />
+
 import UnoCSS from "unocss/vite";
 import { getBrowserslistEsbuildTarget } from "@microblink/repo-utils";
 import { defineConfig, PluginOption } from "vite";
@@ -27,6 +30,20 @@ export default defineConfig((config) => ({
     },
     rollupOptions: {
       external: externals,
+    },
+  },
+  test: {
+    silent: true,
+    browser: {
+      enabled: true,
+      provider: "playwright",
+      screenshotFailures: false,
+      headless: true,
+      instances: [
+        {
+          browser: "chromium",
+        },
+      ],
     },
   },
   plugins: [

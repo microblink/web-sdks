@@ -47,6 +47,31 @@ blur; it may detect as blur even something that only resembles blur.
 
 ***
 
+### cropType
+
+> **cropType**: [`InputImageCropType`](InputImageCropType.md)
+
+Specifies whether the input image is already cropped, likely cropped, or
+not cropped.
+
+When set to `"cropped"`, the input image must consist solely of the already
+cropped and corrected document.
+
+When set to `"unknown"`, the recognizer first attempts extraction as if the
+image is cropped, then falls back to the regular localization pipeline if
+extraction fails.
+
+`"cropped"` and `"unknown"` are applicable only to `Photo` sources and will
+cause a validation error for `Video`.
+
+#### Default
+
+```ts
+"not-cropped"
+```
+
+***
+
 ### documentImageReturnEnabled
 
 > **documentImageReturnEnabled**: `boolean`
@@ -227,12 +252,13 @@ document will be excluded from further processing. If occlusion is
 detected, `ProcessingStatus` will be `ImagePreprocessingFailed` and hand
 occlusion status will be reported in the `ProcessResult`.
 
-Default behavior depends on `inputImageCropped`:
+Default behavior depends on `cropType`:
 
-- `true`: Defaults to `false`. This setting is not applicable. Setting this
-  to `true` while `inputImageCropped` is also `true` will result in a
-  settings validation failure.
-- `false`: Defaults to `true`. Images with hand occlusion are rejected.
+- `"cropped"`: Defaults to `false`. This setting is not applicable. Setting
+  this to `true` while `cropType` is `"cropped"` will result in a settings
+  validation failure.
+- `"not-cropped"` and `"unknown"`: Defaults to `true`. Images with hand
+  occlusion are rejected.
 
 #### Default
 
@@ -263,29 +289,6 @@ If poor light conditions are detected, `ProcessingStatus` will be
 
 ```ts
 true
-```
-
-***
-
-### inputImageCropped
-
-> **inputImageCropped**: `boolean`
-
-Indicates whether the input image is already cropped and
-perspective-corrected.
-
-If `true`, the input image must consist solely of the already cropped and
-corrected document.
-
-Default value is `false`.
-
-This setting is not applicable to `Video` sources and will cause a
-validation error if set to true.
-
-#### Default
-
-```ts
-false
 ```
 
 ***
@@ -329,6 +332,29 @@ affected.
 
 ```ts
 false
+```
+
+***
+
+### inputImageSelectionStrategy
+
+> **inputImageSelectionStrategy**: [`InputImageSelectionStrategy`](InputImageSelectionStrategy.md)
+
+Represents the strategy used to select the best input image from a pool of
+stable input images.
+
+Available strategies are `"single-image"`, `"optimize-for-speed"`,
+`"default"`, and `"optimize-for-quality"`. The `"default"` strategy
+represents a trade-off between speed and quality, while
+`"optimize-for-speed"` and `"optimize-for-quality"` are optimized for speed
+and quality respectively.
+
+This setting is only applicable for the `Video` input image source.
+
+#### Default
+
+```ts
+"default"
 ```
 
 ***

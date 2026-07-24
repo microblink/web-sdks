@@ -147,7 +147,7 @@ describe("createBlinkCard", () => {
       microblinkProxyUrl: "https://proxy.example.com",
       initialMemory: 32,
       resourcesLocation: "https://resources.example.com",
-      wasmVariant: "basic",
+      wasmVariant: "simd",
     });
 
     expect(loadBlinkCardCore).toHaveBeenCalledTimes(1);
@@ -156,7 +156,7 @@ describe("createBlinkCard", () => {
       microblinkProxyUrl: "https://proxy.example.com",
       initialMemory: 32,
       resourcesLocation: "https://resources.example.com",
-      wasmVariant: "basic",
+      wasmVariant: "simd",
     });
   });
 

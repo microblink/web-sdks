@@ -21,7 +21,11 @@ import {
 } from "@microblink/test-utils/vitest";
 import type { PartialDeep } from "type-fest";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import type { BlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
+import {
+  defaultBlinkIdDesktopTimeoutConfiguration,
+  defaultBlinkIdTimeoutConfiguration,
+  type BlinkIdTimeoutConfiguration,
+} from "./BlinkIdTimeoutConfiguration";
 import type {
   BlinkIdFrameProcessCallback,
   BlinkIdProgress,
@@ -81,8 +85,8 @@ const sideScannedResult = () =>
       documentDetectionStatus: "success",
       documentRotation: "zero",
       documentClassInfo: {
-        country: "usa",
-        type: "dl",
+        country: { id: "usa" },
+        documentType: { id: "dl" },
       },
     },
   });
@@ -113,6 +117,9 @@ const partiallySupportedBarcodeResult = () =>
 const createManager = (
   timeoutConfiguration?: Partial<BlinkIdTimeoutConfiguration>,
   managerSessionSettings: BlinkIdSessionSettings = sessionSettings,
+  opts?: {
+    deviceInfoFormFactors: DeviceInfo["derivedDeviceInfo"]["formFactors"];
+  },
 ) => {
   const cameraManager = new FakeCameraManager();
   const scanningSession = createFakeScanningSession<
@@ -134,7 +141,11 @@ const createManager = (
     managerSessionSettings,
     false,
     false,
-    {} as DeviceInfo,
+    {
+      derivedDeviceInfo: {
+        formFactors: opts?.deviceInfoFormFactors ?? ["Desktop"],
+      },
+    } as DeviceInfo,
   );
 
   manager.addOnProgressCallback((progress) => {
@@ -166,6 +177,42 @@ describe("BlinkIdUxManager timeout behavior", () => {
     vi.restoreAllMocks();
   });
 
+  test("timeout timer deviceInfo based resolver works on desktop", () => {
+    const { manager } = createManager(
+      {
+        partiallySupportedBarcodeResolveTimeoutMs: undefined,
+      },
+      undefined,
+      { deviceInfoFormFactors: ["Desktop"] },
+    );
+    managers.add(manager);
+
+    expect(
+      manager.getTimeoutConfiguration()
+        .partiallySupportedBarcodeResolveTimeoutMs,
+    ).toEqual(
+      defaultBlinkIdDesktopTimeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
+    );
+  });
+
+  test("timeout timer deviceInfo based resolver works on mobile", () => {
+    const { manager } = createManager(
+      {
+        partiallySupportedBarcodeResolveTimeoutMs: undefined,
+      },
+      undefined,
+      { deviceInfoFormFactors: ["Mobile"] },
+    );
+    managers.add(manager);
+
+    expect(
+      manager.getTimeoutConfiguration()
+        .partiallySupportedBarcodeResolveTimeoutMs,
+    ).toEqual(
+      defaultBlinkIdTimeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
+    );
+  });
+
   test("uses configured inactivity timeout and fires when mapped state does not change", async () => {
     const { cameraManager, scanningSession, manager } = createManager({
       inactivityTimeoutMs: 100,
@@ -185,7 +232,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     cameraManager.emitPlaybackState("capturing");
     await vi.advanceTimersByTimeAsync(100);
 
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("inactivity_timeout");
     expect(cameraManager.stopFrameCapture).toHaveBeenCalledTimes(1);
     expect(scanningSession.reset).toHaveBeenCalledTimes(1);
   });
@@ -283,7 +330,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     await vi.advanceTimersByTimeAsync(1);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("inactivity_timeout");
   });
 
   test("fires scan-step timeout when the inactivity timeout is disabled", async () => {
@@ -302,7 +349,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     await vi.advanceTimersByTimeAsync(1);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("scan_step_timeout");
   });
 
   test("does not fire inactivity timeout while PROCESSING_BARCODE is visible", async () => {
@@ -368,7 +415,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     await vi.advanceTimersByTimeAsync(50);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("scan_step_timeout");
   });
 
   test("resets scan-step timeout when PROCESSING_BARCODE becomes visible", async () => {
@@ -404,7 +451,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     await vi.advanceTimersByTimeAsync(50);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("scan_step_timeout");
   });
 
   test("keeps inactivity timeout active for BARCODE_NOT_IN_FRAME", async () => {
@@ -438,7 +485,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     await vi.advanceTimersByTimeAsync(50);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("inactivity_timeout");
   });
 
   test("reports paused inactivity progress while PROCESSING_BARCODE is visible", async () => {
@@ -818,7 +865,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     await vi.advanceTimersByTimeAsync(1);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("inactivity_timeout");
   });
 
   test("resets both timers after the flip-card transition when the second side starts", async () => {
@@ -853,7 +900,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     await vi.advanceTimersByTimeAsync(10);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("inactivity_timeout");
   });
 
   test("resets both timers when the app returns from the background", async () => {
@@ -889,7 +936,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(errorSpy).not.toHaveBeenCalled();
 
     await vi.advanceTimersByTimeAsync(10);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("inactivity_timeout");
   });
 
   test("advanceToNextStep restarts inactivity timeout only after the stabilized UI state changes", async () => {
@@ -963,7 +1010,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(trigger).toBeDefined();
     trigger!();
 
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("scan_step_timeout");
     expect(cameraManager.stopFrameCapture).toHaveBeenCalled();
     expect(scanningSession.reset).toHaveBeenCalled();
   });

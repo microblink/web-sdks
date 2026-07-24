@@ -55,7 +55,7 @@ describe("BlinkCardWorker", () => {
     const worker = new BlinkCardWorker();
     const pinglet: Ping = {
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.3.0",
+      schemaVersion: "2.0.0",
       sessionNumber: 0,
       data: {
         product: "BlinkCard",

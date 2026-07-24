@@ -345,15 +345,27 @@ Top-level groups in `en.ts`:
 | ----------------------- | --------------------------------------- |
 | `full-document`         | `full_document`                         |
 | `document-with-barcode` | `document_with_barcode`                 |
+| `document-with-mrz`     | `document_with_mrz`                     |
 | `barcode-only`          | `barcode_only`                          |
 
-Feedback strings that depend on extraction mode (for example front vs barcode side) are selected in code via [`src/ui/feedbackMessages.ts`](src/ui/feedbackMessages.ts); new keys include `scan_the_barcode_side` and `keep_still` (used for the desktop blur path as a shorter “keep still” hint).
+The `document-with-mrz` mode is selected for single-side scanning when document
+capture is enabled and `mrzModule.presenceMandatory` is `true`. It provides
+MRZ-specific help, onboarding, illustrations, and scanning guidance.
+
+Feedback strings that depend on extraction mode (for example front, barcode,
+or MRZ side) are selected in code via
+[`src/ui/feedbackMessages.ts`](src/ui/feedbackMessages.ts); new keys include
+`scan_the_barcode_side`, `scan_the_mrz_side`, and `keep_still` (used for the
+desktop blur path as a shorter “keep still” hint).
 
 #### English copy changes (not just nesting)
 
 - Several `feedback_messages` strings now say “**a** document” instead of “**the** document” where the copy is generic.
-- New dedicated copy for **barcode-only** and **document + barcode** paths under `help_modal.barcode`, `help_modal.capture_barcode`, and matching `onboarding_modal` groups.
-- New feedback keys: `scan_the_barcode_side`, `keep_still`.
+- New dedicated copy for **barcode-only**, **document + barcode**, and
+  **document + MRZ** paths under `help_modal.barcode_only`,
+  `help_modal.document_with_barcode`, `help_modal.document_with_mrz`, and the
+  matching `onboarding_modal` groups.
+- New feedback keys: `scan_the_barcode_side`, `scan_the_mrz_side`, `keep_still`.
 
 #### Other locales
 

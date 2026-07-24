@@ -1,5 +1,11 @@
 # @microblink/camera-manager
 
+## 7.3.4
+
+### Patch Changes
+
+- Update dependencies
+
 ## 7.3.3
 
 ### Patch Changes

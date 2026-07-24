@@ -26,7 +26,7 @@ export type PartialProcessResult = Partial<
 
 export const defaultScanningSettings: ScanningSettings = {
   skipImagesWithBlur: true,
-  tiltDetectionLevel: "off",
+  tiltSensitivityLevel: "off",
   inputImageMargin: 0.02,
   extractionSettings: {
     extractIban: true,
@@ -47,16 +47,16 @@ export const defaultScanningSettings: ScanningSettings = {
     screenCheckStrictnessLevel: "disabled",
     photocopyCheckStrictnessLevel: "disabled",
   },
-  anonymizationSettings: {
-    cardNumberAnonymizationSettings: {
+  redactionSettings: {
+    cardNumberRedactionSettings: {
       mode: "none",
       prefixDigitsVisible: 0,
       suffixDigitsVisible: 0,
     },
-    cardNumberPrefixAnonymizationMode: "none",
-    cvvAnonymizationMode: "none",
-    ibanAnonymizationMode: "none",
-    cardholderNameAnonymizationMode: "none",
+    cardNumberPrefixRedactionMode: "none",
+    cvvRedactionMode: "none",
+    ibanRedactionMode: "none",
+    cardholderNameRedactionMode: "none",
   },
 };
 

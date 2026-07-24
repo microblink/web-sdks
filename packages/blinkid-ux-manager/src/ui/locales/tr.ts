@@ -27,7 +27,6 @@ export default {
     front_side_scanned_aria: "Başarılı! Ön taraf tarandı",
     glare_detected: "Yansımayı gidermek için belgeyi eğ veya hareket ettir",
     keep_document_parallel: "Belgeyi ekrana paralel tutun",
-    keep_document_still: "Belgeyi ve cihazı sabit tutun",
     keep_still: "Sabit tutun",
     move_closer: "Yaklaş",
     move_farther: "Uzaklaş",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "Barkodu tara",
     scan_the_barcode_side: "Belgenin barkodlu tarafını tarayın",
     scan_the_front_side: "Belgenin ön tarafını tara",
+    scan_the_mrz_side: "Belgenin MRZ bulunan tarafını tarayın",
     scan_top_page: "En üst sayfayı tara",
     too_bright: "Daha az ışık olan bir noktaya geç",
     too_dark: "Daha aydınlık bir noktaya geç",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Barkodun görünür olduğundan emin olun",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Tarama sırasında telefonu ve belgeyi sabit tutmaya çalış. Telefon veya belgenin hareket etmesi görüntüyü bulanıklaştırabilir ve belgedeki verileri okunmaz hâle getirebilir.",
+        details_desktop:
+          "Tarama sırasında cihazı sabit tutmaya çalışın. Hareket ettirmek görüntüyü bulanıklaştırarak belgedeki bilgilerin okunmasını zorlaştırabilir.",
+        title: "Tarama sırasında hareketsiz kal",
+        title_desktop: "Tarama sırasında hareketsiz kal",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kamera lensinizin lekeli veya tozlu olup olmadığını kontrol edin. Lens kirliyse görüntü bulanık çıkar; bu da belge üzerindeki bilgilerin okunamamasına ve verilerin başarıyla taranamamasına yol açar.",
+        title_desktop: "Kamera lenslerinizi temizleyin",
+      },
+      lighting: {
+        details:
+          "Doğrudan gelen sert ışık belgeden yansıyarak belgenin bazı kısımlarını okunmaz hâle getirebileceği için bu tür ışık kullanmaktan kaçın. Belgedeki verileri okuyamıyorsan bu veriler kamerada da görünmeyecektir.",
+        details_desktop:
+          "Doğrudan gelen sert ışık belgeden yansıyarak belgenin bazı kısımlarını okunmaz hâle getirebileceği için bu tür ışık kullanmaktan kaçın. Belgedeki verileri okuyamıyorsan bu veriler kamerada da görünmeyecektir.",
+        title: "Sert ışığa dikkat et",
+        title_desktop: "Sert ışığa dikkat et",
+      },
+      visibility: {
+        details:
+          "MRZ'nin herhangi bir bölümünü parmağınızla kapatmadığınızdan emin olun. Ayrıca MRZ'nin okunması engelleyebilecek yansımalara dikkat edin.",
+        details_desktop:
+          "MRZ'nin herhangi bir bölümünü parmağınızla kapatmadığınızdan emin olun. Ayrıca MRZ'nin okunması engelleyebilecek yansımalara dikkat edin.",
+        title: "MRZ'nin görünür olmasına dikkat edin",
+        title_desktop: "MRZ'nin görünür olmasına dikkat edin",
+      },
+    },
     done_btn: "Bitti",
     done_btn_aria: "Taramaya devam et",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Taramayı Başlat",
     document_with_barcode: {
       details:
-        "Farklı kimlik türlerinin barkod formatları ve konumları değişiklik gösterebilir. Barkod için kimliğin ön ve arka yüzüne bakın.",
+        "Farklı belge türlerinde barkod biçimleri ve yerleri farklı olabilir. Barkodu bulmak için belgenin ön ve arka yüzüne bakın.",
       details_desktop:
-        "Kimliğin ön ve arka yüzünde barkod olup olmadığını kontrol edin. Kamera lensinizin temiz ve belgenin iyi aydınlatılmış olduğundan emin olun.",
-      title: "Kimlik üzerindeki barkodu bulun",
+        "Belgede barkod olup olmadığını kontrol etmek için belgenin ön ve arka yüzüne bakın. Kamera lensinizin temiz ve belgenin iyi aydınlatılmış olmasına dikkat edin.",
+      title: "Belgede barkodu bulun",
       title_desktop: "Kamera lensinizi temizleyin ve barkodu bulun",
+    },
+    document_with_mrz: {
+      details:
+        "Belgenin ön veya arka yüzünün alt kısmında 2 veya 3 satıra ayrılmış ve oklarla (<< veya >>) ayrılmış uzun bir karakter dizisi göreceksiniz.",
+      details_desktop:
+        "Belgede MRZ olup olmadığını kontrol etmek için belgenin ön ve arka yüzüne bakın. Belgenin alt kısmında 2-3 satırdan oluşan karakterleri ve ok sembollerini (<<) bulun. Kamera lensinizin temiz ve belgenin iyi aydınlatılmış olmasına dikkat edin.",
+      title: "Belgede MRZ'yi bulun",
+      title_desktop: "Lensinizi temizleyin ve MRZ'yi bulun",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Belge tarama ekranı",
   timeout_modal: {
-    details: "Belge okunamıyor. Lütfen tekrar dene.",
-    title: "Tarama başarısız",
+    details:
+      "Belgenin iyi aydınlatılmış ve tamamen görünür olmasına ve belge üzerinde bir parlama olmamasına dikkat edin.",
+    details_desktop:
+      "Kamera lensinizin temiz ve belgenin tamamen görünür, odakta ve iyi aydınlatılmış olmasına dikkat edin.",
+    title: "Belge okunamıyor",
   },
 } as const;

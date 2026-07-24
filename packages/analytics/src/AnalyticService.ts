@@ -83,7 +83,7 @@ export class AnalyticService {
   #createUxEventPing(pingData: PingUxEventData): PingUxEvent {
     return {
       schemaName: "ping.sdk.ux.event",
-      schemaVersion: "1.1.0",
+      schemaVersion: "1.2.0",
       data: pingData,
     };
   }
@@ -193,6 +193,22 @@ export class AnalyticService {
     return this.#safePing(
       this.#createUxEventPing({
         eventType: "StepTimeout",
+      }),
+    );
+  }
+
+  logInactivityTimeoutEvent() {
+    return this.#safePing(
+      this.#createUxEventPing({
+        eventType: "InactivityTimeout",
+      }),
+    );
+  }
+
+  logUnsupportedBarcodeTimeout() {
+    return this.#safePing(
+      this.#createUxEventPing({
+        eventType: "UnsupportedBarcodeTimeout",
       }),
     );
   }

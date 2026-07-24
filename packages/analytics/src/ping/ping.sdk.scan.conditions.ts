@@ -1,8 +1,4 @@
 /**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
-
-/**
  * Copyright (c) Microblink. All rights reserved.
  *
  * AUTO-GENERATED FILE!!! DO NOT MODIFY!!!

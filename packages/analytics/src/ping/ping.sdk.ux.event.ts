@@ -1,8 +1,4 @@
 /**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
-
-/**
  * Copyright (c) Microblink. All rights reserved.
  *
  * AUTO-GENERATED FILE!!! DO NOT MODIFY!!!
@@ -34,7 +30,9 @@ type EventType =
   | "AlertDisplayed"
   | "ErrorMessage"
   | "StepTimeout"
-  | "AppMovedToBackground";
+  | "AppMovedToBackground"
+  | "InactivityTimeout"
+  | "UnsupportedBarcodeTimeout";
 type ErrorMessageType =
   | "MoveCloser"
   | "MoveFarther"
@@ -51,7 +49,9 @@ type AlertType =
   | "NetworkError"
   | "DocumentClassNotAllowed"
   | "StepTimeout"
-  | "DocumentNotSupported";
+  | "DocumentNotSupported"
+  | "InactivityTimeout"
+  | "UnsupportedBarcodeTimeout";
 type HelpCloseType = "ContentSkipped" | "ContentFullyViewed";
 
 /**
@@ -59,6 +59,6 @@ type HelpCloseType = "ContentSkipped" | "ContentFullyViewed";
  */
 export type PingUxEvent = PingBase<
   "ping.sdk.ux.event",
-  "1.1.0",
+  "1.2.0",
   PingUxEventData
 >;

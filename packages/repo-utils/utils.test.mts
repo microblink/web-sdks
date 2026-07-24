@@ -129,6 +129,23 @@ describe("Utils", () => {
           );
         });
 
+        it("should accept a destination created by a concurrent symlink", async () => {
+          const error = Object.assign(
+            new Error("EEXIST: file already exists"),
+            {
+              code: "EEXIST",
+            },
+          );
+          vi.mocked(fs.ensureSymlink).mockRejectedValue(error);
+          vi.mocked(fs.existsSync)
+            .mockReturnValueOnce(false)
+            .mockReturnValueOnce(true);
+
+          await linkResources(sourcePath, destinationPath);
+
+          expect(fs.copy).not.toHaveBeenCalled();
+        });
+
         it("should fall back to copying when copy succeeds", async () => {
           await linkResources(sourcePath, destinationPath);
 

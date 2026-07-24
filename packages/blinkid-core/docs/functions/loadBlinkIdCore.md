@@ -51,6 +51,15 @@ The URL of the Microblink proxy server. This proxy handles requests to Microblin
 "https://your-proxy.example.com"
 ```
 
+#### otaResources?
+
+[`BlinkIdOtaResourceSettings`](../type-aliases/BlinkIdOtaResourceSettings.md)
+
+Optional browser-only OTA resource settings.
+
+Hosted baseline resources are always loaded. Provider update checks are
+enabled by default; set `checkForUpdates` to `false` to skip the provider.
+
 #### resourcesLocation?
 
 `string`
@@ -74,7 +83,7 @@ Used for analytics and tracking purposes.
 
 #### wasmVariant?
 
-`"basic"` \| `"advanced"` \| `"advanced-threads"`
+`"simd"` \| `"simd-threads"`
 
 The WebAssembly module variant to use.
 Different variants may offer different performance/size tradeoffs.

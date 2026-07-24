@@ -25,6 +25,22 @@ extract barcode immediately at the initialization.
 
 ## Properties
 
+### aztecScanningEnabled
+
+> **aztecScanningEnabled**: `boolean`
+
+Enables the scanning and processing of Aztec barcodes.
+
+This setting can be enabled only if `documentCaptureEnabled` is disabled.
+
+#### Default
+
+```ts
+false
+```
+
+***
+
 ### barcodeImageReturnEnabled
 
 > **barcodeImageReturnEnabled**: `boolean`

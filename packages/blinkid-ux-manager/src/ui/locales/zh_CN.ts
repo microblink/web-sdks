@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "成功！正面已扫描",
     glare_detected: "倾斜或移动文件以消除反光",
     keep_document_parallel: "请将文件与屏幕保持平行",
-    keep_document_still: "请保持文件和设备静止",
     keep_still: "保持不动",
     move_closer: "靠近一些",
     move_farther: "离远一些",
@@ -42,6 +41,7 @@ export default {
     scan_the_barcode: "扫描条形码",
     scan_the_barcode_side: "扫描文件上带有条形码的一面",
     scan_the_front_side: "扫描文件的\\n正面",
+    scan_the_mrz_side: "扫描文件的机读区一面",
     scan_top_page: "扫描顶部页面",
     too_bright: "移动到光线更暗的位置",
     too_dark: "移动到更明亮的位置",
@@ -115,6 +115,37 @@ export default {
         title_desktop: "保持条形码可见",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "扫描时尽量保持手机和文件不动。移动可能造成图像模糊，使文件数据不可读。",
+        details_desktop:
+          "扫描时尽量保持不动。移动可能导致图像模糊，使文件数据无法读取。",
+        title: "扫描时保持不动",
+        title_desktop: "扫描时保持不动",
+      },
+      camera_lens: {
+        details_desktop:
+          "请检查相机镜头是否有污渍或灰尘。镜头脏污会导致成像模糊，从而无法读取文件信息，影响数据扫描成功率。",
+        title_desktop: "清洁摄像头镜头",
+      },
+      lighting: {
+        details:
+          "避免强光直射，因为它会在文件中反射出来 ，可能造成文件的某些地方不可读。如果您不能读取文件上的数据，那么它也不会被相机看到。",
+        details_desktop:
+          "避免强光直射，因为它会在文件中反射出来 ，可能造成文件的某些地方不可读。如果您不能读取文件上的数据，那么它也不会被相机看到。",
+        title: "注意强光直射",
+        title_desktop: "注意强光直射",
+      },
+      visibility: {
+        details:
+          "确保手指没有遮挡机读区。此外，请留意机读区上的反光，反光可能导致机读区无法读取。",
+        details_desktop:
+          "确保手指没有遮挡机读区。此外，请留意机读区上的反光，反光可能导致机读区无法读取。",
+        title: "保持机读区可见",
+        title_desktop: "保持机读区可见",
+      },
+    },
     done_btn: "完成",
     done_btn_aria: "恢复扫描",
     full_document: {
@@ -157,17 +188,25 @@ export default {
         "查找条形码（一系列黑色线条或一个方形码）。将相机对准它并保持不动——会自动进行扫描。",
       details_desktop:
         "查找条形码（一系列黑色线条或一个方形码）。确保相机镜头清洁且条形码光线充足。",
-      title: "定位并扫描条形码",
-      title_desktop: "清洁镜头并定位条形码",
+      title: "找到并扫描条形码",
+      title_desktop: "清洁镜头并找到条形码",
     },
     btn: "开始扫描",
     document_with_barcode: {
       details:
-        "身份证类型不同，其条形码的格式和位置也可能不同。请在身份证正面和反面查找条形码。",
+        "文件类型不同，其条形码的格式和位置也可能不同。请在文件正反面寻找条形码。",
       details_desktop:
-        "检查身份证正反面是否有条形码。确保相机镜头清洁且文件光线充足。",
-      title: "定位身份证上的条形码",
-      title_desktop: "清洁镜头并定位条形码",
+        "检查文件正反面是否有条形码。确保相机镜头清洁且文件光线充足。",
+      title: "找到文件上的条形码",
+      title_desktop: "清洁镜头并找到条形码",
+    },
+    document_with_mrz: {
+      details:
+        "您将在文件正面或反面的底部找到一长串字符，分为 2 到 3 行，并由箭头（<< 或 >>）分隔。",
+      details_desktop:
+        "检查文件正反面是否有机读区。在文件底部寻找 2 至 3 行字符和箭头符号（<<）。确保相机镜头清洁且文件光线充足。",
+      title: "找到文件上的机读区",
+      title_desktop: "清洁镜头并找到机读区",
     },
     full_document: {
       details: "确保文件处于光线充足的地方。所有文件字段应在相机屏幕上可见。",
@@ -178,5 +217,9 @@ export default {
     },
   },
   sdk_aria: "文件扫描屏幕",
-  timeout_modal: { details: "未能读取文件,请重试。", title: "扫描失败" },
+  timeout_modal: {
+    details: "确保文件光线充足、完全可见且无眩光。",
+    details_desktop: "确保相机镜头清洁，文件完全可见、对焦清晰且光线充足。",
+    title: "无法读取文件",
+  },
 } as const;

@@ -12,7 +12,7 @@ export default {
   },
   document_not_recognized_modal: {
     details: "Skenirajte prednju stranu podržanog dokumenta.",
-    title: "Документ није препознат",
+    title: "Dokument nije prepoznat",
   },
   feedback_messages: {
     blur_detected: "Držite mirno dokument i telefon",

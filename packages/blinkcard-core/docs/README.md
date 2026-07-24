@@ -20,8 +20,6 @@
 
 ## Type Aliases
 
-- [AnonymizationMode](type-aliases/AnonymizationMode.md)
-- [AnonymizationSettings](type-aliases/AnonymizationSettings.md)
 - [BlinkCardCore](type-aliases/BlinkCardCore.md)
 - [BlinkCardInitSettings](type-aliases/BlinkCardInitSettings.md)
 - [BlinkCardProcessResult](type-aliases/BlinkCardProcessResult.md)
@@ -34,13 +32,12 @@
 - [BrowserStorageSupport](type-aliases/BrowserStorageSupport.md)
 - [CardAccountResult](type-aliases/CardAccountResult.md)
 - [CardLivenessCheckResult](type-aliases/CardLivenessCheckResult.md)
-- [CardNumberAnonymizationSettings](type-aliases/CardNumberAnonymizationSettings.md)
+- [CardNumberRedactionSettings](type-aliases/CardNumberRedactionSettings.md)
 - [CardRotation](type-aliases/CardRotation.md)
 - [CheckResult](type-aliases/CheckResult.md)
 - [CroppedImageSettings](type-aliases/CroppedImageSettings.md)
 - [DateResult](type-aliases/DateResult.md)
 - [DerivedDeviceInfo](type-aliases/DerivedDeviceInfo.md)
-- [DetectionLevel](type-aliases/DetectionLevel.md)
 - [DetectionStatus](type-aliases/DetectionStatus.md)
 - [DeviceInfo](type-aliases/DeviceInfo.md)
 - [DeviceScreenInfo](type-aliases/DeviceScreenInfo.md)
@@ -83,6 +80,8 @@
 - [ProcessingStatus](type-aliases/ProcessingStatus.md)
 - [ProcessResultWithBuffer](type-aliases/ProcessResultWithBuffer.md)
 - [ProgressStatusCallback](type-aliases/ProgressStatusCallback.md)
+- [RedactionMode](type-aliases/RedactionMode.md)
+- [RedactionSettings](type-aliases/RedactionSettings.md)
 - [RemoteScanningSession](type-aliases/RemoteScanningSession.md)
 - [ResourceFileType](type-aliases/ResourceFileType.md)
 - [ResultCompleteness](type-aliases/ResultCompleteness.md)
@@ -90,12 +89,12 @@
 - [ScanningSide](type-aliases/ScanningSide.md)
 - [ScanningStatus](type-aliases/ScanningStatus.md)
 - [SchemaName](type-aliases/SchemaName.md)
+- [SensitivityLevel](type-aliases/SensitivityLevel.md)
 - [ServerPermissionErrorReason](type-aliases/ServerPermissionErrorReason.md)
 - [ServerPermissionSubmitError](type-aliases/ServerPermissionSubmitError.md)
 - [SingleSideScanningResult](type-aliases/SingleSideScanningResult.md)
 - [StrictnessLevel](type-aliases/StrictnessLevel.md)
 - [WasmBuildType](type-aliases/WasmBuildType.md)
-- [WasmSimdVariant](type-aliases/WasmSimdVariant.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 - [WorkerScanningSession](type-aliases/WorkerScanningSession.md)
 
@@ -104,7 +103,6 @@
 - [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
-- [wasmSimdVariants](variables/wasmSimdVariants.md)
 - [wasmVariants](variables/wasmVariants.md)
 
 ## Functions

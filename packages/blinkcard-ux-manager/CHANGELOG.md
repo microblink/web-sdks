@@ -1,5 +1,13 @@
 # @microblink/blinkcard-ux-manager
 
+## 3000.1.0-next
+
+### Patch Changes
+
+- Fixed feedback UI localization merging so partial user string overrides preserve the default nested localized values instead of replacing whole sections.
+- Updated dependencies
+  - @microblink/blinkcard-core@3000.1.0-next
+
 ## 3000.0.8
 
 ### Patch Changes

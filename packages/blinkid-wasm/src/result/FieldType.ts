@@ -75,4 +75,6 @@ export type FieldType =
   | "socialSecurityStatus"
   | "legalStatus"
   | "husbandName"
-  | "cardAccessNumber";
+  | "cardAccessNumber"
+  | "parentFullName"
+  | "ethnicity";

@@ -1,5 +1,12 @@
 # @microblink/analytics
 
+## 2.0.2
+
+### Patch Changes
+
+- - Adds the new timeout pinglets
+  - Added `logInactivityTimeoutEvent` and `logUnsupportedBarcodeTimeout` to the `AnalyticsService`
+
 ## 2.0.1
 
 ### Patch Changes

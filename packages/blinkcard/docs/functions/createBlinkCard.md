@@ -84,7 +84,7 @@ Defaults to `window.location.href`, at the root of the current page.
 
 #### scanningSettings?
 
-`Partial`\<\{ `anonymizationSettings`: `Partial`\<`OverrideProperties`\<[`AnonymizationSettings`](../type-aliases/AnonymizationSettings.md), \{ `cardNumberAnonymizationSettings`: `Partial`\<[`CardNumberAnonymizationSettings`](../type-aliases/CardNumberAnonymizationSettings.md)\>; \}\>\>; `croppedImageSettings`: `Partial`\<[`CroppedImageSettings`](../type-aliases/CroppedImageSettings.md)\>; `extractionSettings`: `Partial`\<[`ExtractionSettings`](../type-aliases/ExtractionSettings.md)\>; `inputImageMargin`: `number`; `livenessSettings`: `Partial`\<[`LivenessSettings`](../type-aliases/LivenessSettings.md)\>; `skipImagesWithBlur`: `boolean`; `tiltDetectionLevel`: [`DetectionLevel`](../type-aliases/DetectionLevel.md); \}\>
+`Partial`\<\{ `croppedImageSettings`: `Partial`\<[`CroppedImageSettings`](../type-aliases/CroppedImageSettings.md)\>; `extractionSettings`: `Partial`\<[`ExtractionSettings`](../type-aliases/ExtractionSettings.md)\>; `inputImageMargin`: `number`; `livenessSettings`: `Partial`\<[`LivenessSettings`](../type-aliases/LivenessSettings.md)\>; `redactionSettings`: `Partial`\<`OverrideProperties`\<[`RedactionSettings`](../type-aliases/RedactionSettings.md), \{ `cardNumberRedactionSettings`: `Partial`\<[`CardNumberRedactionSettings`](../type-aliases/CardNumberRedactionSettings.md)\>; \}\>\>; `skipImagesWithBlur`: `boolean`; `tiltSensitivityLevel`: [`SensitivityLevel`](../type-aliases/SensitivityLevel.md); \}\>
 
 #### targetNode?
 
@@ -102,7 +102,7 @@ Used for analytics and tracking purposes.
 
 #### wasmVariant?
 
-`"basic"` \| `"advanced"` \| `"advanced-threads"`
+`"simd"` \| `"simd-threads"`
 
 The WebAssembly module variant to use.
 Different variants may offer different performance/size tradeoffs.

@@ -27,8 +27,6 @@
 
 ## Type Aliases
 
-- [AnonymizationMode](type-aliases/AnonymizationMode.md)
-- [AnonymizationSettings](type-aliases/AnonymizationSettings.md)
 - [BlinkCardComponent](type-aliases/BlinkCardComponent.md)
 - [BlinkCardComponentOptions](type-aliases/BlinkCardComponentOptions.md)
 - [BlinkCardCore](type-aliases/BlinkCardCore.md)
@@ -66,13 +64,12 @@
 - [CanvasRenderingMode](type-aliases/CanvasRenderingMode.md)
 - [CardAccountResult](type-aliases/CardAccountResult.md)
 - [CardLivenessCheckResult](type-aliases/CardLivenessCheckResult.md)
-- [CardNumberAnonymizationSettings](type-aliases/CardNumberAnonymizationSettings.md)
+- [CardNumberRedactionSettings](type-aliases/CardNumberRedactionSettings.md)
 - [CardRotation](type-aliases/CardRotation.md)
 - [CheckResult](type-aliases/CheckResult.md)
 - [CroppedImageSettings](type-aliases/CroppedImageSettings.md)
 - [DateResult](type-aliases/DateResult.md)
 - [DerivedDeviceInfo](type-aliases/DerivedDeviceInfo.md)
-- [DetectionLevel](type-aliases/DetectionLevel.md)
 - [DetectionStatus](type-aliases/DetectionStatus.md)
 - [DeviceInfo](type-aliases/DeviceInfo.md)
 - [DeviceScreenInfo](type-aliases/DeviceScreenInfo.md)
@@ -128,6 +125,8 @@
 - [ProcessingStatus](type-aliases/ProcessingStatus.md)
 - [ProcessResultWithBuffer](type-aliases/ProcessResultWithBuffer.md)
 - [ProgressStatusCallback](type-aliases/ProgressStatusCallback.md)
+- [RedactionMode](type-aliases/RedactionMode.md)
+- [RedactionSettings](type-aliases/RedactionSettings.md)
 - [RemoteScanningSession](type-aliases/RemoteScanningSession.md)
 - [Resolution](type-aliases/Resolution.md)
 - [ResourceFileType](type-aliases/ResourceFileType.md)
@@ -136,6 +135,7 @@
 - [ScanningSide](type-aliases/ScanningSide.md)
 - [ScanningStatus](type-aliases/ScanningStatus.md)
 - [SchemaName](type-aliases/SchemaName.md)
+- [SensitivityLevel](type-aliases/SensitivityLevel.md)
 - [ServerPermissionErrorReason](type-aliases/ServerPermissionErrorReason.md)
 - [ServerPermissionSubmitError](type-aliases/ServerPermissionSubmitError.md)
 - [SingleSideScanningResult](type-aliases/SingleSideScanningResult.md)
@@ -147,7 +147,6 @@
 - [VideoFrameProcessorInitOptions](type-aliases/VideoFrameProcessorInitOptions.md)
 - [VideoResolutionName](type-aliases/VideoResolutionName.md)
 - [WasmBuildType](type-aliases/WasmBuildType.md)
-- [WasmSimdVariant](type-aliases/WasmSimdVariant.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 - [WorkerScanningSession](type-aliases/WorkerScanningSession.md)
 
@@ -170,7 +169,6 @@
 - [resourceFileTypes](variables/resourceFileTypes.md)
 - [videoResolutions](variables/videoResolutions.md)
 - [wasmBuildTypes](variables/wasmBuildTypes.md)
-- [wasmSimdVariants](variables/wasmSimdVariants.md)
 - [wasmVariants](variables/wasmVariants.md)
 
 ## Functions

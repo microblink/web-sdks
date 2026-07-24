@@ -12,21 +12,10 @@ Represents the configurable settings for scanning a card.
 
 This structure defines various parameters and policies related to the
 scanning process, including image quality handling, data extraction,
-anonymization, and liveness detection, along with options for frame
+redaction, and liveness detection, along with options for frame
 processing and image extraction.
 
 ## Properties
-
-### anonymizationSettings
-
-> **anonymizationSettings**: [`AnonymizationSettings`](AnonymizationSettings.md)
-
-Represents the configurable settings for data anonymization.
-
-This structure defines various parameters and policies related to the
-anonymization of sensitive data extracted from the payment cards.
-
-***
 
 ### croppedImageSettings
 
@@ -75,6 +64,17 @@ analysis.
 
 ***
 
+### redactionSettings
+
+> **redactionSettings**: [`RedactionSettings`](RedactionSettings.md)
+
+Represents the configurable settings for data redaction.
+
+This structure defines various parameters and policies related to the
+redaction of sensitive data extracted from the payment cards.
+
+***
+
 ### skipImagesWithBlur
 
 > **skipImagesWithBlur**: `boolean`
@@ -88,12 +88,11 @@ processed, and the blur status is reported in the
 
 ***
 
-### tiltDetectionLevel
+### tiltSensitivityLevel
 
-> **tiltDetectionLevel**: [`DetectionLevel`](DetectionLevel.md)
+> **tiltSensitivityLevel**: [`SensitivityLevel`](SensitivityLevel.md)
 
 The level of allowed detected tilt of the card in the image.
 
-Defines the severity of allowed detected tilt of the card in the image, as
-defined in `DetectionLevel`. Values range from `Off` (detection turned off)
-to higher levels of allowed tilt.
+Defines the severity of allowed detected tilt of the card in the image, as defined in `SensitivityLevel`.
+Values range from `Off` (detection turned off) to higher levels of allowed tilt.

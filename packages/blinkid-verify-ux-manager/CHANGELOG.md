@@ -1,5 +1,13 @@
 # @microblink/blinkid-verify-ux-manager
 
+## 3.22.0-next
+
+### Patch Changes
+
+- Fixed feedback UI localization merging so partial user string overrides preserve the default nested localized values instead of replacing whole sections.
+- Updated dependencies
+  - @microblink/blinkid-verify-core@3.22.0-next
+
 ## 3.21.1
 
 ### Patch Changes

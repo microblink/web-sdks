@@ -15,6 +15,9 @@ import { DocumentClassInfo } from "@microblink/blinkid-core";
  * marked as "unsupported-document".
  *
  * @param documentClassInfo - Information about the document class, such as country and type.
+ * Each classification component is a wrapper object — compare against its `id`
+ * (e.g. `documentClassInfo.country?.id === "usa"`); `id` is absent for
+ * OTA-delivered classes unknown at build time (use `rawValue` for those).
  *
  * @returns A boolean indicating whether the document class is supported.
  */

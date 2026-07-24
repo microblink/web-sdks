@@ -11,6 +11,7 @@ import {
 import { SetStoreFunction, createStore } from "solid-js/store";
 
 import enLocaleStrings from "./locales/en";
+import { merge } from "merge-anything";
 
 /**
  * The locale record type.
@@ -22,11 +23,10 @@ export type LocaleRecord = typeof enLocaleStrings;
  */
 export type LocalizedValue<T> =
   T extends Record<string, unknown>
-    ?
-        | {
-            [K in keyof T]: LocalizedValue<T[K]>;
-          }
-        | (string & Record<string, never>)
+    ? | {
+          [K in keyof T]: LocalizedValue<T[K]>;
+        }
+      | (string & Record<string, never>)
     : T | (string & Record<string, never>);
 
 /**
@@ -70,13 +70,8 @@ export const LocalizationProvider: ParentComponent<{
   userStrings?: PartialLocalizationStrings;
 }> = (props) => {
   const mergedStrings = (): LocalizationStrings =>
-    ({
-      ...enLocaleStrings,
-      ...props.userStrings,
-    }) as LocalizationStrings;
+    merge(enLocaleStrings, props.userStrings ?? {}) as LocalizationStrings;
 
-  // avoid initing with original as proxying to the original object will
-  // mutate the original object on store updates
   const [localizationStore, updateLocalizationStore] =
     createStore<LocalizationStrings>(mergedStrings());
 

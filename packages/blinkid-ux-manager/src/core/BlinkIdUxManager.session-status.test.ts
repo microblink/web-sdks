@@ -150,7 +150,7 @@ describe("BlinkIdUxManager session status integration", () => {
       singleSideDocumentWithBarcodeSettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 
@@ -188,7 +188,7 @@ describe("BlinkIdUxManager session status integration", () => {
       singleSideDocumentWithBarcodeSettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 
@@ -226,7 +226,7 @@ describe("BlinkIdUxManager session status integration", () => {
       barcodeOnlySettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 
@@ -250,8 +250,8 @@ describe("BlinkIdUxManager session status integration", () => {
           documentDetectionStatus: "success",
           documentRotation: "zero",
           documentClassInfo: {
-            country: "usa",
-            type: "dl",
+            country: { id: "usa" },
+            documentType: { id: "dl" },
           },
         },
       }),
@@ -269,7 +269,7 @@ describe("BlinkIdUxManager session status integration", () => {
       sessionSettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 
@@ -323,7 +323,7 @@ describe("BlinkIdUxManager session status integration", () => {
       sessionSettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 
@@ -379,7 +379,7 @@ describe("BlinkIdUxManager session status integration", () => {
       sessionSettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 
@@ -423,7 +423,7 @@ describe("BlinkIdUxManager session status integration", () => {
       sessionSettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 
@@ -465,7 +465,7 @@ describe("BlinkIdUxManager session status integration", () => {
       sessionSettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 
@@ -508,7 +508,7 @@ describe("BlinkIdUxManager session status integration", () => {
       sessionSettings,
       false,
       false,
-      {} as DeviceInfo,
+      { derivedDeviceInfo: { formFactors: ["Desktop"] } } as DeviceInfo,
     );
     managers.add(manager);
 

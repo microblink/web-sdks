@@ -2,6 +2,7 @@
  * Copyright (c) 2026 Microblink Ltd. All rights reserved.
  */
 
+import { match } from "ts-pattern";
 import { BlinkIdUiStateKey } from "../core/blinkid-ui-state";
 import type { BlinkIdExtractionMode } from "../core/extractionMode";
 import { LocalizationStrings } from "./LocalizationContext";
@@ -21,9 +22,13 @@ export const feedbackMessages: Partial<
   // intro states
   INTRO_DATA_PAGE: () => "scan_data_page",
   INTRO_FRONT_PAGE: (_, blinkIdExtractionMode) =>
-    blinkIdExtractionMode === "document-with-barcode"
-      ? "scan_the_barcode_side"
-      : "scan_the_front_side",
+    match<
+      BlinkIdExtractionMode | undefined,
+      keyof LocalizationStrings["feedback_messages"]
+    >(blinkIdExtractionMode)
+      .with("document-with-barcode", () => "scan_the_barcode_side")
+      .with("document-with-mrz", () => "scan_the_mrz_side")
+      .otherwise(() => "scan_the_front_side"),
   INTRO_BACK_PAGE: () => "scan_the_back_side",
   INTRO_TOP_PAGE: () => "scan_top_page",
   INTRO_LEFT_PAGE: () => "scan_left_page",
@@ -45,7 +50,7 @@ export const feedbackMessages: Partial<
   WRONG_LAST_PAGE: () => "scan_last_page_barcode",
   // occlusion
   BLUR_DETECTED: (isDesktop?: boolean) =>
-    isDesktop ? "keep_document_still" : "blur_detected",
+    isDesktop ? "keep_still" : "blur_detected",
   GLARE_DETECTED: () => "glare_detected",
   OCCLUDED: () => "occluded",
   // image
@@ -58,9 +63,13 @@ export const feedbackMessages: Partial<
     isDesktop ? "keep_document_parallel" : "camera_angle_too_steep",
   // no document
   FRONT_PAGE_NOT_IN_FRAME: (_, blinkIdExtractionMode) =>
-    blinkIdExtractionMode === "document-with-barcode"
-      ? "scan_the_barcode_side"
-      : "scan_the_front_side",
+    match<
+      BlinkIdExtractionMode | undefined,
+      keyof LocalizationStrings["feedback_messages"]
+    >(blinkIdExtractionMode)
+      .with("document-with-barcode", () => "scan_the_barcode_side")
+      .with("document-with-mrz", () => "scan_the_mrz_side")
+      .otherwise(() => "scan_the_front_side"),
   BACK_PAGE_NOT_IN_FRAME: () => "scan_the_back_side",
   DATA_PAGE_NOT_IN_FRAME: () => "scan_data_page",
   TOP_PAGE_NOT_IN_FRAME: () => "scan_top_page",

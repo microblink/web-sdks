@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-verify-ux-manager",
   "description": "BlinkID Verify UX Manager provides user feedback based on the blinkid-verify process results.",
-  "version": "3.21.1",
+  "version": "3.22.0-next",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -18,7 +18,9 @@
     "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
-    "publish-test": "pnpm build:publish && pnpm pack-check",
+    "publish-test": "pnpm pack-check",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "type-rollup": "api-extractor run --local"
   },
   "publishConfig": {
@@ -51,18 +53,19 @@
     "type-fest": "^4.35.0"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.2",
+    "@arethetypeswrong/cli": "0.18.3",
     "@microblink/feedback-stabilizer": "workspace:^",
-    "@microblink/ux-common": "workspace:^",
+    "@microblink/repo-utils": "workspace:*",
     "@microblink/shared-components": "workspace:^",
     "@microblink/tsconfig": "workspace:*",
     "@microblink/unocss-config": "workspace:*",
-    "@microblink/repo-utils": "workspace:*",
+    "@microblink/ux-common": "workspace:^",
     "@microsoft/api-extractor": "^7.52.4",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
     "@unocss/eslint-config": "^66.6.5",
     "@unocss/preset-uno": "^66.6.5",
+    "@vitest/browser": "^3.0.8",
     "concurrently": "^9.1.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "10.1.8",

@@ -28,7 +28,6 @@ export default {
     glare_detected:
       "Incliner ou déplacer le document afin d'éliminer les reflets",
     keep_document_parallel: "Maintenez le document parallèle à l’écran",
-    keep_document_still: "Gardez le document et l’appareil immobiles",
     keep_still: "Restez immobile",
     move_closer: "Rapprochez-vous",
     move_farther: "Éloignez-vous",
@@ -44,6 +43,7 @@ export default {
     scan_the_barcode: "Scanner le code-barres",
     scan_the_barcode_side: "Numériser le code-barres d’un document",
     scan_the_front_side: "Numérisez le recto\\nd'un document",
+    scan_the_mrz_side: "Scannez le côté MRZ d’un document",
     scan_top_page: "Numériser la première page",
     too_bright: "Se déplacer vers un endroit moins éclairé",
     too_dark: "Déplacer le document vers un endroit plus lumineux",
@@ -117,6 +117,37 @@ export default {
         title_desktop: "Gardez le code-barres visible",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Essayez de garder le téléphone et le document immobiles pendant la numérisation. Tout mouvement de l'un ou l'autre peut brouiller l'image et rendre les données du document illisibles.",
+        details_desktop:
+          "Essayez de rester immobile pendant la numérisation. Tout mouvement peut brouiller l’image et rendre les données du document illisibles.",
+        title: "Restez immobile pendant la numérisation",
+        title_desktop: "Restez immobile pendant la numérisation",
+      },
+      camera_lens: {
+        details_desktop:
+          "Vérifiez que l’objectif de votre appareil photo ne présente aucune trace ni poussière. Un objectif sale rend l’image finale floue, ce qui empêche la lecture des informations du document ainsi que la numérisation des données.",
+        title_desktop: "Nettoyez l’objectif de votre appareil photo",
+      },
+      lighting: {
+        details:
+          "Évitez toute lumière directe et vive, car elle se reflète sur le document et peut rendre certaines parties du document illisibles. Si les données ne sont pas lisibles sur le document, elles ne le seront pas non plus pour la caméra.",
+        details_desktop:
+          "Évitez toute lumière directe et vive, car elle se reflète sur le document et peut rendre certaines parties du document illisibles. Si les données ne sont pas lisibles sur le document, elles ne le seront pas non plus pour la caméra.",
+        title: "Faites attention aux lumières trop vives",
+        title_desktop: "Faites attention aux lumières trop vives",
+      },
+      visibility: {
+        details:
+          "Veillez à ce que votre doigt ne recouvre pas certaines parties du MRZ. Faites également attention aux reflets qui masquent le MRZ et peuvent le rendre illisible.",
+        details_desktop:
+          "Veillez à ce que votre doigt ne recouvre pas certaines parties du MRZ. Faites également attention aux reflets qui masquent le MRZ et peuvent le rendre illisible.",
+        title: "Gardez le MRZ visible",
+        title_desktop: "Gardez le MRZ visible",
+      },
+    },
     done_btn: "Terminé",
     done_btn_aria: "Reprendre la numérisation",
     full_document: {
@@ -165,11 +196,19 @@ export default {
     btn: "Commencer à numériser",
     document_with_barcode: {
       details:
-        "Les différents types de pièces d’identité peuvent avoir des formats et des emplacements de codes-barres différents. Examinez le recto et le verso de la pièce d’identité à la recherche d’un code-barres.",
+        "Les différents types de documents peuvent avoir des formats et des emplacements de codes-barres différents. Examinez le recto et le verso du document à la recherche d’un code-barres.",
       details_desktop:
-        "Cherchez un code-barres au recto et au verso de la pièce d’identité. Assurez-vous que l’objectif de votre appareil photo est propre et que le document est bien éclairé.",
-      title: "Localiser le code-barres sur la pièce d’identité",
+        "Cherchez un code-barres au recto et au verso du document. Assurez-vous que l’objectif de votre appareil photo est propre et que le document est bien éclairé.",
+      title: "Repérez le code-barres sur le document",
       title_desktop: "Nettoyez votre objectif et localisez le code-barres",
+    },
+    document_with_mrz: {
+      details:
+        "Vous trouverez une longue chaîne de caractères en bas du recto ou du verso du document, divisée en deux ou trois lignes et séparée par des flèches (<< ou >>).",
+      details_desktop:
+        "Cherchez un MRZ au recto et au verso du document. Repérez deux à trois lignes de caractères et des symboles fléchés (<<) en bas du document. Assurez-vous que l’objectif de votre appareil photo est propre et que le document est bien éclairé.",
+      title: "Repérez MRZ sur le document",
+      title_desktop: "Nettoyez votre objectif et repérez le MRZ",
     },
     full_document: {
       details:
@@ -182,7 +221,10 @@ export default {
   },
   sdk_aria: "Écran de numérisation du document",
   timeout_modal: {
-    details: "Impossible de lire le document. Veuillez réessayer.",
-    title: "Numérisation infructueuse",
+    details:
+      "Assurez-vous que le document est bien éclairé, entièrement visible et sans reflet.",
+    details_desktop:
+      "Assurez-vous que l’objectif de votre appareil photo est propre et que le document est bien visible, net et bien éclairé.",
+    title: "Impossible de lire le document",
   },
 } as const;

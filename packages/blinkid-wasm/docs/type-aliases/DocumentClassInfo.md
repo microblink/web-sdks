@@ -14,39 +14,47 @@ Represents the document class information.
 
 ### country
 
-> **country**: [`Country`](Country.md) \| `undefined`
+> **country**: [`DocumentClassCountry`](DocumentClassCountry.md) \| `undefined`
 
 The document country.
 
 ***
 
-### countryName
+### countryName?
 
-> **countryName**: `string`
+> `optional` **countryName**: `string`
 
 The name of the country that issued the scanned document.
 
 ***
 
-### isoAlpha2CountryCode
+### documentType
 
-> **isoAlpha2CountryCode**: `string`
+> **documentType**: [`DocumentClassDocumentType`](DocumentClassDocumentType.md) \| `undefined`
+
+The type of the scanned document.
+
+***
+
+### isoAlpha2CountryCode?
+
+> `optional` **isoAlpha2CountryCode**: `string`
 
 The 2-letter ISO code of the country that issued the scanned document.
 
 ***
 
-### isoAlpha3CountryCode
+### isoAlpha3CountryCode?
 
-> **isoAlpha3CountryCode**: `string`
+> `optional` **isoAlpha3CountryCode**: `string`
 
 The 3-letter ISO code of the country that issued the scanned document.
 
 ***
 
-### isoNumericCountryCode
+### isoNumericCountryCode?
 
-> **isoNumericCountryCode**: `string`
+> `optional` **isoNumericCountryCode**: `string`
 
 The ISO numeric code of the country that issued the scanned document.
 
@@ -54,14 +62,6 @@ The ISO numeric code of the country that issued the scanned document.
 
 ### region
 
-> **region**: [`Region`](Region.md) \| `undefined`
+> **region**: [`DocumentClassRegion`](DocumentClassRegion.md) \| `undefined`
 
 The document region.
-
-***
-
-### type
-
-> **type**: [`DocumentType`](DocumentType.md) \| `undefined`
-
-The type of the scanned document.

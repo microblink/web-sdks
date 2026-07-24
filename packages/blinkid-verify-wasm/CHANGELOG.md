@@ -1,5 +1,11 @@
 # @microblink/blinkid-verify-wasm
 
+## 3.22.0-next
+
+### Minor Changes
+
+- Renamed shipped Wasm build directories: `advanced` → `simd` and `advanced-threads` → `simd-threads`.
+
 ## 3.21.1
 
 ### Patch Changes

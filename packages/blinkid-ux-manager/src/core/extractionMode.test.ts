@@ -93,6 +93,39 @@ describe("getBlinkIdExtractionMode", () => {
       },
       "barcode-only",
     ],
+    [
+      "document with MRZ",
+      {
+        scanningMode: "single",
+        scanningSettings: {
+          documentCaptureModule: documentCaptureModule,
+          mrzModule: { presenceMandatory: true },
+        },
+      },
+      "document-with-mrz",
+    ],
+    [
+      "document with MRZ",
+      {
+        scanningMode: "single",
+        scanningSettings: {
+          documentCaptureModule: documentCaptureModule,
+          mrzModule: { presenceMandatory: false },
+        },
+      },
+      "full-document",
+    ],
+    [
+      "document with MRZ Automatic",
+      {
+        scanningMode: "automatic",
+        scanningSettings: {
+          documentCaptureModule: documentCaptureModule,
+          mrzModule: { presenceMandatory: true },
+        },
+      },
+      "full-document",
+    ],
   ] as const)(
     "returns %s extraction mode",
     (_label, sessionSettings, expected) => {

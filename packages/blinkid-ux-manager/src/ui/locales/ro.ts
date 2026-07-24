@@ -27,7 +27,6 @@ export default {
     glare_detected:
       "Înclinați sau deplasați documentul pentru a elimina reflexiile",
     keep_document_parallel: "Țineți documentul paralel cu ecranul",
-    keep_document_still: "Mențineți documentul și dispozitivul nemișcate",
     keep_still: "Nu vă mișcați",
     move_closer: "Apropiați",
     move_farther: "Îndepărtați",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "Scanare cod de bare",
     scan_the_barcode_side: "Scanați partea cu codul de bare a unui document",
     scan_the_front_side: "Scanați partea din față\\na unui document",
+    scan_the_mrz_side: "Scanați partea documentului pe care se află MRZ",
     scan_top_page: "Scanați prima pagină",
     too_bright: "Mutați-vă într-un loc mai puțin luminos",
     too_dark: "Mutați-vă într-un loc mai luminos",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Mențineți codul de bare vizibil",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Încercați să mențineți telefonul și documentul imobile în timpul scanării. Mișcările pot compromite claritatea imaginii și pot face imposibilă citirea datelor din document.",
+        details_desktop:
+          "Încercați să nu vă mișcați în timpul scanării. Mișcarea poate face ca imaginea să fie neclară și ca datele din document să devină ilizibile.",
+        title: "Nu vă mișcați în timpul scanării",
+        title_desktop: "Nu vă mișcați în timpul scanării",
+      },
+      camera_lens: {
+        details_desktop:
+          "Verificați ca lentila camerei să nu prezinte pete sau praf. Folosirea unei lentile murdare duce la o imagine finală neclară, făcând detaliile documentului ilizibile și împiedicând scanarea cu succes a datelor.",
+        title_desktop: "Curățați lentila camerei",
+      },
+      lighting: {
+        details:
+          "Evitați lumina puternică directă, deoarece se va reflecta din document și poate face imposibilă citirea anumitor porțiuni din acesta. Dacă nu puteți citi datele din document, ele nu vor fi vizibile nici pe cameră.",
+        details_desktop:
+          "Evitați lumina puternică directă, deoarece se va reflecta din document și poate face imposibilă citirea anumitor porțiuni din acesta. Dacă nu puteți citi datele din document, ele nu vor fi vizibile nici pe cameră.",
+        title: "Feriți-vă de lumina puternică",
+        title_desktop: "Feriți-vă de lumina puternică",
+      },
+      visibility: {
+        details:
+          "Asigurați-vă că nu acoperiți cu degetul nicio parte a zonei MRZ. De asemenea, aveți grijă să nu se formeze reflexii peste zona MRZ, deoarece o pot face ilizibilă.",
+        details_desktop:
+          "Asigurați-vă că nu acoperiți cu degetul nicio parte a zonei MRZ. De asemenea, aveți grijă să nu se formeze reflexii peste zona MRZ, deoarece o pot face ilizibilă.",
+        title: "Păstrați zona MRZ vizibilă",
+        title_desktop: "Păstrați zona MRZ vizibilă",
+      },
+    },
     done_btn: "Terminat",
     done_btn_aria: "Reluați scanarea",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Porniți scanarea",
     document_with_barcode: {
       details:
-        "Diferitele tipuri de acte de identitate pot avea formate și amplasări diferite ale codului de bare. Verificați partea din față și cea din spate a actului de identitate pentru a localiza codul de bare.",
+        "Diversele tipuri de documente pot avea formate și amplasări diferite ale codului de bare. Priviți atât partea din față, cât și din spate a documentului pentru a localiza codul de bare.",
       details_desktop:
-        "Verificați partea din față și cea din spate a actului de identitate pentru a localiza codul de bare. Asigurați-vă că obiectivul camerei este curat, iar documentul este bine iluminat.",
-      title: "Localizați codul de bare pe actul de identitate",
+        "Priviți atât partea din față, cât și din spate a documentului pentru a localiza codul de bare. Asigurați-vă că obiectivul camerei este curat, iar documentul este bine iluminat.",
+      title: "Găsiți codul de bare pe document",
       title_desktop: "Curățați obiectivul și localizați codul de bare",
+    },
+    document_with_mrz: {
+      details:
+        "Veți găsi un șir lung de caractere în partea de jos a documentului, pe fața sau pe spatele acestuia, întins pe 2 sau 3 rânduri și separat prin săgeți (<< sau >>).",
+      details_desktop:
+        "Priviți atât partea din față, cât și din spate a documentului pentru a localiza MRZ. Căutați 2-3 rânduri de caractere și simboluri de tip săgeată (<<) în partea de jos a documentului. Asigurați-vă că obiectivul camerei este curat, iar documentul este bine iluminat.",
+      title: "Găsiți MRZ pe document",
+      title_desktop: "Curățați obiectivul și localizați zona MRZ",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Ecran scanare documente",
   timeout_modal: {
-    details: "Documentul nu poate fi citit. Încercați din nou.",
-    title: "Scanare nereușită",
+    details:
+      "Asigurați-vă că documentul este bine iluminat, vizibil în întregime și fără nicio reflexie.",
+    details_desktop:
+      "Asigurați-vă că obiectivul camerei este curat, iar documentul este vizibil în întregime, focalizat corect și bine iluminat.",
+    title: "Documentul nu poate fi citit.",
   },
 } as const;

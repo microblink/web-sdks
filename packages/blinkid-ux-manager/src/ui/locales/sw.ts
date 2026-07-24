@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Imemaliza! Upande wa mbele umeskaniwa",
     glare_detected: "Inamisha au sogeza hati ili uondoe mwanga unaoakisiwa",
     keep_document_parallel: "Hakikisha hati iko sambamba na skrini",
-    keep_document_still: "Hakikisha hati na kifaa havisongi",
     keep_still: "Hakikisha haisongi",
     move_closer: "Songa karibu",
     move_farther: "Songa mbali",
@@ -42,6 +41,7 @@ export default {
     scan_the_barcode: "Skani msimbopau",
     scan_the_barcode_side: "Skani upande wa msimbopau wa hati",
     scan_the_front_side: "Skani upande wa mbele wa hati",
+    scan_the_mrz_side: "Skani upande wa MRZ wa hati",
     scan_top_page: "Skani ukurasa wa juu",
     too_bright: "Songa mahali penye mwanga kidogo",
     too_dark: "Songa mahali penye mwanga mwingi",
@@ -115,6 +115,37 @@ export default {
         title_desktop: "Hakikisha msimbopau unaonekana",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Jaribu kuhakikisha hati na simu havisongi unaposkani. Ukisogeza chochote picha inaweza kukosa kuonekana vizuri na kufanya data kwenye hati isiweze kusomeka.",
+        details_desktop:
+          "Jaribu kuhakikisha haisongi unaposkani. Ikisonga inaweza kufanya picha isionekane vizuri na kufanya data kwenye hati isiweze kusomeka.",
+        title: "Usisonge unaposkani",
+        title_desktop: "Usisonge unaposkani",
+      },
+      camera_lens: {
+        details_desktop:
+          "Angalia lenzi ya kamera yako kama ina uchafu au madoa. Lenzi chafu hufanya picha ya mwisho isionekane vizuri, na kufanya maelezo ya hati yasiweze kusomeka na kuzuia data kuskanikiwa vizuri.",
+        title_desktop: "Safisha lenzi ya kamera yako",
+      },
+      lighting: {
+        details:
+          "Epuka mwanga mkali wa moja kwa moja kwa sababu huakisiwa kutoka kwenye hati na inaweza kufanya sehemu za hati zisiweze kusomeka. Ikiwa huwezi kusoma data kwenye hati, vilevile haitaonekana kwenye kamera.",
+        details_desktop:
+          "Epuka mwanga mkali wa moja kwa moja kwa sababu huakisiwa kutoka kwenye hati na inaweza kufanya sehemu za hati zisiweze kusomeka. Ikiwa huwezi kusoma data kwenye hati, vilevile haitaonekana kwenye kamera.",
+        title: "Kuwa mwangalifu na mwanga mkali",
+        title_desktop: "Kuwa mwangalifu na mwanga mkali",
+      },
+      visibility: {
+        details:
+          "Hakikisha hujafunika sehemu za MRZ kwa kidole. Pia, kuwa mwangalifu na mwanga unaoakisiwa unaopita juu ya MRZ na unaweza kuufanya isisomeke.",
+        details_desktop:
+          "Hakikisha hujafunika sehemu za MRZ kwa kidole. Pia, kuwa mwangalifu na mwanga unaoakisiwa unaopita juu ya MRZ na unaweza kuufanya isisomeke.",
+        title: "Hakikisha MRZ inaonekana",
+        title_desktop: "Hakikisha MRZ inaonekana",
+      },
+    },
     done_btn: "Umemaliza",
     done_btn_aria: "Endelea kuskani",
     full_document: {
@@ -163,11 +194,19 @@ export default {
     btn: "Anza kuskani",
     document_with_barcode: {
       details:
-        "Aina tofauti za vitambulisho vinaweza kuwa na miundo na maeneo tofauti ya msimbopau. Angalia upande wa mbele na nyuma wa kitambulisho ili uone msimbopau.",
+        "Aina tofauti za hati zinaweza kuwa na miundo na sehemu tofauti ya msimbopau. Angalia upande wa mbele na nyuma wa hati ili uone msimbopau.",
       details_desktop:
-        "Angalia upande wa mbele na nyuma wa kitambulisho ili uone msimbopau. Hakikisha lenzi za kamera yako ni safi na hati iko kwenye mwanga wa kutosha.",
-      title: "Tafuta msimbopau kwenye kitambulisho",
+        "Angalia upande wa mbele na nyuma wa hati ili uone msimbopau. Hakikisha lenzi za kamera yako ni safi na hati iko kwenye mwanga wa kutosha.",
+      title: "Tafuta msimbopau kwenye hati",
       title_desktop: "Safisha lenzi za kamera yako na utafute msimbopau",
+    },
+    document_with_mrz: {
+      details:
+        "Utapata mfululizo mrefu wa herufi chini ya sehemu ya mbele au nyuma ya hati, uliogawanywa katika mistari 2 au 3 na kutenganishwa na mishale (<< au >>).",
+      details_desktop:
+        "Angalia upande wa mbele na nyuma wa hati ili uone MZR. Tafuta mistari 2–3 ya herufi na alama za kishale (<<) zilizo chini ya hati.Hakikisha lenzi za kamera yako ni safi na hati iko kwenye mwanga wa kutosha.",
+      title: "Tafuta MRZ kwenye hati",
+      title_desktop: "Safisha lenzi yako na utafute MRZ",
     },
     full_document: {
       details:
@@ -180,7 +219,10 @@ export default {
   },
   sdk_aria: "Skrini ya kuskani hati",
   timeout_modal: {
-    details: "Imeshindwa kusoma hati. Tafadhali jaribu tena.",
-    title: "Imeshindwa kuskani",
+    details:
+      "Hakikisha hati ina mwanga wa kutosha, inaonekana vizuri, na haina mng'ao.",
+    details_desktop:
+      "Hakikisha lenzi za kamera yako ni safi na hati inaonekana kikamilifu, iko wazi na ina mwanga wa kutosha.",
+    title: "Imeshindwa kusoma hati",
   },
 } as const;

@@ -27,7 +27,6 @@ export default {
     front_side_scanned_aria: "Tagumpay! Na-scan ang harap na bahagi",
     glare_detected: "I-tilt o iusog ang dokumento para maalis ang reflection",
     keep_document_parallel: "Panatilihing nakatapat ang dokumento sa screen",
-    keep_document_still: "Panatilihing hindi gumagalaw ang dokumento at device",
     keep_still: "Huwag gumalaw",
     move_closer: "Ilapit pa",
     move_farther: "Ilayo pa",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "I-scan ang barcode",
     scan_the_barcode_side: "I-scan ang barcode na bahagi ng dokumento",
     scan_the_front_side: "I-scan ang unahang bahagi ng dokumento",
+    scan_the_mrz_side: "I-scan ang bahagi ng dokumento na may MRZ",
     scan_top_page: "I-scan ang itaas ng page",
     too_bright: "Iusog sa bahaging hindi masyadong maliwanag",
     too_dark: "Iusog sa bahaging mas malinawag",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Panatilihing nakikita ang barcode",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Panatilihing ito gumagalaw ang telepono at dokumento habang nag-i-scan. Puwedeng maging malabo at hindi nababasa ang data sa dokumento kapag gumalaw.",
+        details_desktop:
+          "Panatilihing hindi gumagalaw habang nag-i-scan. Puwedeng maging malabo at hindi mabasa ang data sa dokumento kapag gumagalaw.",
+        title: "Panatilihing hindi gumagalaw habang nag-i-scan",
+        title_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan",
+      },
+      camera_lens: {
+        details_desktop:
+          "Suriin kung may mga mantsa o alikabok ang lens ng camera mo. Nagdudulot ng paglabo ng pinal na larawan ang maruruming lens, na dahilan para hindi mabasa ang mga detalye ng dokumento at hindi pag-scan sa data.",
+        title_desktop: "Linisin ang mga lens ng camera mo",
+      },
+      lighting: {
+        details:
+          "Iwasan ang direktang nakakasilaw na liwanag dahil umaaninag ito mula sa dokumento at puwedeng gawing hindi nababasa ang mga bahagi ng dokumento. Kung hindi mo mabasa ang data sa dokuemnto, hindi rin ito makikita ng camera.",
+        details_desktop:
+          "Iwasan ang direktang nakakasilaw na liwanag dahil umaaninag ito mula sa dokumento at puwedeng gawing hindi nababasa ang mga bahagi ng dokumento. Kung hindi mo mabasa ang data sa dokuemnto, hindi rin ito makikita ng camera.",
+        title: "Tingnan kung may nakakasilaw na liwanag",
+        title_desktop: "Tingnan kung may nakakasilaw na liwanag",
+      },
+      visibility: {
+        details:
+          "Siguradhing hindi mo natatakpan ng daliri ang mga bahagi ng MRZ. Tingnan din kung may mga reflection sa MRZ na dahilan para hindi mabasa ito.",
+        details_desktop:
+          "Siguradhing hindi mo natatakpan ng daliri ang mga bahagi ng MRZ. Tingnan din kung may mga reflection sa MRZ na dahilan para hindi mabasa ito.",
+        title: "Panatilihing nakikita ang MRZ",
+        title_desktop: "Panatilihing nakikita ang MRZ",
+      },
+    },
     done_btn: "Tapos na",
     done_btn_aria: "I-resume ang pag-scan",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Simulan ang Pag-scan",
     document_with_barcode: {
       details:
-        "Maaaring may iba't ibang format at lokasyon ng barcode ang iba't ibang uri ng ID. Tingnan ang harap at likod ng ID para sa barcode.",
+        "Maaaring may iba't ibang format at lokasyon ng barcode ang iba't ibang uri ng mga dokumento. Tingnan ang harap at likod ng dokumento para sa barcode.",
       details_desktop:
-        "Tingnan ang harap at likod ng ID para sa barcode. Siguraduhing malinis ang lens ng camera mo at lubos na naiilawan ang barcode.",
-      title: "Hanapin ang barcode sa ID",
+        "Tingnan ang harap at likod ng dokumento para sa barcode. Siguraduhing malinis ang lens ng camera mo at sapat na naiilawan ang dokumento.",
+      title: "Hanapin ang barcode sa dokumento",
       title_desktop: "Linisin ang lens mo at hanapin ang barcode",
+    },
+    document_with_mrz: {
+      details:
+        "Makakakita ka ng mahabang string ng mga character sa ibaba ng harap o likod ng dokumento. Nahahati ito sa 2 o 3 linya at pinaghihiwalay ng mga arrow (<< o >>).",
+      details_desktop:
+        "Tingnan ang harap at likod ng dokumento para sa MRZ. Hanapin ang 2–3 linya ng mga character at mga simbolo ng arrow  (<<) sa ibaba ng dokumento. Siguraduhing malinis ang lens ng camera mo at sapat na naiilawan ang dokumento.",
+      title: "Hanapin ang MRZ sa dokumento",
+      title_desktop: "Linisin ang lens mo at hanapin ang MRZ",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Screen ng pag-scan ng dokumento",
   timeout_modal: {
-    details: "Hindi mabasa ang dokumento. Pakisubukan ulit.",
-    title: "Hindi matagumpay ang pag-scan",
+    details:
+      "Siguraduhing sapat na naiilawan ang dokumento, ganap na nakikita, at walang glare.",
+    details_desktop:
+      "Siguraduhing malinis ang lens ng camera mo at ganap na nakikita ang dokumento, naka-focus, at sapat na naiilawan.",
+    title: "Hindi mabasa ang dokumento",
   },
 } as const;

@@ -26,7 +26,6 @@ export default {
     front_side_scanned_aria: "Onnistui! Etupuoli skannattu",
     glare_detected: "Kallista tai siirrä asiakirjaa heijastuksen poistamiseksi",
     keep_document_parallel: "Pidä asiakirja näytön suuntaisena",
-    keep_document_still: "Pidä asiakirja ja laite paikoillaan",
     keep_still: "Pysy liikkumatta",
     move_closer: "Siirry lähemmäs",
     move_farther: "Siirry kauemmas",
@@ -42,6 +41,7 @@ export default {
     scan_the_barcode: "Skannaa viivakoodi",
     scan_the_barcode_side: "Skannaa asiakirjan viivakoodipuoli",
     scan_the_front_side: "Skannaa asiakirjan etupuoli",
+    scan_the_mrz_side: "Lue asiakirjan MRZ-puoli",
     scan_top_page: "Skannaa yläsivu",
     too_bright: "Siirry himmeämmin valaistuun paikkaan",
     too_dark: "Siirry kirkkaampaan paikkaan",
@@ -115,6 +115,37 @@ export default {
         title_desktop: "Pidä viivakoodi näkyvissä",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Yritä pitää puhelin ja asiakirja paikallaan skannauksen aikana. Jommankumman liikkuminen voi tehdä kuvasta epäselvän ja asiakirjan tiedoista lukukelvottomia.",
+        details_desktop:
+          "Yritä pysyä liikkumatta skannauksen aikana. Liikkuminen voi sumentaa kuvaa ja tehdä asiakirjan tiedoista lukukelvottomia.",
+        title: "Pysy paikallasi skannauksen aikana",
+        title_desktop: "Pysy paikallasi skannauksen aikana",
+      },
+      camera_lens: {
+        details_desktop:
+          "Tarkista kameran linssi tahrojen tai pölyn varalta. Likainen linssi aiheuttaa lopullisen kuvan sumenemista ja tekee asiakirjan tiedoista lukukelvottomia, jolloin tietojen skannaus ei onnistu.",
+        title_desktop: "Puhdista kameran linssi",
+      },
+      lighting: {
+        details:
+          "Vältä suoraa voimakasta valoa, koska se heijastuu asiakirjasta ja voi tehdä osia siitä lukukelvottomiksi. Jos et pysty lukemaan asiakirjan tietoja, ne eivät näy myöskään kameralle.",
+        details_desktop:
+          "Vältä suoraa voimakasta valoa, koska se heijastuu asiakirjasta ja voi tehdä osia siitä lukukelvottomiksi. Jos et pysty lukemaan asiakirjan tietoja, ne eivät näy myöskään kameralle.",
+        title: "Varo voimakasta valoa",
+        title_desktop: "Varo voimakasta valoa",
+      },
+      visibility: {
+        details:
+          "Varmista, ettet peitä mitään MRZ-alueen osaa sormella. Kiinnitä lisäksi huomiota MRZ-alueella oleviin heijastuksiin, jotka voisivat estää sen lukemisen.",
+        details_desktop:
+          "Varmista, ettet peitä mitään MRZ-alueen osaa sormella. Kiinnitä lisäksi huomiota MRZ-alueella oleviin heijastuksiin, jotka voisivat estää sen lukemisen.",
+        title: "Pidä MRZ näkyvissä",
+        title_desktop: "Pidä MRZ näkyvissä",
+      },
+    },
     done_btn: "Valmis",
     done_btn_aria: "Jatka skannausta",
     full_document: {
@@ -163,11 +194,19 @@ export default {
     btn: "Aloita skannaus",
     document_with_barcode: {
       details:
-        "Erityyppisten henkilötodistusten viivakoodi voi olla eri muodossa tai eri paikassa. Etsi viivakoodi henkilötodistuksen etu- tai taustapuolelta.",
+        "Erityyppisten asiakirjojen viivakoodin muoto ja sijainti saattavat vaihdella. Etsi viivakoodi tarkistamalla asiakirjan etu- ja kääntöpuoli.",
       details_desktop:
-        "Etsi viivakoodi henkilötodistuksen etu- tai taustapuolelta. Varmista, että kameran linssi on puhdas ja viivakoodi hyvin valaistu.",
-      title: "Etsi viivakoodi henkilötodistuksesta",
+        "Etsi viivakoodi tarkistamalla asiakirjan etu- ja kääntöpuoli. Varmista, että kameran linssi on puhdas ja asiakirja on hyvin valaistu.",
+      title: "Etsi asiakirjan viivakoodi",
       title_desktop: "Puhdsta linssi ja etsi viivakoodi",
+    },
+    document_with_mrz: {
+      details:
+        "Löydät asiakirjan etu- tai kääntöpuolen alareunasta pitkän merkkijonon, joka on jaettu 2 tai 3 riville ja jonka osat on erotettu toisistaan nuolilla (<< tai >>).",
+      details_desktop:
+        "Etsi MRZ tarkistamalla asiakirjan etu- ja kääntöpuoli. MRZ on asiakirjan alareunassa oleva alue, jolla on 2–3 riviä merkkejä ja nuolisymboleja (<<). Varmista, että kameran linssi on puhdas ja asiakirja on hyvin valaistu.",
+      title: "Etsi asiakirjan MRZ",
+      title_desktop: "Puhdista linssi ja etsi MRZ",
     },
     full_document: {
       details:
@@ -180,7 +219,10 @@ export default {
   },
   sdk_aria: "Asiakirjan skannausnäyttö",
   timeout_modal: {
-    details: "Asiakirjan lukeminen ei onnistu. Yritä uudelleen.",
-    title: "Skannaus epäonnistui",
+    details:
+      "Varmista, että asiakirja on hyvin valaistu, se näkyy kokonaisuudessaan eikä siinä ole heijastuksia.",
+    details_desktop:
+      "Varmista, että kameran linssi on puhdas ja että asiakirja näkyy kokonaisuudessaan, se on hyvin valaistu ja tarkennus on terävä.",
+    title: "Asiakirjaa ei voitu lukea",
   },
 } as const;

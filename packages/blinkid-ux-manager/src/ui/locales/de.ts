@@ -27,7 +27,6 @@ export default {
     glare_detected:
       "Dokument neigen oder bewegen, um die Spiegelung zu beseitigen",
     keep_document_parallel: "Dokument parallel zum Bildschirm halten",
-    keep_document_still: "Dokument und Gerät ruhig halten",
     keep_still: "Ruhig halten",
     move_closer: "Kommen Sie näher",
     move_farther: "Bewegen Sie sich weiter weg",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "Scannen Sie den Barcode",
     scan_the_barcode_side: "Scannen Sie die Barcode-Seite eines Dokuments",
     scan_the_front_side: "Scannen Sie die Vorderseite \\n eines Dokuments",
+    scan_the_mrz_side: "Scannen Sie die MRZ-Seite eines Dokuments",
     scan_top_page: "Oberste Seite scannen",
     too_bright: "An eine Stelle mit weniger Licht gehen",
     too_dark: "An eine hellere Stelle gehen",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Der Barcode muss sichtbar bleiben",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Versuchen Sie, das Telefon und das Dokument während des Scanvorgangs ruhig zu halten. Jede Bewegung kann das Bild unscharf und die Daten auf dem Dokument unlesbar machen.",
+        details_desktop:
+          "Vermeiden Sie Bewegungen während des Scanvorgangs. Jede Bewegung kann das Bild unscharf und die Daten auf dem Dokument unlesbar machen.",
+        title: "Halten Sie während des Scanvorgangs still",
+        title_desktop: "Halten Sie während des Scanvorgangs still",
+      },
+      camera_lens: {
+        details_desktop:
+          "Überprüfen Sie Ihr Kameraobjektiv auf Verschmutzungen oder Staub. Ein verschmutztes Objektiv führt dazu, dass das endgültige Bild unscharf wird, wodurch die Dokumentendetails unleserlich werden und ein erfolgreiches Scannen der Daten verhindert wird.",
+        title_desktop: "Reinigen Sie Ihr Kameraobjektiv",
+      },
+      lighting: {
+        details:
+          "Meiden Sie direktes, grelles Licht, da dieses vom Dokument reflektiert wird und so Teile des Dokuments unkenntlich machen kann. Wenn Sie keine Daten auf dem Dokument lesen können, sind diese auch für die Kamera nicht sichtbar.",
+        details_desktop:
+          "Meiden Sie direktes, grelles Licht, da dieses vom Dokument reflektiert wird und so Teile des Dokuments unkenntlich machen kann. Wenn Sie keine Daten auf dem Dokument lesen können, sind diese auch für die Kamera nicht sichtbar.",
+        title: "Achten Sie auf grelles Licht",
+        title_desktop: "Achten Sie auf grelles Licht",
+      },
+      visibility: {
+        details:
+          "Achten Sie darauf, dass Sie Teile des MRZ nicht mit einem Finger verdecken. Achten Sie außerdem auf Reflexionen, die über den MRZ fallen und diesen unlesbar machen könnten.",
+        details_desktop:
+          "Achten Sie darauf, dass Sie Teile des MRZ nicht mit einem Finger verdecken. Achten Sie außerdem auf Reflexionen, die über den MRZ fallen und diesen unlesbar machen könnten.",
+        title: "Der MRZ muss sichtbar sein",
+        title_desktop: "Der MRZ muss sichtbar sein",
+      },
+    },
     done_btn: "Fertig",
     done_btn_aria: "Scannen fortsetzen",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Scannen beginnen",
     document_with_barcode: {
       details:
-        "Verschiedene Arten von Ausweisen können unterschiedliche Barcodeformate und -positionen haben. Suchen Sie auf der Vorder- und Rückseite des Ausweises nach einem Barcode.",
+        "Verschiedene Arten von Dokumenten können unterschiedliche Barcodeformate und -positionen haben. Suchen Sie auf der Vorder- und Rückseite des Dokuments nach einem Barcode.",
       details_desktop:
-        "Überprüfen Sie die Vorder- und Rückseite des Ausweises auf den Barcode. Sorgen Sie dafür, dass Ihr Kameraobjektiv sauber ist und das Dokument gut belichtet ist.",
-      title: "Barcode auf Ausweis lokalisieren",
+        "Überprüfen Sie die Vorder- und Rückseite des Dokuments auf einen Barcode. Sorgen Sie dafür, dass Ihr Kameraobjektiv sauber ist und das Dokument gut belichtet ist.",
+      title: "Finden Sie den Barcode auf dem Dokument",
       title_desktop: "Objektiv reinigen und Barcode lokalisieren",
+    },
+    document_with_mrz: {
+      details:
+        "Am unteren Rand der Vorder- oder Rückseite des Dokuments finden Sie eine lange Zeichenfolge. Sie ist in 2 oder 3 Zeilen geteilt und durch Pfeile (<< oder >>) getrennt.",
+      details_desktop:
+        "Überprüfen Sie die Vorder- und Rückseite des Dokuments auf einen MRZ. Achten Sie auf 2–3 Zeilen mit Zeichen und Pfeilsymbolen (<<) am unteren Rand des Dokuments. Achten Sie darauf, dass das Kameraobjektiv sauber und das Dokument gut beleuchtet ist.",
+      title: "Finden Sie den MRZ auf dem Dokument",
+      title_desktop: "Reinigen Sie Ihr Objektiv und suchen Sie den MRZ",
     },
     full_document: {
       details:
@@ -182,7 +221,9 @@ export default {
   sdk_aria: "Dokumentenscanner-Bildschirm",
   timeout_modal: {
     details:
-      "Das Dokument kann nicht gelesen werden. Bitte versuchen Sie es erneut.",
-    title: "Scan nicht erfolgreich",
+      "Achten Sie darauf, dass das Dokument gut belichtet und vollständig sichtbar ist und nicht blendet.",
+    details_desktop:
+      "Achten Sie darauf, dass Ihr Kameraobjektiv sauber ist und das Dokument vollständig sichtbar und gut belichtet ist.",
+    title: "Das Dokument kann nicht gelesen werden",
   },
 } as const;

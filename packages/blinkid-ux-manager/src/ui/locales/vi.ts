@@ -27,7 +27,6 @@ export default {
     glare_detected:
       "Nghiêng hoặc di chuyển tài liệu để loại bỏ hiệu ứng phản chiếu",
     keep_document_parallel: "Giữ tài liệu nằm song song với màn hình",
-    keep_document_still: "Giữ yên tài liệu và thiết bị",
     keep_still: "Giữ yên",
     move_closer: "Di chuyển gần hơn",
     move_farther: "Di chuyển xa hơn",
@@ -43,6 +42,7 @@ export default {
     scan_the_barcode: "Quét mã vạch",
     scan_the_barcode_side: "Quét mặt có mã vạch của một giấy tờ",
     scan_the_front_side: "Quét mặt trước\\ncủa tài liệu",
+    scan_the_mrz_side: "Quét mặt có MRZ của giấy tờ",
     scan_top_page: "Quét trang trên cùng",
     too_bright: "Di chuyển đến nơi ít sáng hơn",
     too_dark: "Di chuyển đến nơi sáng hơn",
@@ -116,6 +116,37 @@ export default {
         title_desktop: "Đảm bảo thấy rõ mã vạch",
       },
     },
+    document_with_mrz: {
+      blur: {
+        details:
+          "Cố gắng giữ cố định điện thoại và tài liệu trong khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên tài liệu không thể đọc được.",
+        details_desktop:
+          "Cố gắng giữ yên khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên giấy tờ không thể đọc được.",
+        title: "Giữ cố định trong khi quét",
+        title_desktop: "Giữ cố định trong khi quét",
+      },
+      camera_lens: {
+        details_desktop:
+          "Kiểm tra ống kính camera xem có vết bẩn hoặc bụi không. Ống kính bẩn sẽ khiến hình ảnh cuối bị mờ, làm cho thông tin trên tài liệu không thể đọc được và ngăn cản việc quét dữ liệu thành công.",
+        title_desktop: "Làm sạch ống kính camera",
+      },
+      lighting: {
+        details:
+          "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
+        details_desktop:
+          "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
+        title: "Đề phòng ánh sáng gay gắt",
+        title_desktop: "Đề phòng ánh sáng gay gắt",
+      },
+      visibility: {
+        details:
+          "Đảm bảo bạn không dùng ngón tay che các phần của MRZ. Ngoài ra, hãy chú ý tránh để các vệt phản chiếu ánh sáng đè lên MRZ có thể khiến MRZ không đọc được.",
+        details_desktop:
+          "Đảm bảo bạn không dùng ngón tay che các phần của MRZ. Ngoài ra, hãy chú ý tránh để các vệt phản chiếu ánh sáng đè lên MRZ có thể khiến MRZ không đọc được.",
+        title: "Đảm bảo thấy rõ MRZ",
+        title_desktop: "Đảm bảo thấy rõ MRZ",
+      },
+    },
     done_btn: "Đã xong",
     done_btn_aria: "Tiếp tục quét",
     full_document: {
@@ -164,11 +195,19 @@ export default {
     btn: "Bắt đầu quét",
     document_with_barcode: {
       details:
-        "Các loại thẻ ID khác nhau có thể có định dạng và vị trí mã vạch khác nhau. Hãy xem mặt trước và mặt sau của thẻ ID để tìm mã vạch.",
+        "Các loại giấy tờ khác nhau có thể có định dạng và vị trí mã vạch khác nhau. Hãy xem mặt trước và mặt sau của giấy tờ để tìm mã vạch.",
       details_desktop:
-        "Kiểm tra mặt trước và mặt sau của thẻ ID để tìm mã vạch. Đảm bảo rằng bạn giữ ống kính camera sạch sẽ và giấy tờ được chiếu sáng tốt.",
-      title: "Xác định vị trí mã vạch trên thẻ ID",
+        "Kiểm tra mặt trước và mặt sau của giấy tờ để tìm mã vạch. Đảm bảo rằng bạn giữ ống kính camera sạch sẽ và giấy tờ được chiếu sáng tốt.",
+      title: "Xác định vị trí mã vạch trên giấy tờ",
       title_desktop: "Làm sạch ống kính và tìm mã vạch",
+    },
+    document_with_mrz: {
+      details:
+        "Bạn sẽ tìm thấy một chuỗi ký tự dài ở phía dưới mặt trước hoặc mặt sau của giấy tờ, chia thành 2 hoặc 3 dòng và được phân tách bằng mũi tên (<< hoặc >>).",
+      details_desktop:
+        "Kiểm tra mặt trước và mặt sau của giấy tờ để tìm MRZ. Hãy tìm 2–3 dòng ký tự và các ký hiệu mũi tên (<<) ở phần dưới cùng của giấy tờ. Đảm bảo ống kính camera của bạn sạch sẽ và giấy tờ được chiếu sáng đầy đủ.",
+      title: "Xác định vị trí MRZ trên giấy tờ",
+      title_desktop: "Lau sạch ống kính và xác định vị trí MRZ",
     },
     full_document: {
       details:
@@ -181,7 +220,10 @@ export default {
   },
   sdk_aria: "Màn hình quét tài liệu",
   timeout_modal: {
-    details: "Không thể đọc tài liệu. Xin vui lòng thử lại.",
-    title: "Quét không thành công",
+    details:
+      "Đảm bảo giấy tờ được chiếu sáng tốt, có thể nhìn rõ toàn bộ và không bị lóa.",
+    details_desktop:
+      "Đảm bảo ống kính camera của bạn sạch sẽ và giấy tờ có thể nhìn rõ toàn bộ, rõ nét cũng như được chiếu sáng tốt.",
+    title: "Không thể đọc giấy tờ",
   },
 } as const;

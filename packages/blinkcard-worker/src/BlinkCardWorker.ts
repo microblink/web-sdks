@@ -155,7 +155,7 @@ export class BlinkCardWorker {
     const wasmMemory = new WebAssembly.Memory({
       initial: mbToWasmPages(initialMemory),
       maximum: mbToWasmPages(2048),
-      shared: wasmVariant === "advanced-threads",
+      shared: wasmVariant === "simd-threads",
     });
 
     // Create progress trackers for each download
@@ -259,7 +259,8 @@ export class BlinkCardWorker {
      */
     this.#wasmModule = await createModule({
       locateFile: (path) => {
-        return `${variantUrl}/${wasmVariant}/${path}`;
+        // variantUrl already ends with the wasm variant segment
+        return `${variantUrl}/${path}`;
       },
       onAbort: (what) => {
         if (!this.#wasmModule) {
@@ -301,6 +302,9 @@ export class BlinkCardWorker {
       },
       // pthreads build breaks without this:
       // "Failed to execute 'createObjectURL' on 'URL': Overload resolution failed."
+      // Emscripten 6.x's native `-sCROSS_ORIGIN` was evaluated as a replacement
+      // for this userspace cross-origin worker workaround but rejected: it is
+      // incompatible with our `-sDYNAMIC_EXECUTION=0` (no-eval) CSP hardening.
       mainScriptUrlOrBlob: crossOriginWorkerUrl,
       wasmBinary: preloadedWasm,
       getPreloadedPackage() {
@@ -382,12 +386,14 @@ export class BlinkCardWorker {
     // Queue init pinglet before remote license check; flush only if init fails.
     this.reportPinglet({
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "1.3.0",
+      schemaVersion: "2.0.0",
       sessionNumber: 0,
       data: {
         packageName: self.location.hostname,
         platform: "Emscripten",
-        platformDetails: wasmVariant,
+        // TODO: update this after pinglets schema is updated
+        platformDetails:
+          wasmVariant === "simd" ? "advanced" : "advanced-threads",
         product: "BlinkCard",
         userId: this.#userId,
         ...getMicroblinkProxyPingFlags(

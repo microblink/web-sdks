@@ -1,0 +1,19 @@
+{
+  "resources": [
+    {
+      "filename": "serialized-embedder-database.bin",
+      "version": "1.0.14",
+      "url": "serialized-embedder-database.bin"
+    },
+    {
+      "filename": "template-database.zzip",
+      "version": "1.0.1",
+      "url": "template-database.zzip"
+    },
+    {
+      "filename": "knowledge-database.zzip",
+      "version": "2.0.1",
+      "url": "knowledge-database.zzip"
+    }
+  ]
+}

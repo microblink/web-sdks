@@ -1,5 +1,20 @@
 # @microblink/blinkid-wasm
 
+## 8001.0.0
+
+### Major Changes
+
+- **Breaking:** `DocumentClassInfo.country`, `region`, and `type` are now wrapper objects (`{ id?, rawValue }`) instead of plain string values. `id` carries the strongly-typed kebab-case value (`Country` / `Region` / `DocumentType`) when the document class is known at build time; `rawValue` always carries the raw classification token from the document knowledge database, including OTA-delivered document classes unknown at build time. Update comparisons such as `documentClassInfo.country === "usa"` to `documentClassInfo.country?.id === "usa"`, and use `id ?? rawValue` when displaying values. This affects `redactionSettingsResolver`, `addDocumentClassFilter`, `addOnDocumentFilteredCallback`, and the `documentClassInfo` fields on process and scanning results.
+  - Added the `DocumentClassComponent`, `DocumentClassCountry`, `DocumentClassRegion`, and `DocumentClassDocumentType` types.
+  - `countryName` and the ISO country-code fields on `DocumentClassInfo` are unchanged (plain strings, empty when unknown), and `documentClassInfo` on results remains non-optional — an unclassified document still yields `undefined` components and empty strings.
+  - Updated the native bindings to the new document classification API (enum identifiers renamed to `CountryID` / `RegionID` / `DocumentTypeID`; document class construction now goes through the document knowledge database). Unrecognized classification strings passed to `getDefaultRedactionSettings` no longer abort the Wasm module; they are forwarded as raw values instead.
+- Removed the `basic` Wasm build for full and lightweight feature variants.
+  - Renamed shipped Wasm build directories: `advanced` → `simd` and `advanced-threads` → `simd-threads`.
+- Renamed `DocumentClassInfo.type` to `DocumentClassInfo.documentType` to align with other platforms.
+  - Migration: replace `documentClassInfo.type` with `documentClassInfo.documentType`.
+- Updated the Emscripten toolchain used to build the BlinkID WebAssembly module to v6.x.
+- Fixed compilation with newer Emscripten toolchains by replacing the deprecated lowercase `__EMSCRIPTEN_major__` / `__EMSCRIPTEN_minor__` / `__EMSCRIPTEN_tiny__` macros with their uppercase equivalents.
+
 ## 8000.0.1
 
 ### Patch Changes

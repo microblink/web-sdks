@@ -67,7 +67,7 @@ Used for analytics and tracking purposes.
 
 #### wasmVariant?
 
-`"basic"` \| `"advanced"` \| `"advanced-threads"`
+`"simd"` \| `"simd-threads"`
 
 The WebAssembly module variant to use.
 Different variants may offer different performance/size tradeoffs.

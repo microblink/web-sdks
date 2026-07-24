@@ -14,8 +14,13 @@ import { DateResult, DriverLicenceDetailedInfo } from "../utils";
 
 /** Represents the final complete result of the scanning process. */
 export type BlinkIdScanningResult = {
-  /** The document class information */
-  documentClassInfo: DocumentClassInfo;
+  /**
+   * The document class information.
+   *
+   * Absent when the document could not be classified (for example, for
+   * unsupported documents without any extracted class info).
+   */
+  documentClassInfo?: DocumentClassInfo;
 
   /** Info on whether the data extracted from multiple sides matches */
   dataMatchResult: DataMatchResult | undefined;
@@ -69,6 +74,8 @@ export type BlinkIdScanningResult = {
   eligibilityCategory: StringResult | undefined;
   /** The employer of the document owner */
   employer: StringResult | undefined;
+  /** The ethnicity of the document owner */
+  ethnicity: StringResult | undefined;
   /** The father's name of the document owner */
   fathersName: StringResult | undefined;
   /** The first name of the document owner */
@@ -106,6 +113,7 @@ export type BlinkIdScanningResult = {
     | {
         firstName: StringResult | undefined;
         lastName: StringResult | undefined;
+        fullName: StringResult | undefined;
       }[]
     | undefined;
   /** The personal identification number */

@@ -15,6 +15,7 @@ import {
   Switch,
 } from "solid-js";
 import { createWithSignal } from "solid-zustand";
+import type { BlinkIdProcessingError } from "../core/BlinkIdProcessingError";
 import { BlinkIdUiState } from "../core/blinkid-ui-state";
 import {
   LocalizationProvider,
@@ -32,6 +33,20 @@ import { useBlinkIdUiStore } from "./BlinkIdUiStoreContext";
 import { ErrorModal } from "./dialogs/ErrorModal";
 import { HelpButton, HelpModal } from "./dialogs/HelpModal";
 import { OnboardingGuideModal } from "./dialogs/OnboardingGuideModal";
+
+export const getTimeoutAlertType = (
+  errorState: BlinkIdProcessingError | undefined,
+): "InactivityTimeout" | "StepTimeout" | undefined => {
+  if (errorState === "inactivity_timeout") {
+    return "InactivityTimeout";
+  }
+
+  if (errorState === "scan_step_timeout") {
+    return "StepTimeout";
+  }
+
+  return undefined;
+};
 
 /**
  * The BlinkIdFeedbackUi component. This is the main component that renders the
@@ -99,8 +114,10 @@ export const BlinkIdFeedbackUi: Component<{
   // TODO: Cover cases where frame processing is paused by 3rd party modal dialogs
   const shouldShowFeedback = () => !isModalOpen();
 
-  const displayTimeoutModal = () =>
-    Boolean(store.showTimeoutModal) && store.errorState === "timeout";
+  const displayedTimeoutAlertType = () =>
+    store.showTimeoutModal ? getTimeoutAlertType(store.errorState) : undefined;
+
+  const displayTimeoutModal = () => displayedTimeoutAlertType() !== undefined;
 
   const displayUnsupportedDocumentModal = () =>
     Boolean(store.showUnsupportedDocumentModal) &&
@@ -158,10 +175,10 @@ export const BlinkIdFeedbackUi: Component<{
   const extractionMode = store.blinkIdUxManager.extractionMode;
 
   createEffect(() => {
-    if (displayTimeoutModal()) {
-      void store.blinkIdUxManager.analytics.logAlertDisplayedEvent(
-        "StepTimeout",
-      );
+    const alertType = displayedTimeoutAlertType();
+
+    if (alertType) {
+      void store.blinkIdUxManager.analytics.logAlertDisplayedEvent(alertType);
     }
   });
 
@@ -193,13 +210,18 @@ export const BlinkIdFeedbackUi: Component<{
               dialog_title: t.sdk_aria,
             });
 
+            const timeoutModalText = () =>
+              isDesktop()
+                ? t.timeout_modal.details_desktop
+                : t.timeout_modal.details;
+
             return (
               <>
                 <Switch>
                   <Match when={displayTimeoutModal()}>
                     <ErrorModal
                       header={t.timeout_modal.title}
-                      text={t.timeout_modal.details}
+                      text={timeoutModalText()}
                       shouldResetScanningSession={true}
                     />
                   </Match>

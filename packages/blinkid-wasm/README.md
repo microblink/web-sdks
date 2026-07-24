@@ -11,24 +11,13 @@ This package contains the WebAssembly (Wasm) and native bindings for the BlinkID
 
 ## Browser Support (Wasm Runtime)
 
-This package ships three Wasm build variants (`basic`, `advanced`, and
-`advanced-threads`). The runtime selects the best supported variant automatically.
+This package ships two Wasm build variants (`simd` and `simd-threads`). The
+runtime selects the best supported variant automatically.
 
-### `basic`
+### `simd`
 
 Requires mutable globals, reference types, bulk memory, non-trapping float-to-int
-conversions, and sign-extension operators.
-
-- Chrome / Chromium 96 (desktop and Android)
-- Edge 96
-- Opera 82
-- Firefox 79 (desktop and Android)
-- Safari 15.1 (macOS)
-- iOS Safari 15.1
-
-### `advanced`
-
-Requires all `basic` features plus
+conversions, sign-extension operators, and
 [fixed-width SIMD](https://web-platform-dx.github.io/web-features-explorer/features/wasm-simd/).
 
 - Chrome / Chromium 96 (desktop and Android)
@@ -38,9 +27,9 @@ Requires all `basic` features plus
 - Safari 16.4 (macOS)
 - iOS Safari 16.4
 
-### `advanced-threads`
+### `simd-threads`
 
-Requires all `advanced` features plus
+Requires all `simd` features plus
 [Wasm threads and atomics](https://caniuse.com/wasm-threads). Multithreaded Wasm
 also requires cross-origin isolation headers
 (`Cross-Origin-Opener-Policy: same-origin` and
@@ -50,22 +39,22 @@ also requires cross-origin isolation headers
 - Edge 96
 - Opera 82
 - Firefox 89 (desktop and Android)
-- Safari (macOS): not selected (uses `advanced`)
-- iOS Safari: not selected (uses `advanced`)
+- Safari (macOS): not selected (uses `simd`)
+- iOS Safari: not selected (uses `simd`)
 
 Safari is excluded even when it reports Wasm thread support. Emscripten
-`advanced-threads` builds use pthreads that spawn workers from inside a worker,
+`simd-threads` builds use pthreads that spawn workers from inside a worker,
 and Safari historically lacked reliable nested worker support when Wasm threads
 shipped in Safari 16. There are also known Safari issues with shared memory in
 Emscripten pthread builds
 ([emscripten-core/emscripten#19374](https://github.com/emscripten-core/emscripten/issues/19374)).
-For these reasons the runtime falls back to the single-threaded `advanced`
-variant on Safari instead of loading `advanced-threads`.
+For these reasons the runtime falls back to the single-threaded `simd`
+variant on Safari instead of loading `simd-threads`.
 
-These minimums combine Emscripten 4.0.16 generated runtime defaults (see
-[`src/settings.js`](https://raw.githubusercontent.com/emscripten-core/emscripten/4.0.16/src/settings.js)
+These minimums combine Emscripten 6.0.2 generated runtime defaults (see
+[`src/settings.js`](https://raw.githubusercontent.com/emscripten-core/emscripten/6.0.2/src/settings.js)
 and
-[`tools/feature_matrix.py`](https://raw.githubusercontent.com/emscripten-core/emscripten/4.0.16/tools/feature_matrix.py))
+[`tools/feature_matrix.py`](https://raw.githubusercontent.com/emscripten-core/emscripten/6.0.2/tools/feature_matrix.py))
 with baseline Wasm feature support from the
 [WebDX reference types](https://web-platform-dx.github.io/web-features-explorer/features/wasm-reference-types/),
 [WebDX non-trapping float-to-int](https://web-platform-dx.github.io/web-features-explorer/features/wasm-non-trapping-float-to-int/),

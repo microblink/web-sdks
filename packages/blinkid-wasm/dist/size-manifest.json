@@ -1,30 +1,22 @@
 {
   "wasm": {
-    "basic": {
-      "full": 3454331,
-      "lightweight": 3493773
+    "simd": {
+      "full": 4633969,
+      "lightweight": 4605555
     },
-    "advanced": {
-      "full": 3464883,
-      "lightweight": 3502051
-    },
-    "advanced-threads": {
-      "full": 3514548,
-      "lightweight": 3550604
+    "simd-threads": {
+      "full": 4679816,
+      "lightweight": 4647889
     }
   },
   "data": {
-    "basic": {
-      "full": 13806438,
-      "lightweight": 12173753
+    "simd": {
+      "full": 12778825,
+      "lightweight": 11143606
     },
-    "advanced": {
-      "full": 13806438,
-      "lightweight": 12173753
-    },
-    "advanced-threads": {
-      "full": 13806438,
-      "lightweight": 12173753
+    "simd-threads": {
+      "full": 12778825,
+      "lightweight": 11143606
     }
   }
 }

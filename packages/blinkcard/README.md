@@ -102,35 +102,30 @@ localhost.
 
 ### WebAssembly runtime
 
-The SDK ships three Wasm build variants (`basic`, `advanced`, and
-`advanced-threads`). The runtime selects the best supported variant automatically.
+The SDK ships two Wasm build variants (`simd` and `simd-threads`). The runtime
+selects the best supported variant automatically.
 
-#### `basic`
+#### `simd`
 
-Requires mutable globals, reference types, bulk memory, non-trapping float-to-int
-conversions, and sign-extension operators.
-
-#### `advanced`
-
-Requires all `basic` features plus
+Requires the Emscripten-generated Wasm feature set used by the SDK plus
 [fixed-width SIMD](https://web-platform-dx.github.io/web-features-explorer/features/wasm-simd/).
 
-#### `advanced-threads`
+#### `simd-threads`
 
-Requires all `advanced` features plus
+Requires all `simd` features plus
 [Wasm threads and atomics](https://caniuse.com/wasm-threads). Multithreaded Wasm
 also requires cross-origin isolation headers
 (`Cross-Origin-Opener-Policy: same-origin` and
 `Cross-Origin-Embedder-Policy: require-corp`).
 
-Safari is excluded from `advanced-threads` even when it reports Wasm thread
-support. Emscripten `advanced-threads` builds use pthreads that spawn workers
+Safari is excluded from `simd-threads` even when it reports Wasm thread
+support. Emscripten `simd-threads` builds use pthreads that spawn workers
 from inside a worker, and Safari historically lacked reliable nested worker
 support when Wasm threads shipped in Safari 16. There are also known Safari
 issues with shared memory in Emscripten pthread builds
 ([emscripten-core/emscripten#19374](https://github.com/emscripten-core/emscripten/issues/19374)).
-For these reasons the runtime falls back to the single-threaded `advanced`
-variant on Safari instead of loading `advanced-threads`.
+For these reasons the runtime falls back to the single-threaded `simd`
+variant on Safari instead of loading `simd-threads`.
 
 ### Firefox for Android
 

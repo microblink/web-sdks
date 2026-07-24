@@ -1,5 +1,14 @@
 # @microblink/blinkcard-worker
 
+## 3000.1.0-next
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkcard-wasm@3000.1.0-next
+  - @microblink/analytics@2.0.2
+  - @microblink/worker-common@1.0.5
+
 ## 3000.0.8
 
 ### Patch Changes

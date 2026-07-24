@@ -189,7 +189,7 @@ callback.
 
 ```ts
 const cleanup = manager.addDocumentClassFilter((docClassInfo) => {
-  return docClassInfo.country === 'usa';
+  return docClassInfo.country?.id === 'usa';
 });
 
 // Later, to remove the callback:

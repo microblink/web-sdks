@@ -20,6 +20,8 @@ import { Tooltip } from "@ark-ui/solid";
 import HelpBarcodeOnlyBlur from "../assets/help/help_barcode_only_blur.svg?component-solid";
 import HelpBarcodeOnlyLighting from "../assets/help/help_barcode_only_lighting.svg?component-solid";
 import HelpBarcodeOnlyVisible from "../assets/help/help_barcode_only_occlusion.svg?component-solid";
+import HelpDocumentWithMrzVisible from "../assets/help/help_document_with_mrz_visible.svg?component-solid";
+import HelpDocumentWithMrzLocate from "../assets/help/help_document_with_mrz_locate.svg?component-solid";
 import HelpCameraLens from "../assets/help/help_camera_lens.svg?component-solid";
 import HelpBlur from "../assets/help/help_blur.svg?component-solid";
 import HelpDocumentCaptureBarcodeFieldsVisible from "../assets/help/help_document_with_barcode_fields_visible.svg?component-solid";
@@ -77,6 +79,14 @@ export const helpModalContentByExtractionMode = {
       { localeKey: "visibility", image: HelpBarcodeOnlyVisible },
       { localeKey: "lighting", image: HelpBarcodeOnlyLighting },
       { localeKey: "blur", image: HelpBarcodeOnlyBlur },
+    ],
+  },
+  "document-with-mrz": {
+    localeGroup: "document_with_mrz",
+    scanSteps: [
+      { localeKey: "visibility", image: HelpDocumentWithMrzVisible },
+      { localeKey: "lighting", image: HelpLighting },
+      { localeKey: "blur", image: HelpBlur },
     ],
   },
 } as const satisfies Record<BlinkIdModalExtractionMode, HelpModalContent>;

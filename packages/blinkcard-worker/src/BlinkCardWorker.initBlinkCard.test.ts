@@ -31,7 +31,7 @@ let workerEventListeners = new Map<string, EventListener[]>();
 /** Deterministic values for stubbed globals and mock return shapes. */
 const hostName = "example.com" as const;
 const userId = "test-user" as const;
-const wasmVariant = "advanced-threads" as const;
+const wasmVariant = "simd-threads" as const;
 
 vi.mock("comlink", () => {
   const finalizer = Symbol("finalizer");
@@ -488,6 +488,48 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
       errorType: "Crash",
       errorMessage: "fatal abort",
     });
+  });
+
+  it("passes the Emscripten 6 incoming module properties to createModule", async () => {
+    const { module } = createWasmModuleMock<BlinkCardWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkCardWorker();
+    await worker.initBlinkCard(baseInitSettings);
+
+    const moduleOverrides = getLastModuleOverrides();
+
+    // These properties are dead-stripped unless listed in INCOMING_MODULE_JS_API
+    // in the Emscripten 6 build, so the worker must keep passing them.
+    expect(moduleOverrides?.wasmBinary).toBeInstanceOf(ArrayBuffer);
+    expect(moduleOverrides?.wasmMemory).toBeInstanceOf(WebAssembly.Memory);
+    expect(moduleOverrides?.mainScriptUrlOrBlob).toEqual(
+      expect.stringContaining("wasmModuleFactory"),
+    );
+    expect(moduleOverrides?.noExitRuntime).toBe(true);
+  });
+
+  it("resolves auxiliary files without duplicating the wasm variant segment", async () => {
+    const { module } = createWasmModuleMock<BlinkCardWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkCardWorker();
+    await worker.initBlinkCard(baseInitSettings);
+
+    const moduleOverrides = getLastModuleOverrides();
+    const locateFile = moduleOverrides?.locateFile as (path: string) => string;
+
+    expect(locateFile("BlinkCardModule.wasm")).toBe(
+      `https://${hostName}/resources/${wasmVariant}/BlinkCardModule.wasm`,
+    );
+    // Regression guard: the variant segment must not appear twice.
+    expect(locateFile("BlinkCardModule.wasm")).not.toContain(
+      `${wasmVariant}/${wasmVariant}`,
+    );
   });
 
   it("reports scanning session creation failures as crash pinglets", async () => {
