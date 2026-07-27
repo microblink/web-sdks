@@ -113,7 +113,7 @@
     "Opera >= 84",
     "Firefox >= 114",
     "FirefoxAndroid >= 114",
-    "Safari >= 15.1",
-    "iOS >= 15.1"
+    "Safari >= 16.4",
+    "iOS >= 16.4"
   ]
 }
