@@ -1,5 +1,7 @@
 # @microblink/blinkid-wasm
 
+## 8001.0.1
+
 ## 8001.0.0
 
 ### Major Changes

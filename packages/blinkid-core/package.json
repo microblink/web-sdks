@@ -1,7 +1,7 @@
 {
   "name": "@microblink/blinkid-core",
   "description": "BlinkID Core SDK",
-  "version": "8001.0.0",
+  "version": "8001.0.1",
   "author": "Microblink",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
@@ -111,7 +111,7 @@
     "Opera >= 84",
     "Firefox >= 114",
     "FirefoxAndroid >= 114",
-    "Safari >= 16.4",
-    "iOS >= 16.4"
+    "Safari >= 15.1",
+    "iOS >= 15.1"
   ]
 }

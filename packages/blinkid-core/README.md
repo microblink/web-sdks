@@ -17,8 +17,8 @@ This package supports image processing in these browser versions and newer:
 - Edge 96
 - Opera 84
 - Firefox 114 (desktop and Android)
-- Safari 16.4 (macOS)
-- iOS Safari 16.4
+- Safari 15.1 (macOS)
+- iOS Safari 15.1
 
 These minimums come from the combination of Emscripten-generated WebAssembly,
 required baseline Wasm features, and the module Web Worker used by

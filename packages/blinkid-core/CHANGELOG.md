@@ -1,5 +1,17 @@
 # @microblink/blinkid-core
 
+## 8001.0.1
+
+### Minor Changes
+
+- Ensure VectorDB is properly terminated once last session using it is terminated, regardless of whether it was loaded from OTA or non-OTA resource folder
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@8001.0.1
+  - @microblink/blinkid-worker@8001.0.1
+
 ## 8001.0.0
 
 ### Major Changes

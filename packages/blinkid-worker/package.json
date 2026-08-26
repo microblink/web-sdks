@@ -2,7 +2,7 @@
   "name": "@microblink/blinkid-worker",
   "description": "Provides a worker which runs the BlinkID WebAssembly in separate thread",
   "private": true,
-  "version": "8001.0.0",
+  "version": "8001.0.1",
   "scripts": {
     "build": "concurrently pnpm:build:js pnpm:build:types",
     "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
@@ -64,7 +64,7 @@
     "Opera >= 84",
     "Firefox >= 114",
     "FirefoxAndroid >= 114",
-    "Safari >= 16.4",
-    "iOS >= 16.4"
+    "Safari >= 15.1",
+    "iOS >= 15.1"
   ]
 }

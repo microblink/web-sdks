@@ -1,5 +1,12 @@
 # @microblink/blinkid-ux-manager
 
+## 8001.0.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-core@8001.0.1
+
 ## 8001.0.0
 
 ### Major Changes
@@ -18,7 +25,7 @@
 - Adds a new MRZ Extraction mode
 - Adds new assets (images) for the MRZ extraction mode along with new feedback messages
 - Renames the `keep_document_still` translation key to `keep_still` (used by the `BLUR_DETECTED` UI state), now resolving to `keep_still` on desktop and `blur_detected` on mobile.
-    - This is a breaking change. To migrate, rename any override of `keep_document_still` to `keep_still`.
+  - This is a breaking change. To migrate, rename any override of `keep_document_still` to `keep_still`.
 - Improves the default timeout settings in UX Manager by enabling different timeout configurations for desktop and mobile environments.
 - Improves analytics granularity when reporting timeout events.
 - Updated `BlinkIdProcessingError` to support new timeout types, error "timeout" was removed and two new errors were added: `inactivity_timeout` and `scan_step_timeout`
