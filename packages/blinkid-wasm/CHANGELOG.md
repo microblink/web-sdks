@@ -1,5 +1,15 @@
 # @microblink/blinkid-wasm
 
+## 8001.0.1
+
+### Patch Changes
+
+- Fix crash caused by bounding boxes of fields out of the dewarped image
+- Fix crash caused by fields not sorted properly before the merge
+- Ensure VectorDB is properly terminated once last session using it is terminated, regardless of whether it was loaded from OTA or non-OTA resource folder
+- When using photo inputs, resolveCurrentStep now transitions scanning to BarcodeStep if barcode scanning is required for the current side and has not yet been successful, as part of full document recognition
+- Fixed BarcodeRecognitionFailed process-result image-analysis reporting so fields are suppressed only for actual barcode-capture step frames
+
 ## 8001.0.0
 
 ### Major Changes

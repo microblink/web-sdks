@@ -316,3 +316,6 @@ mise.local.toml
 
 automatic.bazelrc
 .bazeltargets
+
+# GitHub Actions Google authentication credentials
+gha-creds-*.json
