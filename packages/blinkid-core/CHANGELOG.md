@@ -1,5 +1,13 @@
 # @microblink/blinkid-core
 
+## 8001.0.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@8001.0.1
+  - @microblink/blinkid-worker@8001.0.1
+
 ## 8001.0.0
 
 ### Major Changes
