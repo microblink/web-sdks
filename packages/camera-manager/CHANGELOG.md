@@ -1,5 +1,11 @@
 # @microblink/camera-manager
 
+## 7.3.5
+
+### Patch Changes
+
+- Fixes the camera preview remaining black on Safari 27 and iOS 27 even though scanning still succeeds. This mitigates Apple's Safari 27 bug.
+
 ## 7.3.4
 
 ### Patch Changes
