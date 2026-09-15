@@ -157,6 +157,14 @@ export const CaptureScreen: Component = () => {
     cameraManager.initVideoElement($videoRef);
   });
 
+  createEffect(() => {
+    const video = videoRef();
+
+    if (video) {
+      video.style.objectFit = fitMode();
+    }
+  });
+
   return (
     <SolidShadowRoot
       id={!isPortalled() ? CAPTURE_SCREEN_SHADOW_ROOT_HOST_ID : undefined}
@@ -191,15 +199,18 @@ export const CaptureScreen: Component = () => {
         <Header />
 
         {/* Video feed */}
-        <video
-          part="video-element-part"
-          class="block absolute top-0 left-0 size-full"
-          style={{
-            "object-fit": fitMode(),
+        <div
+          ref={(placeholder) => {
+            // Safari 27 does not paint MediaStream video elements cloned from a template.
+            // Solid renders static JSX nodes by cloning templates, so create this element imperatively.
+            const video = document.createElement("video");
+            video.setAttribute("part", "video-element-part");
+            video.className = "block absolute top-0 left-0 size-full";
+            video.setAttribute("aria-hidden", "true");
+            video.tabIndex = -1;
+            placeholder.replaceWith(video);
+            setVideoRef(video);
           }}
-          aria-hidden="true"
-          tabindex="-1"
-          ref={setVideoRef}
         />
 
         {/* Feedback node used for showing UI messages during scanning */}
