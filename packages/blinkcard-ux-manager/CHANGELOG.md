@@ -30,19 +30,14 @@
 - Fixed an issue where frame processing wouldnt stop if showTimeoutModal was configured to false
 - Improves keyboard focus visibility for controls shown over light and dark backgrounds.
 - Upgrade to TypeScript 7
-- Updated dependencies
-  - @microblink/blinkcard-core@3001.0.0-next.0
-  - @microblink/camera-manager@8.0.0
-  - @microblink/ux-common@1.0.2
-
-### Patch Changes
-
 - Replaced the legacy single scanning timeout with independently configurable inactivity and scan-step timeouts. Use
   `timeoutConfiguration`, `getTimeoutConfiguration()`, and `setTimeoutConfiguration()`; timeout errors are now
   `inactivity_timeout` and `scan_step_timeout`.
 - Fixed feedback UI localization merging so partial user string overrides preserve the default nested localized values instead of replacing whole sections.
 - Updated dependencies
-  - @microblink/blinkcard-core@3000.1.0-next
+  - @microblink/blinkcard-core@3001.0.0-next.0
+  - @microblink/camera-manager@8.0.0
+  - @microblink/ux-common@1.0.2
 
 ## 3000.0.8
 

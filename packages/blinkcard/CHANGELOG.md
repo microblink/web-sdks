@@ -16,6 +16,7 @@
   - `timeout_modal.details` from "Unable to read the card. Please try again." to "Make sure the card is well lit, fully visible, and free of glare."
   - `timeout_modal.title` from "Scan unsuccessful" to "Unable to read the card"
     Removed: none
+- Updated the minimum browser requirements after removing the non-SIMD `basic` Wasm build. The SDKs now require WebAssembly SIMD support: Chrome/Edge 91+, Firefox 89+, Safari/iOS Safari 16.4+, and Samsung Internet 16+.
 
 ### Patch Changes
 
@@ -27,13 +28,6 @@
   - @microblink/blinkcard-core@3001.0.0-next.0
   - @microblink/blinkcard-ux-manager@3001.0.0-next.0
   - @microblink/camera-manager@8.0.0
-
-### Minor Changes
-
-- Updated the minimum browser requirements after removing the non-SIMD `basic` Wasm build. The SDKs now require WebAssembly SIMD support: Chrome/Edge 91+, Firefox 89+, Safari/iOS Safari 16.4+, and Samsung Internet 16+.
-- Updated dependencies
-  - @microblink/blinkcard-core@3000.1.0-next
-  - @microblink/blinkcard-ux-manager@3000.1.0-next
 
 ## 3000.0.8
 

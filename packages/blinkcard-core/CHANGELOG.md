@@ -21,13 +21,6 @@
   - @microblink/blinkcard-wasm@3001.0.0-next.0
   - @microblink/blinkcard-worker@3001.0.0-next.0
 
-### Minor Changes
-
-- Updated dependencies
-  - @microblink/blinkcard-wasm@3000.1.0-next
-  - @microblink/analytics@2.0.2
-  - @microblink/blinkcard-worker@3000.1.0-next
-
 ## 3000.0.8
 
 ### Patch Changes
