@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import dns from "dns";
+
 import { ServerOptions, defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { qrcode } from "vite-plugin-qrcode";

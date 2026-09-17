@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { AlphabetType } from "../utils/AlphabetType";
 import { BarcodeElementKey } from "./barcode";
@@ -19,11 +17,7 @@ export type ExtractionAttribute = "optional" | "mandatory" | "blacklisted";
 /*
  * A failure reason for an extraction.
  */
-export type ExtractionFailureReason =
-  | "character-validation"
-  | "detection"
-  | "parsing"
-  | "decoding";
+export type ExtractionFailureReason = "character-validation" | "detection" | "parsing" | "decoding";
 
 /*
  * A completeness structure for a String structure.
@@ -37,9 +31,7 @@ export type StringCompleteness = {
 /*
  * A completeness structure for a StringResult structure.
  */
-export type StringResultCompleteness = {
-  [key in AlphabetType]?: StringCompleteness;
-};
+export type StringResultCompleteness = Partial<Record<AlphabetType, StringCompleteness>>;
 
 /*
  * A completeness structure for a Date structure.
@@ -87,17 +79,18 @@ export type DriverLicenseDetailedInfoInfo<
 /*
  * A completeness structure for a BarcodeDriverLicenseDetailedInfo structure.
  */
-export type BarcodeDriverLicenseDetailedInfoCompleteness =
-  DriverLicenseDetailedInfoInfo<StringCompleteness, DateCompleteness>;
+export type BarcodeDriverLicenseDetailedInfoCompleteness = DriverLicenseDetailedInfoInfo<
+  StringCompleteness,
+  DateCompleteness
+>;
 
 /*
  * A completeness structure for a DriverLicenseDetailedInfo structure.
  */
-export type DriverLicenseDetailedInfoCompleteness =
-  DriverLicenseDetailedInfoInfo<
-    StringResultCompleteness,
-    DateResultCompleteness
-  >;
+export type DriverLicenseDetailedInfoCompleteness = DriverLicenseDetailedInfoInfo<
+  StringResultCompleteness,
+  DateResultCompleteness
+>;
 
 /*
  * A completeness structure for a DependentInfo structure.
@@ -309,9 +302,8 @@ export type BarcodeCompleteness = {
 /**
  * Represents the completeness of the extraction process for a scanned document.
  *
- * This structure tracks the status of the scanning process and indicates
- * whether specific components of the document, such as the specific fields from
- * the VIZ, MRZ, and barcode, have been successfully extracted.
+ * This structure tracks the status of the scanning process and indicates whether specific components of the document,
+ * such as the specific fields from the VIZ, MRZ, and barcode, have been successfully extracted.
  */
 export type ResultCompleteness = {
   /** Rich per-module completeness for VIZ side results. */

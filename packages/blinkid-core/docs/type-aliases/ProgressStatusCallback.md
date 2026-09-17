@@ -4,11 +4,11 @@
 
 [@microblink/blinkid-core](../README.md) / ProgressStatusCallback
 
-# Type Alias: ProgressStatusCallback()
+# Type Alias: ProgressStatusCallback
 
 > **ProgressStatusCallback** = (`progress`) => `void`
 
-The progress status callback.
+Receives aggregate initialization download progress.
 
 ## Parameters
 

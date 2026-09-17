@@ -1,19 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-/**
- * A camera error code.
- */
-export type CameraErrorCode =
-  | "PERMISSION_DENIED"
-  | "STREAM_ENDED_UNEXPECTEDLY"
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | (string & {});
+/** A camera error code. */
+export type CameraErrorCode = "PERMISSION_DENIED" | "STREAM_ENDED_UNEXPECTEDLY" | (string & Record<never, never>);
 
-/**
- * A camera error.
- */
+/** A camera error. */
 export class CameraError extends Error {
   code: CameraErrorCode;
 

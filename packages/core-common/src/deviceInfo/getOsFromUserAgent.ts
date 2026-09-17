@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 export type OperatingSystem =
   | "Windows"
@@ -9,7 +7,7 @@ export type OperatingSystem =
   | "iPadOS"
   | "Android"
   | "Linux"
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // oxlint-disable-next-line typescript/ban-types
   | (string & {});
 
 interface DetectedOS {
@@ -34,16 +32,14 @@ function getVersion(ua: string, detector: Detector): string {
     return "";
   }
 
-  return detector.versionTransform
-    ? detector.versionTransform(match[1])
-    : match[1];
+  return detector.versionTransform ? detector.versionTransform(match[1]) : match[1];
 }
 
 /**
  * Detects the user's operating system and version from the user agent string.
  *
- * NOTE: This is a best-effort approach based on an unreliable string. Version
- * detection is especially fragile and may not work for all OSs (e.g., Linux).
+ * NOTE: This is a best-effort approach based on an unreliable string. Version detection is especially fragile and may
+ * not work for all OSs (e.g., Linux).
  *
  * @returns An object containing the detected OS and its version.
  */

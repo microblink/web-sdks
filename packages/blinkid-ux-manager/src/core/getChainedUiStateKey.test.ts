@@ -1,15 +1,12 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { describe, expect, it } from "vitest";
-import {
-  ChainedUiStateProps,
-  getChainedUiStateKey,
-} from "./getChainedUiStateKey";
+
+import { ChainedUiStateProps, getChainedUiStateKey } from "./getChainedUiStateKey";
 
 /**
  * Test file role:
+ *
  * - Verifies chained UI transitions in isolation (pure function behavior).
  * - No manager, timers, or frame-processing side effects here.
  */

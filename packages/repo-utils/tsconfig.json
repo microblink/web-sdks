@@ -4,9 +4,11 @@
     "noEmit": true,
     "target": "esnext",
     "module": "nodenext",
+    "noImplicitAny": false,
+    "types": ["node"],
     "rewriteRelativeImportExtensions": true,
     "erasableSyntaxOnly": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["*.mts"]
+  "include": ["**/*.mts"]
 }

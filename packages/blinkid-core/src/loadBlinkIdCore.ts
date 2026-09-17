@@ -1,12 +1,6 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type {
-  BlinkIdWorkerInitSettings,
-  BlinkIdWorkerProxy,
-  ProgressStatusCallback,
-} from "@microblink/blinkid-worker";
+import type { BlinkIdWorkerInitSettings, BlinkIdWorkerProxy, ProgressStatusCallback } from "@microblink/blinkid-worker";
 import { createProxyWorker } from "@microblink/core-common/createProxyWorker";
 import { getUserId } from "@microblink/core-common/getUserId";
 import { shouldUseLightweightBuild } from "@microblink/core-common/shouldUseLightweightBuild";
@@ -16,8 +10,8 @@ import type { SetOptional, Simplify } from "type-fest";
 /**
  * Configuration options for initializing the BlinkID core.
  *
- * This type extends the BlinkIdWorkerInitSettings type by making the userId and useLightweightBuild properties optional.
- * It allows for partial configuration of the initialization settings.
+ * This type extends the BlinkIdWorkerInitSettings type by making the userId and useLightweightBuild properties
+ * optional. It allows for partial configuration of the initialization settings.
  */
 export type BlinkIdInitSettings = SetOptional<
   BlinkIdWorkerInitSettings,
@@ -28,8 +22,8 @@ export type BlinkIdInitSettings = SetOptional<
 /**
  * Represents the BlinkID core instance.
  *
- * This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkID worker.
- * It simplifies the type to remove unnecessary complexity.
+ * This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkID worker. It simplifies the
+ * type to remove unnecessary complexity.
  */
 export type BlinkIdCore = Simplify<Remote<BlinkIdWorkerProxy>>;
 
@@ -39,7 +33,9 @@ const STORAGE_KEY = "blinkid-userid";
  * Creates and initializes a BlinkID core instance.
  *
  * @param settings - Configuration for BlinkID initialization including license key and resources location
- * @param progressCallback - Optional callback for tracking resource download progress (WASM, data files)
+ * @param progressCallback - Optional callback for tracking resource downloads across Wasm, data, and OTA files. Use
+ *   `progress` as the monotonic display value because byte totals can change or reset during resource retries. The
+ *   terminal event is emitted only after all selected OTA files have been persisted to MEMFS.
  * @returns Promise that resolves with initialized BlinkID core instance
  * @throws Error if initialization fails
  */
@@ -48,27 +44,17 @@ export async function loadBlinkIdCore(
   progressCallback?: ProgressStatusCallback,
 ): Promise<BlinkIdCore> {
   settings.resourcesLocation ??= window.location.href;
-  const remoteWorker = await createProxyWorker<BlinkIdWorkerProxy>(
-    settings.resourcesLocation,
-    "blinkid-worker.js",
-  );
+  const remoteWorker = await createProxyWorker<BlinkIdWorkerProxy>(settings.resourcesLocation, "blinkid-worker.js");
 
   settings.userId ??= getUserId(STORAGE_KEY);
 
-  if (settings.useLightweightBuild === undefined) {
-    settings.useLightweightBuild = await shouldUseLightweightBuild();
-  }
+  settings.useLightweightBuild ??= await shouldUseLightweightBuild();
 
-  const proxyProgressCallback = progressCallback
-    ? proxy(progressCallback)
-    : undefined;
+  const proxyProgressCallback = progressCallback ? proxy(progressCallback) : undefined;
 
   try {
     // we added the `userid` to the settings if not provided, so this assertion is safe
-    await remoteWorker.initBlinkId(
-      settings as BlinkIdWorkerInitSettings,
-      proxyProgressCallback,
-    );
+    await remoteWorker.initBlinkId(settings as BlinkIdWorkerInitSettings, proxyProgressCallback);
 
     return remoteWorker;
   } catch (error) {

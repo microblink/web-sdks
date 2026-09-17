@@ -32,8 +32,4 @@ The Camera Manager Component.
 
 The function to unmount the feedback UI.
 
-> (): `void`
-
-### Returns
-
-`void`
+() => `void`

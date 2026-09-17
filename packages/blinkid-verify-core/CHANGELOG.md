@@ -1,13 +1,17 @@
 # @microblink/blinkid-verify-core
 
-## 3.22.0-next
+## 4000.0.0-next.0
 
 ### Patch Changes
 
+- Updated package dependencies.
+- Require HTTPS when loading cross-origin worker resources.
+- Speeds up BlinkID Verify initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
+- Upgrade to TypeScript 7
 - Updated dependencies
-  - @microblink/analytics@2.0.2
-  - @microblink/blinkid-verify-wasm@3.22.0-next
-  - @microblink/blinkid-verify-worker@3.22.0-next
+  - @microblink/analytics@2.1.0
+  - @microblink/blinkid-verify-wasm@4000.0.0-next.0
+  - @microblink/blinkid-verify-worker@4000.0.0-next.0
 
 ## 3.21.1
 

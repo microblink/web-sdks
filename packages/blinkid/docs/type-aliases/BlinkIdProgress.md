@@ -20,7 +20,7 @@ Remaining state for the inactivity timeout.
 
 ### inactivityResetUiStateKey?
 
-> `optional` **inactivityResetUiStateKey**: [`BlinkIdUiStateKey`](BlinkIdUiStateKey.md)
+> `optional` **inactivityResetUiStateKey?**: [`BlinkIdUiStateKey`](BlinkIdUiStateKey.md)
 
 Stabilized UI state key that last reset the inactivity timeout.
 

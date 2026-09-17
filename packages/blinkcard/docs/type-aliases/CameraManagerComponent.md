@@ -12,12 +12,12 @@ The camera manager component.
 
 ## Properties
 
-### addOnDismountCallback()
+### addOnDismountCallback
 
 > **addOnDismountCallback**: (`fn`) => () => `void`
 
-Sets a callback to be called when the component is unmounted.
-Returns a cleanup function that removes the callback when called.
+Sets a callback to be called when the component is unmounted. Returns a cleanup function that removes the callback
+when called.
 
 #### Parameters
 
@@ -27,11 +27,7 @@ Returns a cleanup function that removes the callback when called.
 
 #### Returns
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 ***
 
@@ -43,7 +39,7 @@ The camera manager.
 
 ***
 
-### dismount()
+### dismount
 
 > **dismount**: () => `void`
 

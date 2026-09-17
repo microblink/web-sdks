@@ -1,27 +1,18 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { ConnectionObserver } from "@wessberg/connection-observer";
+import { stripIndents } from "common-tags";
 import { radEventListener } from "rad-event-listener";
+import { Promisable } from "type-fest";
 
 import { Camera, FacingMode, VideoResolutionName } from "./Camera";
 import { CameraError } from "./cameraError";
-import {
-  askForCameraPermission,
-  createCameras,
-  findIdealCamera,
-  obtainVideoInputDevices,
-} from "./cameraUtils";
-
 import {
   PlaybackState,
   resetCameraManagerStore as resetStore,
   cameraManagerStore as store,
 } from "./cameraManagerStore";
-
-import { stripIndents } from "common-tags";
-import { Promisable } from "type-fest";
+import { askForCameraPermission, createCameras, findIdealCamera, obtainVideoInputDevices } from "./cameraUtils";
 import { asError } from "./utils";
 import {
   ExtractionArea,
@@ -40,17 +31,14 @@ export class CameraManager {
   #resumeWhenVisible?: Exclude<PlaybackState, "idle">;
 
   /**
-   * The desired video resolution for camera streams. This is used as the ideal resolution
-   * when starting camera streams. If a camera doesn't support the specified resolution,
-   * the camera will automatically fall back to the next lower supported resolution in this order:
-   * 4k → 1080p → 720p. The actual resolution used may differ from this setting based on
-   * camera capabilities and system constraints.
+   * The desired video resolution for camera streams. This is used as the ideal resolution when starting camera streams.
+   * If a camera doesn't support the specified resolution, the camera will automatically fall back to the next lower
+   * supported resolution in this order: 4k → 1080p → 720p. The actual resolution used may differ from this setting
+   * based on camera capabilities and system constraints.
    */
   #resolution: VideoResolutionName;
 
-  #videoFrameRequestId:
-    | ReturnType<HTMLVideoElement["requestVideoFrameCallback"]>
-    | undefined;
+  #videoFrameRequestId: ReturnType<HTMLVideoElement["requestVideoFrameCallback"]> | undefined;
   #videoFrameProcessor: VideoFrameProcessor;
   #mirrorFrontCameras: boolean;
 
@@ -74,14 +62,14 @@ export class CameraManager {
   }
 
   /**
-   * If true, the user has initiated an abort. This will prevent the
-   * CameraManager from throwing errors when the user interrupts the process.
+   * If true, the user has initiated an abort. This will prevent the CameraManager from throwing errors when the user
+   * interrupts the process.
    */
   #userInitiatedAbort = false;
 
   /**
-   * If true, the user has initiated an abort. This will prevent the
-   * CameraManager from throwing errors when the user interrupts the process.
+   * If true, the user has initiated an abort. This will prevent the CameraManager from throwing errors when the user
+   * interrupts the process.
    */
   get userInitiatedAbort() {
     return this.#userInitiatedAbort;
@@ -101,8 +89,7 @@ export class CameraManager {
 
     // shallow compare to prevent frequent updates
     if (
-      currentExtractionArea &&
-      currentExtractionArea.x === extractionArea.x &&
+      currentExtractionArea?.x === extractionArea.x &&
       currentExtractionArea.y === extractionArea.y &&
       currentExtractionArea.width === extractionArea.width &&
       currentExtractionArea.height === extractionArea.height
@@ -123,10 +110,7 @@ export class CameraManager {
     return store.getState().extractionArea;
   }
 
-  /**
-   * Callbacks that will be triggered on each frame when the playback state is
-   * "capturing".
-   */
+  /** Callbacks that will be triggered on each frame when the playback state is "capturing". */
   #frameCaptureCallbacks = new Set<FrameCaptureCallback>();
   #errorCallbacks = new Set<ErrorCallback>();
 
@@ -146,17 +130,15 @@ export class CameraManager {
     };
 
     this.#resolution = preferredResolution;
-    this.#videoFrameProcessor = new VideoFrameProcessor(
-      videoFrameProcessorOptions,
-    );
+    this.#videoFrameProcessor = new VideoFrameProcessor(videoFrameProcessorOptions);
     this.#mirrorFrontCameras = mirrorFrontCameras;
   }
 
   /**
-   * Sets the desired video resolution for camera streams. This is used as the ideal resolution
-   * when starting camera streams. If a camera doesn't support the specified resolution,
-   * the camera will automatically fall back to the next lower supported resolution in this order:
-   * 4k → 1080p → 720p. If there's an active stream, it will be restarted with the new resolution.
+   * Sets the desired video resolution for camera streams. This is used as the ideal resolution when starting camera
+   * streams. If a camera doesn't support the specified resolution, the camera will automatically fall back to the next
+   * lower supported resolution in this order: 4k → 1080p → 720p. If there's an active stream, it will be restarted with
+   * the new resolution.
    *
    * @param resolution - The ideal resolution to set for camera streams.
    */
@@ -173,11 +155,10 @@ export class CameraManager {
   };
 
   /**
-   * The desired video resolution for camera streams. This is used as the ideal resolution
-   * when starting camera streams. If a camera doesn't support the specified resolution,
-   * the camera will automatically fall back to the next lower supported resolution in this order:
-   * 4k → 1080p → 720p. The actual resolution used may differ from this setting based on
-   * camera capabilities and system constraints.
+   * The desired video resolution for camera streams. This is used as the ideal resolution when starting camera streams.
+   * If a camera doesn't support the specified resolution, the camera will automatically fall back to the next lower
+   * supported resolution in this order: 4k → 1080p → 720p. The actual resolution used may differ from this setting
+   * based on camera capabilities and system constraints.
    */
   get resolution() {
     return this.#resolution;
@@ -205,8 +186,8 @@ export class CameraManager {
   }
 
   /**
-   * Returns the cameras that are available to the user, filtered by the facing mode.
-   * If no facing mode is set, all cameras are returned.
+   * Returns the cameras that are available to the user, filtered by the facing mode. If no facing mode is set, all
+   * cameras are returned.
    *
    * @returns The cameras that are available to the user, filtered by the facing mode.
    */
@@ -225,9 +206,7 @@ export class CameraManager {
       return allCameras;
     }
 
-    const filteredCameras = allCameras.filter((camera) =>
-      facingFilter.includes(camera.facingMode),
-    );
+    const filteredCameras = allCameras.filter((camera) => facingFilter.includes(camera.facingMode));
 
     return filteredCameras;
   }
@@ -243,12 +222,9 @@ export class CameraManager {
    */
   #initVideoElement(videoElement: HTMLVideoElement) {
     if (!(videoElement instanceof HTMLVideoElement)) {
-      throw new Error(
-        `Expected an HTMLVideoElement, got ${typeof videoElement}`,
-        {
-          cause: videoElement,
-        },
-      );
+      throw new Error(`Expected an HTMLVideoElement, got ${typeof videoElement}`, {
+        cause: videoElement,
+      });
     }
 
     store.setState({
@@ -256,31 +232,24 @@ export class CameraManager {
     });
 
     /**
-     * Added additional listener to "resize" event on the video element because some iPhone devices
-     * do not have updated video dimensions when the resize observer callback is called.
+     * Added additional listener to "resize" event on the video element because some iPhone devices do not have updated
+     * video dimensions when the resize observer callback is called.
      */
-    const videoResolutionChangeCleanup = radEventListener(
-      videoElement,
-      "resize",
-      () => {
-        const prev = store.getState().videoResolution;
+    const videoResolutionChangeCleanup = radEventListener(videoElement, "resize", () => {
+      const prev = store.getState().videoResolution;
 
-        // shallow compare to prevent frequent updates
-        if (
-          prev?.width === videoElement.videoWidth &&
-          prev?.height === videoElement.videoHeight
-        ) {
-          return;
-        }
+      // shallow compare to prevent frequent updates
+      if (prev?.width === videoElement.videoWidth && prev?.height === videoElement.videoHeight) {
+        return;
+      }
 
-        store.setState({
-          videoResolution: {
-            width: videoElement.videoWidth,
-            height: videoElement.videoHeight,
-          },
-        });
-      },
-    );
+      store.setState({
+        videoResolution: {
+          width: videoElement.videoWidth,
+          height: videoElement.videoHeight,
+        },
+      });
+    });
 
     // video disconnect / dismount callback
     const connectionObserver = new ConnectionObserver((entries) => {
@@ -299,34 +268,30 @@ export class CameraManager {
     // when the website is in the background
     let previousPlaybackState: PlaybackState = "idle";
 
-    const cleanupVisibilityListener = radEventListener(
-      document,
-      "visibilitychange",
-      async () => {
-        const isHidden = document.hidden;
+    const cleanupVisibilityListener = radEventListener(document, "visibilitychange", async () => {
+      const isHidden = document.hidden;
 
-        if (isHidden) {
-          previousPlaybackState = store.getState().playbackState;
-          this.stopStream();
-          return;
-        }
+      if (isHidden) {
+        previousPlaybackState = store.getState().playbackState;
+        this.stopStream();
+        return;
+      }
 
-        // Visible again. Resume either previous state or hidden-time queued request.
-        const resumeTarget = this.#resumeWhenVisible ?? previousPlaybackState;
-        this.#resumeWhenVisible = undefined;
+      // Visible again. Resume either previous state or hidden-time queued request.
+      const resumeTarget = this.#resumeWhenVisible ?? previousPlaybackState;
+      this.#resumeWhenVisible = undefined;
 
-        switch (resumeTarget) {
-          case "playback":
-            await this.startCameraStream();
-            await this.startPlayback();
-            break;
-          case "capturing":
-            await this.startCameraStream();
-            await this.startFrameCapture();
-            break;
-        }
-      },
-    );
+      switch (resumeTarget) {
+        case "playback":
+          await this.startCameraStream();
+          await this.startPlayback();
+          break;
+        case "capturing":
+          await this.startCameraStream();
+          await this.startFrameCapture();
+          break;
+      }
+    });
 
     this.#eventListenerCleanup = () => {
       cleanupVisibilityListener();
@@ -353,11 +318,10 @@ export class CameraManager {
   }
 
   /**
-   * Adds a callback that will be triggered on each frame when the playback state
-   * is "capturing".
+   * Adds a callback that will be triggered on each frame when the playback state is "capturing".
    *
    * @param frameCaptureCallback - The callback to add.
-   * @returns a cleanup function to remove the callback
+   * @returns A cleanup function to remove the callback
    */
   addFrameCaptureCallback(frameCaptureCallback: FrameCaptureCallback) {
     this.#frameCaptureCallbacks.add(frameCaptureCallback);
@@ -369,9 +333,7 @@ export class CameraManager {
     return () => this.#errorCallbacks.delete(errorCallback);
   }
 
-  /**
-   * Cleans up the video element, and stops the stream.
-   */
+  /** Cleans up the video element, and stops the stream. */
   releaseVideoElement() {
     this.#eventListenerCleanup?.();
     store.setState({
@@ -447,14 +409,11 @@ export class CameraManager {
   /**
    * Refreshes available devices on the system and updates the state.
    *
-   * @returns resolves when the camera devices are refreshed
+   * @returns Resolves when the camera devices are refreshed
    */
   async refreshCameraDevices() {
     // prevent race conditions
-    if (
-      store.getState().isQueryingCameras ||
-      store.getState().isSwappingCamera
-    ) {
+    if (store.getState().isQueryingCameras || store.getState().isSwappingCamera) {
       console.debug("Already querying cameras");
       return;
     }
@@ -478,10 +437,7 @@ export class CameraManager {
         });
       }
 
-      if (
-        !newState.isQueryingCameras &&
-        newState.cameraPermission === "denied"
-      ) {
+      if (!newState.isQueryingCameras && newState.cameraPermission === "denied") {
         store.setState({
           cameraPermission: "blocked",
         });
@@ -532,10 +488,7 @@ export class CameraManager {
           if (cameraState.error?.code === "STREAM_ENDED_UNEXPECTEDLY") {
             askForCameraPermission()
               .catch((err) => {
-                if (
-                  err instanceof CameraError &&
-                  err.code === "PERMISSION_DENIED"
-                ) {
+                if (err instanceof CameraError && err.code === "PERMISSION_DENIED") {
                   permissionRevoked = true;
                   permissionError = err;
                 }
@@ -590,7 +543,7 @@ export class CameraManager {
   /**
    * Starts the video playback
    *
-   * @returns resolves when playback starts
+   * @returns Resolves when playback starts
    */
   async startPlayback() {
     if (this.#isDocumentHidden()) {
@@ -642,7 +595,7 @@ export class CameraManager {
   /**
    * Starts playback and frame capturing.
    *
-   * @returns resolves when frame capture starts
+   * @returns Resolves when frame capture starts
    */
   async #startFrameCapture() {
     const state = store.getState();
@@ -657,25 +610,18 @@ export class CameraManager {
     }
 
     // No-op if we're already capturing frames
-    if (
-      state.playbackState === "capturing" &&
-      this.#resumeRequest !== "capturing"
-    ) {
+    if (state.playbackState === "capturing" && this.#resumeRequest !== "capturing") {
       return;
     }
     // otherwise, we're resuming or starting
 
     if (!state.videoElement) {
-      console.warn(
-        "Missing video element. Setup a video element first using `initVideoElement`",
-      );
+      console.warn("Missing video element. Setup a video element first using `initVideoElement`");
       return;
     }
 
     if (!state.selectedCamera) {
-      console.warn(
-        "No active camera! Select a camera first, or use `startCameraStream`",
-      );
+      console.warn("No active camera! Select a camera first, or use `startCameraStream`");
       return;
     }
 
@@ -698,7 +644,7 @@ export class CameraManager {
   /**
    * Starts capturing frames from the video element.
    *
-   * @returns resolves when frame capture starts
+   * @returns Resolves when frame capture starts
    */
   startFrameCapture = async () => {
     try {
@@ -716,7 +662,7 @@ export class CameraManager {
    * Starts a camera stream.
    *
    * @param params - The parameters for the camera stream.
-   * @returns resolves when the camera stream starts
+   * @returns Resolves when the camera stream starts
    */
   async #startCameraStream({
     autoplay = true,
@@ -758,9 +704,7 @@ export class CameraManager {
 
         if (!cameras.length) {
           console.warn("Camera list is empty");
-          throw new Error(
-            `No cameras found matching the filter ${preferredFacing}`,
-          );
+          throw new Error(`No cameras found matching the filter ${preferredFacing}`);
         }
 
         // If a camera getter is provided, use it to select the camera
@@ -768,25 +712,15 @@ export class CameraManager {
         if (typeof preferredCamera === "function") {
           selectedCamera = preferredCamera(cameras);
           if (!selectedCamera) {
-            console.warn(
-              `No camera found matching the preferred camera function, falling back to facing mode`,
-            );
+            console.warn(`No camera found matching the preferred camera function, falling back to facing mode`);
           }
         }
 
         // Otherwise, use use the `findIdealCamera` function to select the camera
-        if (!selectedCamera) {
-          selectedCamera = await findIdealCamera(
-            cameras,
-            this.resolution,
-            preferredFacing,
-          );
-        }
+        selectedCamera ??= await findIdealCamera(cameras, this.resolution, preferredFacing);
 
         if (!selectedCamera) {
-          throw new Error(
-            `No cameras found matching the filter ${preferredFacing}`,
-          );
+          throw new Error(`No cameras found matching the filter ${preferredFacing}`);
         }
 
         await this.selectCamera(selectedCamera);
@@ -849,11 +783,10 @@ export class CameraManager {
   }
 
   /**
-   * Starts a best-effort camera stream. Will pick a camera automatically if
-   * none is selected.
+   * Starts a best-effort camera stream. Will pick a camera automatically if none is selected.
    *
    * @param params - The parameters for the camera stream.
-   * @returns resolves when the camera stream starts
+   * @returns Resolves when the camera stream starts
    */
   async startCameraStream(params: StartCameraStreamOptions = {}) {
     try {
@@ -870,20 +803,15 @@ export class CameraManager {
   /**
    * Checks if the error state is a permission error.
    *
-   * @returns true if the error state is a permission error
+   * @returns True if the error state is a permission error
    */
   #hasPermissionError = () => {
     const errorState = store.getState().errorState;
 
-    return (
-      errorState instanceof CameraError &&
-      errorState.code === "PERMISSION_DENIED"
-    );
+    return errorState instanceof CameraError && errorState.code === "PERMISSION_DENIED";
   };
 
-  /**
-   * Pauses capturing frames, without stopping playback.
-   */
+  /** Pauses capturing frames, without stopping playback. */
   stopFrameCapture() {
     // Cancel any pending video frame callback to prevent race conditions
     this.#cancelVideoFrameCallback();
@@ -893,9 +821,7 @@ export class CameraManager {
     });
   }
 
-  /**
-   * Stops the currently active stream. Also stops the video playback and capturing process.
-   */
+  /** Stops the currently active stream. Also stops the video playback and capturing process. */
   stopStream() {
     console.debug("stopStream called");
     const state = store.getState();
@@ -908,9 +834,7 @@ export class CameraManager {
     }
   }
 
-  /**
-   * Pauses the video playback. This will also stop the capturing process.
-   */
+  /** Pauses the video playback. This will also stop the capturing process. */
   pausePlayback() {
     console.debug("pausePlayback called");
 
@@ -925,9 +849,7 @@ export class CameraManager {
     state.videoElement?.pause();
   }
 
-  /**
-   * The main recognition loop. Do not call this method directly, use `#queueFrame` instead.
-   */
+  /** The main recognition loop. Do not call this method directly, use `#queueFrame` instead. */
   async #loop() {
     try {
       const state = store.getState();
@@ -944,27 +866,19 @@ export class CameraManager {
         return;
       }
 
-      if (!state.extractionArea) {
-        console.warn(
-          "Stream started before extraction area was set, skipping frame.",
-        );
-        return;
-      }
+      if (state.extractionArea) {
+        const isSameOrientation =
+          state.videoElement.videoHeight >= state.videoElement.videoWidth ===
+          state.extractionArea.height >= state.extractionArea.width;
 
-      const isSameOrientation =
-        state.videoElement.videoHeight >= state.videoElement.videoWidth ===
-        state.extractionArea.height >= state.extractionArea.width;
-
-      if (!isSameOrientation) {
-        // elements not in sync, wait for next frame
-        return this.#queueFrame();
+        if (!isSameOrientation) {
+          // elements not in sync, wait for next frame
+          return this.#queueFrame();
+        }
       }
 
       if (this.#frameCaptureCallbacks.size !== 0) {
-        const capturedFrame = this.#videoFrameProcessor.getImageData(
-          state.videoElement,
-          state.extractionArea,
-        );
+        const capturedFrame = this.#videoFrameProcessor.getImageData(state.videoElement, state.extractionArea);
 
         // Iterate over all frame capture callbacks
         for (const callback of this.#frameCaptureCallbacks) {
@@ -982,9 +896,7 @@ export class CameraManager {
 
           if (!(returnedBuffer instanceof ArrayBuffer)) {
             if (ArrayBuffer.isView(returnedBuffer)) {
-              this.#videoFrameProcessor.reattachArrayBuffer(
-                returnedBuffer.buffer,
-              );
+              this.#videoFrameProcessor.reattachArrayBuffer(returnedBuffer.buffer);
             }
 
             throw new Error(
@@ -1008,9 +920,7 @@ export class CameraManager {
     }
   }
 
-  /**
-   * Queues the next frame to be processed.
-   */
+  /** Queues the next frame to be processed. */
   #queueFrame() {
     const state = store.getState();
 
@@ -1026,14 +936,12 @@ export class CameraManager {
     // clean up previous frame callback if it exists
     this.#cancelVideoFrameCallback();
 
-    this.#videoFrameRequestId = state.videoElement.requestVideoFrameCallback(
-      () => void this.#loop(),
-    );
+    this.#videoFrameRequestId = state.videoElement.requestVideoFrameCallback(() => void this.#loop());
   }
 
   /**
-   * Applies a mirror effect to the video if the camera is front-facing.
-   * Assumes that desktop devices don't return a facing mode and that they are front-facing.
+   * Applies a mirror effect to the video if the camera is front-facing. Assumes that desktop devices don't return a
+   * facing mode and that they are front-facing.
    */
   #applyMirrorIfNeeded() {
     const camera = store.getState().selectedCamera;
@@ -1100,24 +1008,22 @@ export class CameraManager {
   // The "typeof" is necessary to avoid a circular dependency when resolving types
 
   /**
-   * Allows the user to subscribe to state changes inside the Camera Manager.
-   * Implemented using Zustand. For usage information, see
-   * @see https://github.com/pmndrs/zustand#using-subscribe-with-selector for more details.
+   * Allows the user to subscribe to state changes inside the Camera Manager. Implemented using Zustand. For usage
+   * information, see
    *
-   * @returns a cleanup function to remove the subscription
+   * @returns A cleanup function to remove the subscription
+   * @see https://github.com/pmndrs/zustand#using-subscribe-with-selector for more details.
    */
   subscribe: typeof store.subscribe = store.subscribe;
 
   /**
    * Gets the current internal state of the CameraManager.
    *
-   * @returns the current state of the CameraManager
+   * @returns The current state of the CameraManager
    */
   getState: typeof store.getState = store.getState;
 
-  /**
-   * Resets the CameraManager and stops all streams.
-   */
+  /** Resets the CameraManager and stops all streams. */
   reset() {
     console.debug("Resetting camera manager");
     this.#frameCaptureCallbacks.clear();
@@ -1139,15 +1045,12 @@ export class CameraManager {
 }
 
 /**
- * A callback that will be triggered on each frame when the playback state is
- * "capturing".
+ * A callback that will be triggered on each frame when the playback state is "capturing".
  *
  * @param frame - The frame to capture.
  * @returns The frame.
  */
-export type FrameCaptureCallback = (
-  frame: ImageData,
-) => Promisable<ArrayBufferLike | void>;
+export type FrameCaptureCallback = (frame: ImageData) => Promisable<ArrayBufferLike | void>;
 
 export type ErrorCallback = (error: Error) => void;
 
@@ -1201,24 +1104,23 @@ export type StartCameraStreamOptions = {
  * Options for the CameraManager.
  *
  * @param mirrorFrontCameras - If true, front-facing cameras will be mirrored horizontally when started.
- * @param preferredResolution - The desired video resolution for camera streams. This is used as the ideal resolution when starting camera streams. If a camera doesn't support the specified resolution, the camera will automatically fall back to the next lower supported resolution in this order: 4k → 1080p → 720p.
+ * @param preferredResolution - The desired video resolution for camera streams. This is used as the ideal resolution
+ *   when starting camera streams. If a camera doesn't support the specified resolution, the camera will automatically
+ *   fall back to the next lower supported resolution in this order: 4k → 1080p → 720p.
  */
 export type CameraManagerOptions = {
   /** If true, the camera stream will be mirrored horizontally when started. */
   mirrorFrontCameras: boolean;
   /**
-   * The desired video resolution for camera streams. This is used as the ideal resolution
-   * when starting camera streams. If a camera doesn't support the specified resolution,
-   * the camera will automatically fall back to the next lower supported resolution in this order:
-   * 4k → 1080p → 720p. The actual resolution used may differ from this setting based on
-   * camera capabilities and system constraints.
+   * The desired video resolution for camera streams. This is used as the ideal resolution when starting camera streams.
+   * If a camera doesn't support the specified resolution, the camera will automatically fall back to the next lower
+   * supported resolution in this order: 4k → 1080p → 720p. The actual resolution used may differ from this setting
+   * based on camera capabilities and system constraints.
    */
   preferredResolution: VideoResolutionName;
 };
 
-/**
- * Default options for the CameraManager.
- */
+/** Default options for the CameraManager. */
 export const defaultCameraManagerOptions: CameraManagerOptions = {
   mirrorFrontCameras: true,
   preferredResolution: "1080p",

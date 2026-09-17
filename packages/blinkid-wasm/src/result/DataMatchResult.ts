@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /** Represents the state of the data match. */
 export type DataMatchState = "not-performed" | "failed" | "success";

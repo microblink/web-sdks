@@ -6,9 +6,8 @@
 
 # Interface: BlinkIdVerifyUxManager
 
-The BlinkIdVerifyUxManager class. This is the main class that manages the UX of
-the BlinkID Verify SDK. It is responsible for handling the UI state, the timeout,
-the help tooltip, and the document class filter.
+The BlinkIdVerifyUxManager class. This is the main class that manages the UX of the BlinkID Verify SDK. It is
+responsible for handling the UI state, the timeout, the help tooltip, and the document class filter.
 
 ## Properties
 
@@ -32,8 +31,8 @@ The device info.
 
 > `readonly` **feedbackStabilizer**: [`FeedbackStabilizer`](../classes/FeedbackStabilizer.md)\<[`BlinkIdVerifyUiStateMap`](../type-aliases/BlinkIdVerifyUiStateMap.md)\>
 
-The feedback stabilizer. Public to allow UI components to read scores,
-event queues, and call restartCurrentStateTimer() for help-tooltip resets.
+The feedback stabilizer. Public to allow UI components to read scores, event queues, and call
+restartCurrentStateTimer() for help-tooltip resets.
 
 ***
 
@@ -105,9 +104,8 @@ Latest mapped candidate key before stabilization.
 
 > **get** **uiState**(): [`BlinkIdVerifyUiState`](../type-aliases/BlinkIdVerifyUiState.md)
 
-The current UI state. Updated internally by the RAF update loop.
-Read externally once at UI mount to seed the initial Solid signal value;
-subsequent updates are delivered via `addOnUiStateChangedCallback`.
+The current UI state. Updated internally by the RAF update loop. Read externally once at UI mount to seed the
+initial Solid signal value; subsequent updates are delivered via `addOnUiStateChangedCallback`.
 
 ##### Returns
 
@@ -133,8 +131,7 @@ The currently applied UI state key.
 
 > **addOnErrorCallback**(`callback`): () => `void`
 
-Registers a callback function to be called when an error occurs during
-processing.
+Registers a callback function to be called when an error occurs during processing.
 
 #### Parameters
 
@@ -149,21 +146,17 @@ A function that will be called with the error state.
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnErrorCallback((error) => {
-  console.error('Processing error:', error);
-});
+    console.error("Processing error:", error);
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -180,29 +173,24 @@ Registers a callback function to be called when a frame is processed.
 
 (`frameResult`) => `void`
 
-A function that will be called with the frame analysis
-result.
+A function that will be called with the frame analysis result.
 
 #### Returns
 
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnFrameProcessCallback((frameResult) => {
-  console.log('Frame processed:', frameResult);
-});
+    console.log("Frame processed:", frameResult);
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -226,21 +214,17 @@ A function that will be called with the scan result.
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnResultCallback((result) => {
-  console.log('Scan result:', result);
-});
+    console.log("Scan result:", result);
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -257,27 +241,22 @@ Adds a callback function to be executed when the UI state changes.
 
 (`uiState`) => `void`
 
-Function to be called when UI state changes. Receives the
-new UI state as parameter.
+Function to be called when UI state changes. Receives the new UI state as parameter.
 
 #### Returns
 
 A cleanup function that removes the callback when called.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnUiStateChangedCallback((newState) => {
-  console.log('UI state changed to:', newState);
-});
+    console.log("UI state changed to:", newState);
+  });
 
-cleanup();
+  cleanup();
 ```
 
 ***
@@ -318,9 +297,9 @@ Clears the scanning session timeout.
 
 > **destroy**(): `void`
 
-Fully tears down the BlinkIdVerifyUxManager. Stops frame processing, cancels the
-scan timeout, removes all subscriptions and the RAF loop, and clears all
-registered callbacks. Should be called when the manager is no longer needed.
+Fully tears down the BlinkIdVerifyUxManager. Stops frame processing, cancels the scan timeout, removes all
+subscriptions and the RAF loop, and clears all registered callbacks. Should be called when the manager is no longer
+needed.
 
 Does not stop the camera stream or delete the scanning session.
 
@@ -372,13 +351,13 @@ The result.
 
 ### getTimeoutDuration()
 
-> **getTimeoutDuration**(): `null` \| `number`
+> **getTimeoutDuration**(): `number` \| `null`
 
 Returns the timeout duration in ms. Null if timeout won't be triggered ever.
 
 #### Returns
 
-`null` \| `number`
+`number` \| `null`
 
 ***
 
@@ -392,7 +371,7 @@ Check if haptic feedback is currently enabled.
 
 `boolean`
 
-true if haptic feedback is enabled
+True if haptic feedback is enabled
 
 ***
 
@@ -406,7 +385,7 @@ Check if haptic feedback is supported by the current browser/device.
 
 `boolean`
 
-true if haptic feedback is supported
+True if haptic feedback is supported
 
 ***
 
@@ -494,18 +473,16 @@ If true, immediately applies and emits this state.
 
 > **setTimeoutDuration**(`duration`): `void`
 
-Sets the duration after which the scanning session will timeout. The
-timeout can occur in various scenarios and may be restarted by different
-scanning events.
+Sets the duration after which the scanning session will timeout. The timeout can occur in various scenarios and may
+be restarted by different scanning events.
 
 #### Parameters
 
 ##### duration
 
-The timeout duration in milliseconds. If null, timeout won't
-be triggered ever.
+`number` \| `null`
 
-`null` | `number`
+The timeout duration in milliseconds. If null, timeout won't be triggered ever.
 
 #### Returns
 

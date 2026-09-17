@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { StringResult } from "../result";
 
@@ -19,9 +17,8 @@ export type DateResult<S extends string | StringResult> = {
   /** Original date time string */
   originalString?: S;
   /**
-   * Indicates whether this Date object is filled by internal domain knowledge.
-   * If it is, successfullyParsed flag is set to false and originalString is set
-   * to empty.
+   * Indicates whether this Date object is filled by internal domain knowledge. If it is, successfullyParsed flag is set
+   * to false and originalString is set to empty.
    */
   filledByDomainKnowledge: boolean;
   /** Indicates whether this Date object is successfully parsed from string. */

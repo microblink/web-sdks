@@ -1,21 +1,19 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
- * BlinkCard processing error. These errors are usually unrecoverable and require
- * the user to retry the scanning process.
+ * BlinkCard processing error. These errors are usually unrecoverable and require the user to retry the scanning
+ * process.
  */
 export type BlinkCardProcessingError =
   // processing
-  | "timeout"
+  | "inactivity_timeout"
+  | "scan_step_timeout"
   | "result_retrieval_failed"
 
   // other
   | "unknown";
 
 /**
- * BlinkCard Init errors are not something that should be handled by the end user
- * therefore we don't need to display them in the UI. Camera permission errors
- * are handled in the Camera Manager component.
+ * BlinkCard Init errors are not something that should be handled by the end user therefore we don't need to display
+ * them in the UI. Camera permission errors are handled in the Camera Manager component.
  */

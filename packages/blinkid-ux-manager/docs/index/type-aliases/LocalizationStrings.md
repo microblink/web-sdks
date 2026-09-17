@@ -1,0 +1,16 @@
+[**@microblink/blinkid-ux-manager**](../../README.md)
+
+***
+
+[@microblink/blinkid-ux-manager](../../README.md) / [index](../README.md) / LocalizationStrings
+
+# Type Alias: LocalizationStrings
+
+> **LocalizationStrings** = `LocalizedValue`\<[`LocaleRecord`](LocaleRecord.md)\>
+
+The localization strings type. This allows for autocomplete for defaults, but also overriding with strings at any
+level.
+
+## See
+
+https://twitter.com/mattpocockuk/status/1709281782325977101

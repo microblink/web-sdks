@@ -1,13 +1,11 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { deepClone } from "./deepClone";
 import { getKeyWithHighestValue } from "./utils";
 
 /**
- * Represents a UI state configuration with timing and weight parameters.
- * Used to define how different UI states should behave in the stabilization process.
+ * Represents a UI state configuration with timing and weight parameters. Used to define how different UI states should
+ * behave in the stabilization process.
  *
  * @typeParam K - The specific key type for this UI state
  */
@@ -19,21 +17,21 @@ export type UiState<K extends string = string> = {
   minDuration: number;
 
   /**
-   * If true, the event will be emitted once the previous event is done.
-   * It bypasses the averaging process and is handled separately.
+   * If true, the event will be emitted once the previous event is done. It bypasses the averaging process and is
+   * handled separately.
    */
   singleEmit?: boolean;
 
   /**
-   * Initial weight for this state when it enters the stabilization queue.
-   * Higher values give the state more influence in the averaging process.
+   * Initial weight for this state when it enters the stabilization queue. Higher values give the state more influence
+   * in the averaging process.
    */
   initialWeight?: number;
 };
 
 /**
- * Represents a UI state event in the stabilization queue.
- * These events are processed to determine which UI state should be displayed.
+ * Represents a UI state event in the stabilization queue. These events are processed to determine which UI state should
+ * be displayed.
  *
  * @typeParam K - The key type for this event, matching a UI state key
  */
@@ -48,15 +46,13 @@ export type UiStateEvent<K extends string = string> = {
   currentWeight: number;
 
   /**
-   * If true, this event will be emitted once the previous event completes.
-   * It bypasses the normal stabilization process.
+   * If true, this event will be emitted once the previous event completes. It bypasses the normal stabilization
+   * process.
    */
   singleEmit?: boolean;
 };
 
-/**
- * Maps state keys to their corresponding UI state configurations.
- */
+/** Maps state keys to their corresponding UI state configurations. */
 export type UiStateMap = {
   [K in string]: UiState<K>;
 };
@@ -67,11 +63,9 @@ type StateKey<T extends UiStateMap> = keyof T & string;
 /**
  * FeedbackStabilizer provides UI state management with temporal smoothing.
  *
- * It helps prevent UI "flickering" by:
- * - Maintaining a time-windowed history of UI state changes
- * - Applying weighted averaging to determine the most appropriate state
- * - Supporting immediate state changes through single-emit events
- * - Enforcing minimum display durations for states
+ * It helps prevent UI "flickering" by: - Maintaining a time-windowed history of UI state changes - Applying weighted
+ * averaging to determine the most appropriate state - Supporting immediate state changes through single-emit events -
+ * Enforcing minimum display durations for states
  *
  * @typeParam SdkSpecificStateMap - Type extending UiStateMap for SDK-specific states
  */
@@ -180,8 +174,8 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
   /**
    * Resets the stabilizer to its initial state.
    *
-   * @param currentKey - resets the stabilizer with a different key
-   * than the one it was initialized with. Does not mutate `this.initialKey`
+   * @param currentKey - Resets the stabilizer with a different key than the one it was initialized with. Does not
+   *   mutate `this.initialKey`
    */
   reset(currentKey?: StateKey<SdkSpecificStateMap>) {
     const key = currentKey ?? this.initialKey;
@@ -194,9 +188,8 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
   }
 
   /**
-   * Restarts the minimum-duration timer for the current state.
-   * Useful when a state should be timed from an external lifecycle point
-   * (e.g. actual capture start) instead of construction/reset time.
+   * Restarts the minimum-duration timer for the current state. Useful when a state should be timed from an external
+   * lifecycle point (e.g. actual capture start) instead of construction/reset time.
    */
   restartCurrentStateTimer() {
     this.currentStateStartTime = performance.now();
@@ -205,17 +198,15 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
   /**
    * Checks if enough time has passed to show a new UI state
    *
-   * @returns true if the current state's minimum duration has elapsed
+   * @returns True if the current state's minimum duration has elapsed
    */
   canShowNewUiState = () => {
-    return (
-      performance.now() - this.currentStateStartTime >=
-      this.currentState.minDuration
-    );
+    return performance.now() - this.currentStateStartTime >= this.currentState.minDuration;
   };
 
   /**
    * Retrieves the remaining time for the current state to satisfy its minimum duration.
+   *
    * @returns Remaining time in milliseconds.
    */
   getRemainingDuration() {
@@ -226,9 +217,8 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
   /**
    * Creates a UI state event and enqueues it for later processing.
    *
-   * Regular states go to `eventQueue` and take part in weighted stabilization.
-   * States marked with `singleEmit` go to `singleEventQueue` and are emitted
-   * once the current state satisfies its minimum duration.
+   * Regular states go to `eventQueue` and take part in weighted stabilization. States marked with `singleEmit` go to
+   * `singleEventQueue` and are emitted once the current state satisfies its minimum duration.
    *
    * @param incomingUiStateKey - Key of the incoming UI state event.
    */
@@ -249,8 +239,7 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
     // single emitted events are placed in a different queue and emitted once the previous event is done
     if (uiStateEvent.singleEmit) {
       const isDuplicateSingleEmit =
-        this.currentKey === uiStateEvent.key ||
-        this.singleEventQueue.some((event) => event.key === uiStateEvent.key);
+        this.currentKey === uiStateEvent.key || this.singleEventQueue.some((event) => event.key === uiStateEvent.key);
       if (isDuplicateSingleEmit) {
         console.warn(
           `${uiStateEvent.key} added multiple times to the FeedbackStabilizer single event queue. Should not happen.`,
@@ -276,10 +265,8 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
   /**
    * Advances stabilizer time and returns the state that should be displayed.
    *
-   * This method:
-   * 1. Handles single-emit events that bypass normal stabilization
-   * 2. Maintains a time-windowed queue of regular events
-   * 3. Applies temporal averaging with decay to determine the winning state
+   * This method: 1. Handles single-emit events that bypass normal stabilization 2. Maintains a time-windowed queue of
+   * regular events 3. Applies temporal averaging with decay to determine the winning state
    *
    * @returns The UI state that should be displayed.
    */
@@ -307,12 +294,7 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
 
     // Compact in place and score in one pass to avoid mutating while iterating.
     let writeIdx = 0;
-    for (let readIdx = 0; readIdx < this.eventQueue.length; readIdx++) {
-      const eventInQueue = this.eventQueue[readIdx];
-      if (!eventInQueue) {
-        continue;
-      }
-
+    for (const eventInQueue of this.eventQueue) {
       // skip events outside of time window
       if (now - eventInQueue.timeStamp > this.timeWindow) {
         continue;
@@ -361,10 +343,7 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
 
       const relativeAmount = track.length / this.eventQueue.length;
 
-      const summedTrackScores = this.scoreBoard[trackKey].reduce(
-        (partialSum, a) => partialSum + a,
-        0,
-      );
+      const summedTrackScores = this.scoreBoard[trackKey].reduce((partialSum, a) => partialSum + a, 0);
 
       this.summedScores[trackKey] = summedTrackScores * relativeAmount;
     }
@@ -374,9 +353,7 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
       return this.uiStateMap[this.currentKey];
     }
 
-    const winningKey = getKeyWithHighestValue(
-      this.summedScores,
-    ) as StateKey<SdkSpecificStateMap>;
+    const winningKey = getKeyWithHighestValue(this.summedScores) as StateKey<SdkSpecificStateMap>;
 
     const winningState = this.uiStateMap[winningKey];
 
@@ -392,17 +369,13 @@ export class FeedbackStabilizer<SdkSpecificStateMap extends UiStateMap> {
   /**
    * Processes a new UI state event and determines the state to display.
    *
-   * This method:
-   * 1. Handles single-emit events that bypass normal stabilization
-   * 2. Maintains a time-windowed queue of regular events
-   * 3. Applies temporal averaging with decay to determine the winning state
+   * This method: 1. Handles single-emit events that bypass normal stabilization 2. Maintains a time-windowed queue of
+   * regular events 3. Applies temporal averaging with decay to determine the winning state
    *
    * @param incomingUiStateKey - Key of the new UI state event
    * @returns The UI state that should be displayed.
    */
-  getNewUiState(
-    incomingUiStateKey: StateKey<SdkSpecificStateMap>,
-  ): SdkSpecificStateMap[StateKey<SdkSpecificStateMap>] {
+  getNewUiState(incomingUiStateKey: StateKey<SdkSpecificStateMap>): SdkSpecificStateMap[StateKey<SdkSpecificStateMap>] {
     this.ingest(incomingUiStateKey);
     return this.tick();
   }

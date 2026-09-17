@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 export default {
   sortFirst: [
@@ -25,19 +23,14 @@ export default {
   ],
   versionGroups: [
     {
-      label: "Pin TypeScript to 5.8.3",
-      dependencies: ["typescript"],
-      pinVersion: "5.8.3",
-    },
-    {
       label: "Ignore vitest",
       dependencies: ["vitest", "@vitest/**"],
       isIgnored: true,
     },
     {
-      label: "Ignore .version properties of local packages",
-      dependencyTypes: ["local"],
+      label: "Ignore workspace protocol ranges",
       isIgnored: true,
+      specifierTypes: ["workspace-protocol"],
     },
   ],
 } satisfies import("syncpack").RcFile;

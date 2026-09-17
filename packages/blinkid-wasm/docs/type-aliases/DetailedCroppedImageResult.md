@@ -8,8 +8,7 @@
 
 > **DetailedCroppedImageResult** = `object`
 
-Represents the result of the image crop transformation with additional
-details.
+Represents the result of the image crop transformation with additional details.
 
 ## Properties
 
@@ -23,7 +22,7 @@ The image data.
 
 ### location?
 
-> `optional` **location**: [`Rectangle`](Rectangle.md)
+> `optional` **location?**: [`Rectangle`](Rectangle.md)
 
 The location of the image.
 
@@ -31,6 +30,6 @@ The location of the image.
 
 ### side?
 
-> `optional` **side**: [`ScanningSide`](ScanningSide.md)
+> `optional` **side?**: [`ScanningSide`](ScanningSide.md)
 
 The side of the image.

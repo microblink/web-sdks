@@ -22,7 +22,7 @@ The type of the string result.
 
 ### day?
 
-> `optional` **day**: `number`
+> `optional` **day?**: `number`
 
 Day in month [1-31]
 
@@ -32,15 +32,14 @@ Day in month [1-31]
 
 > **filledByDomainKnowledge**: `boolean`
 
-Indicates whether this Date object is filled by internal domain knowledge.
-If it is, successfullyParsed flag is set to false and originalString is set
-to empty.
+Indicates whether this Date object is filled by internal domain knowledge. If it is, successfullyParsed flag is set
+to false and originalString is set to empty.
 
 ***
 
 ### month?
 
-> `optional` **month**: `number`
+> `optional` **month?**: `number`
 
 Month in year [1-12]
 
@@ -48,7 +47,7 @@ Month in year [1-12]
 
 ### originalString?
 
-> `optional` **originalString**: `S`
+> `optional` **originalString?**: `S`
 
 Original date time string
 
@@ -56,7 +55,7 @@ Original date time string
 
 ### successfullyParsed?
 
-> `optional` **successfullyParsed**: `boolean`
+> `optional` **successfullyParsed?**: `boolean`
 
 Indicates whether this Date object is successfully parsed from string.
 
@@ -64,6 +63,6 @@ Indicates whether this Date object is successfully parsed from string.
 
 ### year?
 
-> `optional` **year**: `number`
+> `optional` **year?**: `number`
 
 Four digit year

@@ -1,15 +1,12 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { match } from "ts-pattern";
+
 import { BlinkIdUiStateKey } from "../core/blinkid-ui-state";
 import type { BlinkIdExtractionMode } from "../core/extractionMode";
 import { LocalizationStrings } from "./LocalizationContext";
 
-/**
- * The feedback messages.
- */
+/** The feedback messages. */
 export const feedbackMessages: Partial<
   Record<
     BlinkIdUiStateKey,
@@ -22,10 +19,7 @@ export const feedbackMessages: Partial<
   // intro states
   INTRO_DATA_PAGE: () => "scan_data_page",
   INTRO_FRONT_PAGE: (_, blinkIdExtractionMode) =>
-    match<
-      BlinkIdExtractionMode | undefined,
-      keyof LocalizationStrings["feedback_messages"]
-    >(blinkIdExtractionMode)
+    match<BlinkIdExtractionMode | undefined, keyof LocalizationStrings["feedback_messages"]>(blinkIdExtractionMode)
       .with("document-with-barcode", () => "scan_the_barcode_side")
       .with("document-with-mrz", () => "scan_the_mrz_side")
       .otherwise(() => "scan_the_front_side"),
@@ -49,8 +43,7 @@ export const feedbackMessages: Partial<
   WRONG_RIGHT_PAGE: () => "wrong_right",
   WRONG_LAST_PAGE: () => "scan_last_page_barcode",
   // occlusion
-  BLUR_DETECTED: (isDesktop?: boolean) =>
-    isDesktop ? "keep_still" : "blur_detected",
+  BLUR_DETECTED: (isDesktop?: boolean) => (isDesktop ? "keep_still" : "blur_detected"),
   GLARE_DETECTED: () => "glare_detected",
   OCCLUDED: () => "occluded",
   // image
@@ -63,10 +56,7 @@ export const feedbackMessages: Partial<
     isDesktop ? "keep_document_parallel" : "camera_angle_too_steep",
   // no document
   FRONT_PAGE_NOT_IN_FRAME: (_, blinkIdExtractionMode) =>
-    match<
-      BlinkIdExtractionMode | undefined,
-      keyof LocalizationStrings["feedback_messages"]
-    >(blinkIdExtractionMode)
+    match<BlinkIdExtractionMode | undefined, keyof LocalizationStrings["feedback_messages"]>(blinkIdExtractionMode)
       .with("document-with-barcode", () => "scan_the_barcode_side")
       .with("document-with-mrz", () => "scan_the_mrz_side")
       .otherwise(() => "scan_the_front_side"),

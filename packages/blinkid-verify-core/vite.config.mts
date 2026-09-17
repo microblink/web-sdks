@@ -1,11 +1,8 @@
-import {
-  getPackagePath,
-  linkResources,
-  getBrowserslistEsbuildTarget,
-} from "@microblink/repo-utils";
+import { getPackagePath, linkResources, getBrowserslistEsbuildTarget } from "@microblink/repo-utils";
 import { stripIndents } from "common-tags";
 import { defineConfig } from "vite";
 import { fs, path } from "zx";
+
 import { dependencies } from "./package.json";
 
 let ranOnce = false;
@@ -57,9 +54,7 @@ async function moveWorker() {
   }
   const distPath = path.join(pkgPath, "dist");
   if (!fs.pathExistsSync(distPath)) {
-    throw new Error(
-      `Dist directory does not exist at ${distPath}. Make sure ${packageName} is built first.`,
-    );
+    throw new Error(`Dist directory does not exist at ${distPath}. Make sure ${packageName} is built first.`);
   }
 
   const files = fs.readdirSync(distPath);
@@ -67,10 +62,7 @@ async function moveWorker() {
   fs.ensureDirSync(resourcesDir);
 
   for (const filePath of files) {
-    await linkResources(
-      path.join(distPath, filePath),
-      path.join(resourcesDir, filePath),
-    );
+    await linkResources(path.join(distPath, filePath), path.join(resourcesDir, filePath));
   }
 }
 
@@ -83,18 +75,13 @@ async function moveBlinkIdVerifyResources() {
   const distPath = path.join(pkgPath, "dist");
 
   if (!fs.pathExistsSync(distPath)) {
-    throw new Error(
-      `Dist directory does not exist at ${distPath}. Make sure ${packageName} is built first.`,
-    );
+    throw new Error(`Dist directory does not exist at ${distPath}. Make sure ${packageName} is built first.`);
   }
 
   const files = fs.readdirSync(distPath);
   fs.ensureDirSync(resourcesDir);
 
   for (const filePath of files) {
-    await linkResources(
-      path.join(distPath, filePath),
-      path.join(resourcesDir, filePath),
-    );
+    await linkResources(path.join(distPath, filePath), path.join(resourcesDir, filePath));
   }
 }

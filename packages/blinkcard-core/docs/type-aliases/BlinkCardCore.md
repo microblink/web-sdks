@@ -10,5 +10,5 @@
 
 Represents the BlinkCard core instance.
 
-This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkCard worker.
-It simplifies the type to remove unnecessary complexity.
+This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkCard worker. It simplifies
+the type to remove unnecessary complexity.

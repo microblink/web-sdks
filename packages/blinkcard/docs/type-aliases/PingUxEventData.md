@@ -12,13 +12,25 @@
 
 ### alertType?
 
-> `optional` **alertType**: `AlertType`
+> `optional` **alertType?**: `AlertType`
+
+***
+
+### cameraFailureCategory?
+
+> `optional` **cameraFailureCategory?**: `string`
+
+***
+
+### closeReason?
+
+> `optional` **closeReason?**: `CloseReason`
 
 ***
 
 ### errorMessageType?
 
-> `optional` **errorMessageType**: `ErrorMessageType`
+> `optional` **errorMessageType?**: `ErrorMessageType`
 
 ***
 
@@ -30,4 +42,4 @@
 
 ### helpCloseType?
 
-> `optional` **helpCloseType**: `HelpCloseType`
+> `optional` **helpCloseType?**: `HelpCloseType`

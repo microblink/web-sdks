@@ -6,7 +6,7 @@
 
 # Function: extractSignatureImage()
 
-> **extractSignatureImage**(`blinkIdScanningResult`): `null` \| `ImageData`
+> **extractSignatureImage**(`blinkIdScanningResult`): `ImageData` \| `null`
 
 Extracts the signature image from the scanning result.
 
@@ -20,6 +20,6 @@ The scanning result.
 
 ## Returns
 
-`null` \| `ImageData`
+`ImageData` \| `null`
 
 The signature image.

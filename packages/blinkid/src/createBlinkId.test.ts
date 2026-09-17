@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -10,9 +8,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 /** Ref to the FakeCameraManager instance created when CameraManager is constructed (set by mock). */
 const fakeCameraManagerRef = vi.hoisted(() => ({
-  current: null as InstanceType<
-    typeof import("@microblink/test-utils").FakeCameraManager
-  > | null,
+  current: null as InstanceType<typeof import("@microblink/test-utils").FakeCameraManager> | null,
 }));
 
 const {
@@ -92,10 +88,13 @@ vi.mock("@microblink/blinkid-core", () => ({
   BlinkIdSessionSettings: class {},
 }));
 
-vi.mock("@microblink/blinkid-ux-manager", () => ({
+vi.mock("@microblink/blinkid-ux-manager/core", () => ({
   get createBlinkIdUxManager() {
     return mockCreateBlinkIdUxManager;
   },
+}));
+
+vi.mock("@microblink/blinkid-ux-manager/ui", () => ({
   get createBlinkIdFeedbackUi() {
     return mockCreateBlinkIdFeedbackUi;
   },
@@ -103,7 +102,7 @@ vi.mock("@microblink/blinkid-ux-manager", () => ({
   LocalizationStrings: {},
 }));
 
-vi.mock("@microblink/camera-manager", async () => {
+vi.mock("@microblink/camera-manager/core", async () => {
   const { FakeCameraManager } = await import("@microblink/test-utils");
   return {
     CameraManager: function (this: unknown) {
@@ -111,15 +110,20 @@ vi.mock("@microblink/camera-manager", async () => {
       fakeCameraManagerRef.current = instance;
       return instance;
     },
-    createCameraManagerUi: mockCreateCameraManagerUi,
   };
 });
 
+vi.mock("@microblink/camera-manager/ui", () => ({
+  createCameraManagerUi: mockCreateCameraManagerUi,
+}));
+
 import { createFakeScanningSession } from "@microblink/test-utils";
+
 import { createBlinkId, type BlinkIdComponentOptions } from "./createBlinkId";
 
 /**
  * Test file role:
+ *
  * - Verifies that createBlinkId correctly initializes and wires all SDK components.
  * - Uses FakeCameraManager and createFakeScanningSession from @microblink/test-utils.
  * - Covers option forwarding, playback subscription, destroy lifecycle, and callback delegation.
@@ -182,6 +186,7 @@ describe("createBlinkId", () => {
         resourcesLocation: "https://cdn.example.com/blinkid-ota",
         strict: true,
       },
+      resourceDownloadTimeoutMs: 90_000,
       resourcesLocation: "https://resources.example.com",
       wasmVariant: "simd",
       useLightweightBuild: true,
@@ -198,6 +203,7 @@ describe("createBlinkId", () => {
         resourcesLocation: "https://cdn.example.com/blinkid-ota",
         strict: true,
       },
+      resourceDownloadTimeoutMs: 90_000,
       resourcesLocation: "https://resources.example.com",
       wasmVariant: "simd",
       useLightweightBuild: true,
@@ -255,16 +261,11 @@ describe("createBlinkId", () => {
     await createBlinkId({ licenseKey: "test-key" });
 
     expect(mockCreateBlinkIdUxManager).toHaveBeenCalledTimes(1);
-    const [cameraManagerArg, sessionArg] =
-      mockCreateBlinkIdUxManager.mock.calls[0];
+    const [cameraManagerArg, sessionArg] = mockCreateBlinkIdUxManager.mock.calls[0];
     expect(cameraManagerArg).toBe(fakeCameraManagerRef.current);
     expect(sessionArg).toBeDefined();
     expect(sessionArg).toHaveProperty("process");
-    expect(mockCreateBlinkIdUxManager).toHaveBeenCalledWith(
-      fakeCameraManagerRef.current,
-      sessionArg,
-      undefined,
-    );
+    expect(mockCreateBlinkIdUxManager).toHaveBeenCalledWith(fakeCameraManagerRef.current, sessionArg, undefined);
   });
 
   test("passes uxManagerOptions to createBlinkIdUxManager", async () => {
@@ -282,9 +283,7 @@ describe("createBlinkId", () => {
     });
 
     expect(mockCreateBlinkIdUxManager).toHaveBeenCalledTimes(1);
-    expect(mockCreateBlinkIdUxManager.mock.calls[0]?.[2]).toEqual(
-      uxManagerOptions,
-    );
+    expect(mockCreateBlinkIdUxManager.mock.calls[0]?.[2]).toEqual(uxManagerOptions);
   });
 
   test("calls createCameraManagerUi with cameraManager, targetNode, and cameraManagerUiOptions", async () => {
@@ -294,11 +293,7 @@ describe("createBlinkId", () => {
     });
 
     expect(mockCreateCameraManagerUi).toHaveBeenCalledTimes(1);
-    expect(mockCreateCameraManagerUi).toHaveBeenCalledWith(
-      fakeCameraManagerRef.current,
-      undefined,
-      undefined,
-    );
+    expect(mockCreateCameraManagerUi).toHaveBeenCalledWith(fakeCameraManagerRef.current, undefined, undefined);
   });
 
   test("passes custom targetNode and cameraManagerUiOptions to createCameraManagerUi", async () => {
@@ -332,11 +327,9 @@ describe("createBlinkId", () => {
     fakeCameraManagerRef.current!.emitPlaybackState("playback");
 
     expect(mockCreateBlinkIdFeedbackUi).toHaveBeenCalledTimes(1);
-    expect(mockCreateBlinkIdFeedbackUi).toHaveBeenCalledWith(
-      await mockCreateBlinkIdUxManager(),
-      mockCameraUi,
-      { showOnboardingGuide: true },
-    );
+    expect(mockCreateBlinkIdFeedbackUi).toHaveBeenCalledWith(await mockCreateBlinkIdUxManager(), mockCameraUi, {
+      showOnboardingGuide: true,
+    });
   });
 
   test("passes empty object to createBlinkIdFeedbackUi when feedbackUiOptions is undefined", async () => {
@@ -344,11 +337,7 @@ describe("createBlinkId", () => {
 
     fakeCameraManagerRef.current!.emitPlaybackState("playback");
 
-    expect(mockCreateBlinkIdFeedbackUi).toHaveBeenCalledWith(
-      expect.any(Object),
-      mockCameraUi,
-      {},
-    );
+    expect(mockCreateBlinkIdFeedbackUi).toHaveBeenCalledWith(expect.any(Object), mockCameraUi, {});
   });
 
   test("calls startFrameCapture when feedbackUiOptions.showOnboardingGuide is false and playback fires", async () => {
@@ -357,15 +346,11 @@ describe("createBlinkId", () => {
       feedbackUiOptions: { showOnboardingGuide: false },
     });
 
-    expect(
-      fakeCameraManagerRef.current!.startFrameCapture,
-    ).not.toHaveBeenCalled();
+    expect(fakeCameraManagerRef.current!.startFrameCapture).not.toHaveBeenCalled();
 
     fakeCameraManagerRef.current!.emitPlaybackState("playback");
 
-    expect(
-      fakeCameraManagerRef.current!.startFrameCapture,
-    ).toHaveBeenCalledTimes(1);
+    expect(fakeCameraManagerRef.current!.startFrameCapture).toHaveBeenCalledTimes(1);
   });
 
   test("does not call startFrameCapture when showOnboardingGuide is true or omitted", async () => {
@@ -376,25 +361,19 @@ describe("createBlinkId", () => {
 
     fakeCameraManagerRef.current!.emitPlaybackState("playback");
 
-    expect(
-      fakeCameraManagerRef.current!.startFrameCapture,
-    ).not.toHaveBeenCalled();
+    expect(fakeCameraManagerRef.current!.startFrameCapture).not.toHaveBeenCalled();
   });
 
   test("calls startCameraStream after setup", async () => {
     await createBlinkId({ licenseKey: "test-key" });
 
-    expect(
-      fakeCameraManagerRef.current!.startCameraStream,
-    ).toHaveBeenCalledTimes(1);
+    expect(fakeCameraManagerRef.current!.startCameraStream).toHaveBeenCalledTimes(1);
   });
 
   test("best-effort reports crashes through the core before a session exists", async () => {
     mockCreateSession.mockRejectedValueOnce(new Error("session failed"));
 
-    await expect(createBlinkId({ licenseKey: "test-key" })).rejects.toThrow(
-      "session failed",
-    );
+    await expect(createBlinkId({ licenseKey: "test-key" })).rejects.toThrow("session failed");
 
     expect(mockReportPinglet).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -414,9 +393,7 @@ describe("createBlinkId", () => {
     mockCreateSession.mockResolvedValueOnce(scanningSession);
     mockCreateBlinkIdUxManager.mockRejectedValueOnce(new Error("ux failed"));
 
-    await expect(createBlinkId({ licenseKey: "test-key" })).rejects.toThrow(
-      "ux failed",
-    );
+    await expect(createBlinkId({ licenseKey: "test-key" })).rejects.toThrow("ux failed");
 
     expect(mockReportPinglet).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -428,9 +405,7 @@ describe("createBlinkId", () => {
         }),
       }),
     );
-    const firstPinglet = mockReportPinglet.mock.calls[0]?.[0] as
-      | { sessionNumber?: number }
-      | undefined;
+    const firstPinglet = mockReportPinglet.mock.calls[0]?.[0] as { sessionNumber?: number } | undefined;
 
     expect(firstPinglet?.sessionNumber).toBe(0);
     expect(mockSendPinglets).toHaveBeenCalledTimes(1);
@@ -458,9 +433,7 @@ describe("createBlinkId", () => {
 
   test("destroy() does not throw when terminate() rejects", async () => {
     mockTerminate.mockRejectedValueOnce(new Error("terminate failed"));
-    const consoleWarnSpy = vi
-      .spyOn(console, "warn")
-      .mockImplementation(() => undefined);
+    const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
     const component = await createBlinkId({ licenseKey: "test-key" });
 

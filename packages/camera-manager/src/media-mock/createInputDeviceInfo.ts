@@ -1,20 +1,11 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-/**
- * Options for creating a fake `InputDeviceInfo` info object.
- */
+/** Options for creating a fake `InputDeviceInfo` info object. */
 interface CreateInputDeviceProps extends Partial<InputDeviceInfo> {
-  /**
-   * The label of the device.
-   */
+  /** The label of the device. */
   label: string;
 
-  /**
-   * The mock capabilities are used to simulate the capabilities of the device.
-   * This is not available on Firefox.
-   */
+  /** The mock capabilities are used to simulate the capabilities of the device. This is not available on Firefox. */
   mockCapabilities?: Partial<MediaTrackCapabilities>;
 }
 

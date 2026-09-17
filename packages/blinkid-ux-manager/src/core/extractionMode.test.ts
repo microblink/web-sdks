@@ -1,30 +1,21 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { describe, expect, test } from "vitest";
-import {
-  getBlinkIdExtractionMode,
-  type BlinkIdExtractionModeInput,
-} from "./extractionMode";
+
+import { getBlinkIdExtractionMode, type BlinkIdExtractionModeInput } from "./extractionMode";
 
 const documentCaptureModule = {} as NonNullable<
-  NonNullable<
-    BlinkIdExtractionModeInput["scanningSettings"]
-  >["documentCaptureModule"]
+  NonNullable<BlinkIdExtractionModeInput["scanningSettings"]>["documentCaptureModule"]
 >;
-const barcodeModule = {} as NonNullable<
-  NonNullable<BlinkIdExtractionModeInput["scanningSettings"]>["barcodeModule"]
->;
+const barcodeModule = {} as NonNullable<NonNullable<BlinkIdExtractionModeInput["scanningSettings"]>["barcodeModule"]>;
 const mandatoryBarcodeModule = { presenceMandatory: true } as NonNullable<
   NonNullable<BlinkIdExtractionModeInput["scanningSettings"]>["barcodeModule"]
 >;
-const mrzModule = {} as NonNullable<
+const mrzModule = {} as NonNullable<NonNullable<BlinkIdExtractionModeInput["scanningSettings"]>["mrzModule"]>;
+const mandatoryMrzModule = { presenceMandatory: true } as NonNullable<
   NonNullable<BlinkIdExtractionModeInput["scanningSettings"]>["mrzModule"]
 >;
-const vizModule = {} as NonNullable<
-  NonNullable<BlinkIdExtractionModeInput["scanningSettings"]>["vizModule"]
->;
+const vizModule = {} as NonNullable<NonNullable<BlinkIdExtractionModeInput["scanningSettings"]>["vizModule"]>;
 
 describe("getBlinkIdExtractionMode", () => {
   test.each([
@@ -94,44 +85,47 @@ describe("getBlinkIdExtractionMode", () => {
       "barcode-only",
     ],
     [
-      "document with MRZ",
+      "document with mandatory MRZ in single-side mode without barcode/VIZ",
       {
         scanningMode: "single",
         scanningSettings: {
-          documentCaptureModule: documentCaptureModule,
-          mrzModule: { presenceMandatory: true },
+          documentCaptureModule,
+          barcodeModule: null,
+          mrzModule: mandatoryMrzModule,
+          vizModule: null,
         },
       },
       "document-with-mrz",
     ],
     [
-      "document with MRZ",
+      "document with non-mandatory MRZ in single-side mode",
       {
         scanningMode: "single",
         scanningSettings: {
-          documentCaptureModule: documentCaptureModule,
+          documentCaptureModule,
+          barcodeModule: null,
           mrzModule: { presenceMandatory: false },
+          vizModule: null,
         },
       },
       "full-document",
     ],
     [
-      "document with MRZ Automatic",
+      "document with mandatory MRZ in automatic mode",
       {
         scanningMode: "automatic",
         scanningSettings: {
-          documentCaptureModule: documentCaptureModule,
-          mrzModule: { presenceMandatory: true },
+          documentCaptureModule,
+          barcodeModule: null,
+          mrzModule: mandatoryMrzModule,
+          vizModule: null,
         },
       },
       "full-document",
     ],
-  ] as const)(
-    "returns %s extraction mode",
-    (_label, sessionSettings, expected) => {
-      expect(getBlinkIdExtractionMode(sessionSettings)).toBe(expected);
-    },
-  );
+  ] as const)("returns %s extraction mode", (_label, sessionSettings, expected) => {
+    expect(getBlinkIdExtractionMode(sessionSettings)).toBe(expected);
+  });
 
   describe("MRZ/VIZ gating for barcode-focused extraction modes", () => {
     test.each([
@@ -179,6 +173,49 @@ describe("getBlinkIdExtractionMode", () => {
             documentCaptureModule: null,
             barcodeModule,
             mrzModule: null,
+            vizModule,
+          },
+        },
+      ],
+    ] as const)("%s", (_label, sessionSettings) => {
+      expect(getBlinkIdExtractionMode(sessionSettings)).toBe("full-document");
+    });
+  });
+
+  describe("barcode/VIZ gating for MRZ-focused extraction modes", () => {
+    test.each([
+      [
+        "document-with-mrz falls back to full-document when barcode enabled",
+        {
+          scanningMode: "single",
+          scanningSettings: {
+            documentCaptureModule,
+            barcodeModule,
+            mrzModule: mandatoryMrzModule,
+            vizModule: null,
+          },
+        },
+      ],
+      [
+        "document-with-mrz falls back to full-document when VIZ enabled",
+        {
+          scanningMode: "single",
+          scanningSettings: {
+            documentCaptureModule,
+            barcodeModule: null,
+            mrzModule: mandatoryMrzModule,
+            vizModule,
+          },
+        },
+      ],
+      [
+        "document-with-mrz falls back to full-document when barcode and VIZ enabled",
+        {
+          scanningMode: "single",
+          scanningSettings: {
+            documentCaptureModule,
+            barcodeModule,
+            mrzModule: mandatoryMrzModule,
             vizModule,
           },
         },

@@ -4,12 +4,11 @@
 
 [@microblink/blinkid](../README.md) / FrameCaptureCallback
 
-# Type Alias: FrameCaptureCallback()
+# Type Alias: FrameCaptureCallback
 
 > **FrameCaptureCallback** = (`frame`) => `Promisable`\<`ArrayBufferLike` \| `void`\>
 
-A callback that will be triggered on each frame when the playback state is
-"capturing".
+A callback that will be triggered on each frame when the playback state is "capturing".
 
 ## Parameters
 

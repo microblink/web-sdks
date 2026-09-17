@@ -1,26 +1,13 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  Country,
-  DocumentClassComponent,
-  DocumentClassInfo,
-  DocumentType,
-  Region,
-} from "@microblink/blinkid-core";
+import { Country, DocumentClassComponent, DocumentClassInfo, DocumentType, Region } from "@microblink/blinkid-core";
 
 /**
- * Wraps a plain classification value into a document class component,
- * deriving `rawValue` in the document-knowledge-DB format (e.g.
- * "bosnia-and-herzegovina" -> "BOSNIA AND HERZEGOVINA").
+ * Wraps a plain classification value into a document class component, deriving `rawValue` in the document-knowledge-DB
+ * format (e.g. "bosnia-and-herzegovina" -> "BOSNIA AND HERZEGOVINA").
  */
-const toComponent = <TId extends string>(
-  id: TId | undefined,
-): DocumentClassComponent<TId> | undefined =>
-  id === undefined
-    ? undefined
-    : { id, rawValue: id.toUpperCase().replaceAll("-", " ") };
+const toComponent = <TId extends string>(id: TId | undefined): DocumentClassComponent<TId> | undefined =>
+  id === undefined ? undefined : { id, rawValue: id.toUpperCase().replaceAll("-", " ") };
 
 export const createDocumentClassInfo = ({
   type = undefined,

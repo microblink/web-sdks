@@ -1,50 +1,32 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
-
-import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
-import {
-  Component,
-  createEffect,
-  createSignal,
-  getOwner,
-  onCleanup,
-  onMount,
-  Show,
-} from "solid-js";
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { Dialog } from "@ark-ui/solid/dialog";
-
-import { useCameraUiStore } from "./CameraUiStoreContext";
-import { Header } from "./Header";
-
-import { SolidShadowRoot } from "./SolidShadowRoot";
-
-import normalize from "@csstools/normalize.css?inline";
-import { Portal } from "solid-js/web";
-import { MOUNT_POINT_ID } from "./createCameraManagerUi";
-import { useLocalization } from "./LocalizationContext";
-import rootStyles from "./styles/root-styles.scss?inline";
-import variables from "./styles/variables.scss?inline";
-import { cameraUiRefSignalStore } from "./zustandRefStore";
-
+import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import { makeResizeObserver } from "@solid-primitives/resize-observer";
-import { CameraErrorModal } from "./CameraErrorModal";
 import { debounce } from "perfect-debounce";
+import { Component, createEffect, createSignal, getOwner, onCleanup, onMount, Show } from "solid-js";
+import { Portal } from "solid-js/web";
+
+import { CameraErrorModal } from "./CameraErrorModal";
+import { useCameraUiStore } from "./CameraUiStoreContext";
+import { MOUNT_POINT_ID } from "./createCameraManagerUi";
 import { determineFitMode, FitMode } from "./determineFitMode";
 import { getVisibleVideoArea } from "./getVisibleVideoArea";
+import { Header } from "./Header";
+import { useLocalization } from "./LocalizationContext";
+import { SolidShadowRoot } from "./SolidShadowRoot";
+import { cameraUiRefSignalStore } from "./zustandRefStore";
 
-/**
- * The capture screen shadow root host ID.
- */
+import rootStyles from "./styles/root-styles.scss?inline";
+import variables from "./styles/variables.scss?inline";
+import normalize from "@csstools/normalize.css?inline";
+
+/** The capture screen shadow root host ID. */
 const CAPTURE_SCREEN_SHADOW_ROOT_HOST_ID = "capture-screen-host";
 
-/**
- * The CaptureScreen component.
- */
+/** The CaptureScreen component. */
 export const CaptureScreen: Component = () => {
-  const { cameraManager, mountTarget, showCameraErrorModal } =
-    useCameraUiStore();
+  const { cameraManager, mountTarget, showCameraErrorModal } = useCameraUiStore();
 
   const [videoRef, setVideoRef] = createSignal<HTMLVideoElement>();
   // Reference to the feedback layer, using signals because of 1 tick rendering
@@ -57,9 +39,7 @@ export const CaptureScreen: Component = () => {
 
   const [fitMode, setFitMode] = createSignal<FitMode>("contain");
 
-  /**
-   * Adjusts the video fit.
-   */
+  /** Adjusts the video fit. */
   function adjustVideoFit() {
     const video = videoRef();
 
@@ -106,15 +86,13 @@ export const CaptureScreen: Component = () => {
 
     const debouncedAdjustVideoFit = debounce(adjustVideoFit, 100);
 
-    const { observe, unobserve } = makeResizeObserver(
-      () => void debouncedAdjustVideoFit(),
-    );
+    const { observe, unobserve } = makeResizeObserver(() => void debouncedAdjustVideoFit());
 
     observe(video);
 
     /**
-     * Added additional listener to "resize" event on the video element because some iPhone devices
-     * do not have updated video dimensions when the resize observer callback is called.
+     * Added additional listener to "resize" event on the video element because some iPhone devices do not have updated
+     * video dimensions when the resize observer callback is called.
      */
     video.addEventListener("resize", adjustVideoFit);
     video.addEventListener("loadedmetadata", adjustVideoFit);
@@ -191,10 +169,7 @@ export const CaptureScreen: Component = () => {
         }}
       />
 
-      <div
-        class="bg-dark-500 color-white size-full relative min-h-[300px]"
-        part="capture-screen-part"
-      >
+      <div class="bg-dark-500 color-white size-full relative min-h-[300px]" part="capture-screen-part">
         {/* Toolbar header */}
         <Header />
 
@@ -214,11 +189,7 @@ export const CaptureScreen: Component = () => {
         />
 
         {/* Feedback node used for showing UI messages during scanning */}
-        <div
-          ref={setFeedbackRef}
-          class="absolute top-0 left-0 w-full h-full z-1"
-          id="feedback-layer"
-        />
+        <div ref={setFeedbackRef} class="absolute top-0 left-0 w-full h-full z-1" id="feedback-layer" />
 
         {/* Overlay node used for displaying dialogs */}
         <div
@@ -240,11 +211,10 @@ export const CaptureScreen: Component = () => {
   );
 };
 
-/**
- * The CaptureScreenPortalled component.
- */
+/** The CaptureScreenPortalled component. */
 export const CaptureScreenPortalled: Component = () => {
   const { t } = useLocalization();
+  const [dialogContent, setDialogContent] = createSignal<HTMLDivElement | null>(null);
 
   // we need to close the modal before the camera manager is destroyed
   // so we use the addOnDismountCallback which are run before dismounting
@@ -262,8 +232,7 @@ export const CaptureScreenPortalled: Component = () => {
       mount={document.getElementById(MOUNT_POINT_ID)!}
       ref={(ref) => {
         ref.id = CAPTURE_SCREEN_SHADOW_ROOT_HOST_ID;
-        ref.style.zIndex =
-          zIndex !== undefined ? String(zIndex) : "calc(infinity)";
+        ref.style.zIndex = zIndex !== undefined ? String(zIndex) : "calc(infinity)";
         ref.style.position = "fixed";
         ref.id = "mb-camera-host";
         return ref;
@@ -271,9 +240,10 @@ export const CaptureScreenPortalled: Component = () => {
     >
       <SmartEnvironmentProvider>
         {() => (
-          <Dialog.Root open={isOpen()}>
+          <Dialog.Root open={isOpen()} initialFocusEl={() => dialogContent()}>
             <Dialog.Positioner>
               <Dialog.Content
+                ref={setDialogContent}
                 class="h-vh supports-[(height:100dvh)]:h-dvh top-0 left-0 w-full
                   fixed"
               >

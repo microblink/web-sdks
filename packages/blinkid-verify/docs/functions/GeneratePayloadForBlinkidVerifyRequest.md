@@ -10,8 +10,8 @@
 
 Builds the JSON payload for the BlinkID Verify Cloud API from a completed scanning result.
 
-Maps internal SDK enum values (kebab-case) to their API-facing PascalCase equivalents
-and encodes captured document frames as base64 JPEG strings.
+Maps internal SDK enum values (kebab-case) to their API-facing PascalCase equivalents and encodes captured document
+frames as base64 JPEG strings.
 
 ## Parameters
 

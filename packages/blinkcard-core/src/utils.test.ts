@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkCardScanningResult,
@@ -10,6 +8,7 @@ import type {
 } from "@microblink/blinkcard-wasm";
 import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
 import { describe, expect, it } from "vitest";
+
 import { extractSideInputImage } from "./utils";
 
 const createMockDateResult = (): DateResult => ({
@@ -32,11 +31,10 @@ const createMockCardAccount = (): CardAccountResult => ({
   issuerName: "Test Bank",
   issuerCountryCode: "USA",
   issuerCountry: "United States",
+  binCheckResult: "not-available",
 });
 
-const createMockSingleSideResult = (
-  overrides: Partial<SingleSideScanningResult> = {},
-): SingleSideScanningResult => {
+const createMockSingleSideResult = (overrides: Partial<SingleSideScanningResult> = {}): SingleSideScanningResult => {
   const baseResult: SingleSideScanningResult = {
     cardImage: { image: undefined },
     cardLivenessCheckResult: {

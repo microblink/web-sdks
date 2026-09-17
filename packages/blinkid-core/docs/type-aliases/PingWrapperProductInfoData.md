@@ -12,7 +12,7 @@
 
 ### correlationId?
 
-> `optional` **correlationId**: `string`
+> `optional` **correlationId?**: `string`
 
 ***
 

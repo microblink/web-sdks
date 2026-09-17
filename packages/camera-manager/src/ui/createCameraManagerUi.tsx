@@ -1,31 +1,23 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import type { CameraManager } from "@microblink/camera-manager/core";
+import { SetStoreFunction } from "solid-js/store";
 import { render } from "solid-js/web";
 
-import { SetStoreFunction } from "solid-js/store";
-import { CameraManager } from "../core/CameraManager";
 import { CameraUiStoreProvider } from "./CameraUiStoreContext";
-import {
-  CameraUiLocalizationStrings,
-  LocalizationProvider,
-} from "./LocalizationContext";
+import { CameraUiLocalizationStrings, LocalizationProvider } from "./LocalizationContext";
 import { RootComponent } from "./RootComponent";
 import { cameraUiRefStore } from "./zustandRefStore";
 
-/**
- * The default mount point ID.
- */
+/** The default mount point ID. */
 export const MOUNT_POINT_ID = "camera-manager-mount-point";
 
 // this triggers extraction of CSS from the UnoCSS plugin
 import { Owner } from "solid-js";
+
 import "virtual:uno.css";
 
-/**
- * The camera manager component.
- */
+/** The camera manager component. */
 export type CameraManagerComponent = {
   /** The camera manager. */
   cameraManager: CameraManager;
@@ -34,17 +26,13 @@ export type CameraManagerComponent = {
   /** Dismounts the component from the DOM and unloads the SDK */
   dismount: () => void;
   /**
-   * Sets a callback to be called when the component is unmounted.
-   * Returns a cleanup function that removes the callback when called.
+   * Sets a callback to be called when the component is unmounted. Returns a cleanup function that removes the callback
+   * when called.
    */
   addOnDismountCallback: (fn: DismountCallback) => () => void;
-  /**
-   * The feedback layer node that can be used to append custom feedback elements
-   */
+  /** The feedback layer node that can be used to append custom feedback elements */
   feedbackLayerNode: HTMLDivElement;
-  /**
-   * The overlay layer node that can be used to append custom overlay elements
-   */
+  /** The overlay layer node that can be used to append custom overlay elements */
   overlayLayerNode: HTMLDivElement;
 
   /**
@@ -55,18 +43,12 @@ export type CameraManagerComponent = {
   owner: Owner;
 };
 
-/**
- * A dismount callback.
- */
+/** A dismount callback. */
 export type DismountCallback = () => void;
 
-/**
- * The camera manager UI options.
- */
+/** The camera manager UI options. */
 export type CameraManagerUiOptions = {
-  /**
-   * The localization strings.
-   */
+  /** The localization strings. */
   localizationStrings?: Partial<CameraUiLocalizationStrings>;
   /**
    * If set to `true`, the mirror camera button will be shown.
@@ -74,6 +56,12 @@ export type CameraManagerUiOptions = {
    * @defaultValue false
    */
   showMirrorCameraButton?: boolean;
+  /**
+   * If set to `true`, the camera selector will be shown when multiple cameras are available.
+   *
+   * @defaultValue true
+   */
+  showCameraSelector?: boolean;
   /**
    * If set to `true`, the torch button will be shown.
    *
@@ -93,8 +81,8 @@ export type CameraManagerUiOptions = {
    */
   showCameraErrorModal?: boolean;
   /**
-   * The z-index of the camera UI when rendered as a full-screen overlay.
-   * Only applies when no target element is provided.
+   * The z-index of the camera UI when rendered as a full-screen overlay. Only applies when no target element is
+   * provided.
    *
    * If not provided, uses `calc(infinity)` to ensure the camera UI appears on top.
    *
@@ -117,6 +105,7 @@ export function createCameraManagerUi(
   {
     localizationStrings,
     showMirrorCameraButton = false,
+    showCameraSelector = true,
     showTorchButton = true,
     showCloseButton = true,
     showCameraErrorModal = true,
@@ -131,15 +120,11 @@ export function createCameraManagerUi(
   let updateLocalizationRef!: SetStoreFunction<CameraUiLocalizationStrings>;
 
   // This function is called by the `LocalizationProvider` to lift the state update function up
-  const setLocalizationRef = (
-    setter: SetStoreFunction<CameraUiLocalizationStrings>,
-  ) => {
+  const setLocalizationRef = (setter: SetStoreFunction<CameraUiLocalizationStrings>) => {
     updateLocalizationRef = setter;
   };
 
-  /**
-   * Cleans up the camera manager.
-   */
+  /** Cleans up the camera manager. */
   const cleanupCameraManager = () => {
     cameraManager.reset();
   };
@@ -147,9 +132,7 @@ export function createCameraManagerUi(
   // A reference to the dismount function.
   let dismountRef: () => void;
 
-  /**
-   * Dismounts the camera manager UI.
-   */
+  /** Dismounts the camera manager UI. */
   const dismountCameraManagerUi = () => {
     try {
       console.debug("🧱 Dismounting camera manager UI");
@@ -181,13 +164,13 @@ export function createCameraManagerUi(
   };
 
   /**
-   * We create a dummy element that will be the target of the `dismount()` function if no target is provided.
-   * If we simply provide `document.body`, `dismount()` will clear the entire document body:
+   * We create a dummy element that will be the target of the `dismount()` function if no target is provided. If we
+   * simply provide `document.body`, `dismount()` will clear the entire document body:
    *
    * https://www.solidjs.com/docs/latest/api#render
    *
-   * This is a DX optimization so that users don't need to provide their own
-   * dummy mount points if they are using a portalled component anyway
+   * This is a DX optimization so that users don't need to provide their own dummy mount points if they are using a
+   * portalled component anyway
    */
   const newMountTarget = document.createElement("div");
   newMountTarget.id = MOUNT_POINT_ID;
@@ -200,8 +183,8 @@ export function createCameraManagerUi(
   }
 
   /**
-   * Adds a callback to be called when the component is unmounted.
-   * Returns a cleanup function that removes the callback when called.
+   * Adds a callback to be called when the component is unmounted. Returns a cleanup function that removes the callback
+   * when called.
    *
    * @param fn - The callback function to be called when the component is unmounted
    * @returns A cleanup function that removes the callback when called
@@ -214,20 +197,16 @@ export function createCameraManagerUi(
     };
   };
 
-  /**
-   * Renders the camera manager UI.
-   */
+  /** Renders the camera manager UI. */
   dismountRef = render(
     () => (
-      <LocalizationProvider
-        userStrings={localizationStrings}
-        setLocalizationRef={setLocalizationRef}
-      >
+      <LocalizationProvider userStrings={localizationStrings} setLocalizationRef={setLocalizationRef}>
         <CameraUiStoreProvider
           addOnDismountCallback={addOnDismountCallback}
           dismountCameraUi={dismountCameraManagerUi}
           cameraManager={cameraManager}
           showMirrorCameraButton={showMirrorCameraButton}
+          showCameraSelector={showCameraSelector}
           showTorchButton={showTorchButton}
           showCloseButton={showCloseButton}
           showCameraErrorModal={showCameraErrorModal}
@@ -245,8 +224,8 @@ export function createCameraManagerUi(
   const exposedComponentApi: CameraManagerComponent = {
     updateLocalization: updateLocalizationRef,
     /**
-     * Adds a callback to be called when the component is unmounted.
-     * Returns a cleanup function that removes the callback when called.
+     * Adds a callback to be called when the component is unmounted. Returns a cleanup function that removes the
+     * callback when called.
      *
      * @param fn - The callback function to be called when the component is unmounted
      * @returns A cleanup function that removes the callback when called
@@ -274,11 +253,11 @@ export function createCameraManagerUi(
     let overlayExists = false;
 
     // Initialize with no-op functions
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // oxlint-disable-next-line typescript/no-empty-function
     let unsubscribeFeedbackLayer = () => {};
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // oxlint-disable-next-line typescript/no-empty-function
     let unsubscribeOverlayLayer = () => {};
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    // oxlint-disable-next-line typescript/no-empty-function
     let unsubscribeVideo = () => {};
 
     const checkReady = () => {

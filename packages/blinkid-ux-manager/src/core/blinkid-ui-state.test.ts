@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import {
   Country,
@@ -12,25 +10,21 @@ import {
   ScanningSettings,
   ScanningSide,
 } from "@microblink/blinkid-core";
-import { describe, expect, test } from "vitest";
-import { BlinkIdUiStateKey, getUiStateKey } from "./blinkid-ui-state";
-import { createProcessResult } from "./__testdata/blinkidTestFixtures";
-import {
-  isPassport,
-  isPassportWithBarcode,
-  isPassportWithoutBarcode,
-} from "./ui-state-utils";
 import { merge } from "merge-anything";
-import { createDocumentClassInfo } from "./test-utils";
+import { describe, expect, test } from "vitest";
 
-const getMergedScanningSettings = (
-  overrides: PartialScanningSettingsInput = {},
-): ScanningSettings => {
+import { createProcessResult } from "./__testdata/blinkidTestFixtures";
+import { BlinkIdUiStateKey, getUiStateKey } from "./blinkid-ui-state";
+import { createDocumentClassInfo } from "./test-utils";
+import { isPassport, isPassportWithBarcode, isPassportWithoutBarcode } from "./ui-state-utils";
+
+const getMergedScanningSettings = (overrides: PartialScanningSettingsInput = {}): ScanningSettings => {
   return merge({}, overrides) as ScanningSettings;
 };
 
 /**
  * Test file role:
+ *
  * - Owns pure mapping rules from process results/settings to BlinkId UI state keys.
  * - Keep these tests deterministic and data-driven; avoid manager lifecycle concerns.
  */
@@ -38,20 +32,12 @@ const getMergedScanningSettings = (
 describe("Passport utils", () => {
   describe("isPassport", () => {
     test("should return true for passport documents", () => {
-      expect(
-        isPassport(
-          createDocumentClassInfo({ type: "passport", country: "croatia" }),
-        ),
-      ).toBe(true);
+      expect(isPassport(createDocumentClassInfo({ type: "passport", country: "croatia" }))).toBe(true);
     });
 
     test("should return false for non-passport documents", () => {
-      expect(
-        isPassport(createDocumentClassInfo({ type: "id", country: "croatia" })),
-      ).toBe(false);
-      expect(
-        isPassport(createDocumentClassInfo({ type: "dl", country: "croatia" })),
-      ).toBe(false);
+      expect(isPassport(createDocumentClassInfo({ type: "id", country: "croatia" }))).toBe(false);
+      expect(isPassport(createDocumentClassInfo({ type: "dl", country: "croatia" }))).toBe(false);
     });
 
     test("should return false when classification is missing", () => {
@@ -61,35 +47,19 @@ describe("Passport utils", () => {
 
   describe("isPassportWithBarcode", () => {
     test("should return true for USA passport", () => {
-      expect(
-        isPassportWithBarcode(
-          createDocumentClassInfo({ type: "passport", country: "usa" }),
-        ),
-      ).toBe(true);
+      expect(isPassportWithBarcode(createDocumentClassInfo({ type: "passport", country: "usa" }))).toBe(true);
     });
 
     test("should return true for India passport", () => {
-      expect(
-        isPassportWithBarcode(
-          createDocumentClassInfo({ type: "passport", country: "india" }),
-        ),
-      ).toBe(true);
+      expect(isPassportWithBarcode(createDocumentClassInfo({ type: "passport", country: "india" }))).toBe(true);
     });
 
     test("should return false for other passports", () => {
-      expect(
-        isPassportWithBarcode(
-          createDocumentClassInfo({ type: "passport", country: "croatia" }),
-        ),
-      ).toBe(false);
+      expect(isPassportWithBarcode(createDocumentClassInfo({ type: "passport", country: "croatia" }))).toBe(false);
     });
 
     test("should return false for non-passport documents", () => {
-      expect(
-        isPassportWithBarcode(
-          createDocumentClassInfo({ type: "id", country: "usa" }),
-        ),
-      ).toBe(false);
+      expect(isPassportWithBarcode(createDocumentClassInfo({ type: "id", country: "usa" }))).toBe(false);
     });
 
     test("should return false when classification is missing", () => {
@@ -99,35 +69,19 @@ describe("Passport utils", () => {
 
   describe("isPassportWithoutBarcode", () => {
     test("should return true for non-barcode passports", () => {
-      expect(
-        isPassportWithoutBarcode(
-          createDocumentClassInfo({ type: "passport", country: "croatia" }),
-        ),
-      ).toBe(true);
+      expect(isPassportWithoutBarcode(createDocumentClassInfo({ type: "passport", country: "croatia" }))).toBe(true);
     });
 
     test("should return false for USA passport", () => {
-      expect(
-        isPassportWithoutBarcode(
-          createDocumentClassInfo({ type: "passport", country: "usa" }),
-        ),
-      ).toBe(false);
+      expect(isPassportWithoutBarcode(createDocumentClassInfo({ type: "passport", country: "usa" }))).toBe(false);
     });
 
     test("should return false for India passport", () => {
-      expect(
-        isPassportWithoutBarcode(
-          createDocumentClassInfo({ type: "passport", country: "india" }),
-        ),
-      ).toBe(false);
+      expect(isPassportWithoutBarcode(createDocumentClassInfo({ type: "passport", country: "india" }))).toBe(false);
     });
 
     test("should return false for non-passport documents", () => {
-      expect(
-        isPassportWithoutBarcode(
-          createDocumentClassInfo({ type: "id", country: "croatia" }),
-        ),
-      ).toBe(false);
+      expect(isPassportWithoutBarcode(createDocumentClassInfo({ type: "id", country: "croatia" }))).toBe(false);
     });
 
     test("should return false when classification is missing", () => {
@@ -152,20 +106,13 @@ describe("getUiStateKey", () => {
     test("should return PAGE_CAPTURED when one side is scanned", () => {
       const processResult = createProcessResult();
 
-      const result = getUiStateKey(
-        "side-scanned",
-        processResult.inputImageAnalysisResult,
-        getMergedScanningSettings(),
-      );
+      const result = getUiStateKey("side-scanned", processResult.inputImageAnalysisResult, getMergedScanningSettings());
 
       expect(result).toBe<BlinkIdUiStateKey>("PAGE_CAPTURED");
     });
 
     test("should return PROCESSING_BARCODE when barcode scanning is in progress", () => {
-      /**
-       * Actual process result returned from the WASM SDK when barcode scanning is
-       * in progress.
-       */
+      /** Actual process result returned from the WASM SDK when barcode scanning is in progress. */
       const processResult = createProcessResult({
         inputImageAnalysisResult: {
           processingStatus: "barcode-recognition-failed",
@@ -232,24 +179,21 @@ describe("getUiStateKey", () => {
         status: "document-too-close-to-camera-edge",
         expected: "DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE",
       },
-    ])(
-      "should return $expected when document detection status is $status",
-      ({ status, expected }) => {
-        const processResult = createProcessResult({
-          inputImageAnalysisResult: {
-            documentDetectionStatus: status,
-          },
-        });
+    ])("should return $expected when document detection status is $status", ({ status, expected }) => {
+      const processResult = createProcessResult({
+        inputImageAnalysisResult: {
+          documentDetectionStatus: status,
+        },
+      });
 
-        const result = getUiStateKey(
-          "scanning-side-in-progress",
-          processResult.inputImageAnalysisResult,
-          getMergedScanningSettings(),
-        );
+      const result = getUiStateKey(
+        "scanning-side-in-progress",
+        processResult.inputImageAnalysisResult,
+        getMergedScanningSettings(),
+      );
 
-        expect(result).toBe<BlinkIdUiStateKey>(expected);
-      },
-    );
+      expect(result).toBe<BlinkIdUiStateKey>(expected);
+    });
   });
 
   describe("Image Quality States", () => {
@@ -617,26 +561,23 @@ describe("getUiStateKey", () => {
   describe("Document Side Detection", () => {
     const scanningSides: ScanningSide[] = ["first", "second"];
 
-    test.each(scanningSides)(
-      "should return WRONG_SIDE when scanning wrong side ($scanningSide)",
-      (scanningSide) => {
-        const processResult = createProcessResult({
-          inputImageAnalysisResult: {
-            scanningSide,
-            processingStatus: "scanning-wrong-side",
-            documentDetectionStatus: "success",
-          },
-        });
+    test.each(scanningSides)("should return WRONG_SIDE when scanning wrong side ($scanningSide)", (scanningSide) => {
+      const processResult = createProcessResult({
+        inputImageAnalysisResult: {
+          scanningSide,
+          processingStatus: "scanning-wrong-side",
+          documentDetectionStatus: "success",
+        },
+      });
 
-        const result = getUiStateKey(
-          "scanning-side-in-progress",
-          processResult.inputImageAnalysisResult,
-          getMergedScanningSettings(),
-        );
+      const result = getUiStateKey(
+        "scanning-side-in-progress",
+        processResult.inputImageAnalysisResult,
+        getMergedScanningSettings(),
+      );
 
-        expect(result).toBe<BlinkIdUiStateKey>("WRONG_SIDE");
-      },
-    );
+      expect(result).toBe<BlinkIdUiStateKey>("WRONG_SIDE");
+    });
 
     test.each<{
       scanningSide: ScanningSide;
@@ -761,11 +702,7 @@ describe("getUiStateKey", () => {
         },
       });
 
-      const result = getUiStateKey(
-        "side-scanned",
-        processResult.inputImageAnalysisResult,
-        getMergedScanningSettings(),
-      );
+      const result = getUiStateKey("side-scanned", processResult.inputImageAnalysisResult, getMergedScanningSettings());
 
       expect(result).toBe<BlinkIdUiStateKey>("PAGE_CAPTURED");
     });
@@ -792,11 +729,7 @@ describe("getUiStateKey", () => {
         inputImageAnalysisResult: { processingStatus: "unsupported-document" },
       });
 
-      const result = getUiStateKey(
-        "side-scanned",
-        processResult.inputImageAnalysisResult,
-        getMergedScanningSettings(),
-      );
+      const result = getUiStateKey("side-scanned", processResult.inputImageAnalysisResult, getMergedScanningSettings());
 
       expect(result).toBe<BlinkIdUiStateKey>("UNSUPPORTED_DOCUMENT");
     });
@@ -877,11 +810,7 @@ describe("getUiStateKey", () => {
         },
       });
 
-      const result = getUiStateKey(
-        "side-scanned",
-        processResult.inputImageAnalysisResult,
-        getMergedScanningSettings(),
-      );
+      const result = getUiStateKey("side-scanned", processResult.inputImageAnalysisResult, getMergedScanningSettings());
 
       expect(result).toBe<BlinkIdUiStateKey>("FLIP_CARD");
     });

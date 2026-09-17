@@ -1,18 +1,12 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  InputImageAnalysisResult,
-  ResultCompleteness,
-} from "@microblink/blinkid-verify-core";
+import { InputImageAnalysisResult, ResultCompleteness } from "@microblink/blinkid-verify-core";
 import { UiState } from "@microblink/feedback-stabilizer";
 import { match, P } from "ts-pattern";
+
 import { getChainedUiStateKey } from "./getChainedUiStateKey";
 
-/**
- * The type of reticle to display.
- */
+/** The type of reticle to display. */
 export type BlinkIdVerifyReticleType =
   | "searching"
   | "processing"
@@ -27,34 +21,26 @@ export type BlinkIdVerifyReticleType =
  * Intro state keys for BlinkID Verify UI.
  *
  * @remarks
- * These states display introductory screens that guide users to scan the correct
- * side or page of their document. Most intro states are automatically reached
- * during the scanning flow, but `INTRO_DATA_PAGE` requires manual initialization.
+ *   These states display introductory screens that guide users to scan the correct side or page of their document. Most
+ *   intro states are automatically reached during the scanning flow, but `INTRO_DATA_PAGE` requires manual
+ *   initialization. **Default behavior:** The UX manager defaults to `INTRO_FRONT_PAGE`, assuming users will scan
+ *   non-passport documents (ID cards, driver's licenses, etc.). **Automatically reachable states:** After capturing a
+ *   page, the flow automatically transitions through appropriate intro states:
  *
- * **Default behavior:**
- * The UX manager defaults to `INTRO_FRONT_PAGE`, assuming users will scan
- * non-passport documents (ID cards, driver's licenses, etc.).
- *
- * **Automatically reachable states:**
- * After capturing a page, the flow automatically transitions through appropriate
- * intro states:
- * - `INTRO_BACK_PAGE` - After flipping an ID card (`FLIP_CARD`)
- * - `INTRO_TOP_PAGE` - After moving to passport top page (`MOVE_TOP`)
- * - `INTRO_LEFT_PAGE` - After moving to passport left page (`MOVE_LEFT`)
- * - `INTRO_RIGHT_PAGE` - After moving to passport right page (`MOVE_RIGHT`)
- * - `INTRO_LAST_PAGE` - After moving to passport barcode page (`MOVE_LAST_PAGE`)
- *
- * **Manual initialization required:**
- * - `INTRO_DATA_PAGE` - Only reachable by overriding the UX manager initial
- *   state. Use this when restricting scanning to passport documents only,
- *   as the SDK assumes non-passport documents by default.
+ *   - `INTRO_BACK_PAGE` - After flipping an ID card (`FLIP_CARD`)
+ *   - `INTRO_TOP_PAGE` - After moving to passport top page (`MOVE_TOP`)
+ *   - `INTRO_LEFT_PAGE` - After moving to passport left page (`MOVE_LEFT`)
+ *   - `INTRO_RIGHT_PAGE` - After moving to passport right page (`MOVE_RIGHT`)
+ *   - `INTRO_LAST_PAGE` - After moving to passport barcode page (`MOVE_LAST_PAGE`) **Manual initialization required:**
+ *   - `INTRO_DATA_PAGE` - Only reachable by overriding the UX manager initial state. Use this when restricting scanning
+ *     to passport documents only, as the SDK assumes non-passport documents by default.
  *
  * @example
- * ```typescript
- * // Limit scanning to passport documents only
- * const uxManager = new BlinkIdVerifyUxManager(cameraManager, session);
- * uxManager.setInitialUiStateKey("INTRO_DATA_PAGE", true);
- * ```
+ *   ```typescript
+ *   // Limit scanning to passport documents only
+ *   const uxManager = new BlinkIdVerifyUxManager(cameraManager, session);
+ *   uxManager.setInitialUiStateKey("INTRO_DATA_PAGE", true);
+ *   ```;
  *
  * @see `BlinkIdVerifyUiIntroStateKey` for the union type of these keys
  * @see `getChainedUiStateKey` for the automatic state transition logic
@@ -74,33 +60,29 @@ export const blinkIdVerifyUiIntroStateKeys = [
  *
  * @see `blinkIdVerifyUiIntroStateKeys` for detailed documentation on each state
  */
-export type BlinkIdVerifyUiIntroStateKey =
-  (typeof blinkIdVerifyUiIntroStateKeys)[number];
+export type BlinkIdVerifyUiIntroStateKey = (typeof blinkIdVerifyUiIntroStateKeys)[number];
 
 /**
  * Page transition state keys for BlinkID Verify UI.
  *
  * @remarks
- * These states display transition animations and instructions between scanning
- * different document pages or sides. They are automatically triggered after
- * successfully capturing a page (`PAGE_CAPTURED`) and cannot be manually set.
+ *   These states display transition animations and instructions between scanning different document pages or sides.
+ *   They are automatically triggered after successfully capturing a page (`PAGE_CAPTURED`) and cannot be manually set.
+ *   Each transition state corresponds to a specific document type and guides the user to position the document for the
+ *   next scan:
  *
- * Each transition state corresponds to a specific document type and guides the
- * user to position the document for the next scan:
- * - `FLIP_CARD` - Instructs user to flip ID card to scan the back side
- * - `MOVE_LAST_PAGE` - Instructs user to move to passport's last page (barcode)
- * - `MOVE_TOP` - Instructs user to rotate passport to top orientation (0°)
- * - `MOVE_RIGHT` - Instructs user to rotate passport 90° clockwise
- * - `MOVE_LEFT` - Instructs user to rotate passport 90° counter-clockwise
- *
- * **Automatic flow:**
- * After a transition animation completes, the UI automatically advances to the
- * corresponding intro state to begin scanning the next page:
- * - `FLIP_CARD` → `INTRO_BACK_PAGE`
- * - `MOVE_LAST_PAGE` → `INTRO_LAST_PAGE`
- * - `MOVE_TOP` → `INTRO_TOP_PAGE`
- * - `MOVE_RIGHT` → `INTRO_RIGHT_PAGE`
- * - `MOVE_LEFT` → `INTRO_LEFT_PAGE`
+ *   - `FLIP_CARD` - Instructs user to flip ID card to scan the back side
+ *   - `MOVE_LAST_PAGE` - Instructs user to move to passport's last page (barcode)
+ *   - `MOVE_TOP` - Instructs user to rotate passport to top orientation (0°)
+ *   - `MOVE_RIGHT` - Instructs user to rotate passport 90° clockwise
+ *   - `MOVE_LEFT` - Instructs user to rotate passport 90° counter-clockwise **Automatic flow:** After a transition
+ *     animation completes, the UI automatically advances to the corresponding intro state to begin scanning the next
+ *     page:
+ *   - `FLIP_CARD` → `INTRO_BACK_PAGE`
+ *   - `MOVE_LAST_PAGE` → `INTRO_LAST_PAGE`
+ *   - `MOVE_TOP` → `INTRO_TOP_PAGE`
+ *   - `MOVE_RIGHT` → `INTRO_RIGHT_PAGE`
+ *   - `MOVE_LEFT` → `INTRO_LEFT_PAGE`
  *
  * @see `BlinkIdVerifyPageTransitionKey` for the union type of these keys
  * @see `getChainedUiStateKey` for the automatic state transition logic
@@ -119,12 +101,9 @@ export const blinkIdVerifyPageTransitionKeys = [
  *
  * @see `blinkIdVerifyPageTransitionKeys` for detailed documentation on each state
  */
-export type BlinkIdVerifyPageTransitionKey =
-  (typeof blinkIdVerifyPageTransitionKeys)[number];
+export type BlinkIdVerifyPageTransitionKey = (typeof blinkIdVerifyPageTransitionKeys)[number];
 
-/**
- * The error states for BlinkID Verify. Mappable from `ProcessResult`.
- */
+/** The error states for BlinkID Verify. Mappable from `ProcessResult`. */
 export const blinkIdVerifyUiErrorStateKeys = [
   // framing
   "FRONT_PAGE_NOT_IN_FRAME",
@@ -156,23 +135,14 @@ export const blinkIdVerifyUiErrorStateKeys = [
   "UNSUPPORTED_DOCUMENT",
 ] as const;
 
-export type BlinkIdVerifyUiErrorStateKey =
-  (typeof blinkIdVerifyUiErrorStateKeys)[number];
+export type BlinkIdVerifyUiErrorStateKey = (typeof blinkIdVerifyUiErrorStateKeys)[number];
 
-/**
- * These keys represent successful steps in the BlinkID Verify scanning process.
- */
-export const blinkIdVerifyUiStepSuccessKeys = [
-  "PAGE_CAPTURED",
-  "DOCUMENT_CAPTURED",
-] as const;
+/** These keys represent successful steps in the BlinkID Verify scanning process. */
+export const blinkIdVerifyUiStepSuccessKeys = ["PAGE_CAPTURED", "DOCUMENT_CAPTURED"] as const;
 
-export type BlinkIdVerifyUiStepSuccessKey =
-  (typeof blinkIdVerifyUiStepSuccessKeys)[number];
+export type BlinkIdVerifyUiStepSuccessKey = (typeof blinkIdVerifyUiStepSuccessKeys)[number];
 
-/**
- * These keys are directly mappable from a `ProcessResult`
- */
+/** These keys are directly mappable from a `ProcessResult` */
 export type BlinkIdVerifyUiMappableKey =
   | BlinkIdVerifyUiErrorStateKey
   // success
@@ -180,9 +150,7 @@ export type BlinkIdVerifyUiMappableKey =
   // "SCANNING_BARCODE" is the only exception as it's an active processing state
   | "PROCESSING_BARCODE";
 
-/**
- * The key of the UI state.
- */
+/** The key of the UI state. */
 export type BlinkIdVerifyUiStateKey =
   // intro states
   | BlinkIdVerifyUiIntroStateKey
@@ -205,20 +173,15 @@ export type BlinkIdVerifyUiStateMap = {
   };
 };
 
-/**
- * The UI state of BlinkID Verify.
- */
-export type BlinkIdVerifyUiState =
-  BlinkIdVerifyUiStateMap[keyof BlinkIdVerifyUiStateMap];
+/** The UI state of BlinkID Verify. */
+export type BlinkIdVerifyUiState = BlinkIdVerifyUiStateMap[keyof BlinkIdVerifyUiStateMap];
 
 const INTRO_DURATION = 2000;
 const ERROR_DURATION = 1500;
 const SUCCESS_DURATION = 800;
 const TRANSITION_DURATION = 2000;
 
-/**
- * The UI state map of BlinkID Verify.
- */
+/** The UI state map of BlinkID Verify. */
 export const blinkIdVerifyUiStateMap: BlinkIdVerifyUiStateMap = {
   INTRO_FRONT_PAGE: {
     key: "INTRO_FRONT_PAGE",
@@ -361,9 +324,7 @@ export const blinkIdVerifyUiStateMap: BlinkIdVerifyUiStateMap = {
     minDuration: TRANSITION_DURATION,
     singleEmit: true,
   },
-  /**
-   * Generic step done state after capturing a side
-   */
+  /** Generic step done state after capturing a side */
   PAGE_CAPTURED: {
     key: "PAGE_CAPTURED",
     reticleType: "done",
@@ -443,9 +404,7 @@ export const blinkIdVerifyUiStateMap: BlinkIdVerifyUiStateMap = {
   },
 } as const;
 
-/**
- * The partial process result.
- */
+/** The partial process result. */
 export type PartialProcessResult = {
   /** The input image analysis result. */
   inputImageAnalysisResult: Partial<InputImageAnalysisResult>;
@@ -454,22 +413,18 @@ export type PartialProcessResult = {
 };
 
 /**
- * Determines the appropriate UI state key based on the current frame processing
- * result and scanning settings.
+ * Determines the appropriate UI state key based on the current frame processing result and scanning settings.
  *
- * This function acts as a state machine, translating the low-level analysis and
- * completeness results into a high-level UI state that drives the user
- * interface.
+ * This function acts as a state machine, translating the low-level analysis and completeness results into a high-level
+ * UI state that drives the user interface.
  *
- * @param frameProcessResult - The current (possibly partial) result of frame
- * processing, including image analysis and completeness.
+ * @param frameProcessResult - The current (possibly partial) result of frame processing, including image analysis and
+ *   completeness.
  * @returns The UI state key representing what should be shown to the user.
  */
 export function getUiStateKey(frameProcessResult: PartialProcessResult) {
   return (
-    match<PartialProcessResult, BlinkIdVerifyUiMappableKey | undefined>(
-      frameProcessResult,
-    )
+    match<PartialProcessResult, BlinkIdVerifyUiMappableKey | undefined>(frameProcessResult)
       // Success states
       .with(
         {

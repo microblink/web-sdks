@@ -4,7 +4,7 @@
 
 [@microblink/blinkid](../README.md) / RedactionSettingsResolver
 
-# Type Alias: RedactionSettingsResolver()
+# Type Alias: RedactionSettingsResolver
 
 > **RedactionSettingsResolver** = (`classInfo`, `getDefaultRedactionSettings`) => `RedactionSettingsResolverReturn` \| `null` \| `Promise`\<`RedactionSettingsResolverReturn` \| `null`\>
 

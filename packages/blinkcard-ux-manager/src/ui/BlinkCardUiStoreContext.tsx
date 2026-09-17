@@ -1,76 +1,44 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type { CameraManagerComponent } from "@microblink/camera-manager";
-import {
-  createContext,
-  onCleanup,
-  type ParentComponent,
-  useContext,
-} from "solid-js";
+import type { BlinkCardUxManager } from "@microblink/blinkcard-ux-manager/core";
+import type { CameraManagerComponent } from "@microblink/camera-manager/ui";
+import { createContext, onCleanup, type ParentComponent, useContext } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
-import type { BlinkCardProcessingError } from "../core/BlinkCardProcessingError";
-import type { BlinkCardUxManager } from "../core/BlinkCardUxManager";
 
-/**
- * The BlinkCardUiStore type.
- */
+import type { BlinkCardProcessingError } from "../core/BlinkCardProcessingError";
+
+/** The BlinkCardUiStore type. */
 type BlinkCardUiStore = {
-  /**
-   * The BlinkCardUxManager instance.
-   */
+  /** The BlinkCardUxManager instance. */
   blinkCardUxManager: BlinkCardUxManager;
-  /**
-   * The CameraManagerComponent instance.
-   */
+  /** The CameraManagerComponent instance. */
   cameraManagerComponent: CameraManagerComponent;
-  /**
-   * The error state.
-   */
+  /** The error state. */
   errorState?: BlinkCardProcessingError;
-  /**
-   * Whether the onboarding guide should be shown.
-   */
+  /** Whether the onboarding guide should be shown. */
   showOnboardingGuide?: boolean;
-  /**
-   * Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
-   */
+  /** Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown. */
   helpTooltipShowDelay?: number | null;
-  /**
-   * Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden.
-   */
+  /** Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden. */
   helpTooltipHideDelay?: number | null;
 
-  /**
-   * Whether the help modal should be shown.
-   */
+  /** Whether the help modal should be shown. */
   showHelpModal?: boolean;
-  /**
-   * Whether the help button should be shown.
-   */
+  /** Whether the help button should be shown. */
   showHelpButton?: boolean;
-  /**
-   * Whether the timeout modal should be shown.
-   */
+  /** Whether the timeout modal should be shown. */
   showTimeoutModal?: boolean;
-  /**
-   * The function to dismount the feedback UI.
-   */
+  /** The function to dismount the feedback UI. */
   dismountFeedbackUi: () => void;
 };
 
-/**
- * The BlinkCardUiStoreContextValue type.
- */
+/** The BlinkCardUiStoreContextValue type. */
 type BlinkCardUiStoreContextValue = {
   store: BlinkCardUiStore;
   updateStore: SetStoreFunction<BlinkCardUiStore>;
 };
 
-/**
- * The BlinkCardUiStoreContext.
- */
+/** The BlinkCardUiStoreContext. */
 const BlinkCardUiStoreContext = createContext<BlinkCardUiStoreContextValue>();
 
 /**
@@ -89,14 +57,12 @@ export const BlinkCardUiStoreProvider: ParentComponent<{
   showTimeoutModal: boolean;
   dismountFeedbackUi: () => void;
 }> = (props) => {
-  const [store, updateStore] = createStore<BlinkCardUiStore>(
-    {} as BlinkCardUiStore,
-  );
+  const [store, updateStore] = createStore<BlinkCardUiStore>({} as BlinkCardUiStore);
 
   // This needs to be created outside of `useEffect` since we
   // need it immediately on mount
   updateStore({
-    /* eslint-disable solid/reactivity */
+    /* oxlint-disable solid/reactivity */
     blinkCardUxManager: props.blinkCardUxManager,
     cameraManagerComponent: props.cameraManagerComponent,
     showOnboardingGuide: props.showOnboardingGuide,
@@ -105,7 +71,7 @@ export const BlinkCardUiStoreProvider: ParentComponent<{
     showHelpButton: props.showHelpButton,
     showTimeoutModal: props.showTimeoutModal,
     dismountFeedbackUi: props.dismountFeedbackUi,
-    /* eslint-enable solid/reactivity */
+    /* oxlint-enable solid/reactivity */
   });
 
   const contextValue = {
@@ -117,11 +83,7 @@ export const BlinkCardUiStoreProvider: ParentComponent<{
     console.debug("BlinkCardUiStoreProvider cleanup");
   });
 
-  return (
-    <BlinkCardUiStoreContext.Provider value={contextValue}>
-      {props.children}
-    </BlinkCardUiStoreContext.Provider>
-  );
+  return <BlinkCardUiStoreContext.Provider value={contextValue}>{props.children}</BlinkCardUiStoreContext.Provider>;
 };
 
 /**

@@ -48,4 +48,4 @@ Generated base structure for a ping event.
 
 ### sessionNumber?
 
-> `optional` **sessionNumber**: `TSessionNumber`
+> `optional` **sessionNumber?**: `TSessionNumber`

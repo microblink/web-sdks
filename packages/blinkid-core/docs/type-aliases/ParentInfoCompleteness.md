@@ -12,10 +12,10 @@
 
 ### firstName?
 
-> `optional` **firstName**: [`StringResultCompleteness`](StringResultCompleteness.md)
+> `optional` **firstName?**: [`StringResultCompleteness`](StringResultCompleteness.md)
 
 ***
 
 ### lastName?
 
-> `optional` **lastName**: [`StringResultCompleteness`](StringResultCompleteness.md)
+> `optional` **lastName?**: [`StringResultCompleteness`](StringResultCompleteness.md)

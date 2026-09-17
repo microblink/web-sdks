@@ -1,25 +1,12 @@
 {
   "name": "@microblink/blinkid-worker",
-  "description": "Provides a worker which runs the BlinkID WebAssembly in separate thread",
+  "version": "8002.0.0",
   "private": true,
-  "version": "8001.0.1",
-  "scripts": {
-    "build": "concurrently pnpm:build:js pnpm:build:types",
-    "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
-    "build:js-dev": "vite build --mode development",
-    "build:publish": "pnpm build",
-    "build:types": "tsc",
-    "clean": "rimraf .turbo types dist public/resources/*",
-    "docs:api": "typedoc",
-    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
-    "lint:eslint": "eslint ./src --max-warnings 0",
-    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "watch": "concurrently pnpm:watch:js pnpm:watch:types",
-    "watch:js": "vite build --mode development --watch",
-    "watch:types": "tsc --watch"
-  },
+  "description": "Provides a worker which runs the BlinkID WebAssembly in separate thread",
+  "files": [
+    "dist",
+    "types"
+  ],
   "main": "dist/blinkid-worker.js",
   "exports": {
     ".": {
@@ -28,34 +15,43 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
+  "scripts": {
+    "build": "pnpm run --no-bail \"/^build:(js|types)$/\"",
+    "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
+    "build:js-dev": "vite build --mode development",
+    "build:publish": "pnpm build",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist public/resources/*",
+    "docs:api": "typedoc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
+    "watch:js": "vite build --mode development --watch",
+    "watch:types": "tsc --watch",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
   "dependencies": {
     "@microblink/analytics": "workspace:^",
     "@microblink/blinkid-wasm": "workspace:*",
     "@microblink/worker-common": "workspace:*",
-    "comlink": "^4.4.2"
+    "comlink": "catalog:"
   },
   "devDependencies": {
-    "@microblink/tsconfig": "workspace:*",
     "@microblink/repo-utils": "workspace:*",
     "@microblink/test-utils": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
-    "concurrently": "^9.1.2",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "10.1.8",
-    "eslint-define-config": "^1.24.1",
-    "rimraf": "^6.0.1",
-    "tsx": "^4.21.0",
-    "typedoc": "^0.28.7",
-    "typedoc-plugin-markdown": "^4.7.0",
-    "typescript": "5.8.3",
-    "vite": "^6.2.1",
-    "vitest": "^3.0.8",
-    "zx": "^8.8.5"
+    "@microblink/tsconfig": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "tsx": "catalog:typescript",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vitest": "catalog:test",
+    "zx": "catalog:utils"
   },
   "browserslist": [
     "Chrome >= 96",

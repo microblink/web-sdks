@@ -1,22 +1,22 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { Ping } from "@microblink/analytics/ping";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { mergeRedactionSettings } from "./utils";
 import { RedactionSettings } from "@microblink/blinkid-wasm";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+import { mergeRedactionSettings } from "./utils";
 
 /**
- * Test purpose:
- * - Cover non-init BlinkID worker behavior with deterministic mocks.
+ * Test purpose: - Cover non-init BlinkID worker behavior with deterministic mocks.
  *
  * Mocking procedure used in this file:
- * 1) Replace worker-common/comlink dependencies and set test globals on `self`.
- * 2) Import and instantiate `BlinkIdWorker` directly.
- * 3) Exercise public worker APIs without loading wasm/network resources.
+ *
+ * 1. Replace worker-common/comlink dependencies and set test globals on `self`.
+ * 2. Import and instantiate `BlinkIdWorker` directly.
+ * 3. Exercise public worker APIs without loading wasm/network resources.
  *
  * Cases covered:
+ *
  * - `reportPinglet` / `sendPinglets` throw before wasm is loaded.
  * - Worker termination is graceful when no wasm module exists.
  * - Tightening helper privacy does not affect public guard-rail behavior.
@@ -31,6 +31,23 @@ vi.mock("comlink", () => {
     ProxyMarked: class {},
   };
 });
+
+vi.mock("@microblink/blinkid-wasm/size-manifest.json", () => ({
+  default: {
+    wasm: {
+      simd: { lightweight: 100, full: 100 },
+      "simd-threads": { lightweight: 100, full: 100 },
+      "simd-relaxed": { lightweight: 100, full: 100 },
+      "simd-relaxed-threads": { lightweight: 100, full: 100 },
+    },
+    data: {
+      simd: { lightweight: 100, full: 100 },
+      "simd-threads": { lightweight: 100, full: 100 },
+      "simd-relaxed": { lightweight: 100, full: 100 },
+      "simd-relaxed-threads": { lightweight: 100, full: 100 },
+    },
+  },
+}));
 
 vi.mock("./otaResources", () => ({
   BLINK_ID_OTA_RESOURCES_DIRECTORY: "ota-resources",
@@ -66,29 +83,25 @@ describe("BlinkIdWorker", () => {
     const worker = new BlinkIdWorker();
     const pinglet: Ping = {
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "2.0.0",
+      schemaVersion: "3.0.0",
       sessionNumber: 0,
       data: {
         product: "BlinkID",
         platform: "Emscripten",
         // TODO: update this after pinglets schema is updated
-        platformDetails: "advanced-threads",
+        platformDetails: "simd-threads",
         packageName: "example.com",
         userId: "test-user",
         pingProxyEnabled: false,
         baltazarProxyEnabled: false,
       },
     };
-    expect(() => worker.reportPinglet(pinglet)).toThrow(
-      "Cannot report pinglet: Wasm module not loaded",
-    );
+    expect(() => worker.reportPinglet(pinglet)).toThrow("Cannot report pinglet: Wasm module not loaded");
   });
 
   it("throws when sending pinglets without a loaded module", () => {
     const worker = new BlinkIdWorker();
-    expect(() => worker.sendPinglets()).toThrow(
-      "Cannot send pinglets: Wasm module not loaded",
-    );
+    expect(() => worker.sendPinglets()).toThrow("Cannot send pinglets: Wasm module not loaded");
   });
 
   it("terminates gracefully without a loaded module", async () => {
@@ -99,9 +112,7 @@ describe("BlinkIdWorker", () => {
 
     await worker.terminate();
 
-    expect(warnSpy).toHaveBeenCalledWith(
-      "No Wasm module loaded during worker termination. Skipping cleanup.",
-    );
+    expect(warnSpy).toHaveBeenCalledWith("No Wasm module loaded during worker termination. Skipping cleanup.");
     expect(self.close).toHaveBeenCalled();
   });
 

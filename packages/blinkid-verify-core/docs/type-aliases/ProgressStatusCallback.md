@@ -4,7 +4,7 @@
 
 [@microblink/blinkid-verify-core](../README.md) / ProgressStatusCallback
 
-# Type Alias: ProgressStatusCallback()
+# Type Alias: ProgressStatusCallback
 
 > **ProgressStatusCallback** = (`progress`) => `void`
 

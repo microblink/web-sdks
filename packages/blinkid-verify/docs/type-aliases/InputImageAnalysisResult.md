@@ -26,9 +26,8 @@ Information extracted from the currently processed frame
 
 > **detectionStatus**: [`DetectionStatus`](DetectionStatus.md)
 
-The status of the detection. This status is used for guidance of the
-document placement. Giving instructions to the user on how to position
-the document in the frame.
+The status of the detection. This status is used for guidance of the document placement. Giving instructions to
+the user on how to position the document in the frame.
 
 #### documentLocation
 
@@ -60,8 +59,7 @@ Categorieses the document as a passport with barcode
 
 > **processingStatus**: [`ProcessingStatus`](ProcessingStatus.md)
 
-The status of the processing. Beeing either `success` or a potential
-`issue in the scannign process`
+The status of the processing. Beeing either `success` or a potential `issue in the scannign process`
 
 ***
 

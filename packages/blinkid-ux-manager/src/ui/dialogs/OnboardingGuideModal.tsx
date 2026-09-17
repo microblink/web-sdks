@@ -1,10 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import { Dialog } from "@ark-ui/solid";
 import { Modal } from "@microblink/shared-components/Modal";
 import { type Component, createEffect, on } from "solid-js";
-import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
+import { Dynamic } from "solid-js/web";
 
 import BarcodeOnly from "../assets/onboarding/barcode_only.svg?component-solid";
 import BarcodeOnlyDesktop from "../assets/onboarding/barcode_only_desktop.svg?component-solid";
@@ -14,14 +13,9 @@ import DocumentWithBarcode from "../assets/onboarding/document_with_barcode.svg?
 import DocumentWithBarcodeDesktop from "../assets/onboarding/document_with_barcode_desktop.svg?component-solid";
 import DocumentWithMrz from "../assets/onboarding/document_with_mrz.svg?component-solid";
 import DocumentWithMrzDesktop from "../assets/onboarding/document_with_mrz_desktop.svg?component-solid";
-
-import { Dialog } from "@ark-ui/solid";
-import { Dynamic } from "solid-js/web";
+import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
 import { useLocalization } from "../LocalizationContext";
-import {
-  type BlinkIdModalExtractionMode,
-  type BlinkIdModalLocaleGroup,
-} from "./modalExtractionMode";
+import { type BlinkIdModalExtractionMode, type BlinkIdModalLocaleGroup } from "./modalExtractionMode";
 
 type OnboardingImageComponent = typeof CorrectFraming;
 type OnboardingImagePair = {
@@ -82,11 +76,9 @@ export const OnboardingGuideModal: Component<{
   const hideModal = () => {
     updateStore({ showOnboardingGuide: false });
   };
-  const modalContent = () =>
-    onboardingModalContentByExtractionMode[props.extractionMode];
+  const modalContent = () => onboardingModalContentByExtractionMode[props.extractionMode];
   const content = () => t.onboarding_modal[modalContent().localeGroup];
-  const image = () =>
-    modalContent().images[props.isDesktop ? "desktop" : "mobile"];
+  const image = () => modalContent().images[props.isDesktop ? "desktop" : "mobile"];
 
   createEffect(
     on(
@@ -134,11 +126,7 @@ export const OnboardingGuideModal: Component<{
                 {props.isDesktop ? content().title_desktop : content().title}
               </Dialog.Title>
               <Dialog.Description class="dialog-description compact:!text-left">
-                <p>
-                  {props.isDesktop
-                    ? content().details_desktop
-                    : content().details}
-                </p>
+                <p>{props.isDesktop ? content().details_desktop : content().details}</p>
               </Dialog.Description>
             </div>
           </article>

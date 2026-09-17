@@ -18,7 +18,7 @@
 
 ### failureReason?
 
-> `optional` **failureReason**: [`ExtractionFailureReason`](ExtractionFailureReason.md)
+> `optional` **failureReason?**: [`ExtractionFailureReason`](ExtractionFailureReason.md)
 
 ***
 

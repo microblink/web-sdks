@@ -1,23 +1,25 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { beforeEach, describe, expect, test, vi } from "vitest";
 import { enableFakeTimers } from "@microblink/test-utils";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
 import { VideoResolutionName } from "./Camera";
 import { CameraManager, defaultCameraManagerOptions } from "./CameraManager";
-import {
-  cameraManagerStore as store,
-  resetCameraManagerStore,
-} from "./cameraManagerStore";
+import { cameraManagerStore as store, resetCameraManagerStore } from "./cameraManagerStore";
+
+const { getImageDataMock } = vi.hoisted(() => ({
+  getImageDataMock: vi.fn(),
+}));
 
 // Mock VideoFrameProcessor
 vi.mock("./VideoFrameProcessor", () => ({
-  VideoFrameProcessor: vi.fn().mockImplementation(() => ({
-    getImageData: vi.fn(),
-    reattachArrayBuffer: vi.fn(),
-    getCurrentImageData: vi.fn(),
-  })),
+  VideoFrameProcessor: vi.fn(
+    class VideoFrameProcessorMock {
+      getImageData = getImageDataMock;
+      reattachArrayBuffer = vi.fn();
+      getCurrentImageData = vi.fn();
+    },
+  ),
   isBufferDetached: vi.fn().mockReturnValue(false),
 }));
 
@@ -153,9 +155,7 @@ describe("CameraManager - Visibility Guards", () => {
 
   test("should not transition to capturing while document is hidden", async () => {
     const startStreamSpy = vi.fn();
-    const playSpy = vi
-      .spyOn(HTMLMediaElement.prototype, "play")
-      .mockResolvedValue(undefined);
+    const playSpy = vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
     const videoElement = document.createElement("video");
 
     store.setState({
@@ -188,9 +188,7 @@ describe("CameraManager - Visibility Guards", () => {
         return stream;
       }),
     };
-    const playSpy = vi
-      .spyOn(HTMLMediaElement.prototype, "play")
-      .mockResolvedValue(undefined);
+    const playSpy = vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
     const videoElement = document.createElement("video");
     document.body.appendChild(videoElement);
     cameraManager.initVideoElement(videoElement);
@@ -200,9 +198,7 @@ describe("CameraManager - Visibility Guards", () => {
     });
 
     let visibilityState: DocumentVisibilityState = "hidden";
-    vi.spyOn(document, "visibilityState", "get").mockImplementation(
-      () => visibilityState,
-    );
+    vi.spyOn(document, "visibilityState", "get").mockImplementation(() => visibilityState);
 
     window.setTimeout(() => {
       void cameraManager.startPlayback();
@@ -226,5 +222,53 @@ describe("CameraManager - Visibility Guards", () => {
 
     videoElement.remove();
     vi.useRealTimers();
+  });
+});
+
+describe("CameraManager - Headless Frame Capture", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    resetCameraManagerStore();
+  });
+
+  test("captures the full video frame when no extraction area is set", async () => {
+    const cameraManager = new CameraManager();
+    const capturedFrame = new ImageData(2, 3);
+    const frameCaptureCallback = vi.fn();
+    const videoElement = document.createElement("video");
+    let queuedFrameCallback: Parameters<HTMLVideoElement["requestVideoFrameCallback"]>[0] | undefined;
+
+    document.body.appendChild(videoElement);
+    cameraManager.initVideoElement(videoElement);
+
+    getImageDataMock.mockReturnValue(capturedFrame);
+
+    vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
+    vi.spyOn(videoElement, "requestVideoFrameCallback").mockImplementation((callback) => {
+      queuedFrameCallback = callback;
+      return 1;
+    });
+    vi.spyOn(videoElement, "cancelVideoFrameCallback").mockImplementation(() => undefined);
+
+    store.setState({
+      selectedCamera: {
+        activeStream: new MediaStream(),
+        facingMode: "back",
+        stopStream: vi.fn(),
+      } as never,
+    });
+    cameraManager.addFrameCaptureCallback(frameCaptureCallback);
+
+    await cameraManager.startFrameCapture();
+    queuedFrameCallback?.(performance.now(), {} as VideoFrameCallbackMetadata);
+
+    await vi.waitFor(() => {
+      expect(frameCaptureCallback).toHaveBeenCalledWith(capturedFrame);
+    });
+    expect(cameraManager.extractionArea).toBeUndefined();
+    expect(getImageDataMock).toHaveBeenCalledWith(videoElement, undefined);
+
+    cameraManager.stopFrameCapture();
+    videoElement.remove();
   });
 });

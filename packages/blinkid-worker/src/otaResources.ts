@@ -1,9 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { buildResourcePath } from "@microblink/worker-common/buildResourcePath";
 import { MemFSModule } from "@microblink/blinkid-wasm";
+import { buildResourcePath } from "@microblink/worker-common/buildResourcePath";
+import { fetchWithInactivityTimeout, type DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 const OTA_VERSIONS_ENDPOINT = "api/v1/versions";
 const OTA_VERSIONS_PATH_SUFFIX = "/api/v1/versions";
@@ -12,8 +11,6 @@ export const BLINK_ID_OTA_RESOURCES_PATH = "/microblink/blinkid-ota";
 export const BLINK_ID_OTA_RESOURCES_DIRECTORY = "ota-resources";
 export const BLINK_ID_OTA_RESOURCES_MANIFEST_FILENAME = "ota-resources.json";
 
-const OTA_RESOURCES_DOWNLOAD_TIMEOUT_MILIS = 20_000;
-
 export type BlinkIdOtaVersionsResponse = {
   generic_version: string;
   embedder_engine: BlinkIdOtaEngineEntry;
@@ -21,16 +18,14 @@ export type BlinkIdOtaVersionsResponse = {
   document_knowledge_engine: BlinkIdOtaEngineEntry;
 };
 
-type BlinkIdOtaEngineField = Exclude<
-  keyof BlinkIdOtaVersionsResponse,
-  "generic_version"
->;
+type BlinkIdOtaEngineField = Exclude<keyof BlinkIdOtaVersionsResponse, "generic_version">;
 
 const OTA_RESOURCE_FILENAMES: Record<BlinkIdOtaEngineField, string> = {
   embedder_engine: "serialized-embedder-database.bin",
   template_engine: "template-database.zzip",
   document_knowledge_engine: "knowledge-database.zzip",
 };
+const REQUIRED_OTA_RESOURCE_FILENAMES = new Set(Object.values(OTA_RESOURCE_FILENAMES));
 
 export type BlinkIdOtaEngineEntry = {
   latest_version: string;
@@ -44,17 +39,23 @@ export type BlinkIdOtaResource = {
   filename: string;
   url: string;
   version: string;
+  contentLength?: number;
   fallbackUrl?: string;
 };
 
 export type BlinkIdOtaResourcesManifest = {
-  resources?: BlinkIdOtaResourcesManifestEntry[];
+  resources: BlinkIdOtaResourcesManifestEntry[];
 };
 
 export type BlinkIdOtaResourcesManifestEntry = {
-  filename?: string;
-  version?: string;
-  url?: string;
+  filename: string;
+  version: string;
+  url: string;
+  contentLength: number;
+};
+
+type UntrustedBlinkIdOtaResourcesManifest = {
+  resources?: (Partial<BlinkIdOtaResourcesManifestEntry> | null)[];
 };
 
 export type BlinkIdOtaMemfsInspection = {
@@ -79,13 +80,13 @@ export type ResolveBlinkIdOtaResourcesParams = {
   resourceProviderUrl: string;
   genericVersion: string;
   fetchFn?: typeof fetch;
-  timeoutMilis?: number;
+  timeoutMs?: number;
 };
 
 export type ResolveBlinkIdOtaResourcesFromLocationParams = {
   resourcesLocation: string;
   fetchFn?: typeof fetch;
-  timeoutMilis?: number;
+  timeoutMs?: number;
 };
 
 export type WriteBlinkIdOtaResourcesParams = {
@@ -94,8 +95,11 @@ export type WriteBlinkIdOtaResourcesParams = {
   directory?: string;
   fetchFn?: typeof fetch;
   fallbackOnError?: boolean;
-  timeoutMilis?: number;
+  progressCallback?: (filename: string, progress: DownloadProgress) => void;
+  timeoutMs?: number;
 };
+
+export type WriteBlinkIdOtaResourcesParamsLazy = Omit<WriteBlinkIdOtaResourcesParams, "module">;
 
 export type InspectBlinkIdOtaMemfsParams = {
   module: MemFSModule;
@@ -103,15 +107,11 @@ export type InspectBlinkIdOtaMemfsParams = {
   directory?: string;
 };
 
-export function normalizeOtaResourceProviderUrl(
-  resourceProviderUrl: string,
-): string {
+export function normalizeOtaResourceProviderUrl(resourceProviderUrl: string): string {
   const trimmed = resourceProviderUrl.trim().replace(/\/+$/, "");
 
   if (trimmed.endsWith(OTA_VERSIONS_PATH_SUFFIX)) {
-    return trimmed
-      .slice(0, -OTA_VERSIONS_PATH_SUFFIX.length)
-      .replace(/\/+$/, "");
+    return trimmed.slice(0, -OTA_VERSIONS_PATH_SUFFIX.length).replace(/\/+$/, "");
   }
 
   return trimmed;
@@ -120,66 +120,57 @@ export function normalizeOtaResourceProviderUrl(
 export async function resolveBlinkIdOtaResourcesFromLocation({
   resourcesLocation,
   fetchFn = fetch,
-  timeoutMilis = OTA_RESOURCES_DOWNLOAD_TIMEOUT_MILIS,
-}: ResolveBlinkIdOtaResourcesFromLocationParams): Promise<
-  BlinkIdOtaResource[]
-> {
-  const normalizedResourcesLocation = resourcesLocation
-    .trim()
-    .replace(/\/+$/, "");
+  timeoutMs,
+}: ResolveBlinkIdOtaResourcesFromLocationParams): Promise<BlinkIdOtaResource[]> {
+  const normalizedResourcesLocation = resourcesLocation.trim().replace(/\/+$/, "");
 
   if (!normalizedResourcesLocation) {
     throw new Error("BlinkID OTA resources location is empty");
   }
 
-  const manifestUrl = buildResourcePath(
-    normalizedResourcesLocation,
-    BLINK_ID_OTA_RESOURCES_MANIFEST_FILENAME,
-  );
+  const manifestUrl = buildResourcePath(normalizedResourcesLocation, BLINK_ID_OTA_RESOURCES_MANIFEST_FILENAME);
 
-  const response = await fetchFn(manifestUrl, {
-    signal: createOtaDownloadTimeoutSignal(timeoutMilis),
+  const response = await fetchWithInactivityTimeout({
+    url: manifestUrl,
+    resourceDescription: "BlinkID OTA resources manifest",
+    timeoutMs,
+    fetchFn,
   });
   if (!response.ok) {
-    throw new Error(
-      `Failed to resolve BlinkID OTA resources manifest: ${response.status} ${response.statusText}`,
-    );
+    await response.body?.cancel();
+    throw new Error(`Failed to resolve BlinkID OTA resources manifest: ${response.status} ${response.statusText}`);
   }
 
-  const payload =
-    (await response.json()) as Partial<BlinkIdOtaResourcesManifest>;
+  const payload = (await response.json()) as UntrustedBlinkIdOtaResourcesManifest;
 
   if (!Array.isArray(payload.resources) || payload.resources.length === 0) {
     throw new Error("BlinkID OTA resources manifest is missing resources");
   }
 
-  return payload.resources.map((entry, index) =>
-    resourceFromManifestEntry(entry, index, normalizedResourcesLocation),
+  const resources = payload.resources.map((entry, index) =>
+    resourceFromManifestEntry(entry ?? undefined, index, normalizedResourcesLocation),
   );
+  validateHostedOtaResources(resources);
+
+  return resources;
 }
 
 export function selectBlinkIdOtaResources(
   hostedResources: BlinkIdOtaResource[],
   providerResources: BlinkIdOtaResource[],
 ): BlinkIdOtaResource[] {
-  const providerResourcesByFilename = new Map(
-    providerResources.map((resource) => [resource.filename, resource]),
-  );
+  const providerResourcesByFilename = new Map(providerResources.map((resource) => [resource.filename, resource]));
 
   return hostedResources.map((hostedResource) => {
-    const providerResource = providerResourcesByFilename.get(
-      hostedResource.filename,
-    );
+    const providerResource = providerResourcesByFilename.get(hostedResource.filename);
 
-    if (
-      !providerResource ||
-      compareSemver(providerResource.version, hostedResource.version) <= 0
-    ) {
+    if (!providerResource || compareSemver(providerResource.version, hostedResource.version) <= 0) {
       return hostedResource;
     }
 
     return {
       ...providerResource,
+      ...(hostedResource.contentLength === undefined ? {} : { contentLength: hostedResource.contentLength }),
       fallbackUrl: hostedResource.url,
     };
   });
@@ -189,71 +180,109 @@ export async function resolveBlinkIdOtaResources({
   resourceProviderUrl,
   genericVersion,
   fetchFn = fetch,
-  timeoutMilis = OTA_RESOURCES_DOWNLOAD_TIMEOUT_MILIS,
+  timeoutMs,
 }: ResolveBlinkIdOtaResourcesParams): Promise<BlinkIdOtaResource[]> {
-  const normalizedProviderUrl =
-    normalizeOtaResourceProviderUrl(resourceProviderUrl);
+  const normalizedProviderUrl = normalizeOtaResourceProviderUrl(resourceProviderUrl);
   const url = new URL(
     OTA_VERSIONS_ENDPOINT,
-    normalizedProviderUrl.endsWith("/")
-      ? normalizedProviderUrl
-      : `${normalizedProviderUrl}/`,
+    normalizedProviderUrl.endsWith("/") ? normalizedProviderUrl : `${normalizedProviderUrl}/`,
   );
   url.searchParams.set("generic_version", genericVersion);
 
-  const response = await fetchFn(url.toString(), {
-    signal: createOtaDownloadTimeoutSignal(timeoutMilis),
+  const response = await fetchWithInactivityTimeout({
+    url: url.toString(),
+    resourceDescription: "BlinkID OTA provider response",
+    timeoutMs,
+    fetchFn,
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to resolve BlinkID OTA resources: ${response.status} ${response.statusText}`,
-    );
+    await response.body?.cancel();
+    throw new Error(`Failed to resolve BlinkID OTA resources: ${response.status} ${response.statusText}`);
   }
 
-  const payload =
-    (await response.json()) as Partial<BlinkIdOtaVersionsResponse>;
+  const payload = (await response.json()) as Partial<BlinkIdOtaVersionsResponse>;
 
   return [
     resourceFromEntry(payload.embedder_engine, "embedder_engine"),
     resourceFromEntry(payload.template_engine, "template_engine"),
-    resourceFromEntry(
-      payload.document_knowledge_engine,
-      "document_knowledge_engine",
-    ),
+    resourceFromEntry(payload.document_knowledge_engine, "document_knowledge_engine"),
   ];
 }
 
 export async function writeBlinkIdOtaResourcesToMemfs({
   module,
+  ...params
+}: WriteBlinkIdOtaResourcesParams): Promise<string> {
+  const writeToMemfs = await writeBlinkIdOtaResourcesToMemfsLazy(params);
+  return writeToMemfs(module);
+}
+
+export async function writeBlinkIdOtaResourcesToMemfsLazy({
   resources,
   directory = BLINK_ID_OTA_RESOURCES_PATH,
   fetchFn = fetch,
   fallbackOnError = false,
-  timeoutMilis = OTA_RESOURCES_DOWNLOAD_TIMEOUT_MILIS,
-}: WriteBlinkIdOtaResourcesParams): Promise<string> {
-  createDirectory(module, directory);
-
-  await Promise.all(
+  progressCallback,
+  timeoutMs,
+}: WriteBlinkIdOtaResourcesParamsLazy): Promise<(wasmModule: MemFSModule) => string> {
+  const files = await Promise.all(
     resources.map(async (resource) => {
-      const buffer = await downloadOtaResource({
+      let lastReportedProgress = 0;
+      const reportProgress = progressCallback
+        ? (progress: DownloadProgress) => {
+            lastReportedProgress = Math.max(lastReportedProgress, progress.progress);
+            progressCallback(resource.filename, {
+              ...progress,
+              progress: lastReportedProgress,
+            });
+          }
+        : undefined;
+      const download = await prepareOtaResourceDownload({
         resource,
         fetchFn,
         fallbackOnError,
-        timeoutMilis,
+        timeoutMs,
+      });
+      reportOtaResponseStart(download.response, reportProgress, download.resource.contentLength);
+      const buffer = await downloadPreparedOtaResource({
+        download,
+        fetchFn,
+        fallbackOnError,
+        progressCallback: reportProgress,
+        timeoutMs,
       });
       const data = new Uint8Array(buffer);
-      writeFile(module, directory, resource.filename, data);
-      assertWrittenFileReadable(
-        module,
-        `${directory}/${resource.filename}`,
-        data.byteLength,
-      );
+      return {
+        data,
+        resource: download.resource,
+      };
     }),
   );
 
-  return directory;
+  return (module) => {
+    createDirectory(module, directory);
+
+    for (const { data, resource } of files) {
+      writeFile(module, directory, resource.filename, data);
+      assertWrittenFileReadable(module, `${directory}/${resource.filename}`, data.byteLength);
+      progressCallback?.(resource.filename, {
+        loaded: data.byteLength,
+        contentLength: data.byteLength,
+        progress: 100,
+        finished: true,
+      });
+    }
+
+    return directory;
+  };
 }
+
+type PreparedOtaResourceDownload = {
+  resource: BlinkIdOtaResource;
+  response: Response;
+  usingFallback: boolean;
+};
 
 export function inspectBlinkIdOtaMemfs({
   module,
@@ -267,8 +296,7 @@ export function inspectBlinkIdOtaMemfs({
   };
 
   if (!module.FS) {
-    inspection.directoryError =
-      "Loaded BlinkID Wasm module does not expose the Emscripten FS object";
+    inspection.directoryError = "Loaded BlinkID Wasm module does not expose the Emscripten FS object";
     return inspection;
   }
 
@@ -286,79 +314,169 @@ export function inspectBlinkIdOtaMemfs({
   return inspection;
 }
 
-function createOtaDownloadTimeoutSignal(
-  timeoutMilis = OTA_RESOURCES_DOWNLOAD_TIMEOUT_MILIS,
-) {
-  const controller = new AbortController();
-
-  setTimeout(() => {
-    controller.abort(new Error("Ota resource download failed"));
-  }, timeoutMilis);
-
-  return controller.signal;
-}
-
-async function downloadOtaResource({
+async function prepareOtaResourceDownload({
   resource,
   fetchFn,
   fallbackOnError,
-  timeoutMilis,
+  timeoutMs,
 }: {
   resource: BlinkIdOtaResource;
   fetchFn: typeof fetch;
   fallbackOnError: boolean;
-  timeoutMilis: number;
-}): Promise<ArrayBuffer> {
+  timeoutMs?: number;
+}): Promise<PreparedOtaResourceDownload> {
   try {
-    return await fetchOtaResource(
-      resource.filename,
-      resource.url,
-      fetchFn,
-      timeoutMilis,
-    );
+    return {
+      resource,
+      response: await fetchOtaResourceResponse(resource.filename, resource.url, fetchFn, timeoutMs),
+      usingFallback: false,
+    };
   } catch (error) {
     if (!fallbackOnError || !resource.fallbackUrl) {
       throw error;
     }
 
-    console.warn(
-      `BlinkID OTA provider resource ${resource.filename} was not loaded. Falling back to the hosted resource.`,
-      error,
-    );
+    warnAboutOtaFallback(resource.filename, error);
 
-    return fetchOtaResource(
-      resource.filename,
-      resource.fallbackUrl,
+    return {
+      resource,
+      response: await fetchOtaResourceResponse(resource.filename, resource.fallbackUrl, fetchFn, timeoutMs),
+      usingFallback: true,
+    };
+  }
+}
+
+async function downloadPreparedOtaResource({
+  download,
+  fetchFn,
+  fallbackOnError,
+  progressCallback,
+  timeoutMs,
+}: {
+  download: PreparedOtaResourceDownload;
+  fetchFn: typeof fetch;
+  fallbackOnError: boolean;
+  progressCallback?: (progress: DownloadProgress) => void;
+  timeoutMs?: number;
+}): Promise<ArrayBuffer> {
+  try {
+    return await readAndValidateOtaResource(
+      download.resource.filename,
+      download.response,
+      progressCallback,
+      download.resource.contentLength,
+    );
+  } catch (error) {
+    if (download.usingFallback || !fallbackOnError || !download.resource.fallbackUrl) {
+      throw error;
+    }
+
+    warnAboutOtaFallback(download.resource.filename, error);
+
+    const fallbackResponse = await fetchOtaResourceResponse(
+      download.resource.filename,
+      download.resource.fallbackUrl,
       fetchFn,
-      timeoutMilis,
+      timeoutMs,
+    );
+    reportOtaResponseStart(fallbackResponse, progressCallback, download.resource.contentLength);
+    return readAndValidateOtaResource(
+      download.resource.filename,
+      fallbackResponse,
+      progressCallback,
+      download.resource.contentLength,
     );
   }
 }
 
-async function fetchOtaResource(
+async function fetchOtaResourceResponse(
   filename: string,
   url: string,
   fetchFn: typeof fetch,
-  timeoutMilis: number,
-): Promise<ArrayBuffer> {
-  const response = await fetchFn(url, {
-    signal: createOtaDownloadTimeoutSignal(timeoutMilis),
+  timeoutMs?: number,
+): Promise<Response> {
+  const response = await fetchWithInactivityTimeout({
+    url,
+    resourceDescription: `BlinkID OTA resource ${filename}`,
+    timeoutMs,
+    fetchFn,
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to download BlinkID OTA resource ${filename}: ${response.status} ${response.statusText}`,
-    );
+    await response.body?.cancel();
+    throw new Error(`Failed to download BlinkID OTA resource ${filename}: ${response.status} ${response.statusText}`);
   }
 
-  const buffer = await response.arrayBuffer();
+  return response;
+}
+
+async function readAndValidateOtaResource(
+  filename: string,
+  response: Response,
+  progressCallback: ((progress: DownloadProgress) => void) | undefined,
+  expectedContentLength?: number,
+): Promise<ArrayBuffer> {
+  const buffer = await readOtaResourceResponse(response, progressCallback, expectedContentLength);
   if (buffer.byteLength === 0) {
-    throw new Error(
-      `Failed to download BlinkID OTA resource ${filename}: empty response body`,
-    );
+    throw new Error(`Failed to download BlinkID OTA resource ${filename}: empty response body`);
   }
 
   return buffer;
+}
+
+function reportOtaResponseStart(
+  response: Response,
+  progressCallback: ((progress: DownloadProgress) => void) | undefined,
+  expectedContentLength?: number,
+) {
+  if (!progressCallback) {
+    return;
+  }
+
+  progressCallback({
+    loaded: 0,
+    contentLength: getOtaResponseContentLength(response, expectedContentLength),
+    progress: 0,
+    finished: false,
+  });
+}
+
+async function readOtaResourceResponse(
+  response: Response,
+  progressCallback: ((progress: DownloadProgress) => void) | undefined,
+  expectedContentLength?: number,
+): Promise<ArrayBuffer> {
+  if (!progressCallback || !response.body) {
+    return response.arrayBuffer();
+  }
+
+  const contentLength = getOtaResponseContentLength(response, expectedContentLength);
+  let loaded = 0;
+
+  const transformStream = new TransformStream({
+    transform(chunk: Uint8Array, controller) {
+      loaded += chunk.byteLength;
+      progressCallback({
+        loaded,
+        contentLength,
+        progress: contentLength > 0 ? Math.min(Math.round((loaded / contentLength) * 100), 100) : 0,
+        finished: false,
+      });
+      controller.enqueue(chunk);
+    },
+  });
+
+  return new Response(response.body.pipeThrough(transformStream), response).arrayBuffer();
+}
+
+function getOtaResponseContentLength(response: Response, fallback = 0): number {
+  const contentLengthHeader = response.headers?.get?.("Content-Length");
+  const parsedContentLength = contentLengthHeader ? Number.parseInt(contentLengthHeader, 10) : 0;
+  return Number.isFinite(parsedContentLength) && parsedContentLength > 0 ? parsedContentLength : fallback;
+}
+
+function warnAboutOtaFallback(filename: string, error: unknown) {
+  console.warn(`BlinkID OTA provider resource ${filename} was not loaded. Falling back to the hosted resource.`, error);
 }
 
 function resourceFromEntry(
@@ -382,30 +500,51 @@ function resourceFromManifestEntry(
   const filename = extractFilename(entry?.filename);
 
   if (!filename) {
-    throw new Error(
-      `BlinkID OTA resources manifest entry ${index} is missing filename`,
-    );
+    throw new Error(`BlinkID OTA resources manifest entry ${index} is missing filename`);
   }
 
   const version = entry?.version?.trim();
   if (!version) {
-    throw new Error(
-      `BlinkID OTA resources manifest entry ${index} is missing version`,
-    );
+    throw new Error(`BlinkID OTA resources manifest entry ${index} is missing version`);
+  }
+  const contentLength = entry?.contentLength;
+  if (contentLength === undefined) {
+    throw new Error(`BlinkID OTA resources manifest entry ${index} is missing contentLength`);
+  }
+  if (!Number.isSafeInteger(contentLength) || contentLength <= 0) {
+    throw new Error(`BlinkID OTA resources manifest entry ${index} has invalid contentLength`);
   }
 
   return {
     filename,
     version,
     url: resolveManifestResourceUrl(resourcesLocation, filename, entry?.url),
+    contentLength,
   };
 }
 
-function resolveManifestResourceUrl(
-  resourcesLocation: string,
-  filename: string,
-  url: string | undefined,
-): string {
+function validateHostedOtaResources(resources: BlinkIdOtaResource[]) {
+  const seenFilenames = new Set<string>();
+
+  for (const resource of resources) {
+    if (!REQUIRED_OTA_RESOURCE_FILENAMES.has(resource.filename)) {
+      throw new Error(`BlinkID OTA resources manifest contains unexpected resource ${resource.filename}`);
+    }
+
+    if (seenFilenames.has(resource.filename)) {
+      throw new Error(`BlinkID OTA resources manifest contains duplicate resource ${resource.filename}`);
+    }
+
+    seenFilenames.add(resource.filename);
+  }
+
+  const missingFilenames = [...REQUIRED_OTA_RESOURCE_FILENAMES].filter((filename) => !seenFilenames.has(filename));
+  if (missingFilenames.length > 0) {
+    throw new Error(`BlinkID OTA resources manifest is missing required resources: ${missingFilenames.join(", ")}`);
+  }
+}
+
+function resolveManifestResourceUrl(resourcesLocation: string, filename: string, url: string | undefined): string {
   const trimmedUrl = url?.trim();
 
   if (!trimmedUrl) {
@@ -428,25 +567,17 @@ function isAbsoluteUrl(value: string): boolean {
   }
 }
 
-function requireDownloadLink(
-  entry: Partial<BlinkIdOtaEngineEntry> | undefined,
-  field: BlinkIdOtaEngineField,
-): string {
+function requireDownloadLink(entry: Partial<BlinkIdOtaEngineEntry> | undefined, field: BlinkIdOtaEngineField): string {
   const downloadLink = entry?.db_download_link;
 
   if (!downloadLink) {
-    throw new Error(
-      `BlinkID OTA response is missing ${field}.db_download_link`,
-    );
+    throw new Error(`BlinkID OTA response is missing ${field}.db_download_link`);
   }
 
   return downloadLink;
 }
 
-function requireVersion(
-  entry: Partial<BlinkIdOtaEngineEntry> | undefined,
-  field: BlinkIdOtaEngineField,
-): string {
+function requireVersion(entry: Partial<BlinkIdOtaEngineEntry> | undefined, field: BlinkIdOtaEngineField): string {
   const version = entry?.latest_version?.trim();
 
   if (!version) {
@@ -496,9 +627,7 @@ function createDirectory(module: MemFSModule, directory: string) {
   }
 
   if (!module.FS_createPath) {
-    throw new Error(
-      "Loaded BlinkID Wasm module does not expose Emscripten filesystem path creation",
-    );
+    throw new Error("Loaded BlinkID Wasm module does not expose Emscripten filesystem path creation");
   }
 
   const segments = directory.split("/").filter(Boolean);
@@ -515,21 +644,14 @@ function createDirectory(module: MemFSModule, directory: string) {
   }
 }
 
-function writeFile(
-  module: MemFSModule,
-  directory: string,
-  filename: string,
-  data: Uint8Array,
-) {
+function writeFile(module: MemFSModule, directory: string, filename: string, data: Uint8Array) {
   if (typeof module.FS?.writeFile === "function") {
     module.FS.writeFile(`${directory}/${filename}`, data);
     return;
   }
 
   if (!module.FS_createDataFile) {
-    throw new Error(
-      "Loaded BlinkID Wasm module does not expose Emscripten filesystem file creation",
-    );
+    throw new Error("Loaded BlinkID Wasm module does not expose Emscripten filesystem file creation");
   }
 
   try {
@@ -542,11 +664,7 @@ function writeFile(
   module.FS_createDataFile(directory, filename, data, true, true, true);
 }
 
-function assertWrittenFileReadable(
-  module: MemFSModule,
-  path: string,
-  expectedByteLength: number,
-) {
+function assertWrittenFileReadable(module: MemFSModule, path: string, expectedByteLength: number) {
   if (!module.FS?.readFile) {
     return;
   }
@@ -559,11 +677,7 @@ function assertWrittenFileReadable(
   }
 }
 
-function inspectMemfsFile(
-  module: MemFSModule,
-  filename: string,
-  path: string,
-): BlinkIdOtaMemfsFileInspection {
+function inspectMemfsFile(module: MemFSModule, filename: string, path: string): BlinkIdOtaMemfsFileInspection {
   try {
     const data = module.FS?.readFile?.(path);
     const stat = module.FS?.stat?.(path);
@@ -596,9 +710,7 @@ function inspectMemfsFile(
 }
 
 function formatBytesAsHex(data: Uint8Array, length = 16): string {
-  return Array.from(data.slice(0, length), (byte) =>
-    byte.toString(16).padStart(2, "0"),
-  ).join(" ");
+  return Array.from(data.slice(0, length), (byte) => byte.toString(16).padStart(2, "0")).join(" ");
 }
 
 function formatBytesAsAscii(data: Uint8Array, length = 16): string {

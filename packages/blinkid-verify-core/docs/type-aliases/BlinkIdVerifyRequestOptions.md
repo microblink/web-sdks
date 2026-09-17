@@ -10,15 +10,14 @@
 
 Caller-supplied options for the BlinkID Verify Cloud API request.
 
-These options are merged with settings derived from the scanning session to
-produce the final BlinkIdVerifyPayload. Only the subset of options
-that are relevant to the caller are exposed here.
+These options are merged with settings derived from the scanning session to produce the final
+BlinkIdVerifyPayload. Only the subset of options that are relevant to the caller are exposed here.
 
 ## Properties
 
 ### anonymizationMode?
 
-> `optional` **anonymizationMode**: [`BlinkIdVerifyRequestAnonymizationMode`](BlinkIdVerifyRequestAnonymizationMode.md)
+> `optional` **anonymizationMode?**: [`BlinkIdVerifyRequestAnonymizationMode`](BlinkIdVerifyRequestAnonymizationMode.md)
 
 Controls which parts of the result are anonymized in the API response.
 
@@ -26,7 +25,7 @@ Controls which parts of the result are anonymized in the API response.
 
 ### generativeAiMatchLevel?
 
-> `optional` **generativeAiMatchLevel**: [`BlinkIdVerifyRequestMatchLevel`](BlinkIdVerifyRequestMatchLevel.md)
+> `optional` **generativeAiMatchLevel?**: [`BlinkIdVerifyRequestMatchLevel`](BlinkIdVerifyRequestMatchLevel.md)
 
 Match level threshold for the generative AI–based fraud detection check.
 
@@ -34,7 +33,7 @@ Match level threshold for the generative AI–based fraud detection check.
 
 ### photocopyMatchLevel?
 
-> `optional` **photocopyMatchLevel**: [`BlinkIdVerifyRequestMatchLevel`](BlinkIdVerifyRequestMatchLevel.md)
+> `optional` **photocopyMatchLevel?**: [`BlinkIdVerifyRequestMatchLevel`](BlinkIdVerifyRequestMatchLevel.md)
 
 Match level threshold for detecting photocopy fraud.
 
@@ -42,7 +41,7 @@ Match level threshold for detecting photocopy fraud.
 
 ### photoForgeryMatchLevel?
 
-> `optional` **photoForgeryMatchLevel**: [`BlinkIdVerifyRequestMatchLevel`](BlinkIdVerifyRequestMatchLevel.md)
+> `optional` **photoForgeryMatchLevel?**: [`BlinkIdVerifyRequestMatchLevel`](BlinkIdVerifyRequestMatchLevel.md)
 
 Match level threshold for detecting photo forgery.
 
@@ -50,7 +49,7 @@ Match level threshold for detecting photo forgery.
 
 ### returnFaceImage?
 
-> `optional` **returnFaceImage**: `boolean`
+> `optional` **returnFaceImage?**: `boolean`
 
 Whether to include the face image in the API response.
 
@@ -58,7 +57,7 @@ Whether to include the face image in the API response.
 
 ### returnFullDocumentImage?
 
-> `optional` **returnFullDocumentImage**: `boolean`
+> `optional` **returnFullDocumentImage?**: `boolean`
 
 Whether to include the full document image in the API response.
 
@@ -66,7 +65,7 @@ Whether to include the full document image in the API response.
 
 ### returnImageFormat?
 
-> `optional` **returnImageFormat**: [`ReturnImageFormat`](ReturnImageFormat.md)
+> `optional` **returnImageFormat?**: [`ReturnImageFormat`](ReturnImageFormat.md)
 
 The image format used for returned images.
 
@@ -74,6 +73,6 @@ The image format used for returned images.
 
 ### returnSignatureImage?
 
-> `optional` **returnSignatureImage**: `boolean`
+> `optional` **returnSignatureImage?**: `boolean`
 
 Whether to include the signature image in the API response.

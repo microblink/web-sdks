@@ -1,42 +1,44 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { cameraManagerStore } from "@microblink/camera-manager";
+import { PingUxEventData } from "@microblink/blinkcard-core";
+import { cameraManagerStore } from "@microblink/camera-manager/core";
 import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import type { Component } from "solid-js";
-import {
-  createEffect,
-  createSignal,
-  Match,
-  onCleanup,
-  onMount,
-  Show,
-  Switch,
-} from "solid-js";
-import { createWithSignal } from "solid-zustand";
+import { createEffect, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
+import { create } from "solid-zustand";
+
 import { BlinkCardUiState } from "../core/blinkcard-ui-state";
-import {
-  LocalizationProvider,
-  PartialLocalizationStrings,
-  useLocalization,
-} from "./LocalizationContext";
-import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
+import type { BlinkCardProcessingError } from "../core/BlinkCardProcessingError";
+import DemoOverlay from "./assets/demo-overlay.svg?component-solid";
 
 // this triggers extraction of CSS from the UnoCSS plugin
 import "virtual:uno.css";
 
-import DemoOverlay from "./assets/demo-overlay.svg?component-solid";
 import MicroblinkOverlay from "./assets/microblink.svg?component-solid";
 import { useBlinkCardUiStore } from "./BlinkCardUiStoreContext";
 import { ErrorModal } from "./dialogs/ErrorModal";
 import { HelpButton, HelpModal } from "./dialogs/HelpModal";
 import { OnboardingGuideModal } from "./dialogs/OnboardingGuideModal";
+import { LocalizationProvider, PartialLocalizationStrings, useLocalization } from "./LocalizationContext";
+import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
+
+export const getTimeoutErrorType = (
+  errorState: BlinkCardProcessingError | undefined,
+): NonNullable<PingUxEventData["alertType"]> | undefined => {
+  if (errorState === "inactivity_timeout") {
+    return "InactivityTimeout";
+  }
+
+  if (errorState === "scan_step_timeout") {
+    return "StepTimeout";
+  }
+
+  return undefined;
+};
 
 /**
- * The BlinkCardFeedbackUi component. This is the main component that renders the
- * feedback UI for the BlinkCard SDK. It is responsible for rendering the feedback
- * UI, the overlays, and the help button.
+ * The BlinkCardFeedbackUi component. This is the main component that renders the feedback UI for the BlinkCard SDK. It
+ * is responsible for rendering the feedback UI, the overlays, and the help button.
  *
  * @param props - The props for the BlinkCardFeedbackUi component.
  * @returns The BlinkCardFeedbackUi component.
@@ -48,47 +50,39 @@ export const BlinkCardFeedbackUi: Component<{
 
   // `blinkCardUxManager` is not reactive, so we need to create a new signal for
   // the UI state. This is a hacky way to make the UI state reactive.
-  const [uiState, setUiState] = createSignal<BlinkCardUiState>(
-    store.blinkCardUxManager.uiState,
-  );
+  const [uiState, setUiState] = createSignal<BlinkCardUiState>(store.blinkCardUxManager.uiState);
 
   // Handle errors during scanning
-  const errorCallbackCleanup = store.blinkCardUxManager.addOnErrorCallback(
-    (errorState) => {
-      updateStore({ errorState });
-    },
-  );
-
-  onMount(() => {
-    const cleanupDismountCallback =
-      store.cameraManagerComponent.addOnDismountCallback(() => {
-        cleanupDismountCallback();
-
-        // if not user-initiated, it's a regular dismount, not a button-click,
-        // so we early exit.
-        if (!store.cameraManagerComponent.cameraManager.userInitiatedAbort) {
-          return;
-        }
-
-        void store.blinkCardUxManager.logCloseButtonClicked();
-      });
+  const errorCallbackCleanup = store.blinkCardUxManager.addOnErrorCallback((errorState) => {
+    updateStore({ errorState });
   });
 
-  const playbackState = createWithSignal(cameraManagerStore)(
-    (s) => s.playbackState,
-  );
+  onMount(() => {
+    const cleanupDismountCallback = store.cameraManagerComponent.addOnDismountCallback(() => {
+      cleanupDismountCallback();
 
-  const cameraErrorState = createWithSignal(cameraManagerStore)(
-    (s) => s.errorState,
-  );
+      // if not user-initiated, it's a regular dismount, not a button-click,
+      // so we early exit.
+      if (!store.cameraManagerComponent.cameraManager.userInitiatedAbort) {
+        return;
+      }
+
+      void store.blinkCardUxManager.logCloseButtonClicked();
+    });
+  });
+
+  const playbackState = create(cameraManagerStore)((s) => s.playbackState);
+
+  const cameraErrorState = create(cameraManagerStore)((s) => s.errorState);
 
   const isProcessing = () => playbackState() === "capturing";
 
   // TODO: Cover cases where frame processing is paused by 3rd party modal dialogs
   const shouldShowFeedback = () => !isModalOpen();
 
-  const displayTimeoutModal = () =>
-    Boolean(store.showTimeoutModal) && store.errorState === "timeout";
+  const displayedTimeoutAlertType = () => (store.showTimeoutModal ? getTimeoutErrorType(store.errorState) : undefined);
+
+  const displayTimeoutModal = () => displayedTimeoutAlertType() !== undefined;
 
   const isModalOpen = () => {
     return (
@@ -100,7 +94,9 @@ export const BlinkCardFeedbackUi: Component<{
     );
   };
 
-  createEffect(() => {
+  createEffect((previous: boolean) => {
+    if (isModalOpen() === previous) return previous;
+
     if (!isModalOpen()) {
       void store.blinkCardUxManager.cameraManager.startFrameCapture();
       store.blinkCardUxManager.startUiUpdateLoop();
@@ -108,7 +104,9 @@ export const BlinkCardFeedbackUi: Component<{
       void store.blinkCardUxManager.cameraManager.stopFrameCapture();
       store.blinkCardUxManager.stopUiUpdateLoop();
     }
-  });
+
+    return isModalOpen();
+  }, isModalOpen());
 
   const shouldShowDemoOverlay = () => {
     return store.blinkCardUxManager.getShowDemoOverlay();
@@ -118,8 +116,7 @@ export const BlinkCardFeedbackUi: Component<{
     return store.blinkCardUxManager.getShowProductionOverlay();
   };
 
-  const removeUiStateChangeCallback =
-    store.blinkCardUxManager.addOnUiStateChangedCallback(setUiState);
+  const removeUiStateChangeCallback = store.blinkCardUxManager.addOnUiStateChangedCallback(setUiState);
 
   onCleanup(() => {
     removeUiStateChangeCallback();
@@ -127,14 +124,14 @@ export const BlinkCardFeedbackUi: Component<{
   });
 
   const isDesktop = () => {
-    return store.blinkCardUxManager.deviceInfo.derivedDeviceInfo.formFactors.includes(
-      "Desktop",
-    );
+    return store.blinkCardUxManager.deviceInfo.derivedDeviceInfo.formFactors.includes("Desktop");
   };
 
   createEffect(() => {
-    if (displayTimeoutModal()) {
-      void store.blinkCardUxManager.logAlertDisplayed("StepTimeout");
+    const alertType = displayedTimeoutAlertType();
+
+    if (alertType) {
+      void store.blinkCardUxManager.logAlertDisplayed(alertType);
     }
   });
 
@@ -153,6 +150,8 @@ export const BlinkCardFeedbackUi: Component<{
           {() => {
             const { t } = useLocalization();
 
+            const timeoutModalText = () => (isDesktop() ? t.timeout_modal.details_desktop : t.timeout_modal.details);
+
             // update camera manager dialog title localization
             store.cameraManagerComponent.updateLocalization({
               dialog_title: t.sdk_aria,
@@ -164,17 +163,14 @@ export const BlinkCardFeedbackUi: Component<{
                   <Match when={displayTimeoutModal()}>
                     <ErrorModal
                       header={t.timeout_modal.title}
-                      text={t.timeout_modal.details}
+                      text={timeoutModalText()}
                       shouldResetScanningSession={true}
                     />
                   </Match>
                 </Switch>
 
                 <Show when={shouldShowFeedback()}>
-                  <UiFeedbackOverlay
-                    uiState={uiState()}
-                    isDesktop={isDesktop()}
-                  />
+                  <UiFeedbackOverlay uiState={uiState()} isDesktop={isDesktop()} />
                 </Show>
 
                 <Show when={shouldShowDemoOverlay()}>

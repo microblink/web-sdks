@@ -1,8 +1,16 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 const type = "application/javascript";
+const ipv4LoopbackPattern = /^127(?:\.\d{1,3}){3}$/;
+
+const isLocalhost = (hostname: string): boolean =>
+  hostname === "localhost" ||
+  hostname.endsWith(".localhost") ||
+  ipv4LoopbackPattern.test(hostname) ||
+  hostname === "[::1]";
+
+const isAllowedWorkerUrl = (url: URL): boolean =>
+  url.protocol === "https:" || (url.protocol === "http:" && isLocalhost(url.hostname));
 
 /**
  * Options for the getCrossOriginWorkerURL function.
@@ -24,23 +32,22 @@ type Options = {
  * @param _options - The options for the worker.
  * @returns A promise that resolves with the cross-origin worker URL.
  */
-export const getCrossOriginWorkerURL = (
-  originalWorkerUrl: string,
-  _options: Options = {},
-) => {
+export const getCrossOriginWorkerURL = (originalWorkerUrl: string, _options: Options = {}) => {
   const options = {
     skipSameOrigin: true,
     useBlob: true,
 
     ..._options,
   };
+  const workerUrl = new URL(originalWorkerUrl);
 
-  if (
-    options.skipSameOrigin &&
-    new URL(originalWorkerUrl).origin === self.location.origin
-  ) {
+  if (options.skipSameOrigin && workerUrl.origin === self.location.origin) {
     // The same origin - Worker will run fine
     return Promise.resolve(originalWorkerUrl);
+  }
+
+  if (!isAllowedWorkerUrl(workerUrl)) {
+    return Promise.reject(new Error(`Worker URL must use HTTPS or a loopback host: ${originalWorkerUrl}`));
   }
 
   let signal: AbortSignal;
@@ -66,11 +73,18 @@ export const getCrossOriginWorkerURL = (
 
   return new Promise<string>(
     (resolve, reject) =>
-      void fetch(originalWorkerUrl, {
+      void fetch(workerUrl, {
         // abort if the worker is not fetched in a reasonable time
         signal,
       })
-        .then((res) => res.text())
+        .then((res) => {
+          const responseUrl = new URL(res.url || workerUrl);
+          if (!isAllowedWorkerUrl(responseUrl)) {
+            throw new Error("Worker response URL is not allowed");
+          }
+
+          return res.text();
+        })
         .then((codeString) => {
           let finalURL = "";
 

@@ -6,7 +6,7 @@
 
 # Function: getUiStateKeyFromScanningStatus()
 
-> **getUiStateKeyFromScanningStatus**(`scanningStatus`): `undefined` \| [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md)
+> **getUiStateKeyFromScanningStatus**(`scanningStatus`): [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md) \| `undefined`
 
 Maps a session-level scanning status to a UI state key
 
@@ -18,4 +18,4 @@ Maps a session-level scanning status to a UI state key
 
 ## Returns
 
-`undefined` \| [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md)
+[`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md) \| `undefined`

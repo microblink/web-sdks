@@ -6,9 +6,8 @@
 
 # Interface: BlinkCardUxManager
 
-The BlinkCardUxManager class. This is the main class that manages the UX of
-the BlinkCard SDK. It is responsible for handling the UI state, the timeout,
-and the haptic feedback.
+The BlinkCardUxManager class. This is the main class that manages the UX of the BlinkCard SDK. It is responsible for
+handling the UI state, the timeout, and the haptic feedback.
 
 ## Properties
 
@@ -20,11 +19,11 @@ The camera manager.
 
 ***
 
-### clearScanTimeout()
+### clearScanTimeout
 
 > **clearScanTimeout**: () => `void`
 
-Clears the scanning session timeout.
+Clears all scanning-session timeouts.
 
 #### Returns
 
@@ -44,8 +43,8 @@ The device info.
 
 > `readonly` **feedbackStabilizer**: [`FeedbackStabilizer`](../classes/FeedbackStabilizer.md)\<[`BlinkCardUiStateMap`](../type-aliases/BlinkCardUiStateMap.md)\>
 
-The feedback stabilizer. Public to allow UI components to read scores,
-event queues, and call restartCurrentStateTimer() for help-tooltip resets.
+The feedback stabilizer. Public to allow UI components to read scores, event queues, and call
+restartCurrentStateTimer() for help-tooltip resets.
 
 ***
 
@@ -131,9 +130,8 @@ Use `mappedUiStateKey` (internal/debug) or `uiStateKey` (displayed state).
 
 > **get** **uiState**(): [`BlinkCardUiState`](../type-aliases/BlinkCardUiState.md)
 
-The current UI state. Updated internally by the RAF update loop.
-Read externally once at UI mount to seed the initial Solid signal value;
-subsequent updates are delivered via `addOnUiStateChangedCallback`.
+The current UI state. Updated internally by the RAF update loop. Read externally once at UI mount to seed the
+initial Solid signal value; subsequent updates are delivered via `addOnUiStateChangedCallback`.
 
 ##### Returns
 
@@ -159,8 +157,7 @@ The currently applied UI state key.
 
 > **addOnErrorCallback**(`callback`): () => `void`
 
-Registers a callback function to be called when an error occurs during
-processing.
+Registers a callback function to be called when an error occurs during processing.
 
 #### Parameters
 
@@ -175,11 +172,7 @@ A function that will be called with the error state.
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 ***
 
@@ -195,19 +188,14 @@ Registers a callback function to be called when a frame is processed.
 
 (`frameResult`) => `void`
 
-A function that will be called with the frame analysis
-result.
+A function that will be called with the frame analysis result.
 
 #### Returns
 
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 ***
 
@@ -230,11 +218,7 @@ A function that will be called with the scan result.
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 ***
 
@@ -250,18 +234,13 @@ Adds a callback function to be executed when the UI state changes.
 
 (`uiState`) => `void`
 
-Function to be called when UI state changes. Receives the
-new UI state as parameter.
+Function to be called when UI state changes. Receives the new UI state as parameter.
 
 #### Returns
 
 A cleanup function that removes the callback when called.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 ***
 
@@ -289,9 +268,9 @@ A cleanup function that removes the callback when called.
 
 > **destroy**(): `void`
 
-Fully tears down the BlinkCardUxManager. Stops frame processing, cancels the
-scan timeout, removes all subscriptions and the RAF loop, and clears all
-registered callbacks. Should be called when the manager is no longer needed.
+Fully tears down the BlinkCardUxManager. Stops frame processing, cancels the scan timeout, removes all
+subscriptions and the RAF loop, and clears all registered callbacks. Should be called when the manager is no longer
+needed.
 
 Does not stop the camera stream or delete the scanning session.
 
@@ -333,8 +312,7 @@ The result.
 
 > **getShowDemoOverlay**(): `boolean`
 
-Indicates whether the UI should display the demo overlay. Controlled by the
-license property.
+Indicates whether the UI should display the demo overlay. Controlled by the license property.
 
 #### Returns
 
@@ -346,8 +324,7 @@ license property.
 
 > **getShowProductionOverlay**(): `boolean`
 
-Indicates whether the UI should display the production overlay. Controlled by
-the license property.
+Indicates whether the UI should display the production overlay. Controlled by the license property.
 
 #### Returns
 
@@ -355,15 +332,15 @@ the license property.
 
 ***
 
-### getTimeoutDuration()
+### getTimeoutConfiguration()
 
-> **getTimeoutDuration**(): `null` \| `number`
+> **getTimeoutConfiguration**(): [`BlinkCardTimeoutConfiguration`](../type-aliases/BlinkCardTimeoutConfiguration.md)
 
-Returns the timeout duration in ms. Null if timeout won't be triggered ever.
+Returns the active BlinkCard timeout configuration.
 
 #### Returns
 
-`null` \| `number`
+[`BlinkCardTimeoutConfiguration`](../type-aliases/BlinkCardTimeoutConfiguration.md)
 
 ***
 
@@ -377,7 +354,7 @@ Check if haptic feedback is currently enabled.
 
 `boolean`
 
-true if haptic feedback is enabled
+True if haptic feedback is enabled
 
 ***
 
@@ -391,7 +368,7 @@ Check if haptic feedback is supported by the current browser/device.
 
 `boolean`
 
-true if haptic feedback is supported
+True if haptic feedback is supported
 
 ***
 
@@ -405,7 +382,7 @@ Logs when an alert is displayed.
 
 ##### alertType
 
-`NonNullable`\<`undefined` \| `AlertType`\>
+`NonNullable`\<`AlertType` \| `undefined`\>
 
 The type of alert displayed.
 
@@ -537,28 +514,21 @@ Whether haptic feedback should be enabled
 
 ***
 
-### setTimeoutDuration()
+### setTimeoutConfiguration()
 
-> **setTimeoutDuration**(`duration`): `void`
+> **setTimeoutConfiguration**(`timeoutConfiguration`): `void`
 
-Sets the duration after which the scanning session will timeout.
+Updates the BlinkCard timeout configuration and restarts active timing with the new durations.
 
 #### Parameters
 
-##### duration
+##### timeoutConfiguration
 
-The timeout duration in milliseconds. If null, timeout won't
-be triggered ever.
-
-`null` | `number`
+`Partial`\<[`BlinkCardTimeoutConfiguration`](../type-aliases/BlinkCardTimeoutConfiguration.md)\>
 
 #### Returns
 
 `void`
-
-#### Throws
-
-Throws an error if duration is less than or equal to 0 when not null.
 
 ***
 

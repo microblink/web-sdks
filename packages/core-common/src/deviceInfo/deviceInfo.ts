@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { createDerivedDeviceInfo } from "./createDerivedDeviceInfo";
 import "./navigator-types";
@@ -9,9 +7,7 @@ import type { FormFactor, UADataValues } from "./navigator-types";
 export { createDerivedDeviceInfo } from "./createDerivedDeviceInfo";
 export type * from "./navigator-types";
 
-/**
- * @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/getParameter
- */
+/** @see https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/getParameter */
 export type GpuInfo = {
   renderer: string;
   shadingLanguageVersion: string;
@@ -54,9 +50,7 @@ export type DerivedDeviceInfo = {
   };
 };
 
-/**
- * Get GPU info using WebGL context
- */
+/** Get GPU info using WebGL context */
 function getGpuInfo(): GpuInfo | undefined {
   const canvas = document.createElement("canvas");
   const gl = canvas.getContext("webgl");
@@ -64,13 +58,9 @@ function getGpuInfo(): GpuInfo | undefined {
   if (gl && gl instanceof WebGLRenderingContext) {
     const debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
     return {
-      renderer: debugInfo
-        ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
-        : gl.getParameter(gl.RENDERER),
+      renderer: debugInfo ? gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER),
       shadingLanguageVersion: gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
-      vendor: debugInfo
-        ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL)
-        : gl.getParameter(gl.VENDOR),
+      vendor: debugInfo ? gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) : gl.getParameter(gl.VENDOR),
       version: gl.getParameter(gl.VERSION),
     } as GpuInfo;
   }
@@ -91,6 +81,7 @@ function isLocalStorageAvailable(): boolean {
 
 /**
  * Get granular device info from `navigator.userAgentData.getHighEntropyValues`
+ *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/NavigatorUAData/getHighEntropyValues
  */
 export async function getUserAgentData() {
@@ -137,10 +128,7 @@ export async function getDeviceInfo() {
       cookieEnabled: navigator.cookieEnabled,
       localStorageEnabled: isLocalStorageAvailable(),
     },
-    derivedDeviceInfo: createDerivedDeviceInfo(
-      navigator.userAgent,
-      userAgentData,
-    ),
+    derivedDeviceInfo: createDerivedDeviceInfo(navigator.userAgent, userAgentData),
   };
 
   return values;

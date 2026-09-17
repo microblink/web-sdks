@@ -24,13 +24,13 @@
 
 ### gpu?
 
-> `optional` **gpu**: `Gpu`
+> `optional` **gpu?**: `Gpu`
 
 ***
 
 ### memory?
 
-> `optional` **memory**: `number`
+> `optional` **memory?**: `number`
 
 ***
 
@@ -54,4 +54,4 @@
 
 ### userAgentData?
 
-> `optional` **userAgentData**: `UserAgentData`
+> `optional` **userAgentData?**: `UserAgentData`

@@ -42,11 +42,9 @@ Adds a callback function to be called when an error occurs.
 
 Adds a callback function to be called when a frame is processed.
 
-The callback receives the current `BlinkIdProcessResult`,
-`advanceToNextStep()` for custom scan-step advancement or finishing once
-the frame contains all data your integration needs,
-`triggerStepTimeout()` for forcing the active step through the timeout path,
-and `getLastFrame()` for reading the raw frame `ArrayBuffer`.
+The callback receives the current `BlinkIdProcessResult`, `advanceToNextStep()` for custom scan-step advancement or
+finishing once the frame contains all data your integration needs, `triggerStepTimeout()` for forcing the active
+step through the timeout path, and `getLastFrame()` for reading the raw frame `ArrayBuffer`.
 
 ***
 
@@ -72,8 +70,8 @@ Adds a callback function to be called when a result is obtained.
 
 Adds a callback function to be called when the UI state changes.
 
-The callback receives the stabilized visible `BlinkIdUiState`, including
-the current `key` and reticle metadata used by the built-in feedback UI.
+The callback receives the stabilized visible `BlinkIdUiState`, including the current `key` and reticle metadata
+used by the built-in feedback UI.
 
 ***
 
@@ -109,7 +107,7 @@ The Camera Manager UI instance.
 
 ***
 
-### destroy()
+### destroy
 
 > **destroy**: () => `Promise`\<`void`\>
 

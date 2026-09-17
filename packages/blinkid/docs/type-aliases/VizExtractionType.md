@@ -8,8 +8,7 @@
 
 > **VizExtractionType** = `"not-available"` \| `"segmentation"` \| `"templating"` \| `"unsupported"`
 
-Describes whether VIZ extraction was available for the processed input image
-and which extraction path was selected.
+Describes whether VIZ extraction was available for the processed input image and which extraction path was selected.
 
 - `"not-available"`: VIZ extraction has not been evaluated yet.
 - `"segmentation"`: VIZ data was extracted using segmentation.

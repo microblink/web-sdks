@@ -22,7 +22,7 @@ The BlinkCard worker.
 
 ### progressStatusCallback?
 
-> `optional` **progressStatusCallback**: [`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)
+> `optional` **progressStatusCallback?**: [`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)
 
 The progress status callback.
 
@@ -58,9 +58,8 @@ The options for the session.
 
 The type of image source for the scanning session.
 
-This type is used to indicate whether an image was obtained from a video
-stream or a single-source input such as a standalone photo. The default is
-set to `Video`.
+This type is used to indicate whether an image was obtained from a video stream or a single-source input such as a
+standalone photo. The default is set to `Video`.
 
 ###### scanningSettings?
 

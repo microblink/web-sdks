@@ -1,15 +1,13 @@
 {
   "name": "@microblink/worker-common",
+  "version": "1.1.0",
   "private": true,
-  "version": "1.0.5",
-  "scripts": {
-    "build": "tsc",
-    "build:publish": "tsc",
-    "clean": "rimraf .turbo types dist *.tgz",
-    "lint": "tsc --emitDeclarationOnly false --noEmit",
-    "test": "vitest --run",
-    "test:watch": "vitest --watch"
-  },
+  "keywords": [],
+  "license": "ISC",
+  "files": [
+    "dist",
+    "types"
+  ],
   "type": "module",
   "exports": {
     "./buildResourcePath": {
@@ -52,26 +50,41 @@
       "types": "./types/downloadResourceBuffer.d.ts",
       "import": "./dist/downloadResourceBuffer.js"
     },
+    "./compileWasm": {
+      "types": "./types/compileWasm.d.ts",
+      "import": "./dist/compileWasm.js"
+    },
     "./workerCrashReporter": {
       "types": "./types/workerCrashReporter.d.ts",
       "import": "./dist/workerCrashReporter.js"
     },
+    "./wasmVariant": {
+      "types": "./types/wasmVariant.d.ts",
+      "import": "./dist/wasmVariant.js"
+    },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types dist *.tgz",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
   "dependencies": {
     "@microblink/wasm-common": "workspace:*",
-    "wasm-feature-detect": "^1.8.0"
+    "wasm-feature-detect": "^1.9.0"
   },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
-    "rimraf": "^6.0.1",
-    "typescript": "5.8.3",
-    "vitest": "^3.0.8"
-  },
-  "keywords": [],
-  "license": "ISC"
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "typescript": "catalog:typescript",
+    "vitest": "catalog:test"
+  }
 }

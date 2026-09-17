@@ -4,7 +4,7 @@
 
 [@microblink/blinkid](../README.md) / getCrossOriginWorkerURL
 
-# Variable: getCrossOriginWorkerURL()
+# Variable: getCrossOriginWorkerURL
 
 > `const` **getCrossOriginWorkerURL**: (`originalWorkerUrl`, `_options?`) => `Promise`\<`string`\>
 

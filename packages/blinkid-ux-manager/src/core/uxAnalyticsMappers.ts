@@ -1,31 +1,21 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { PingUxEventData } from "@microblink/blinkid-core";
 import { match } from "ts-pattern";
+
 import type { BlinkIdUiErrorStateKey } from "./blinkid-ui-state";
 
 /**
- * Error state keys that produce a concrete analytics error message type.
- * UNSUPPORTED_DOCUMENT is excluded because it is handled as a separate
- * error callback rather than an analytics error message event.
+ * Error state keys that produce a concrete analytics error message type. UNSUPPORTED_DOCUMENT is excluded because it is
+ * handled as a separate error callback rather than an analytics error message event.
  */
-export type PingableErrorUiStateKey = Exclude<
-  BlinkIdUiErrorStateKey,
-  "UNSUPPORTED_DOCUMENT"
->;
+export type PingableErrorUiStateKey = Exclude<BlinkIdUiErrorStateKey, "UNSUPPORTED_DOCUMENT">;
 
-/**
- * Maps a UI error state key to the analytics error message type used in
- * the UX event ping.
- */
+/** Maps a UI error state key to the analytics error message type used in the UX event ping. */
 export function mapErrorStateKeyToAnalyticsType(
   errorKey: PingableErrorUiStateKey,
 ): PingUxEventData["errorMessageType"] {
-  return match<PingableErrorUiStateKey, PingUxEventData["errorMessageType"]>(
-    errorKey,
-  )
+  return match<PingableErrorUiStateKey, PingUxEventData["errorMessageType"]>(errorKey)
     .with("BLUR_DETECTED", () => "EliminateBlur")
     .with("GLARE_DETECTED", () => "EliminateGlare")
     .with("TOO_DARK", () => "IncreaseLighting")

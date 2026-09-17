@@ -1,0 +1,15 @@
+[**@microblink/blinkid-ux-manager**](../../README.md)
+
+***
+
+[@microblink/blinkid-ux-manager](../../README.md) / [index](../README.md) / BlinkIdPageTransitionKey
+
+# Type Alias: BlinkIdPageTransitionKey
+
+> **BlinkIdPageTransitionKey** = *typeof* [`blinkIdPageTransitionKeys`](../variables/blinkIdPageTransitionKeys.md)\[`number`\]
+
+Union type of all page transition state keys.
+
+## See
+
+`blinkIdPageTransitionKeys` for detailed documentation on each state

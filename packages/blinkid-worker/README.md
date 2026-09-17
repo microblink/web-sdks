@@ -50,22 +50,32 @@ The hosted directory contains `ota-resources.json` and the canonical files:
       "filename": "knowledge-database.zzip",
       "version": "2.0.1",
       "url": "knowledge-database.zzip",
+      "contentLength": 93004,
     },
   ],
 }
 ```
+
+Every manifest entry must include a positive integer `contentLength`.
+Manifests must contain exactly one entry for each canonical file.
 
 Applications can override the hosted baseline and provider URLs:
 
 ```ts
 const initSettings = {
   licenseKey: "your-license-key",
+  resourceDownloadTimeoutMs: 60_000,
   otaResources: {
     resourcesLocation: "https://cdn.example.com/blinkid-ota",
     otaResourceProviderUrl: "https://your-proxy.example.com/blinkid-ota",
   },
 };
 ```
+
+`resourceDownloadTimeoutMs` is the maximum time any Wasm, data, or OTA
+request may receive no response headers or body data. The timer resets whenever
+data arrives, so it does not limit the total duration of slow downloads. The
+default is 60 seconds.
 
 The provider URL can point to Microblink's OTA resource provider or to a proxy
 service owned by your application. A proxy service is useful when you need to
@@ -78,12 +88,14 @@ The provider or proxy must expose the OTA versions endpoint:
 GET {otaResourceProviderUrl}/api/v1/versions?generic_version={recognizerVersion}
 ```
 
-The worker obtains `generic_version` from the BlinkID recognizer and selects a
-provider resource only when it is newer than the hosted version. It writes the
-selected files under `/microblink/blinkid-ota` before SDK initialization.
-Provider failures fall back to the hosted file unless `strict: true` is set.
-Hosted baseline failures are always fatal. Set `checkForUpdates: false` to skip
-the provider check while still loading the hosted baseline.
+The worker embeds `generic_version` from the BlinkID recognizer dependency at
+build time and selects a provider resource only when it is newer than the
+hosted version. This lets OTA downloads run in parallel with Wasm loading. The
+worker writes the selected files under `/microblink/blinkid-ota` before SDK
+initialization. Provider failures fall back to the hosted file unless
+`strict: true` is set. Hosted baseline failures are always fatal. Set
+`checkForUpdates: false` to skip the provider check while still loading the
+hosted baseline.
 
 The OTA provider URL is separate from `microblinkProxyUrl`, which is used for
 Microblink license and analytics proxying.

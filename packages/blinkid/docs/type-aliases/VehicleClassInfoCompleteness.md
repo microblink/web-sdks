@@ -22,22 +22,22 @@
 
 ### effectiveDate?
 
-> `optional` **effectiveDate**: `D`
+> `optional` **effectiveDate?**: `D`
 
 ***
 
 ### expiryDate?
 
-> `optional` **expiryDate**: `D`
+> `optional` **expiryDate?**: `D`
 
 ***
 
 ### licenceType?
 
-> `optional` **licenceType**: `S`
+> `optional` **licenceType?**: `S`
 
 ***
 
 ### vehicleClass?
 
-> `optional` **vehicleClass**: `S`
+> `optional` **vehicleClass?**: `S`

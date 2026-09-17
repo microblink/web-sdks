@@ -26,6 +26,7 @@ const corePackageJson = pickKeys([
   "main",
   "module",
   "description",
+  "keywords",
   "files",
 ]);
 
@@ -37,15 +38,13 @@ const bundledDependencies = [
 ];
 
 const publishedDependencies = Object.fromEntries(
-  Object.entries(packageJson.dependencies).filter(
-    ([key]) => !bundledDependencies.includes(key),
-  ),
+  Object.entries(packageJson.dependencies).filter(([key]) => !bundledDependencies.includes(key)),
 );
 
 await fs.emptyDir(publishPath);
 
 await fs.copy("dist", path.join(publishPath, "dist"));
-await fs.copy("types", path.join(publishPath, "types"));
+await fs.copy("types/index.rollup.d.ts", path.join(publishPath, "types/index.rollup.d.ts"));
 await fs.copy("README.md", path.join(publishPath, "README.md"));
 
 // Keep bundled internal packages out of the published manifest. They are

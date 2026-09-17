@@ -1,42 +1,28 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { cameraManagerStore } from "@microblink/camera-manager";
+import { cameraManagerStore } from "@microblink/camera-manager/core";
 import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import type { Component } from "solid-js";
-import {
-  createEffect,
-  createSignal,
-  Match,
-  onCleanup,
-  onMount,
-  Show,
-  Switch,
-} from "solid-js";
-import { createWithSignal } from "solid-zustand";
+import { createEffect, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
+import { create } from "solid-zustand";
+
 import { BlinkIdVerifyUiState } from "../core/blinkid-verify-ui-state";
-import {
-  LocalizationProvider,
-  PartialLocalizationStrings,
-  useLocalization,
-} from "./LocalizationContext";
-import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
+import DemoOverlay from "./assets/demo-overlay.svg?component-solid";
+import MicroblinkOverlay from "./assets/microblink.svg?component-solid";
 
 // this triggers extraction of CSS from the UnoCSS plugin
 import "virtual:uno.css";
 
-import DemoOverlay from "./assets/demo-overlay.svg?component-solid";
-import MicroblinkOverlay from "./assets/microblink.svg?component-solid";
 import { useBlinkIdVerifyUiStore } from "./BlinkIdVerifyUiStoreContext";
 import { ErrorModal } from "./dialogs/ErrorModal";
 import { HelpButton, HelpModal } from "./dialogs/HelpModal";
 import { OnboardingGuideModal } from "./dialogs/OnboardingGuideModal";
+import { LocalizationProvider, PartialLocalizationStrings, useLocalization } from "./LocalizationContext";
+import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
 
 /**
- * The BlinkIdVerifyFeedbackUi component. This is the main component that renders the
- * feedback UI for the BlinkID Verify SDK. It is responsible for rendering the feedback
- * UI, the overlays, and the help button.
+ * The BlinkIdVerifyFeedbackUi component. This is the main component that renders the feedback UI for the BlinkID Verify
+ * SDK. It is responsible for rendering the feedback UI, the overlays, and the help button.
  *
  * @param props - The props for the BlinkIdVerifyFeedbackUi component.
  * @returns The BlinkIdVerifyFeedbackUi component.
@@ -48,57 +34,45 @@ export const BlinkIdVerifyFeedbackUi: Component<{
 
   // `blinkIdVerifyUxManager` is not reactive, so we need to create a new signal for
   // the UI state. This is a hacky way to make the UI state reactive.
-  const [uiState, setUiState] = createSignal<BlinkIdVerifyUiState>(
-    store.blinkIdVerifyUxManager.uiState,
-  );
+  const [uiState, setUiState] = createSignal<BlinkIdVerifyUiState>(store.blinkIdVerifyUxManager.uiState);
 
   // Handle errors during scanning
-  const errorCallbackCleanup = store.blinkIdVerifyUxManager.addOnErrorCallback(
-    (errorState) => {
-      updateStore({ errorState });
-    },
-  );
-
-  onMount(() => {
-    const cleanupDismountCallback =
-      store.cameraManagerComponent.addOnDismountCallback(() => {
-        cleanupDismountCallback();
-
-        // if not user-initiated, it's a regular dismount, not a button-click,
-        // so we early exit.
-
-        // TODO: test if this store proxies capture values in a closure on declaration
-        if (!store.cameraManagerComponent.cameraManager.userInitiatedAbort) {
-          return;
-        }
-
-        void store.blinkIdVerifyUxManager.analytics.logCloseButtonClickedEvent();
-      });
+  const errorCallbackCleanup = store.blinkIdVerifyUxManager.addOnErrorCallback((errorState) => {
+    updateStore({ errorState });
   });
 
-  const playbackState = createWithSignal(cameraManagerStore)(
-    (s) => s.playbackState,
-  );
+  onMount(() => {
+    const cleanupDismountCallback = store.cameraManagerComponent.addOnDismountCallback(() => {
+      cleanupDismountCallback();
+
+      // if not user-initiated, it's a regular dismount, not a button-click,
+      // so we early exit.
+
+      // TODO: test if this store proxies capture values in a closure on declaration
+      if (!store.cameraManagerComponent.cameraManager.userInitiatedAbort) {
+        return;
+      }
+
+      void store.blinkIdVerifyUxManager.analytics.logCloseButtonClickedEvent();
+    });
+  });
+
+  const playbackState = create(cameraManagerStore)((s) => s.playbackState);
 
   // assume modal is displayed on camera error
-  const cameraErrorState = createWithSignal(cameraManagerStore)(
-    (s) => s.errorState,
-  );
+  const cameraErrorState = create(cameraManagerStore)((s) => s.errorState);
 
   const isProcessing = () => playbackState() === "capturing";
 
   // Processing is stopped, but we still want to show the feedback
   const shouldShowFeedback = () => !isModalOpen();
 
-  const displayTimeoutModal = () =>
-    Boolean(store.showTimeoutModal) && store.errorState === "timeout";
+  const displayTimeoutModal = () => Boolean(store.showTimeoutModal) && store.errorState === "timeout";
 
   const displayUnsupportedDocumentModal = () =>
-    Boolean(store.showUnsupportedDocumentModal) &&
-    store.errorState === "unsupported_document";
+    Boolean(store.showUnsupportedDocumentModal) && store.errorState === "unsupported_document";
 
-  const displayDocumentFilteredModal = () =>
-    Boolean(store.showDocumentFilteredModal) && store.documentFiltered;
+  const displayDocumentFilteredModal = () => Boolean(store.showDocumentFilteredModal) && store.documentFiltered;
 
   const isModalOpen = () => {
     return (
@@ -113,7 +87,9 @@ export const BlinkIdVerifyFeedbackUi: Component<{
     );
   };
 
-  createEffect(() => {
+  createEffect((previous: boolean) => {
+    if (isModalOpen() === previous) return previous;
+
     if (!isModalOpen()) {
       void store.blinkIdVerifyUxManager.cameraManager.startFrameCapture();
       store.blinkIdVerifyUxManager.startUiUpdateLoop();
@@ -121,7 +97,9 @@ export const BlinkIdVerifyFeedbackUi: Component<{
       void store.blinkIdVerifyUxManager.cameraManager.stopFrameCapture();
       store.blinkIdVerifyUxManager.stopUiUpdateLoop();
     }
-  });
+
+    return isModalOpen();
+  }, isModalOpen());
 
   const shouldShowDemoOverlay = () => {
     return store.blinkIdVerifyUxManager.showDemoOverlay;
@@ -131,8 +109,7 @@ export const BlinkIdVerifyFeedbackUi: Component<{
     return store.blinkIdVerifyUxManager.showProductionOverlay;
   };
 
-  const removeUiStateChangeCallback =
-    store.blinkIdVerifyUxManager.addOnUiStateChangedCallback(setUiState);
+  const removeUiStateChangeCallback = store.blinkIdVerifyUxManager.addOnUiStateChangedCallback(setUiState);
 
   onCleanup(() => {
     removeUiStateChangeCallback();
@@ -141,24 +118,18 @@ export const BlinkIdVerifyFeedbackUi: Component<{
   });
 
   const isDesktop = () => {
-    return store.blinkIdVerifyUxManager.deviceInfo?.derivedDeviceInfo.formFactors.includes(
-      "Desktop",
-    );
+    return store.blinkIdVerifyUxManager.deviceInfo?.derivedDeviceInfo.formFactors.includes("Desktop");
   };
 
   createEffect(() => {
     if (displayTimeoutModal()) {
-      void store.blinkIdVerifyUxManager.analytics.logAlertDisplayedEvent(
-        "StepTimeout",
-      );
+      void store.blinkIdVerifyUxManager.analytics.logAlertDisplayedEvent("StepTimeout");
     }
   });
 
   createEffect(() => {
     if (displayUnsupportedDocumentModal()) {
-      void store.blinkIdVerifyUxManager.analytics.logAlertDisplayedEvent(
-        "DocumentNotSupported",
-      );
+      void store.blinkIdVerifyUxManager.analytics.logAlertDisplayedEvent("DocumentNotSupported");
     }
   });
 
@@ -209,10 +180,7 @@ export const BlinkIdVerifyFeedbackUi: Component<{
                 </Switch>
 
                 <Show when={shouldShowFeedback()}>
-                  <UiFeedbackOverlay
-                    uiState={uiState()}
-                    isDesktop={isDesktop()}
-                  />
+                  <UiFeedbackOverlay uiState={uiState()} isDesktop={isDesktop()} />
                 </Show>
 
                 <Show when={shouldShowDemoOverlay()}>

@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /* @refresh reload */
 
@@ -14,23 +12,10 @@ import {
   createBlinkIdVerifyFeedbackUi,
   createBlinkIdVerifyUxManager,
 } from "@microblink/blinkid-verify-ux-manager";
-import {
-  CameraManager,
-  createCameraManagerUi,
-} from "@microblink/camera-manager";
+import { CameraManager, createCameraManagerUi } from "@microblink/camera-manager";
+import { Component, createEffect, createMemo, createSignal, onMount, Show } from "solid-js";
 
-import {
-  Component,
-  createEffect,
-  createMemo,
-  createSignal,
-  onMount,
-  Show,
-} from "solid-js";
-
-/**
- * Debug info will be displayed in the UI.
- */
+/** Debug info will be displayed in the UI. */
 const SHOW_DEBUG = true;
 
 /**
@@ -39,29 +24,21 @@ const SHOW_DEBUG = true;
  */
 const USE_PORTAL = true;
 
-/**
- * If the onboarding guide should be shown.
- */
+/** If the onboarding guide should be shown. */
 const SHOW_ONBOARDING = false;
 
-/**
- * This is the target node for the UI.
- */
+/** This is the target node for the UI. */
 const targetNode = !USE_PORTAL ? document.getElementById("root")! : undefined;
 
-/**
- * This is the main component of the application.
- */
+/** This is the main component of the application. */
 export const App: Component = () => {
   const [result, setResult] = createSignal<BlinkIdVerifyScanningResult>();
-  const [blinkIdVerifyUxManager, setBlinkIdVerifyUxManager] =
-    createSignal<BlinkIdVerifyUxManager>();
-  const [loadState, setLoadState] = createSignal<
-    "not-loaded" | "loading" | "ready"
-  >("not-loaded");
+  const [blinkIdVerifyUxManager, setBlinkIdVerifyUxManager] = createSignal<BlinkIdVerifyUxManager>();
+  const [loadState, setLoadState] = createSignal<"not-loaded" | "loading" | "ready">("not-loaded");
 
   /**
-   * This function removes the images from the result object. This is done only so we don't display raw images data in the UI.
+   * This function removes the images from the result object. This is done only so we don't display raw images data in
+   * the UI.
    */
   const resultWithoutImages = () => {
     const resultCopy = structuredClone(result());
@@ -99,10 +76,7 @@ export const App: Component = () => {
     /*
      * Create the UX manager.
      */
-    const uxManager = await createBlinkIdVerifyUxManager(
-      cameraManager,
-      session,
-    );
+    const uxManager = await createBlinkIdVerifyUxManager(cameraManager, session);
     // set the timeout duration to null to disable the timeout.
     uxManager.setTimeoutDuration(null);
 
@@ -140,11 +114,9 @@ export const App: Component = () => {
      * This callback is called when the frame is processed.
      * This is useful if you want to perform some actions on certain results.
      */
-    uxManager.addOnFrameProcessCallback(
-      (frameProcessResult: BlinkIdVerifyProcessResult) => {
-        console.log("frame processed", frameProcessResult);
-      },
-    );
+    uxManager.addOnFrameProcessCallback((frameProcessResult: BlinkIdVerifyProcessResult) => {
+      console.log("frame processed", frameProcessResult);
+    });
 
     /*
      * Subscribe to the playback state.
@@ -195,9 +167,7 @@ export const App: Component = () => {
        * In this case, we are setting the preferred camera to the first camera that contains "obs" in the name.
        */
       preferredCamera: (cameras) => {
-        return cameras.find((camera) =>
-          camera.name.toLowerCase().includes("obs"),
-        );
+        return cameras.find((camera) => camera.name.toLowerCase().includes("obs"));
       },
     });
   }
@@ -209,27 +179,18 @@ export const App: Component = () => {
   return (
     <div>
       <Show when={loadState() !== "ready"}>
-        <button
-          disabled={loadState() === "loading"}
-          onClick={() => void init()}
-        >
+        <button disabled={loadState() === "loading"} onClick={() => void init()}>
           Load
         </button>
       </Show>
 
       {/* Results */}
-      <Show when={result()}>
-        {(trimmedResult) => (
-          <DisplayBlinkIdVerifyResult result={trimmedResult()} />
-        )}
-      </Show>
+      <Show when={result()}>{(trimmedResult) => <DisplayBlinkIdVerifyResult result={trimmedResult()} />}</Show>
     </div>
   );
 };
 
-function DisplayBlinkIdVerifyResult(props: {
-  result: BlinkIdVerifyScanningResult;
-}) {
+function DisplayBlinkIdVerifyResult(props: { result: BlinkIdVerifyScanningResult }) {
   createEffect(() => {
     console.log(props.result);
   });
@@ -245,14 +206,8 @@ function DisplayBlinkIdVerifyResult(props: {
 
     return (
       <div style={{ margin: "20px 0px" }}>
-        <div style={{ "font-weight": "bold", "margin-bottom": "8px" }}>
-          {props.title}
-        </div>
-        <img
-          style={{ "max-width": "300px" }}
-          src={url()}
-          onLoad={() => URL.revokeObjectURL(url())}
-        />
+        <div style={{ "font-weight": "bold", "margin-bottom": "8px" }}>{props.title}</div>
+        <img style={{ "max-width": "300px" }} src={url()} onLoad={() => URL.revokeObjectURL(url())} />
       </div>
     );
   };
@@ -260,22 +215,13 @@ function DisplayBlinkIdVerifyResult(props: {
   return (
     <div>
       <Show when={props.result.frontFrame}>
-        <CreateImageSection
-          title="Front Frame"
-          bytes={props.result.frontFrame!.jpegBytes}
-        />
+        <CreateImageSection title="Front Frame" bytes={props.result.frontFrame!.jpegBytes} />
       </Show>
       <Show when={props.result.backFrame}>
-        <CreateImageSection
-          title="Back Frame"
-          bytes={props.result.backFrame!.jpegBytes}
-        />
+        <CreateImageSection title="Back Frame" bytes={props.result.backFrame!.jpegBytes} />
       </Show>
       <Show when={props.result.barcodeFrame}>
-        <CreateImageSection
-          title="Barcode Frame"
-          bytes={props.result.barcodeFrame!.jpegBytes}
-        />
+        <CreateImageSection title="Barcode Frame" bytes={props.result.barcodeFrame!.jpegBytes} />
       </Show>
     </div>
   );

@@ -6,7 +6,7 @@
 
 # Function: extractBarcodeImage()
 
-> **extractBarcodeImage**(`blinkIdScanningResult`): `null` \| `ImageData`
+> **extractBarcodeImage**(`blinkIdScanningResult`): `ImageData` \| `null`
 
 Extracts the barcode input image from the scanning result.
 
@@ -20,6 +20,6 @@ The scanning result.
 
 ## Returns
 
-`null` \| `ImageData`
+`ImageData` \| `null`
 
 The barcode input image.

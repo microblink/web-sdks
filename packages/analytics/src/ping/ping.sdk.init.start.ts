@@ -3,12 +3,10 @@
  *
  * AUTO-GENERATED FILE!!! DO NOT MODIFY!!!
  *
- * ANY UNAUTHORIZED USE OR SALE, DUPLICATION, OR DISTRIBUTION
- * OF THIS PROGRAM OR ANY OF ITS PARTS, IN SOURCE OR BINARY FORMS,
- * WITH OR WITHOUT MODIFICATION, WITH THE PURPOSE OF ACQUIRING
- * UNLAWFUL MATERIAL OR ANY OTHER BENEFIT IS PROHIBITED!
- * THIS PROGRAM IS PROTECTED BY COPYRIGHT LAWS AND YOU MAY NOT
- * REVERSE ENGINEER, DECOMPILE, OR DISASSEMBLE IT.
+ * ANY UNAUTHORIZED USE OR SALE, DUPLICATION, OR DISTRIBUTION OF THIS PROGRAM OR ANY OF ITS PARTS, IN SOURCE OR BINARY
+ * FORMS, WITH OR WITHOUT MODIFICATION, WITH THE PURPOSE OF ACQUIRING UNLAWFUL MATERIAL OR ANY OTHER BENEFIT IS
+ * PROHIBITED! THIS PROGRAM IS PROTECTED BY COPYRIGHT LAWS AND YOU MAY NOT REVERSE ENGINEER, DECOMPILE, OR DISASSEMBLE
+ * IT.
  */
 
 import type { PingBase } from "./ping.base";
@@ -31,29 +29,16 @@ type Product =
   | "Pdf417Mobi"
   | "PhotoPay"
   | "Biometrics";
-type Platform =
-  | "iOS"
-  | "Android"
-  | "Emscripten"
-  | "MacOS"
-  | "Linux"
-  | "Windows";
+type Platform = "iOS" | "Android" | "Emscripten" | "MacOS" | "Linux" | "Windows";
 type PlatformDetails =
-  | "basic"
-  | "advanced"
-  | "advanced-threads"
-  | "full-basic"
-  | "full-advanced"
-  | "full-advanced-threads"
-  | "lightweight-basic"
-  | "lightweight-advanced"
-  | "lightweight-advanced-threads";
+  | "simd"
+  | "simd-threads"
+  | "simd-relaxed"
+  | "simd-relaxed-threads"
+  | "lightweight-simd"
+  | "lightweight-simd-threads"
+  | "lightweight-simd-relaxed"
+  | "lightweight-simd-relaxed-threads";
 
-/**
- * Ping type for ping.sdk.init.start
- */
-export type PingSdkInitStart = PingBase<
-  "ping.sdk.init.start",
-  "2.0.0",
-  PingSdkInitStartData
->;
+/** Ping type for ping.sdk.init.start */
+export type PingSdkInitStart = PingBase<"ping.sdk.init.start", "3.0.0", PingSdkInitStartData>;

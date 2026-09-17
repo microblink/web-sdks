@@ -2,6 +2,21 @@
 
 The all-in-one BlinkID browser SDK package. It provides a high-level, easy-to-use API for document scanning and recognition in web applications, bundling all required components and resources for a seamless integration experience.
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/blinkid`:
+
+| Entrypoint | Minified  | Gzip      |
+| ---------- | --------- | --------- |
+| `root`     | 675.16 kB | 176.66 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Overview
 
 - Combines the BlinkID engine, camera management, user experience (UX) management, and all required resources.
@@ -144,8 +159,8 @@ Every SDK build ships baseline OTA files under:
 
 The worker reads `ota-resources.json` from that directory and writes the listed
 files into the BlinkID Wasm filesystem before SDK initialization. The manifest
-records the version while preserving the canonical filenames required by
-BlinkID:
+records the version and byte length while preserving the canonical filenames
+required by BlinkID:
 
 ```jsonc
 {
@@ -154,10 +169,14 @@ BlinkID:
       "filename": "serialized-embedder-database.bin",
       "version": "1.0.14",
       "url": "serialized-embedder-database.bin",
+      "contentLength": 3831312,
     },
   ],
 }
 ```
+
+Every manifest entry must include a positive integer `contentLength`.
+Manifests must contain exactly one entry for each canonical file.
 
 By default, BlinkID also asks `https://blinkid-ota.microblink.com` for compatible
 updates and uses a provider file only when its semantic version is newer than
@@ -166,6 +185,7 @@ the hosted baseline. You can override the baseline and provider locations:
 ```js
 const blinkid = await createBlinkId({
   licenseKey: import.meta.env.VITE_LICENCE_KEY,
+  resourceDownloadTimeoutMs: 60_000,
   otaResources: {
     resourcesLocation: "https://cdn.example.com/blinkid-ota",
     otaResourceProviderUrl: "https://your-proxy.example.com/blinkid-ota",
@@ -173,18 +193,25 @@ const blinkid = await createBlinkId({
 });
 ```
 
+`resourceDownloadTimeoutMs` applies to Wasm, data, and OTA requests. It is
+an inactivity timeout that resets whenever response headers or body data
+arrive, so slow downloads are not limited to a fixed total duration. The
+default is 60 seconds.
+
 The provider or proxy endpoint must serve the BlinkID OTA versions API:
 
 ```text
 GET {otaResourceProviderUrl}/api/v1/versions?generic_version={recognizerVersion}
 ```
 
-The SDK supplies `generic_version` automatically from the BlinkID recognizer.
-The OTA settings are separate from top-level `resourcesLocation`, which points
-to the static SDK `resources` directory, and from `microblinkProxyUrl`, which
-proxies licensing and analytics traffic. Provider failures fall back to the
-hosted baseline unless `strict: true` is set. The hosted baseline is required
-because these files are not embedded in `BlinkIdModule.data`.
+The SDK supplies `generic_version` from the recognizer version embedded when the
+SDK is built, allowing OTA resolution and downloads to run in parallel with
+Wasm loading. The OTA settings are separate from top-level
+`resourcesLocation`, which points to the static SDK `resources` directory, and
+from `microblinkProxyUrl`, which proxies licensing and analytics traffic.
+Provider failures fall back to the hosted baseline unless `strict: true` is
+set. The hosted baseline is required because these files are not embedded in
+`BlinkIdModule.data`.
 
 To load the hosted baseline without contacting the provider, set
 `checkForUpdates: false`:
@@ -209,7 +236,7 @@ modules.
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
 | `full-document`         | Default document capture flow, including document capture, optional MRZ, VIZ, mixed extraction, optional barcode, or multi-side extraction.            | Shows standard document capture guidance.                                             |
 | `document-with-barcode` | `scanningMode: "single"` with `documentCaptureModule` enabled, `barcodeModule.presenceMandatory: true`, and both `mrzModule` and `vizModule` disabled. | Shows document capture guidance focused on scanning the barcode side of the document. |
-| `document-with-mrz`     | `scanningMode: "single"` with `documentCaptureModule` enabled, `mrzModule` enabled, and `mrzModule.presenceMandatory: true`.                          | Shows document capture guidance focused on scanning the MRZ side of the document.     |
+| `document-with-mrz`     | `scanningMode: "single"` with `documentCaptureModule` enabled, `mrzModule.presenceMandatory: true`, and both `barcodeModule` and `vizModule` disabled. | Shows document capture guidance focused on scanning the MRZ side of the document.     |
 | `barcode-only`          | `documentCaptureModule`, `mrzModule`, and `vizModule` are disabled, while `barcodeModule` is enabled.                                                  | Shows barcode-only onboarding, help, and feedback copy.                               |
 
 Example: single-side document capture where barcode presence is mandatory:
@@ -224,6 +251,23 @@ const blinkid = await createBlinkId({
       presenceMandatory: true,
     },
     mrzModule: null,
+    vizModule: null,
+  },
+});
+```
+
+Example: single-side document capture where MRZ presence is mandatory:
+
+```js
+const blinkid = await createBlinkId({
+  licenseKey: import.meta.env.VITE_LICENCE_KEY,
+  scanningMode: "single",
+  scanningSettings: {
+    documentCaptureModule: {},
+    mrzModule: {
+      presenceMandatory: true,
+    },
+    barcodeModule: null,
     vizModule: null,
   },
 });
@@ -255,10 +299,7 @@ You can choose result redaction per classified document with
 const blinkid = await createBlinkId({
   licenseKey: import.meta.env.VITE_LICENCE_KEY,
   redactionSettingsResolver: async (documentClassInfo, getDefaultSettings) => {
-    if (
-      documentClassInfo.country?.id === "germany" &&
-      documentClassInfo.type?.id === "id"
-    ) {
+    if (documentClassInfo.country?.id === "germany" && documentClassInfo.type?.id === "id") {
       // Optionally use the SDK defaults for this document class.
       const defaults = await getDefaultSettings(documentClassInfo);
 
@@ -325,11 +366,9 @@ state. The callback receives `BlinkIdUiState`, including the state `key` and
 reticle metadata used by the built-in UI:
 
 ```js
-const removeOnUiStateChanged = blinkid.addOnUiStateChangedCallback(
-  (uiState) => {
-    console.log("BlinkID UI state:", uiState.key);
-  },
-);
+const removeOnUiStateChanged = blinkid.addOnUiStateChangedCallback((uiState) => {
+  console.log("BlinkID UI state:", uiState.key);
+});
 
 // Later, to stop receiving UI state changes:
 removeOnUiStateChanged();
@@ -395,14 +434,9 @@ BlinkID proceeds to the final result. Return `true` to allow the document and
 `false` to stop the flow with the document-filtered UI:
 
 ```js
-const removeDocumentClassFilter = blinkid.addDocumentClassFilter(
-  (documentClassInfo) => {
-    return (
-      documentClassInfo.country?.id === "usa" &&
-      documentClassInfo.type?.id === "dl"
-    );
-  },
-);
+const removeDocumentClassFilter = blinkid.addDocumentClassFilter((documentClassInfo) => {
+  return documentClassInfo.country?.id === "usa" && documentClassInfo.type?.id === "dl";
+});
 
 // Later, to remove the filter:
 removeDocumentClassFilter();
@@ -412,11 +446,9 @@ Use `addOnDocumentFilteredCallback` to observe when the active document class
 filter rejects a document:
 
 ```js
-const removeOnDocumentFiltered = blinkid.addOnDocumentFilteredCallback(
-  (documentClassInfo) => {
-    console.log("Document rejected by filter:", documentClassInfo);
-  },
-);
+const removeOnDocumentFiltered = blinkid.addOnDocumentFilteredCallback((documentClassInfo) => {
+  console.log("Document rejected by filter:", documentClassInfo);
+});
 
 // Later, to stop receiving filtered-document events:
 removeOnDocumentFiltered();
@@ -496,8 +528,11 @@ localhost.
 
 ### WebAssembly runtime
 
-The SDK ships two Wasm build variants (`simd` and `simd-threads`). The runtime
-selects the best supported variant automatically.
+The SDK ships four Wasm build variants (`simd`, `simd-threads`, `simd-relaxed`,
+and `simd-relaxed-threads`). The runtime selects the best supported variant
+automatically: relaxed SIMD variants are preferred when the browser supports
+relaxed SIMD, and threaded variants are preferred when the browser supports
+Wasm threads.
 
 #### `simd`
 
@@ -512,14 +547,22 @@ also requires cross-origin isolation headers
 (`Cross-Origin-Opener-Policy: same-origin` and
 `Cross-Origin-Embedder-Policy: require-corp`).
 
-Safari is excluded from `simd-threads` even when it reports Wasm thread
-support. Emscripten `simd-threads` builds use pthreads that spawn workers
+Safari is excluded from threaded variants even when it reports Wasm thread
+support. Emscripten threaded builds use pthreads that spawn workers
 from inside a worker, and Safari historically lacked reliable nested worker
 support when Wasm threads shipped in Safari 16. There are also known Safari
 issues with shared memory in Emscripten pthread builds
 ([emscripten-core/emscripten#19374](https://github.com/emscripten-core/emscripten/issues/19374)).
-For these reasons the runtime falls back to the single-threaded `simd`
-variant on Safari instead of loading `simd-threads`.
+For these reasons the runtime falls back to a single-threaded variant on Safari
+instead of loading `simd-threads` or `simd-relaxed-threads`.
+
+#### `simd-relaxed` and `simd-relaxed-threads`
+
+Require all `simd` (or `simd-threads`) features plus
+[relaxed SIMD](https://webassembly.org/features/). Relaxed SIMD instructions
+let the engine pick the fastest hardware implementation for a subset of vector
+operations. Browsers without relaxed SIMD support fall back to `simd` or
+`simd-threads`.
 
 ### Firefox for Android
 

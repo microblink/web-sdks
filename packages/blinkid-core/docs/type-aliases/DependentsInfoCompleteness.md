@@ -12,4 +12,4 @@
 
 ### dependentsInfo?
 
-> `optional` **dependentsInfo**: [`DependentInfoCompleteness`](DependentInfoCompleteness.md)[]
+> `optional` **dependentsInfo?**: [`DependentInfoCompleteness`](DependentInfoCompleteness.md)[]

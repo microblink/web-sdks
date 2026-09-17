@@ -4,7 +4,7 @@
 
 [@microblink/blinkcard](../README.md) / resetCameraManagerStore
 
-# Variable: resetCameraManagerStore()
+# Variable: resetCameraManagerStore
 
 > `const` **resetCameraManagerStore**: () => `void`
 

@@ -22,28 +22,28 @@
 
 ### conditions?
 
-> `optional` **conditions**: `S`
+> `optional` **conditions?**: `S`
 
 ***
 
 ### endorsements?
 
-> `optional` **endorsements**: `S`
+> `optional` **endorsements?**: `S`
 
 ***
 
 ### restrictions?
 
-> `optional` **restrictions**: `S`
+> `optional` **restrictions?**: `S`
 
 ***
 
 ### vehicleClass?
 
-> `optional` **vehicleClass**: `S`
+> `optional` **vehicleClass?**: `S`
 
 ***
 
 ### vehicleClassesInfo?
 
-> `optional` **vehicleClassesInfo**: [`VehicleClassInfoCompleteness`](VehicleClassInfoCompleteness.md)\<`S`, `D`\>[]
+> `optional` **vehicleClassesInfo?**: [`VehicleClassInfoCompleteness`](VehicleClassInfoCompleteness.md)\<`S`, `D`\>[]

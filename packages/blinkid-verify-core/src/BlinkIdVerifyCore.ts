@@ -1,22 +1,20 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkIdVerifyWorkerInitSettings,
   BlinkIdVerifyWorkerProxy,
   ProgressStatusCallback,
 } from "@microblink/blinkid-verify-worker";
-import type { SetOptional, Simplify } from "type-fest";
-import { proxy, Remote } from "comlink";
 import { createProxyWorker } from "@microblink/core-common/createProxyWorker";
 import { getUserId } from "@microblink/core-common/getUserId";
+import { proxy, Remote } from "comlink";
+import type { SetOptional, Simplify } from "type-fest";
 
 /**
  * Configuration options for initializing the BlinkIdVerify core.
  *
- * This type extends the BlinkIdVerifyWorkerInitSettings type by making the userId and useLightweightBuild properties optional.
- * It allows for partial configuration of the initialization settings.
+ * This type extends the BlinkIdVerifyWorkerInitSettings type by making the userId and useLightweightBuild properties
+ * optional. It allows for partial configuration of the initialization settings.
  */
 export type BlinkIdVerifyInitSettings = SetOptional<
   BlinkIdVerifyWorkerInitSettings,
@@ -27,8 +25,8 @@ export type BlinkIdVerifyInitSettings = SetOptional<
 /**
  * Represents the BlinkIdVerify core instance.
  *
- * This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkIdVerify worker.
- * It simplifies the type to remove unnecessary complexity.
+ * This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkIdVerify worker. It
+ * simplifies the type to remove unnecessary complexity.
  */
 export type BlinkIdVerifyCore = Simplify<Remote<BlinkIdVerifyWorkerProxy>>;
 
@@ -55,15 +53,10 @@ export async function loadBlinkIdVerifyCore(
 
   settings.userId ??= getUserId(STORAGE_KEY);
 
-  const proxyProgressCallback = progressCallback
-    ? proxy(progressCallback)
-    : undefined;
+  const proxyProgressCallback = progressCallback ? proxy(progressCallback) : undefined;
 
   try {
-    await remoteWorker.initBlinkIdVerify(
-      settings as BlinkIdVerifyWorkerInitSettings,
-      proxyProgressCallback,
-    );
+    await remoteWorker.initBlinkIdVerify(settings as BlinkIdVerifyWorkerInitSettings, proxyProgressCallback);
 
     return remoteWorker;
   } catch (error) {

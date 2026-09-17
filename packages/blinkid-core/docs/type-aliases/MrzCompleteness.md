@@ -18,13 +18,13 @@
 
 ### failureReason?
 
-> `optional` **failureReason**: [`ExtractionFailureReason`](ExtractionFailureReason.md)
+> `optional` **failureReason?**: [`ExtractionFailureReason`](ExtractionFailureReason.md)
 
 ***
 
 ### fields?
 
-> `optional` **fields**: [`MrzFieldsCompleteness`](MrzFieldsCompleteness.md)
+> `optional` **fields?**: [`MrzFieldsCompleteness`](MrzFieldsCompleteness.md)
 
 ***
 

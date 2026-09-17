@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkIdScanningResult,
@@ -10,7 +8,7 @@ import type {
   RemoteScanningSession,
   ScanningStatus,
 } from "@microblink/blinkid-core";
-import type { CameraManager } from "@microblink/camera-manager";
+import type { CameraManager } from "@microblink/camera-manager/core";
 import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
 import {
   advanceAndFlushUi,
@@ -20,10 +18,11 @@ import {
 } from "@microblink/test-utils/vitest";
 import type { PartialDeep } from "type-fest";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
-import type { BlinkIdFrameProcessCallback } from "./BlinkIdUxManager";
-import { BlinkIdUxManager } from "./BlinkIdUxManager";
+
 import { blankProcessResult } from "./__testdata/blankProcessResult";
 import { blinkIdUiStateMap } from "./blinkid-ui-state";
+import type { BlinkIdFrameProcessCallback } from "./BlinkIdUxManager";
+import { BlinkIdUxManager } from "./BlinkIdUxManager";
 import { createBlinkIdUxManager } from "./createBlinkIdUxManager";
 
 const sessionSettings = {
@@ -32,11 +31,10 @@ const sessionSettings = {
   scanningSettings: {},
 } as BlinkIdSessionSettings;
 
-const createProcessResult = (
-  overrides: PartialDeep<ProcessResultWithBuffer> = {},
-): ProcessResultWithBuffer => {
-  const inputImageAnalysisResult = (overrides.inputImageAnalysisResult ??
-    {}) as Partial<ProcessResultWithBuffer["inputImageAnalysisResult"]>;
+const createProcessResult = (overrides: PartialDeep<ProcessResultWithBuffer> = {}): ProcessResultWithBuffer => {
+  const inputImageAnalysisResult = (overrides.inputImageAnalysisResult ?? {}) as Partial<
+    ProcessResultWithBuffer["inputImageAnalysisResult"]
+  >;
   const resultCompleteness = (overrides.resultCompleteness ?? {}) as Partial<
     ProcessResultWithBuffer["resultCompleteness"]
   >;
@@ -56,7 +54,7 @@ const createProcessResult = (
     resultCompleteness: {
       ...blankProcessResult.resultCompleteness,
       ...resultCompleteness,
-    } as ProcessResultWithBuffer["resultCompleteness"],
+    },
     arrayBuffer: arrayBuffer ?? new ArrayBuffer(8),
   };
 };
@@ -286,15 +284,9 @@ describe("BlinkIdUxManager session status integration", () => {
     expect(scanningSession.getScanningStatus).toHaveBeenCalledTimes(2);
     expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
     expect(cameraManager.stopFrameCapture).toHaveBeenCalledTimes(1);
-    expect(
-      manager.feedbackStabilizer
-        .getSingleEventQueue()
-        .map((event) => event.key),
-    ).toContain("PAGE_CAPTURED");
+    expect(manager.feedbackStabilizer.getSingleEventQueue().map((event) => event.key)).toContain("PAGE_CAPTURED");
 
-    await advanceAndFlushUi(
-      blinkIdUiStateMap.PROCESSING_BARCODE.minDuration + 50,
-    );
+    await advanceAndFlushUi(blinkIdUiStateMap.PROCESSING_BARCODE.minDuration + 50);
     expect(manager.uiState.key).toBe("PAGE_CAPTURED");
 
     await advanceAndFlushUi(blinkIdUiStateMap.PAGE_CAPTURED.minDuration + 50);
@@ -341,14 +333,10 @@ describe("BlinkIdUxManager session status integration", () => {
     expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
     expect(cameraManager.stopFrameCapture).toHaveBeenCalledTimes(1);
 
-    await advanceAndFlushUi(
-      blinkIdUiStateMap.PROCESSING_BARCODE.minDuration + 50,
-    );
+    await advanceAndFlushUi(blinkIdUiStateMap.PROCESSING_BARCODE.minDuration + 50);
     expect(manager.uiState.key).toBe("DOCUMENT_CAPTURED");
 
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.DOCUMENT_CAPTURED.minDuration + 50,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.DOCUMENT_CAPTURED.minDuration + 50);
 
     expect(scanningSession.getResult).toHaveBeenCalledTimes(1);
     expect(onResult).toHaveBeenCalledWith(result);
@@ -446,17 +434,13 @@ describe("BlinkIdUxManager session status integration", () => {
       settings: sessionSettings,
       processResult: createProcessResult(),
     });
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-side-in-progress",
-    );
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-side-in-progress");
 
     let resolveCurrentStep: () => void;
     const resolveCurrentStepPromise = new Promise<void>((resolve) => {
       resolveCurrentStep = resolve;
     });
-    scanningSession.resolveCurrentStep.mockReturnValue(
-      resolveCurrentStepPromise,
-    );
+    scanningSession.resolveCurrentStep.mockReturnValue(resolveCurrentStepPromise);
 
     const manager = new BlinkIdUxManager(
       cameraManager as unknown as CameraManager,
@@ -497,9 +481,7 @@ describe("BlinkIdUxManager session status integration", () => {
       settings: sessionSettings,
       processResult: createProcessResult(),
     });
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-side-in-progress",
-    );
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-side-in-progress");
 
     const manager = new BlinkIdUxManager(
       cameraManager as unknown as CameraManager,

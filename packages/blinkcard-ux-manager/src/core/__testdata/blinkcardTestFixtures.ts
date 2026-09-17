@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkCardScanningResult,
@@ -10,17 +8,13 @@ import type {
   ScanningSettings,
 } from "@microblink/blinkcard-core";
 import { merge } from "merge-anything";
+
 import { blankProcessResult } from "./blankProcessResult";
 
 export type PartialProcessResult = Partial<
-  Omit<
-    ProcessResultWithBuffer,
-    "inputImageAnalysisResult" | "resultCompleteness"
-  >
+  Omit<ProcessResultWithBuffer, "inputImageAnalysisResult" | "resultCompleteness">
 > & {
-  inputImageAnalysisResult?: Partial<
-    ProcessResultWithBuffer["inputImageAnalysisResult"]
-  >;
+  inputImageAnalysisResult?: Partial<ProcessResultWithBuffer["inputImageAnalysisResult"]>;
   resultCompleteness?: Partial<ProcessResultWithBuffer["resultCompleteness"]>;
 };
 
@@ -53,23 +47,18 @@ export const defaultScanningSettings: ScanningSettings = {
       prefixDigitsVisible: 0,
       suffixDigitsVisible: 0,
     },
-    cardNumberPrefixRedactionMode: "none",
     cvvRedactionMode: "none",
     ibanRedactionMode: "none",
     cardholderNameRedactionMode: "none",
   },
 };
 
-export const createSessionSettings = (
-  overrides: Partial<ScanningSettings> = {},
-): BlinkCardSessionSettings => ({
+export const createSessionSettings = (overrides: Partial<ScanningSettings> = {}): BlinkCardSessionSettings => ({
   inputImageSource: "video",
   scanningSettings: merge(defaultScanningSettings, overrides),
 });
 
-export const createProcessResult = (
-  overrides: PartialProcessResult = {},
-): ProcessResultWithBuffer => ({
+export const createProcessResult = (overrides: PartialProcessResult = {}): ProcessResultWithBuffer => ({
   ...blankProcessResult,
   ...overrides,
   arrayBuffer: new ArrayBuffer(0),
@@ -83,9 +72,7 @@ export const createProcessResult = (
   },
 });
 
-export const createScanningResult = (
-  overrides: Partial<BlinkCardScanningResult> = {},
-): BlinkCardScanningResult => ({
+export const createScanningResult = (overrides: Partial<BlinkCardScanningResult> = {}): BlinkCardScanningResult => ({
   issuingNetwork: "test-network",
   cardAccounts: [
     {
@@ -106,6 +93,7 @@ export const createScanningResult = (
       issuerName: undefined,
       issuerCountryCode: undefined,
       issuerCountry: undefined,
+      binCheckResult: "not-available",
     },
   ],
   iban: undefined,

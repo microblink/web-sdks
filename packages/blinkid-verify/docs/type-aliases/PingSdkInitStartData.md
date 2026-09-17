@@ -36,7 +36,7 @@
 
 ### platformDetails?
 
-> `optional` **platformDetails**: `PlatformDetails`
+> `optional` **platformDetails?**: `PlatformDetails`
 
 ***
 

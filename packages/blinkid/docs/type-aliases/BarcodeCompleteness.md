@@ -18,19 +18,19 @@
 
 ### barcodeType?
 
-> `optional` **barcodeType**: [`BarcodeType`](BarcodeType.md)
+> `optional` **barcodeType?**: [`BarcodeType`](BarcodeType.md)
 
 ***
 
 ### failureReason?
 
-> `optional` **failureReason**: [`ExtractionFailureReason`](ExtractionFailureReason.md)
+> `optional` **failureReason?**: [`ExtractionFailureReason`](ExtractionFailureReason.md)
 
 ***
 
 ### fields?
 
-> `optional` **fields**: [`BarcodeFieldsCompleteness`](BarcodeFieldsCompleteness.md)
+> `optional` **fields?**: [`BarcodeFieldsCompleteness`](BarcodeFieldsCompleteness.md)
 
 ***
 

@@ -1,9 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
+
+import dns from "dns";
 
 import { moveResources } from "@microblink/repo-utils";
-import dns from "dns";
 import { defineConfig, Plugin, ServerOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 
@@ -50,7 +49,7 @@ export default defineConfig((config) => {
           if (ranOnce) {
             return;
           }
-          moveResources("@microblink/blinkid-verify", "public/resources");
+          await moveResources("@microblink/blinkid-verify", "public/resources");
           ranOnce = true;
         },
       },

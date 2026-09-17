@@ -1,21 +1,10 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /* @refresh reload */
 
-import {
-  type BlinkCardScanningResult,
-  loadBlinkCardCore,
-} from "@microblink/blinkcard-core";
-import {
-  createBlinkCardFeedbackUi,
-  createBlinkCardUxManager,
-} from "@microblink/blinkcard-ux-manager";
-import {
-  CameraManager,
-  createCameraManagerUi,
-} from "@microblink/camera-manager";
+import { type BlinkCardScanningResult, loadBlinkCardCore } from "@microblink/blinkcard-core";
+import { createBlinkCardFeedbackUi, createBlinkCardUxManager } from "@microblink/blinkcard-ux-manager";
+import { CameraManager, createCameraManagerUi } from "@microblink/camera-manager";
 import { Component, createSignal, onMount, Show } from "solid-js";
 
 /**
@@ -24,28 +13,18 @@ import { Component, createSignal, onMount, Show } from "solid-js";
  */
 const USE_PORTAL = true;
 
-/**
- * If the onboarding guide should be shown.
- */
+/** If the onboarding guide should be shown. */
 const SHOW_ONBOARDING = true;
 
-/**
- * This is the target node for the UI.
- */
+/** This is the target node for the UI. */
 const targetNode = !USE_PORTAL ? document.getElementById("root")! : undefined;
 
-/**
- * This is the main component of the application.
- */
+/** This is the main component of the application. */
 export const App: Component = () => {
   const [result, setResult] = createSignal<BlinkCardScanningResult>();
-  const [loadState, setLoadState] = createSignal<
-    "not-loaded" | "loading" | "ready"
-  >("not-loaded");
+  const [loadState, setLoadState] = createSignal<"not-loaded" | "loading" | "ready">("not-loaded");
 
-  /**
-   * Remove image payloads from results so JSON output is readable, and to prevent memory issues.
-   */
+  /** Remove image payloads from results so JSON output is readable, and to prevent memory issues. */
   const resultWithoutImages = () => {
     const resultCopy = structuredClone(result());
 
@@ -75,7 +54,10 @@ export const App: Component = () => {
 
     const cameraManager = new CameraManager();
     const uxManager = await createBlinkCardUxManager(cameraManager, session);
-    uxManager.setTimeoutDuration(null);
+    uxManager.setTimeoutConfiguration({
+      inactivityTimeoutMs: null,
+      scanStepTimeoutMs: null,
+    });
 
     const cameraUi = await createCameraManagerUi(cameraManager, targetNode, {
       showMirrorCameraButton: true,
@@ -132,18 +114,13 @@ export const App: Component = () => {
   return (
     <div>
       <Show when={loadState() !== "ready"}>
-        <button
-          disabled={loadState() === "loading"}
-          onClick={() => void init()}
-        >
+        <button disabled={loadState() === "loading"} onClick={() => void init()}>
           Load
         </button>
       </Show>
 
       <Show when={resultWithoutImages()}>
-        {(trimmedResult) => (
-          <pre>{JSON.stringify(trimmedResult(), null, 2)}</pre>
-        )}
+        {(trimmedResult) => <pre>{JSON.stringify(trimmedResult(), null, 2)}</pre>}
       </Show>
     </div>
   );

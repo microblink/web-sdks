@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * Defines a property on an object.
@@ -11,7 +9,7 @@
  * @returns A function that reverts the property to its original value.
  */
 // Taken from https://github.com/eatsjobs/media-mock/blob/main/lib/defineProperty.ts
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// oxlint-disable-next-line typescript/no-explicit-any
 export function defineProperty<T extends Record<string | symbol | number, any>>(
   targetObject: T,
   property: keyof T,

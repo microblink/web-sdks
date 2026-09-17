@@ -1,16 +1,13 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { Dialog } from "@ark-ui/solid";
 import { AlertModal } from "@microblink/shared-components/Modal";
 import { type Component } from "solid-js";
+
 import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
 import { useLocalization } from "../LocalizationContext";
 
-/**
- * The props for the ErrorModal component.
- */
+/** The props for the ErrorModal component. */
 interface ErrorModalProps {
   header: string;
   text: string;
@@ -46,6 +43,7 @@ export const ErrorModal: Component<ErrorModalProps> = (props) => {
 
   return (
     <AlertModal
+      actionsLayout="responsive"
       mountTarget={store.cameraManagerComponent.overlayLayerNode}
       open={true}
       actions={{

@@ -6,11 +6,10 @@
     "rootDir": "src",
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": [
-      "vite/client",
-      "vite-plugin-solid-svg/types",
-      "unplugin-icons/types/solid"
-    ]
+    "paths": {
+      "@microblink/camera-manager/core": ["./src/core.ts"]
+    },
+    "types": ["vite/client", "vite-plugin-solid-svg/types", "unplugin-icons/types/solid"]
   },
   "include": ["src", "~icons"]
 }

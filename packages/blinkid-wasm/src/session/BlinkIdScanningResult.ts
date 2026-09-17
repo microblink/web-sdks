@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import {
   DataMatchResult,
@@ -17,8 +15,8 @@ export type BlinkIdScanningResult = {
   /**
    * The document class information.
    *
-   * Absent when the document could not be classified (for example, for
-   * unsupported documents without any extracted class info).
+   * Absent when the document could not be classified (for example, for unsupported documents without any extracted
+   * class info).
    */
   documentClassInfo?: DocumentClassInfo;
 
@@ -37,10 +35,7 @@ export type BlinkIdScanningResult = {
   address: StringResult | undefined;
   /** The blood type of the document owner */
   bloodType: StringResult | undefined;
-  /**
-   * Numeric code used to establish secure electronic access to the embedded
-   * contactless chip.
-   */
+  /** Numeric code used to establish secure electronic access to the embedded contactless chip. */
   cardAccessNumber: StringResult | undefined;
   /** The certificate number of the document owner */
   certificateNumber: StringResult | undefined;
@@ -65,9 +60,7 @@ export type BlinkIdScanningResult = {
   /** The document subtype transcription */
   documentSubtype: StringResult | undefined;
   /** The driver license detailed info */
-  driverLicenseDetailedInfo:
-    | DriverLicenceDetailedInfo<StringResult>
-    | undefined;
+  driverLicenseDetailedInfo: DriverLicenceDetailedInfo<StringResult> | undefined;
   /** The effective date of the document */
   effectiveDate: DateResult<StringResult> | undefined;
   /** The eligibility category */

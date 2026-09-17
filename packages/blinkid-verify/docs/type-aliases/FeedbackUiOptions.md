@@ -14,7 +14,7 @@ The options for the createBlinkIdVerifyFeedbackUi function.
 
 ### helpTooltipHideDelay?
 
-> `optional` **helpTooltipHideDelay**: `number` \| `null`
+> `optional` **helpTooltipHideDelay?**: `number` \| `null`
 
 Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden.
 
@@ -28,7 +28,7 @@ Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hid
 
 ### helpTooltipShowDelay?
 
-> `optional` **helpTooltipShowDelay**: `number` \| `null`
+> `optional` **helpTooltipShowDelay?**: `number` \| `null`
 
 Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
 
@@ -42,30 +42,15 @@ Time in ms before the help tooltip is shown. If null, tooltip won't be auto show
 
 ### localizationStrings?
 
-> `optional` **localizationStrings**: `PartialLocalizationStrings`
+> `optional` **localizationStrings?**: [`PartialLocalizationStrings`](PartialLocalizationStrings.md)
 
 The localization strings.
 
 ***
 
-### preserveSdkInstance?
-
-> `optional` **preserveSdkInstance**: `boolean`
-
-If set to `true`, the BlinkID Verify instance will not be terminated when the
-feedback UI is unmounted.
-
-#### Default Value
-
-```ts
-false
-```
-
-***
-
 ### showDocumentFilteredModal?
 
-> `optional` **showDocumentFilteredModal**: `boolean`
+> `optional` **showDocumentFilteredModal?**: `boolean`
 
 If set to `true`, the document filtered modal will be shown.
 
@@ -79,7 +64,7 @@ true
 
 ### showHelpButton?
 
-> `optional` **showHelpButton**: `boolean`
+> `optional` **showHelpButton?**: `boolean`
 
 If set to `true`, the help button will be shown.
 
@@ -93,7 +78,7 @@ true
 
 ### showOnboardingGuide?
 
-> `optional` **showOnboardingGuide**: `boolean`
+> `optional` **showOnboardingGuide?**: `boolean`
 
 If set to `true`, the onboarding guide will be shown.
 
@@ -107,7 +92,7 @@ true
 
 ### showTimeoutModal?
 
-> `optional` **showTimeoutModal**: `boolean`
+> `optional` **showTimeoutModal?**: `boolean`
 
 If set to `true`, the timeout modal will be shown.
 
@@ -121,7 +106,7 @@ true
 
 ### showUnsupportedDocumentModal?
 
-> `optional` **showUnsupportedDocumentModal**: `boolean`
+> `optional` **showUnsupportedDocumentModal?**: `boolean`
 
 If set to `true`, the document unsupported modal will be shown.
 

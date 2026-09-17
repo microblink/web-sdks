@@ -1,26 +1,21 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { Dialog } from "@ark-ui/solid";
 import { Modal } from "@microblink/shared-components/Modal";
 import { type Component, createEffect, on } from "solid-js";
-import { useBlinkCardUiStore } from "../BlinkCardUiStoreContext";
-
-import CardNumberDesktop from "../assets/onboarding/card_number_desktop.svg?component-solid";
-import CardNumber from "../assets/onboarding/card_number.svg?component-solid";
-
-import { useLocalization } from "../LocalizationContext";
 import { Dynamic } from "solid-js/web";
+
+import CardNumber from "../assets/onboarding/card_number.svg?component-solid";
+import CardNumberDesktop from "../assets/onboarding/card_number_desktop.svg?component-solid";
+import { useBlinkCardUiStore } from "../BlinkCardUiStoreContext";
+import { useLocalization } from "../LocalizationContext";
 
 /**
  * The OnboardingGuideModal component.
  *
  * @returns The OnboardingGuideModal component.
  */
-export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
-  props,
-) => {
+export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (props) => {
   const { t } = useLocalization();
 
   const { store, updateStore } = useBlinkCardUiStore();
@@ -72,15 +67,9 @@ export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
               class="compact:col-start-2 compact:min-h-0 compact:h-full
                 compact:overflow-y-auto"
             >
-              <Dialog.Title class="dialog-title compact:!text-left">
-                {t.onboarding_modal.title}
-              </Dialog.Title>
+              <Dialog.Title class="dialog-title compact:!text-left">{t.onboarding_modal.title}</Dialog.Title>
               <Dialog.Description class="dialog-description compact:!text-left">
-                <p>
-                  {props.isDesktop
-                    ? t.onboarding_modal.details_desktop
-                    : t.onboarding_modal.details}
-                </p>
+                <p>{props.isDesktop ? t.onboarding_modal.details_desktop : t.onboarding_modal.details}</p>
               </Dialog.Description>
             </div>
           </article>

@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * Calculates the average of an array of numbers.
@@ -40,19 +38,14 @@ export async function sleep(ms: number) {
 }
 
 /**
- * Safely invokes every callback in `callbacks` with `data`, catching and
- * logging any individual callback errors so one bad handler cannot prevent
- * the rest from running.
+ * Safely invokes every callback in `callbacks` with `data`, catching and logging any individual callback errors so one
+ * bad handler cannot prevent the rest from running.
  *
  * @param callbacks - The set of callbacks to invoke.
  * @param data - The argument forwarded to each callback.
  * @param name - A human-readable label used in the error log (e.g. `"onResult"`).
  */
-export function invokeCallbacks<T>(
-  callbacks: Set<(data: T) => void>,
-  data: T,
-  name: string,
-): void {
+export function invokeCallbacks<T>(callbacks: Set<(data: T) => void>, data: T, name: string): void {
   for (const callback of callbacks) {
     try {
       callback(data);

@@ -12,7 +12,7 @@
 
 ### documentNumberRedactionSettings?
 
-> `optional` **documentNumberRedactionSettings**: [`DocumentNumberRedactionSettings`](DocumentNumberRedactionSettings.md)
+> `optional` **documentNumberRedactionSettings?**: [`DocumentNumberRedactionSettings`](DocumentNumberRedactionSettings.md)
 
 Document number redaction settings.
 
@@ -52,11 +52,10 @@ Using this member to redact MRZ is deprecated. Use `redactMrz` instead.
 
 If true, the whole Barcode result will be redacted.
 
-This will redact the barcode result data and remove the 'barcodeImage' from
-the subresults.
+This will redact the barcode result data and remove the 'barcodeImage' from the subresults.
 
-This setting uses the `mode` member to determine what will be redacted
-(e.g., full result, barcode image only, etc.).
+This setting uses the `mode` member to determine what will be redacted (e.g., full result, barcode image only,
+etc.).
 
 #### Default
 
@@ -72,9 +71,8 @@ false
 
 If true, the whole MRZ will be redacted.
 
-This is the recommended way to redact MRZ (replacing the use of `fields`).
-This setting uses the `mode` member to determine what will be redacted
-(e.g., full result, image only, etc.).
+This is the recommended way to redact MRZ (replacing the use of `fields`). This setting uses the `mode` member to
+determine what will be redacted (e.g., full result, image only, etc.).
 
 #### Default
 

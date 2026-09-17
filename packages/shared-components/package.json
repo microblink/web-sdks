@@ -1,7 +1,7 @@
 {
   "name": "@microblink/shared-components",
-  "private": true,
   "version": "0.1.0",
+  "private": true,
   "exports": {
     "./SmartEnvironmentProvider": "./src/SmartEnvironmentProvider.tsx",
     "./Modal": "./src/Modal.tsx",
@@ -9,14 +9,19 @@
     "./eventFixer": "./src/eventFixer.ts",
     "./renderWithOwner": "./src/renderWithOwner.ts"
   },
+  "scripts": {
+    "typecheck": "tsc --noEmit --skipLibCheck"
+  },
   "devDependencies": {
-    "@ark-ui/solid": "^5.30.0",
+    "@ark-ui/solid": "catalog:ui",
     "@microblink/tsconfig": "workspace:*",
     "@microblink/unocss-config": "workspace:*",
-    "@solid-primitives/keyed": "^1.5.2",
-    "@solid-primitives/resize-observer": "^2.1.1",
-    "prettier-plugin-classnames": "0.9.0",
-    "solid-js": "^1.9.11",
-    "type-fest": "^4.35.0"
+    "@solid-primitives/keyed": "catalog:ui",
+    "@solid-primitives/resize-observer": "catalog:ui",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "solid-js": "catalog:ui",
+    "type-fest": "catalog:"
   }
 }

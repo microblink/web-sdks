@@ -1,19 +1,14 @@
 {
   "name": "@microblink/analytics",
+  "version": "2.1.0",
   "private": true,
-  "version": "2.0.2",
-  "scripts": {
-    "build": "tsc",
-    "build:publish": "tsc",
-    "build:types": "tsc",
-    "clean": "rimraf .turbo types dist",
-    "docs:api": "typedoc",
-    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
-    "lint:eslint": "eslint ./src --max-warnings 0",
-    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
-    "test": "vitest --run",
-    "test:watch": "vitest --watch"
-  },
+  "description": "Analytics",
+  "keywords": [],
+  "license": "ISC",
+  "files": [
+    "dist",
+    "types"
+  ],
   "type": "module",
   "exports": {
     "./AnalyticService": {
@@ -26,29 +21,30 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist",
+    "docs:api": "typedoc",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
-    "concurrently": "^9.1.2",
-    "dotenv-cli": "^8.0.0",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "10.1.8",
-    "eslint-define-config": "^1.24.1",
-    "rimraf": "^6.0.1",
-    "tsx": "^4.21.0",
-    "typedoc": "^0.28.7",
-    "typedoc-plugin-markdown": "^4.7.0",
-    "typescript": "5.8.3",
-    "vite": "^6.2.1",
-    "vitest": "^3.0.8",
-    "zx": "^8.8.5"
-  },
-  "keywords": [],
-  "license": "ISC",
-  "description": "Analytics"
+    "@typescript/native": "catalog:typescript",
+    "dotenv-cli": "catalog:utils",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "tsx": "catalog:typescript",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vitest": "catalog:test",
+    "zx": "catalog:utils"
+  }
 }

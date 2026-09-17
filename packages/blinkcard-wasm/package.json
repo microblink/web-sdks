@@ -1,15 +1,32 @@
 {
   "name": "@microblink/blinkcard-wasm",
+  "version": "3001.0.0-next.0",
   "private": true,
-  "version": "3000.1.0-next",
-  "scripts": {
-    "build": "tsc",
-    "build:publish": "tsc",
-    "clean": "rimraf .turbo types",
-    "docs:api": "typedoc",
-    "lint": "pnpm run lint:types",
-    "lint:types": "tsc --emitDeclarationOnly false --noEmit"
-  },
+  "description": "BlinkCard Wasm runtime",
+  "keywords": [
+    "aml",
+    "blinkcard",
+    "card-check",
+    "card-scanner",
+    "card-verification",
+    "compliance",
+    "computer-vision",
+    "credit-card",
+    "creditcard",
+    "fraud-detection",
+    "frontend",
+    "microblink",
+    "ocr",
+    "typescript",
+    "verification",
+    "video",
+    "wasm",
+    "webassembly"
+  ],
+  "files": [
+    "dist",
+    "types"
+  ],
   "type": "module",
   "main": "src/index.ts",
   "module": "./dist/index.js",
@@ -19,45 +36,33 @@
       "types": "./types/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./size-manifest.json": "./dist/size-manifest.json",
+    "./size-manifest.json": {
+      "types": "./src/size-manifest.d.ts",
+      "default": "./dist/size-manifest.json"
+    },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types",
+    "docs:api": "typedoc",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
     "@microblink/wasm-common": "workspace:*",
-    "dotenv-cli": "^8.0.0",
-    "prettier-plugin-jsdoc": "^1.3.3",
-    "rimraf": "^6.0.1",
-    "tsx": "^4.21.0",
-    "type-fest": "^4.35.0",
-    "typedoc": "^0.28.7",
-    "typedoc-plugin-markdown": "^4.7.0",
-    "typescript": "5.8.3",
-    "zx": "^8.8.5"
-  },
-  "keywords": [
-    "aml",
-    "blinkcard",
-    "compliance",
-    "computer-vision",
-    "card-scanner",
-    "card-verification",
-    "fraud-detection",
-    "frontend",
-    "card-check",
-    "microblink",
-    "ocr",
-    "typescript",
-    "verification",
-    "credit-card",
-    "creditcard",
-    "video",
-    "wasm",
-    "webassembly"
-  ],
-  "description": "BlinkCard Wasm runtime"
+    "@typescript/native": "catalog:typescript",
+    "dotenv-cli": "catalog:utils",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "tsx": "catalog:typescript",
+    "type-fest": "catalog:",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "zx": "catalog:utils"
+  }
 }

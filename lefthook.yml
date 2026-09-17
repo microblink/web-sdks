@@ -1,0 +1,21 @@
+output:
+  - summary
+  - success
+  - failure
+  - execution
+  - execution_out
+  - execution_info
+
+pre-commit:
+  jobs:
+    - name: nano-staged
+      run: pnpm nano-staged --quiet
+    - name: build
+      run: pnpm build
+
+pre-push:
+  jobs:
+    - name: lint
+      run: pnpm lint
+    - name: checks
+      run: pnpm exec turbo run build typecheck lint:browserslist test

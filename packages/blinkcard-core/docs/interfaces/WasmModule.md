@@ -22,7 +22,7 @@
 
 ## Properties
 
-### arePingRequestsInProgress()
+### arePingRequestsInProgress
 
 > **arePingRequestsInProgress**: () => `boolean`
 
@@ -46,7 +46,7 @@
 
 ***
 
-### createScanningSession()
+### createScanningSession
 
 > **createScanningSession**: (`sessionSettings`, `userId`) => `TScanningSession`
 
@@ -110,7 +110,7 @@
 
 ***
 
-### getActiveLicenseTokenInfo()
+### getActiveLicenseTokenInfo
 
 > **getActiveLicenseTokenInfo**: () => [`LicenseUnlockResult`](../type-aliases/LicenseUnlockResult.md)
 
@@ -244,7 +244,7 @@
 
 ***
 
-### initializeSdk()
+### initializeSdk
 
 > **initializeSdk**: (`userId`) => `void`
 
@@ -264,7 +264,7 @@
 
 ***
 
-### initializeWithLicenseKey()
+### initializeWithLicenseKey
 
 > **initializeWithLicenseKey**: (`licenceKey`, `userId`, `allowHelloMessage`) => [`LicenseUnlockResult`](../type-aliases/LicenseUnlockResult.md)
 
@@ -292,7 +292,7 @@
 
 ***
 
-### isPingEnabled()
+### isPingEnabled
 
 > **isPingEnabled**: () => `boolean`
 
@@ -318,7 +318,7 @@
 
 ### mainScriptUrlOrBlob?
 
-> `optional` **mainScriptUrlOrBlob**: `string`
+> `optional` **mainScriptUrlOrBlob?**: `string`
 
 #### Inherited from
 
@@ -346,7 +346,7 @@
 
 ***
 
-### onAbort()
+### onAbort
 
 > **onAbort**: (`what`) => `void`
 
@@ -354,7 +354,7 @@
 
 ##### what
 
-`any`
+`unknown`
 
 #### Returns
 
@@ -366,7 +366,7 @@
 
 ***
 
-### onRuntimeInitialized()
+### onRuntimeInitialized
 
 > **onRuntimeInitialized**: () => `void`
 
@@ -420,7 +420,7 @@
 
 ### preloadedAudios
 
-> **preloadedAudios**: `any`
+> **preloadedAudios**: `unknown`
 
 #### Inherited from
 
@@ -430,7 +430,7 @@
 
 ### preloadedImages
 
-> **preloadedImages**: `any`
+> **preloadedImages**: `unknown`
 
 #### Inherited from
 
@@ -452,7 +452,7 @@
 
 ***
 
-### queuePinglet()
+### queuePinglet
 
 > **queuePinglet**: (`data`, `schemaName`, `schemaVersion`, `sessionNumber`) => `void`
 
@@ -484,7 +484,7 @@
 
 ***
 
-### sendPinglets()
+### sendPinglets
 
 > **sendPinglets**: () => `void`
 
@@ -498,7 +498,7 @@
 
 ***
 
-### setPingProxyUrl()
+### setPingProxyUrl
 
 > **setPingProxyUrl**: (`url`) => `void`
 
@@ -518,7 +518,7 @@
 
 ***
 
-### setStatus()
+### setStatus
 
 > **setStatus**: (`text`) => `void`
 
@@ -538,9 +538,9 @@
 
 ***
 
-### submitServerPermission()
+### submitServerPermission
 
-> **submitServerPermission**: (`serverPermission`) => `undefined` \| `Readonly`\<\{ `error`: [`ServerPermissionErrorReason`](../type-aliases/ServerPermissionErrorReason.md); `lease`: `number`; `networkErrorDescription?`: `string`; \}\>
+> **submitServerPermission**: (`serverPermission`) => `Readonly`\<\{ `error`: [`ServerPermissionErrorReason`](../type-aliases/ServerPermissionErrorReason.md); `lease`: `number`; `networkErrorDescription?`: `string`; \}\> \| `undefined`
 
 #### Parameters
 
@@ -550,7 +550,7 @@
 
 #### Returns
 
-`undefined` \| `Readonly`\<\{ `error`: [`ServerPermissionErrorReason`](../type-aliases/ServerPermissionErrorReason.md); `lease`: `number`; `networkErrorDescription?`: `string`; \}\>
+`Readonly`\<\{ `error`: [`ServerPermissionErrorReason`](../type-aliases/ServerPermissionErrorReason.md); `lease`: `number`; `networkErrorDescription?`: `string`; \}\> \| `undefined`
 
 #### Inherited from
 
@@ -558,7 +558,7 @@
 
 ***
 
-### terminateSdk()
+### terminateSdk
 
 > **terminateSdk**: () => `void`
 
@@ -606,11 +606,10 @@
 
 > **wasmMemory**: `Memory`
 
-Allows you to provide your own WebAssembly.Memory to use as the memory. The
-properties used to initialize the memory should match the compiler options.
-For example, if you set INITIAL_MEMORY to 8MB without memory growth, then
-the wasmMemory you provide (if any) should have both the 'initial' and
-'maximum' set to 128 (due to WASM page sizes being 64KB).
+Allows you to provide your own WebAssembly.Memory to use as the memory. The properties used to initialize the
+memory should match the compiler options. For example, if you set INITIAL_MEMORY to 8MB without memory growth, then
+the wasmMemory you provide (if any) should have both the 'initial' and 'maximum' set to 128 (due to WASM page sizes
+being 64KB).
 
 #### Inherited from
 
@@ -666,7 +665,7 @@ the wasmMemory you provide (if any) should have both the 'initial' and
 
 ##### cb
 
-() => `any`
+() => `unknown`
 
 #### Returns
 
@@ -686,7 +685,7 @@ the wasmMemory you provide (if any) should have both the 'initial' and
 
 ##### cb
 
-() => `any`
+() => `unknown`
 
 #### Returns
 
@@ -706,7 +705,7 @@ the wasmMemory you provide (if any) should have both the 'initial' and
 
 ##### cb
 
-() => `any`
+() => `unknown`
 
 #### Returns
 
@@ -726,7 +725,7 @@ the wasmMemory you provide (if any) should have both the 'initial' and
 
 ##### cb
 
-() => `any`
+() => `unknown`
 
 #### Returns
 
@@ -746,7 +745,7 @@ the wasmMemory you provide (if any) should have both the 'initial' and
 
 ##### cb
 
-() => `any`
+() => `unknown`
 
 #### Returns
 
@@ -804,7 +803,7 @@ the wasmMemory you provide (if any) should have both the 'initial' and
 
 ### instantiateWasm()
 
-> **instantiateWasm**(`imports`, `successCallback`): `undefined` \| `Exports`
+> **instantiateWasm**(`imports`, `successCallback`): `Exports` \| `undefined`
 
 #### Parameters
 
@@ -814,11 +813,11 @@ the wasmMemory you provide (if any) should have both the 'initial' and
 
 ##### successCallback
 
-(`module`) => `void`
+(`instance`, `module?`) => `void`
 
 #### Returns
 
-`undefined` \| `Exports`
+`Exports` \| `undefined`
 
 #### Inherited from
 

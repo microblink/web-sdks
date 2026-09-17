@@ -2,7 +2,24 @@
 
 This package provides the core BlinkCard functionality for browser-based card scanning. It exposes a low-level API for initializing and controlling the BlinkCard engine, managing sessions, and processing images. It can be used directly by end users for advanced or custom integrations, or as a dependency of higher-level packages such as [`@microblink/blinkcard`](https://www.npmjs.com/package/@microblink/blinkcard).
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/blinkcard-core`:
+
+| Entrypoint | Minified | Gzip    |
+| ---------- | -------- | ------- |
+| `root`     | 26.14 kB | 8.02 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Overview
+
+See the [custom UI example](../../apps/examples/blinkcard-custom-ui/) for an end-to-end scan with an application-owned interface.
 
 - Provides the main API for BlinkCard scanning and recognition in the browser.
 - Handles initialization, licensing, and session management.

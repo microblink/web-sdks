@@ -14,7 +14,7 @@ The additional information on the document owner's dependents.
 
 ### dateOfBirth?
 
-> `optional` **dateOfBirth**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\>
+> `optional` **dateOfBirth?**: [`DateResult`](DateResult.md)\<[`StringResult`](StringResult.md)\>
 
 The date of birth of the dependent
 
@@ -22,7 +22,7 @@ The date of birth of the dependent
 
 ### documentNumber?
 
-> `optional` **documentNumber**: [`StringResult`](StringResult.md)
+> `optional` **documentNumber?**: [`StringResult`](StringResult.md)
 
 The document number of the dependent
 
@@ -30,7 +30,7 @@ The document number of the dependent
 
 ### fullName?
 
-> `optional` **fullName**: [`StringResult`](StringResult.md)
+> `optional` **fullName?**: [`StringResult`](StringResult.md)
 
 The full name of the dependent
 
@@ -38,6 +38,6 @@ The full name of the dependent
 
 ### sex?
 
-> `optional` **sex**: [`StringResult`](StringResult.md)
+> `optional` **sex?**: [`StringResult`](StringResult.md)
 
 The sex or gender of the dependent

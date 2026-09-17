@@ -1,20 +1,15 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { Mock } from "vitest";
 import { vi } from "vitest";
 
 type Promisable<T> = T | Promise<T>;
 
-type SharedProcess<TProcessResult> = (
-  image: ImageData,
-) => Promisable<TProcessResult>;
+type SharedProcess<TProcessResult> = (image: ImageData) => Promisable<TProcessResult>;
 type SharedGetSettings<TSettings> = () => Promisable<TSettings>;
 type SharedGetResult<TResult> = () => Promisable<TResult>;
 type SharedResolveCurrentStep = () => Promisable<void>;
-type SharedGetScanningStatus<TScanningStatus> =
-  () => Promisable<TScanningStatus>;
+type SharedGetScanningStatus<TScanningStatus> = () => Promisable<TScanningStatus>;
 
 export type FakeScanningSession<
   TProcessResult = unknown,
@@ -54,9 +49,7 @@ export type CreateFakeScanningSessionOptions<
   showDemoOverlay?: boolean;
   showProductionOverlay?: boolean;
   isDeleted?: boolean;
-  overrides?: Partial<
-    FakeScanningSession<TProcessResult, TSettings, TResult, TScanningStatus>
-  >;
+  overrides?: Partial<FakeScanningSession<TProcessResult, TSettings, TResult, TScanningStatus>>;
   extra?: TExtra;
 };
 
@@ -67,42 +60,24 @@ export const createFakeScanningSession = <
   TScanningStatus = unknown,
   TExtra extends Record<string, unknown> = Record<string, never>,
 >(
-  options: CreateFakeScanningSessionOptions<
-    TProcessResult,
-    TSettings,
-    TResult,
-    TScanningStatus,
-    TExtra
-  > = {},
-): FakeScanningSession<TProcessResult, TSettings, TResult, TScanningStatus> &
-  TExtra => {
-  const session: FakeScanningSession<
-    TProcessResult,
-    TSettings,
-    TResult,
-    TScanningStatus
-  > = {
-    process: vi.fn(async () => options.processResult as TProcessResult),
-    getSettings: vi.fn(async () => options.settings as TSettings),
-    getResolvedSessionSettings: vi.fn(
-      async () => options.resolvedSettings as TSettings,
-    ),
-    showDemoOverlay: vi.fn(async () => options.showDemoOverlay ?? false),
-    showProductionOverlay: vi.fn(
-      async () => options.showProductionOverlay ?? false,
-    ),
-    getResult: vi.fn(async () => options.result as TResult),
-    resolveCurrentStep: vi.fn(async () => undefined),
-    getScanningStatus: vi.fn(
-      async () => options.scanningStatus as TScanningStatus,
-    ),
-    ping: vi.fn(async () => undefined),
-    sendPinglets: vi.fn(async () => undefined),
-    reset: vi.fn(async () => undefined),
-    delete: vi.fn(async () => undefined),
+  options: CreateFakeScanningSessionOptions<TProcessResult, TSettings, TResult, TScanningStatus, TExtra> = {},
+): FakeScanningSession<TProcessResult, TSettings, TResult, TScanningStatus> & TExtra => {
+  const session: FakeScanningSession<TProcessResult, TSettings, TResult, TScanningStatus> = {
+    process: vi.fn(() => Promise.resolve(options.processResult as TProcessResult)),
+    getSettings: vi.fn(() => Promise.resolve(options.settings as TSettings)),
+    getResolvedSessionSettings: vi.fn(() => Promise.resolve(options.resolvedSettings as TSettings)),
+    showDemoOverlay: vi.fn(() => Promise.resolve(options.showDemoOverlay ?? false)),
+    showProductionOverlay: vi.fn(() => Promise.resolve(options.showProductionOverlay ?? false)),
+    getResult: vi.fn(() => Promise.resolve(options.result as TResult)),
+    resolveCurrentStep: vi.fn(() => Promise.resolve()),
+    getScanningStatus: vi.fn(() => Promise.resolve(options.scanningStatus as TScanningStatus)),
+    ping: vi.fn(() => Promise.resolve()),
+    sendPinglets: vi.fn(() => Promise.resolve()),
+    reset: vi.fn(() => Promise.resolve()),
+    delete: vi.fn(() => Promise.resolve()),
     deleteLater: vi.fn(),
     isAliasOf: vi.fn(() => false),
-    isDeleted: vi.fn(async () => options.isDeleted ?? false),
+    isDeleted: vi.fn(() => Promise.resolve(options.isDeleted ?? false)),
   };
 
   return {

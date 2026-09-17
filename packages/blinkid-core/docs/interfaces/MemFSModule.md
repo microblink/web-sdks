@@ -10,7 +10,7 @@
 
 ### FS?
 
-> `optional` **FS**: `object`
+> `optional` **FS?**: `object`
 
 #### mkdirTree()?
 
@@ -92,9 +92,9 @@
 
 ***
 
-### FS\_createDataFile()?
+### FS\_createDataFile?
 
-> `optional` **FS\_createDataFile**: (`parent`, `name`, `data`, `canRead`, `canWrite`, `canOwn?`) => `void`
+> `optional` **FS\_createDataFile?**: (`parent`, `name`, `data`, `canRead`, `canWrite`, `canOwn?`) => `void`
 
 #### Parameters
 
@@ -128,9 +128,9 @@
 
 ***
 
-### FS\_createPath()?
+### FS\_createPath?
 
-> `optional` **FS\_createPath**: (`parent`, `path`, `canRead`, `canWrite`) => `void`
+> `optional` **FS\_createPath?**: (`parent`, `path`, `canRead`, `canWrite`) => `void`
 
 #### Parameters
 
@@ -156,9 +156,9 @@
 
 ***
 
-### FS\_unlink()?
+### FS\_unlink?
 
-> `optional` **FS\_unlink**: (`path`) => `void`
+> `optional` **FS\_unlink?**: (`path`) => `void`
 
 #### Parameters
 

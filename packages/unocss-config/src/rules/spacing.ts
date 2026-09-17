@@ -1,14 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { type Rule, type PresetUnoTheme } from "unocss";
 
-/**
- * 4px baseline grid, 0.25rem = 4px, respects --mb-size multiplier
- */
-export const addScaleMultiplier = (value: string, unit?: string) =>
-  `calc(var(--mb-size)*${value + (unit || "")})`;
+/** 4px baseline grid, 0.25rem = 4px, respects --mb-size multiplier */
+export const addScaleMultiplier = (value: string, unit?: string) => `calc(var(--mb-size)*${value + (unit || "")})`;
 
 function gridUnitToSize(value: number) {
   return addScaleMultiplier(String(value * 0.25), "rem");
@@ -20,21 +15,17 @@ function gridUnitToPx(value: number) {
 
 const sizeArray = [...Array(100)].map((_, i) => gridUnitToSize(i));
 
-export const sizeObject = sizeArray.reduce(
-  (obj: Record<string, string>, value, index) => {
-    obj[String(index)] = value;
-    return obj;
-  },
-  {},
-);
+export const sizeObject = sizeArray.reduce((obj: Record<string, string>, value, index) => {
+  obj[String(index)] = value;
+  return obj;
+}, {});
 
 /**
- *
- * @param min grid units
- * @param vmin pixels
- * @param max grid units
- * @param vmax pixels
- * @returns something the browser can parse
+ * @param min Grid units
+ * @param vmin Pixels
+ * @param max Grid units
+ * @param vmax Pixels
+ * @returns Something the browser can parse
  */
 const fancyClamp = (min: number, vmin: number, max: number, vmax: number) => {
   const minPx = gridUnitToPx(min);
@@ -50,16 +41,11 @@ const fancyClamp = (min: number, vmin: number, max: number, vmax: number) => {
   return `clamp(${clampMin}, ${clampVal}, ${clampMax})`;
 };
 
-const createLerped = (
-  ruleKey: string,
-  cssProperty: string,
-): Rule<PresetUnoTheme> => {
+const createLerped = (ruleKey: string, cssProperty: string): Rule<PresetUnoTheme> => {
   const breakpointKeysMatcher = "[a-z]+";
   const viewportPattern = `(?:\\d+|${breakpointKeysMatcher})`;
 
-  const regex = new RegExp(
-    `^lerp:${ruleKey}-(\\d+)@(${viewportPattern}),(\\d+)@(${viewportPattern})$`,
-  );
+  const regex = new RegExp(`^lerp:${ruleKey}-(\\d+)@(${viewportPattern}),(\\d+)@(${viewportPattern})$`);
   return [
     regex,
     (match: RegExpMatchArray, ruleContext) => {
@@ -80,12 +66,7 @@ const createLerped = (
         return 1;
       };
 
-      const clampedValue = fancyClamp(
-        parseInt(min),
-        resolveViewport(vMin),
-        parseInt(max),
-        resolveViewport(vMax),
-      );
+      const clampedValue = fancyClamp(parseInt(min), resolveViewport(vMin), parseInt(max), resolveViewport(vMax));
 
       /** CUSTOM COMMENT */
       return [{ [cssProperty]: clampedValue }];
@@ -95,6 +76,7 @@ const createLerped = (
 
 /**
  * TODO: there has to be a better way to do this...
+ *
  * @see https://unocss.dev/config/variants
  */
 const pseudoClasses = [

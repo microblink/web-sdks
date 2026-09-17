@@ -1,16 +1,13 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { Owner } from "solid-js";
-import { createWithSignal } from "solid-zustand";
+import { create } from "solid-zustand";
 import { subscribeWithSelector } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
+
 import { deepClone } from "../utils/deepClone";
 
-/**
- * The camera UI refs.
- */
+/** The camera UI refs. */
 export type CameraUiRefs = {
   /** The feedback layer. */
   feedbackLayer: HTMLDivElement;
@@ -20,24 +17,18 @@ export type CameraUiRefs = {
   owner: Owner;
 };
 
-/**
- * The initial state of the camera UI refs.
- */
+/** The initial state of the camera UI refs. */
 const initialState: CameraUiRefs = {
   feedbackLayer: null!,
   overlayLayer: null!,
   owner: null!,
 };
 
-/**
- * The camera UI ref store.
- */
+/** The camera UI ref store. */
 export const cameraUiRefStore = createStore<CameraUiRefs>()(
   // this is important! Otherwise, solid-zustand will start mutating the initial state
   subscribeWithSelector(() => deepClone(initialState)),
 );
 
-/**
- * The camera UI ref signal store.
- */
-export const cameraUiRefSignalStore = createWithSignal(cameraUiRefStore);
+/** The camera UI ref signal store. */
+export const cameraUiRefSignalStore = create(cameraUiRefStore);

@@ -1,12 +1,10 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { ExtractionArea } from "../core/VideoFrameProcessor";
+import type { ExtractionArea } from "@microblink/camera-manager/core";
 
 /**
- * Computes the visible portion of the video (in the video's natural coordinate space)
- * when rendered with object-fit: cover.
+ * Computes the visible portion of the video (in the video's natural coordinate space) when rendered with object-fit:
+ * cover.
  *
  * @param containerWidth - The width of the container.
  * @param containerHeight - The height of the container.

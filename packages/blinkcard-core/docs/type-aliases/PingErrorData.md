@@ -24,4 +24,4 @@
 
 ### stackTrace?
 
-> `optional` **stackTrace**: `string`
+> `optional` **stackTrace?**: `string`

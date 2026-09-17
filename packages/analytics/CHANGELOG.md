@@ -1,5 +1,11 @@
 # @microblink/analytics
 
+## 2.1.0
+
+### Patch Changes
+
+- Adds support for new SDK UX events.
+
 ## 2.0.2
 
 ### Patch Changes

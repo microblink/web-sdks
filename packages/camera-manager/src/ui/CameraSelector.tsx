@@ -1,12 +1,10 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { createListCollection, Select } from "@ark-ui/solid/select";
-import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
-
 import { eventFixer } from "@microblink/shared-components/eventFixer";
+import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import { Component, Index } from "solid-js";
+
 import IconCamera from "./assets/camera.svg?component-solid";
 import IconCheck from "./assets/check.svg?component-solid";
 import IconChevronDown from "./assets/general-c-chevron-down.svg?component-solid";
@@ -15,9 +13,7 @@ import { useLocalization } from "./LocalizationContext";
 
 import "./styles/camera-selector.css";
 
-/**
- * The CameraSelector component.
- */
+/** The CameraSelector component. */
 export const CameraSelector: Component = () => {
   const { cameraManagerSolidStore, cameraManager } = useCameraUiStore();
   const { t } = useLocalization();
@@ -36,9 +32,7 @@ export const CameraSelector: Component = () => {
       return cameras();
     }
 
-    return cameras().filter((camera) =>
-      $facingFilter.includes(camera.facingMode),
-    );
+    return cameras().filter((camera) => $facingFilter.includes(camera.facingMode));
   };
 
   const createCameraOptions = () => [
@@ -59,9 +53,7 @@ export const CameraSelector: Component = () => {
       return;
     }
 
-    const foundCamera = cameraCollection().find(
-      $selectedCamera.deviceInfo.deviceId,
-    );
+    const foundCamera = cameraCollection().find($selectedCamera.deviceInfo.deviceId);
 
     if (!foundCamera) {
       return;
@@ -71,9 +63,7 @@ export const CameraSelector: Component = () => {
   };
 
   const selectCameraById = async (id: string) => {
-    const camera = cameras().find(
-      (camera) => camera.deviceInfo.deviceId === id,
-    );
+    const camera = cameras().find((camera) => camera.deviceInfo.deviceId === id);
 
     if (!camera) {
       console.warn("No camera");
@@ -112,20 +102,14 @@ export const CameraSelector: Component = () => {
                     bg-gray-550/90 backdrop-blur-xl whitespace-nowrap text-base
                     color-white font-500 cursor-pointer appearance-none
                     border-none disabled:opacity-50 disabled:cursor-not-allowed
-                    max-w-[100%] btn-focus`}
+                    max-w-[100%] control-focus relative`}
                   >
                     <IconCamera class="size-6 shrink-0" aria-hidden="true" />
                     <Select.ValueText
                       class="truncate"
-                      placeholder={
-                        isQueryingCameras()
-                          ? t.loading_cameras
-                          : t.select_a_camera
-                      }
+                      placeholder={isQueryingCameras() ? t.loading_cameras : t.select_a_camera}
                     />
-                    <Select.Indicator
-                      class="shrink-0 data-[state=open]:scale-y-[-1]"
-                    >
+                    <Select.Indicator class="shrink-0 data-[state=open]:scale-y-[-1]">
                       <IconChevronDown class="size-6 shrink-0" />
                     </Select.Indicator>
                   </button>
@@ -134,12 +118,7 @@ export const CameraSelector: Component = () => {
             />
             {/* Dropdown */}
             <Select.Positioner>
-              <Select.Content
-                class="dropdown-content focus-visible:outline
-                  focus-visible:outline-2px focus-visible:outline-solid
-                  focus-visible:outline-primary
-                  focus-visible:outline-offset-4px"
-              >
+              <Select.Content class="dropdown-content focus:outline-none">
                 <Select.ItemGroup
                   class="rounded-4 overflow-hidden text-base color-white flex
                     flex-col"
@@ -152,13 +131,12 @@ export const CameraSelector: Component = () => {
                           class={`flex py-3 pl-4 pr-12 cursor-pointer
                           select-none bg-gray-550/50 backdrop-blur-xl
                           data-[highlighted]:bg-gray-550/100 relative
+                          dropdown-item-focus
                           first-of-type-rounded-t-6 last-of-type-rounded-b-6
                           not-first-of-type-b-t-gray-300/50
                           not-first-of-type-b-t-1 not-first-of-type-b-t-solid`}
                         >
-                          <Select.ItemText class="truncate">
-                            {camera().label}
-                          </Select.ItemText>
+                          <Select.ItemText class="truncate">{camera().label}</Select.ItemText>
                           <Select.ItemIndicator class="absolute right-4">
                             <IconCheck class="size-6 shrink-0" />
                           </Select.ItemIndicator>

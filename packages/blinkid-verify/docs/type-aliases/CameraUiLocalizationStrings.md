@@ -6,6 +6,6 @@
 
 # Type Alias: CameraUiLocalizationStrings
 
-> **CameraUiLocalizationStrings** = \{ \[K in keyof CameraUiLocaleRecord\]: CameraUiLocaleRecord\[K\] \| string & \{\} \}
+> **CameraUiLocalizationStrings** = \{ \[K in keyof CameraUiLocaleRecord\]: CameraUiLocaleRecord\[K\] \| string & Record\<never, never\> \}
 
 The camera UI localization strings.

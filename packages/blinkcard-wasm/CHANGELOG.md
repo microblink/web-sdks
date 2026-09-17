@@ -1,6 +1,14 @@
 # @microblink/blinkcard-wasm
 
-## 3000.1.0-next
+## 3001.0.0-next.0
+
+### Major Changes
+
+- Added `CardAccountResult.binCheckResult` to BlinkCard WebAssembly scanning results and defaulted CVV and card-number redaction to `full-result`. Removed `RedactionSettings.cardNumberPrefixRedactionMode`; remove that setting from custom redaction options and use `cardNumberRedactionSettings` to configure card-number redaction.
+
+### Patch Changes
+
+- Speeds up BlinkCard initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
 
 ### Minor Changes
 

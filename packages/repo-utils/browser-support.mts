@@ -1,9 +1,10 @@
-import browserslist from "browserslist";
-import { createRequire } from "node:module";
 import nodeFs from "node:fs";
+import { createRequire } from "node:module";
 import nodePath from "node:path";
 import { fileURLToPath } from "node:url";
-import ts from "typescript";
+
+import browserslist from "browserslist";
+import { parseSync, Visitor } from "oxc-parser";
 
 const require = createRequire(import.meta.url);
 const browserCompatData = require("@mdn/browser-compat-data");
@@ -19,9 +20,7 @@ const SUPPORTED_BROWSER_NAMES = [
   "iOS",
 ];
 
-const browserTargetPattern = new RegExp(
-  `^(${SUPPORTED_BROWSER_NAMES.join("|")}) >= (\\d+(?:\\.\\d+)*)$`,
-);
+const browserTargetPattern = new RegExp(`^(${SUPPORTED_BROWSER_NAMES.join("|")}) >= (\\d+(?:\\.\\d+)*)$`);
 
 const browserCompatTargetNames = {
   Chrome: "chrome",
@@ -34,18 +33,28 @@ const browserCompatTargetNames = {
   iOS: "safari_ios",
 };
 
-const workspacePackageGlobs = [
-  "packages/*",
-  "packages/utils/*",
-  "apps/examples/*",
-  "apps/tests/*",
-  "github",
-];
+const workspacePackageGlobs = ["packages/*", "packages/utils/*", "apps/examples/*", "apps/tests/*", "github"];
 
 const browserSupportHeadingPattern = /^## Browser Support(?:\s|$)/m;
 const runtimeSourceExtensions = [".ts", ".tsx", ".mts", ".js", ".jsx", ".mjs"];
 const internalReadmeFileName = "README.md";
 const githubReadmeFileName = "README.github.md";
+const splitBrowserEnvironments = ["production", "core", "ui"] as const;
+const splitBrowserEnvironmentLabels = {
+  production: "Root",
+  core: "`/core`",
+  ui: "`/ui`",
+} as const;
+const browserSupportTableRows = [
+  ["Chrome / Chromium (desktop)", "Chrome"],
+  ["Chrome / Chromium (Android)", "ChromeAndroid"],
+  ["Edge", "Edge"],
+  ["Opera", "Opera"],
+  ["Firefox (desktop)", "Firefox"],
+  ["Firefox (Android)", "FirefoxAndroid"],
+  ["Safari (macOS)", "Safari"],
+  ["iOS Safari", "iOS"],
+] as const;
 
 const browserApiChecks = [
   {
@@ -65,12 +74,12 @@ const browserApiChecks = [
   {
     label: "structuredClone()",
     compatPath: ["api", "structuredClone"],
-    matchesNode(node) {
+    matchesNode(node, guardedFunctionNames) {
       return (
-        ts.isCallExpression(node) &&
-        ts.isIdentifier(node.expression) &&
-        node.expression.text === "structuredClone" &&
-        !hasTypeofFunctionGuard(node, "structuredClone")
+        node.type === "CallExpression" &&
+        node.callee.type === "Identifier" &&
+        node.callee.name === "structuredClone" &&
+        !guardedFunctionNames.has("structuredClone")
       );
     },
   },
@@ -146,10 +155,7 @@ function normalizeCompatVersion(version) {
 }
 
 function getSupportedVersion(compatPath, compatBrowserName) {
-  const support =
-    getNestedValue(browserCompatData, compatPath)?.__compat?.support?.[
-      compatBrowserName
-    ];
+  const support = getNestedValue(browserCompatData, compatPath)?.__compat?.support?.[compatBrowserName];
 
   const supportEntries = Array.isArray(support) ? support : [support];
 
@@ -158,9 +164,7 @@ function getSupportedVersion(compatPath, compatBrowserName) {
       continue;
     }
 
-    const supportedVersion = normalizeCompatVersion(
-      supportEntry.version_added,
-    );
+    const supportedVersion = normalizeCompatVersion(supportEntry.version_added);
 
     if (supportedVersion) {
       return supportedVersion;
@@ -171,7 +175,7 @@ function getSupportedVersion(compatPath, compatBrowserName) {
 }
 
 function resolveWorkspacePackageRoots(workspaceRoot) {
-  const packageRoots = [];
+  const packageRoots: string[] = [];
 
   for (const workspacePackageGlob of workspacePackageGlobs) {
     if (!workspacePackageGlob.endsWith("/*")) {
@@ -184,10 +188,7 @@ function resolveWorkspacePackageRoots(workspaceRoot) {
       continue;
     }
 
-    const directoryRoot = nodePath.join(
-      workspaceRoot,
-      workspacePackageGlob.slice(0, -2),
-    );
+    const directoryRoot = nodePath.join(workspaceRoot, workspacePackageGlob.slice(0, -2));
 
     if (!isDirectory(directoryRoot)) {
       continue;
@@ -229,29 +230,19 @@ function getWorkspacePackageMap(packageRoots) {
 }
 
 function formatPackageName(packageJson, packageRoot, workspaceRoot) {
-  return (
-    packageJson.name ??
-    nodePath.relative(workspaceRoot, packageRoot).replaceAll(nodePath.sep, "/")
-  );
+  return packageJson.name ?? nodePath.relative(workspaceRoot, packageRoot).replaceAll(nodePath.sep, "/");
 }
 
 function getViteConfigPaths(packageRoot) {
-  return [
-    "vite.config.js",
-    "vite.config.mjs",
-    "vite.config.ts",
-    "vite.config.mts",
-  ].map((fileName) => nodePath.join(packageRoot, fileName));
+  return ["vite.config.js", "vite.config.mjs", "vite.config.ts", "vite.config.mts"].map((fileName) =>
+    nodePath.join(packageRoot, fileName),
+  );
 }
 
-function getEslintConfigPaths(packageRoot) {
-  return [
-    ".eslintrc.cjs",
-    ".eslintrc.js",
-    "eslint.config.cjs",
-    "eslint.config.js",
-    "eslint.config.mjs",
-  ].map((fileName) => nodePath.join(packageRoot, fileName));
+function getOxlintConfigPaths(packageRoot) {
+  return ["oxlint.config.ts", "oxlint.config.mts", ".oxlintrc.json", ".oxlintrc.jsonc"].map((fileName) =>
+    nodePath.join(packageRoot, fileName),
+  );
 }
 
 function packageUsesBrowserslistEsbuildTarget(packageRoot) {
@@ -260,25 +251,42 @@ function packageUsesBrowserslistEsbuildTarget(packageRoot) {
   );
 }
 
-function packageUsesCompatPlugin(packageRoot) {
-  return getEslintConfigPaths(packageRoot).some((configPath) =>
-    readTextIfExists(configPath)?.includes("plugin:compat/recommended"),
+function packageUsesCompatPlugin(packageRoot, workspaceRoot) {
+  const packageConfigUsesCompat = getOxlintConfigPaths(packageRoot).some((configPath) =>
+    readTextIfExists(configPath)?.includes("eslint-plugin-compat"),
+  );
+
+  if (packageConfigUsesCompat) {
+    return true;
+  }
+
+  const rootConfig = readTextIfExists(nodePath.join(workspaceRoot, "oxlint.config.ts"));
+  const relativePackageRoot = nodePath.relative(workspaceRoot, packageRoot).split(nodePath.sep).join("/");
+  const compatFilesDeclaration = rootConfig?.match(/const compatFiles = \[([\s\S]*?)\];/)?.[1];
+
+  return (
+    rootConfig?.includes("eslint-plugin-compat") && compatFilesDeclaration?.includes(`"${relativePackageRoot}/src/`)
   );
 }
 
-function getRuntimeEntryPaths(packageRoot) {
+function getRuntimeEntryPaths(packageRoot, environment?: (typeof splitBrowserEnvironments)[number]) {
   const sourceRoot = nodePath.join(packageRoot, "src");
 
   if (!isDirectory(sourceRoot)) {
     return [];
   }
 
+  const entryName = environment && environment !== "production" ? environment : "index";
   const indexEntry = runtimeSourceExtensions
-    .map((extension) => nodePath.join(sourceRoot, `index${extension}`))
+    .map((extension) => nodePath.join(sourceRoot, `${entryName}${extension}`))
     .find((sourcePath) => nodeFs.existsSync(sourcePath));
 
   if (indexEntry) {
     return [indexEntry];
+  }
+
+  if (environment) {
+    return [];
   }
 
   return nodeFs
@@ -293,40 +301,25 @@ function getResolvedSourcePath(importerPath, importPath) {
     return undefined;
   }
 
-  const resolvedImportPath = nodePath.resolve(
-    nodePath.dirname(importerPath),
-    importPath,
-  );
+  const resolvedImportPath = nodePath.resolve(nodePath.dirname(importerPath), importPath);
 
   const sourceCandidates = [
     resolvedImportPath,
-    ...runtimeSourceExtensions.map(
-      (extension) => `${resolvedImportPath}${extension}`,
-    ),
-    ...runtimeSourceExtensions.map((extension) =>
-      nodePath.join(resolvedImportPath, `index${extension}`),
-    ),
+    ...runtimeSourceExtensions.map((extension) => `${resolvedImportPath}${extension}`),
+    ...runtimeSourceExtensions.map((extension) => nodePath.join(resolvedImportPath, `index${extension}`)),
   ];
 
-  return sourceCandidates.find(
-    (sourcePath) => nodeFs.existsSync(sourcePath) && isSourceFile(sourcePath),
-  );
+  return sourceCandidates.find((sourcePath) => nodeFs.existsSync(sourcePath) && isSourceFile(sourcePath));
 }
 
 function getSourceCandidate(sourcePathWithoutExtension) {
   const sourceCandidates = [
     sourcePathWithoutExtension,
-    ...runtimeSourceExtensions.map(
-      (extension) => `${sourcePathWithoutExtension}${extension}`,
-    ),
-    ...runtimeSourceExtensions.map((extension) =>
-      nodePath.join(sourcePathWithoutExtension, `index${extension}`),
-    ),
+    ...runtimeSourceExtensions.map((extension) => `${sourcePathWithoutExtension}${extension}`),
+    ...runtimeSourceExtensions.map((extension) => nodePath.join(sourcePathWithoutExtension, `index${extension}`)),
   ];
 
-  return sourceCandidates.find(
-    (sourcePath) => nodeFs.existsSync(sourcePath) && isSourceFile(sourcePath),
-  );
+  return sourceCandidates.find((sourcePath) => nodeFs.existsSync(sourcePath) && isSourceFile(sourcePath));
 }
 
 function getExportEntryTarget(exportEntry) {
@@ -338,12 +331,7 @@ function getExportEntryTarget(exportEntry) {
     return undefined;
   }
 
-  return (
-    exportEntry.import ??
-    exportEntry.default ??
-    exportEntry.require ??
-    exportEntry.types
-  );
+  return exportEntry.import ?? exportEntry.default ?? exportEntry.require ?? exportEntry.types;
 }
 
 function getPackageExportTarget(packageJson, subpath) {
@@ -378,9 +366,7 @@ function getSourcePathFromPackageTarget(packageRoot, packageTarget) {
 }
 
 function getWorkspaceImportInfo(importPath, workspacePackages) {
-  const workspacePackageEntries = [...workspacePackages.entries()].sort(
-    ([a], [b]) => b.length - a.length,
-  );
+  const workspacePackageEntries = [...workspacePackages.entries()].sort(([a], [b]) => b.length - a.length);
 
   for (const [packageName, workspacePackage] of workspacePackageEntries) {
     if (importPath === packageName) {
@@ -405,14 +391,8 @@ function getWorkspaceImportSourcePath(importPath, workspacePackages) {
     return undefined;
   }
 
-  const exportTarget = getPackageExportTarget(
-    workspaceImport.packageJson,
-    workspaceImport.subpath,
-  );
-  const exportSourcePath = getSourcePathFromPackageTarget(
-    workspaceImport.packageRoot,
-    exportTarget,
-  );
+  const exportTarget = getPackageExportTarget(workspaceImport.packageJson, workspaceImport.subpath);
+  const exportSourcePath = getSourcePathFromPackageTarget(workspaceImport.packageRoot, exportTarget);
 
   if (exportSourcePath) {
     return exportSourcePath;
@@ -422,104 +402,41 @@ function getWorkspaceImportSourcePath(importPath, workspacePackages) {
     return getRuntimeEntryPaths(workspaceImport.packageRoot);
   }
 
-  return getSourceCandidate(
-    nodePath.join(workspaceImport.packageRoot, "src", workspaceImport.subpath),
-  );
+  return getSourceCandidate(nodePath.join(workspaceImport.packageRoot, "src", workspaceImport.subpath));
 }
 
-function isTypeOnlyImportDeclaration(statement) {
-  if (!ts.isImportDeclaration(statement)) {
-    return false;
-  }
-
-  const importClause = statement.importClause;
-
-  if (!importClause) {
-    return false;
-  }
-
-  if (importClause.isTypeOnly) {
-    return true;
-  }
-
-  if (importClause.name) {
-    return false;
-  }
-
-  if (!importClause.namedBindings) {
-    return false;
-  }
-
-  return (
-    ts.isNamedImports(importClause.namedBindings) &&
-    importClause.namedBindings.elements.every((element) => element.isTypeOnly)
+function getRuntimeImportPaths(parsedModule) {
+  const importedPaths = parsedModule.staticImports.flatMap(({ entries, moduleRequest }) =>
+    entries.length === 0 || entries.some((entry) => !entry.isType) ? [moduleRequest.value] : [],
   );
+  const exportedPaths = parsedModule.staticExports.flatMap(({ entries }) =>
+    entries.flatMap((entry) => (entry.moduleRequest && !entry.isType ? [entry.moduleRequest.value] : [])),
+  );
+
+  return [...new Set([...importedPaths, ...exportedPaths])];
 }
 
-function isTypeOnlyExportDeclaration(statement) {
-  if (!ts.isExportDeclaration(statement)) {
-    return false;
-  }
-
-  if (statement.isTypeOnly) {
-    return true;
-  }
-
-  if (!statement.exportClause) {
-    return false;
-  }
-
-  return (
-    ts.isNamedExports(statement.exportClause) &&
-    statement.exportClause.elements.every((element) => element.isTypeOnly)
-  );
-}
-
-function getImportedSourcePaths(sourcePath, sourceFile, workspacePackages) {
-  return sourceFile.statements.flatMap((statement) => {
-    if (
-      !(
-        ts.isImportDeclaration(statement) ||
-        ts.isExportDeclaration(statement)
-      ) ||
-      !statement.moduleSpecifier ||
-      !ts.isStringLiteral(statement.moduleSpecifier)
-    ) {
-      return [];
-    }
-
-    if (
-      isTypeOnlyImportDeclaration(statement) ||
-      isTypeOnlyExportDeclaration(statement)
-    ) {
-      return [];
-    }
-
-    const importPath = statement.moduleSpecifier.text;
+function getImportedSourcePaths(sourcePath, parsedModule, workspacePackages) {
+  return getRuntimeImportPaths(parsedModule).flatMap((importPath) => {
     const importedSourcePath = getResolvedSourcePath(sourcePath, importPath);
 
     if (importedSourcePath) {
       return [importedSourcePath];
     }
 
-    const workspaceImportSourcePath = getWorkspaceImportSourcePath(
-      importPath,
-      workspacePackages,
-    );
+    const workspaceImportSourcePath = getWorkspaceImportSourcePath(importPath, workspacePackages);
 
     if (!workspaceImportSourcePath) {
       return [];
     }
 
-    return Array.isArray(workspaceImportSourcePath)
-      ? workspaceImportSourcePath
-      : [workspaceImportSourcePath];
+    return Array.isArray(workspaceImportSourcePath) ? workspaceImportSourcePath : [workspaceImportSourcePath];
   });
 }
 
-function getRuntimeSourceFiles(packageRoot, workspacePackages) {
+function getRuntimeSourceFiles(packageRoot, workspacePackages, entryPaths = getRuntimeEntryPaths(packageRoot)) {
   const sourceFiles = new Map();
-  const pendingSourcePaths = getRuntimeEntryPaths(packageRoot);
+  const pendingSourcePaths = [...entryPaths];
 
   while (pendingSourcePaths.length > 0) {
     const sourcePath = pendingSourcePaths.pop();
@@ -529,17 +446,20 @@ function getRuntimeSourceFiles(packageRoot, workspacePackages) {
     }
 
     const sourceText = nodeFs.readFileSync(sourcePath, "utf8");
-    const sourceFile = ts.createSourceFile(
-      sourcePath,
-      sourceText,
-      ts.ScriptTarget.Latest,
-      true,
-    );
+    const parsedSource = parseSync(sourcePath, sourceText);
 
-    sourceFiles.set(sourcePath, sourceFile);
-    pendingSourcePaths.push(
-      ...getImportedSourcePaths(sourcePath, sourceFile, workspacePackages),
-    );
+    if (parsedSource.errors.length > 0) {
+      throw new Error(
+        `Failed to parse ${sourcePath}:\n${parsedSource.errors.map((error) => error.message).join("\n")}`,
+      );
+    }
+
+    sourceFiles.set(sourcePath, {
+      module: parsedSource.module,
+      program: parsedSource.program,
+      sourceText,
+    });
+    pendingSourcePaths.push(...getImportedSourcePaths(sourcePath, parsedSource.module, workspacePackages));
   }
 
   return sourceFiles;
@@ -547,54 +467,72 @@ function getRuntimeSourceFiles(packageRoot, workspacePackages) {
 
 function isPropertyCallExpression(node, propertyName) {
   return (
-    ts.isCallExpression(node) &&
-    ts.isPropertyAccessExpression(node.expression) &&
-    node.expression.name.text === propertyName
+    node.type === "CallExpression" &&
+    node.callee.type === "MemberExpression" &&
+    !node.callee.computed &&
+    node.callee.property.type === "Identifier" &&
+    node.callee.property.name === propertyName
   );
 }
 
-function isTypeofFunctionCheck(node, identifierName) {
-  return (
-    ts.isBinaryExpression(node) &&
-    node.operatorToken.kind === ts.SyntaxKind.EqualsEqualsEqualsToken &&
-    ts.isTypeOfExpression(node.left) &&
-    ts.isIdentifier(node.left.expression) &&
-    node.left.expression.text === identifierName &&
-    ts.isStringLiteral(node.right) &&
-    node.right.text === "function"
-  );
-}
-
-function hasTypeofFunctionGuard(node, identifierName) {
-  let currentNode = node.parent;
-
-  while (currentNode) {
-    if (
-      ts.isIfStatement(currentNode) &&
-      isTypeofFunctionCheck(currentNode.expression, identifierName)
-    ) {
-      return true;
-    }
-
-    currentNode = currentNode.parent;
+function getTypeofFunctionCheckIdentifier(node) {
+  if (
+    node.type !== "BinaryExpression" ||
+    node.operator !== "===" ||
+    node.left.type !== "UnaryExpression" ||
+    node.left.operator !== "typeof" ||
+    node.left.argument.type !== "Identifier" ||
+    node.right.type !== "Literal" ||
+    node.right.value !== "function"
+  ) {
+    return undefined;
   }
 
-  return false;
+  return node.left.argument.name;
 }
 
-function findBrowserApiUsages(packageRoot, workspaceRoot, workspacePackages) {
-  const usages = [];
+function updateGuardCount(guardCounts, identifierName, change) {
+  if (!identifierName) {
+    return;
+  }
 
-  for (const [sourcePath, sourceFile] of getRuntimeSourceFiles(
-    packageRoot,
-    workspacePackages,
-  )) {
-    const visit = (node) => {
-      for (const browserApiCheck of browserApiChecks) {
-        if (browserApiCheck.matchesNode(node)) {
-          const { line, character } = sourceFile.getLineAndCharacterOfPosition(
-            node.getStart(sourceFile),
-          );
+  const nextCount = (guardCounts.get(identifierName) ?? 0) + change;
+
+  if (nextCount === 0) {
+    guardCounts.delete(identifierName);
+  } else {
+    guardCounts.set(identifierName, nextCount);
+  }
+}
+
+function getLineAndCharacterOfPosition(sourceText, position) {
+  const lines = sourceText.slice(0, position).split("\n");
+
+  return {
+    line: lines.length - 1,
+    character: (lines.at(-1) ?? "").length,
+  };
+}
+
+function findBrowserApiUsages(runtimeSourceFiles, workspaceRoot) {
+  const usages: Array<{ api: (typeof browserApiChecks)[number]; location: string }> = [];
+
+  for (const [sourcePath, parsedSource] of runtimeSourceFiles) {
+    const guardCounts = new Map();
+    const visitor = new Visitor({
+      IfStatement(node) {
+        updateGuardCount(guardCounts, getTypeofFunctionCheckIdentifier(node.test), 1);
+      },
+      "IfStatement:exit"(node) {
+        updateGuardCount(guardCounts, getTypeofFunctionCheckIdentifier(node.test), -1);
+      },
+      CallExpression(node) {
+        for (const browserApiCheck of browserApiChecks) {
+          if (!browserApiCheck.matchesNode(node, guardCounts)) {
+            continue;
+          }
+
+          const { line, character } = getLineAndCharacterOfPosition(parsedSource.sourceText, node.start);
 
           usages.push({
             api: browserApiCheck,
@@ -603,30 +541,30 @@ function findBrowserApiUsages(packageRoot, workspaceRoot, workspacePackages) {
               .replaceAll(nodePath.sep, "/")}:${line + 1}:${character + 1}`,
           });
         }
-      }
+      },
+    });
 
-      ts.forEachChild(node, visit);
-    };
-
-    visit(sourceFile);
+    visitor.visit(parsedSource.program);
   }
 
   return usages;
 }
 
 function shouldNotOwnBrowserBaseline(packageJson) {
-  return (
-    packageJson.name === "@microblink/repo-utils" ||
-    packageJson.name?.endsWith("-common")
-  );
+  return packageJson.name === "@microblink/repo-utils" || packageJson.name?.endsWith("-common");
 }
 
-function getDependencyBrowserSupportErrors(
-  packageJson,
-  packageMinimums,
-  workspacePackages,
-) {
-  const errors = [];
+function getBrowserslistTargets(packageJson, subpath = "") {
+  if (Array.isArray(packageJson.browserslist)) {
+    return packageJson.browserslist;
+  }
+
+  const environment = subpath === "core" || subpath === "ui" ? subpath : "production";
+  return packageJson.browserslist?.[environment];
+}
+
+function getDirectDependencyBrowserSupportErrors(packageJson, packageMinimums, workspacePackages) {
+  const errors: string[] = [];
 
   for (const dependencyName of Object.keys(packageJson.dependencies ?? {})) {
     const dependencyPackage = workspacePackages.get(dependencyName);
@@ -636,18 +574,54 @@ function getDependencyBrowserSupportErrors(
     }
 
     const { minimums: dependencyMinimums } = parseBrowserslistMinimums(
-      dependencyPackage.packageJson.browserslist,
+      getBrowserslistTargets(dependencyPackage.packageJson),
     );
 
     for (const [browserName, dependencyMinimum] of dependencyMinimums) {
       const packageMinimum = packageMinimums.get(browserName);
 
-      if (
-        packageMinimum &&
-        compareVersions(packageMinimum, dependencyMinimum) < 0
-      ) {
+      if (packageMinimum && compareVersions(packageMinimum, dependencyMinimum) < 0) {
         errors.push(
           `${packageJson.name ?? "Package"} declares ${browserName} >= ${packageMinimum}, but ${dependencyName} declares ${browserName} >= ${dependencyMinimum}.`,
+        );
+      }
+    }
+  }
+
+  return errors;
+}
+
+function getEntrypointDependencyBrowserSupportErrors(
+  packageName,
+  environment,
+  packageMinimums,
+  runtimeSourceFiles,
+  workspacePackages,
+) {
+  const errors: string[] = [];
+  const dependencyImports = new Map();
+
+  for (const parsedSource of runtimeSourceFiles.values()) {
+    for (const importPath of getRuntimeImportPaths(parsedSource.module)) {
+      const workspaceImport = getWorkspaceImportInfo(importPath, workspacePackages);
+
+      if (workspaceImport?.packageJson.browserslist) {
+        dependencyImports.set(importPath, workspaceImport);
+      }
+    }
+  }
+
+  for (const [importPath, dependencyImport] of dependencyImports) {
+    const { minimums: dependencyMinimums } = parseBrowserslistMinimums(
+      getBrowserslistTargets(dependencyImport.packageJson, dependencyImport.subpath),
+    );
+
+    for (const [browserName, dependencyMinimum] of dependencyMinimums) {
+      const packageMinimum = packageMinimums.get(browserName);
+
+      if (packageMinimum && compareVersions(packageMinimum, dependencyMinimum) < 0) {
+        errors.push(
+          `${packageName} ${splitBrowserEnvironmentLabels[environment]} declares ${browserName} >= ${packageMinimum}, but ${importPath} declares ${browserName} >= ${dependencyMinimum}.`,
         );
       }
     }
@@ -664,16 +638,14 @@ export function parseBrowserslistMinimums(browserslistConfig) {
     };
   }
 
-  const errors = [];
-  const minimums = new Map();
+  const errors: string[] = [];
+  const minimums = new Map<string, string>();
 
   for (const target of browserslistConfig) {
     const match = browserTargetPattern.exec(target);
 
     if (!match) {
-      errors.push(
-        `browserslist entry "${target}" must be an explicit minimum like "Chrome >= 96".`,
-      );
+      errors.push(`browserslist entry "${target}" must be an explicit minimum like "Chrome >= 96".`);
       continue;
     }
 
@@ -690,8 +662,80 @@ export function parseBrowserslistMinimums(browserslistConfig) {
   return { errors, minimums };
 }
 
+function getBrowserslistEnvironments(browserslistConfig) {
+  if (Array.isArray(browserslistConfig)) {
+    return {
+      errors: [],
+      environments: new Map([["production", browserslistConfig]]),
+      isSplit: false,
+    };
+  }
+
+  if (!browserslistConfig || typeof browserslistConfig !== "object") {
+    return {
+      errors: ["browserslist must be an array or a named environment object."],
+      environments: new Map(),
+      isSplit: false,
+    };
+  }
+
+  const environmentNames = Object.keys(browserslistConfig);
+  const errors: string[] = [];
+
+  for (const environment of splitBrowserEnvironments) {
+    if (!environmentNames.includes(environment)) {
+      errors.push(`browserslist is missing the ${environment} environment.`);
+    }
+  }
+
+  for (const environment of environmentNames) {
+    if (!splitBrowserEnvironments.some((supportedEnvironment) => supportedEnvironment === environment)) {
+      errors.push(`browserslist environment "${environment}" is not supported; use production, core, and ui.`);
+    }
+  }
+
+  return {
+    errors,
+    environments: new Map(
+      splitBrowserEnvironments.flatMap((environment) =>
+        environment in browserslistConfig ? [[environment, browserslistConfig[environment]]] : [],
+      ),
+    ),
+    isSplit: true,
+  };
+}
+
+function getRootBaselineErrors(packageName, environmentMinimums) {
+  const errors: string[] = [];
+  const rootMinimums = environmentMinimums.get("production");
+
+  if (!rootMinimums) {
+    return errors;
+  }
+
+  for (const environment of ["core", "ui"] as const) {
+    const entryMinimums = environmentMinimums.get(environment);
+
+    if (!entryMinimums) {
+      continue;
+    }
+
+    for (const [browserName, entryMinimum] of entryMinimums) {
+      const rootMinimum = rootMinimums.get(browserName);
+
+      if (rootMinimum && compareVersions(rootMinimum, entryMinimum) < 0) {
+        errors.push(
+          `${packageName} Root declares ${browserName} >= ${rootMinimum}, but ${splitBrowserEnvironmentLabels[environment]} declares ${browserName} >= ${entryMinimum}.`,
+        );
+      }
+    }
+  }
+
+  return errors;
+}
+
 export function formatBrowserSupportBullets(minimums) {
-  const bullets = [];
+  const bullets: string[] = [];
 
   const chrome = minimums.get("Chrome");
   const chromeAndroid = minimums.get("ChromeAndroid");
@@ -750,6 +794,22 @@ export function formatBrowserSupportBullets(minimums) {
   return bullets;
 }
 
+function formatBrowserSupportTable(environmentMinimums) {
+  const lines = ["| Browser | Root | `/core` | `/ui` |", "| --- | --- | --- | --- |"];
+
+  for (const [label, browserName] of browserSupportTableRows) {
+    const versions = splitBrowserEnvironments.map(
+      (environment) => environmentMinimums.get(environment)?.get(browserName) ?? "—",
+    );
+
+    if (versions.some((version) => version !== "—")) {
+      lines.push(`| ${label} | ${versions.join(" | ")} |`);
+    }
+  }
+
+  return lines;
+}
+
 function getBrowserSupportSection(readme) {
   const headingMatch = browserSupportHeadingPattern.exec(readme);
 
@@ -765,10 +825,7 @@ function getBrowserSupportSection(readme) {
     return readme.slice(sectionStart);
   }
 
-  return readme.slice(
-    sectionStart,
-    sectionStart + headingMatch[0].length + nextHeadingMatch.index,
-  );
+  return readme.slice(sectionStart, sectionStart + headingMatch[0].length + nextHeadingMatch.index);
 }
 
 function getBrowserSupportBullets(readme) {
@@ -779,45 +836,48 @@ function getBrowserSupportBullets(readme) {
   );
 }
 
+function normalizeBrowserSupportTable(lines) {
+  return lines.map((line) =>
+    line
+      .split("|")
+      .slice(1, -1)
+      .map((cell) => {
+        const value = cell.trim();
+        return /^-+$/.test(value) ? "---" : value;
+      })
+      .join(" | "),
+  );
+}
+
+function getBrowserSupportTable(readme) {
+  const tableLines =
+    getBrowserSupportSection(readme)
+      ?.split("\n")
+      .filter((line) => line.trimStart().startsWith("|")) ?? [];
+
+  return normalizeBrowserSupportTable(tableLines);
+}
+
 function getReadmeInfo(packageRoot) {
-  const internalReadme = readTextIfExists(
-    nodePath.join(packageRoot, internalReadmeFileName),
-  );
-  const githubReadme = readTextIfExists(
-    nodePath.join(packageRoot, githubReadmeFileName),
-  );
+  const internalReadme = readTextIfExists(nodePath.join(packageRoot, internalReadmeFileName));
+  const githubReadme = readTextIfExists(nodePath.join(packageRoot, githubReadmeFileName));
 
   return {
     internalReadme,
     publicReadme: githubReadme ?? internalReadme,
-    publicReadmeFileName: githubReadme
-      ? githubReadmeFileName
-      : internalReadmeFileName,
+    publicReadmeFileName: githubReadme ? githubReadmeFileName : internalReadmeFileName,
     hasGithubReadme: Boolean(githubReadme),
   };
 }
 
-function getPackageBrowserSupportErrors(
-  packageRoot,
-  workspaceRoot,
-  workspacePackages,
-) {
+function getPackageBrowserSupportErrors(packageRoot, workspaceRoot, workspacePackages) {
   const packageJsonPath = nodePath.join(packageRoot, "package.json");
   const packageJson = readJson(packageJsonPath);
   const packageName = formatPackageName(packageJson, packageRoot, workspaceRoot);
-  const {
-    internalReadme,
-    publicReadme,
-    publicReadmeFileName,
-    hasGithubReadme,
-  } = getReadmeInfo(packageRoot);
-  const errors = [];
+  const { internalReadme, publicReadme, publicReadmeFileName, hasGithubReadme } = getReadmeInfo(packageRoot);
+  const errors: string[] = [];
 
-  if (
-    hasGithubReadme &&
-    internalReadme &&
-    browserSupportHeadingPattern.test(internalReadme)
-  ) {
+  if (hasGithubReadme && internalReadme && browserSupportHeadingPattern.test(internalReadme)) {
     errors.push(
       `${packageName} README.md must not contain a Browser Support section when README.github.md exists; public browser support docs belong in README.github.md.`,
     );
@@ -825,9 +885,7 @@ function getPackageBrowserSupportErrors(
 
   if (shouldNotOwnBrowserBaseline(packageJson)) {
     if (packageJson.browserslist) {
-      errors.push(
-        `${packageName} must not declare browserslist; consuming product packages own browser baselines.`,
-      );
+      errors.push(`${packageName} must not declare browserslist; consuming product packages own browser baselines.`);
     }
 
     if (publicReadme && browserSupportHeadingPattern.test(publicReadme)) {
@@ -840,13 +898,10 @@ function getPackageBrowserSupportErrors(
   }
 
   const usesBrowserTargetedTooling =
-    packageUsesBrowserslistEsbuildTarget(packageRoot) ||
-    packageUsesCompatPlugin(packageRoot);
+    packageUsesBrowserslistEsbuildTarget(packageRoot) || packageUsesCompatPlugin(packageRoot, workspaceRoot);
 
   if (usesBrowserTargetedTooling && !packageJson.browserslist) {
-    errors.push(
-      `${packageName} uses browser-targeted tooling but does not declare package-local browserslist.`,
-    );
+    errors.push(`${packageName} uses browser-targeted tooling but does not declare package-local browserslist.`);
   }
 
   if (!packageJson.browserslist) {
@@ -854,112 +909,134 @@ function getPackageBrowserSupportErrors(
   }
 
   if (!usesBrowserTargetedTooling) {
-    errors.push(
-      `${packageName} declares browserslist but does not use browser-targeted tooling.`,
-    );
+    errors.push(`${packageName} declares browserslist but does not use browser-targeted tooling.`);
   }
 
-  const { errors: browserslistErrors, minimums } = parseBrowserslistMinimums(
-    packageJson.browserslist,
-  );
+  const browserslistEnvironments = getBrowserslistEnvironments(packageJson.browserslist);
+  const environmentMinimums = new Map();
 
-  errors.push(
-    ...browserslistErrors.map((error) => `${packageName}: ${error}`),
-  );
+  errors.push(...browserslistEnvironments.errors.map((error) => `${packageName}: ${error}`));
 
-  errors.push(
-    ...getDependencyBrowserSupportErrors(
-      packageJson,
-      minimums,
-      workspacePackages,
-    ),
-  );
+  for (const [environment, targets] of browserslistEnvironments.environments) {
+    const contractName = browserslistEnvironments.isSplit
+      ? `${packageName} ${splitBrowserEnvironmentLabels[environment]}`
+      : packageName;
+    const { errors: browserslistErrors, minimums } = parseBrowserslistMinimums(targets);
+    const entryPaths = getRuntimeEntryPaths(packageRoot, browserslistEnvironments.isSplit ? environment : undefined);
+    const runtimeSourceFiles = getRuntimeSourceFiles(packageRoot, workspacePackages, entryPaths);
 
-  for (const usage of findBrowserApiUsages(
-    packageRoot,
-    workspaceRoot,
-    workspacePackages,
-  )) {
-    const unsupportedTargets = [];
+    environmentMinimums.set(environment, minimums);
+    errors.push(...browserslistErrors.map((error) => `${contractName}: ${error}`));
 
-    for (const [browserName, packageMinimum] of minimums) {
-      const compatBrowserName = browserCompatTargetNames[browserName];
-      const supportedVersion = getSupportedVersion(
-        usage.api.compatPath,
-        compatBrowserName,
+    if (browserslistEnvironments.isSplit && entryPaths.length === 0) {
+      errors.push(`${contractName} has no matching source entrypoint.`);
+    }
+
+    if (browserslistEnvironments.isSplit) {
+      errors.push(
+        ...getEntrypointDependencyBrowserSupportErrors(
+          packageName,
+          environment,
+          minimums,
+          runtimeSourceFiles,
+          workspacePackages,
+        ),
       );
+    } else {
+      errors.push(...getDirectDependencyBrowserSupportErrors(packageJson, minimums, workspacePackages));
+    }
 
-      if (
-        supportedVersion &&
-        compareVersions(packageMinimum, supportedVersion) < 0
-      ) {
-        unsupportedTargets.push(
-          `${browserName} >= ${packageMinimum} (native support requires ${supportedVersion})`,
+    for (const usage of findBrowserApiUsages(runtimeSourceFiles, workspaceRoot)) {
+      const unsupportedTargets: string[] = [];
+
+      for (const [browserName, packageMinimum] of minimums) {
+        const compatBrowserName = browserCompatTargetNames[browserName];
+        const supportedVersion = getSupportedVersion(usage.api.compatPath, compatBrowserName);
+
+        if (supportedVersion && compareVersions(packageMinimum, supportedVersion) < 0) {
+          unsupportedTargets.push(`${browserName} >= ${packageMinimum} (native support requires ${supportedVersion})`);
+        }
+      }
+
+      if (unsupportedTargets.length > 0) {
+        const browserslistOwner = browserslistEnvironments.isSplit ? "its" : "package";
+        errors.push(
+          `${contractName} uses native ${usage.api.label} in ${usage.location}, but ${browserslistOwner} browserslist includes unsupported targets: ${unsupportedTargets.join(", ")}.`,
         );
       }
     }
 
-    if (unsupportedTargets.length > 0) {
+    try {
+      browserslist(undefined, {
+        env: browserslistEnvironments.isSplit ? environment : undefined,
+        path: packageRoot,
+      });
+    } catch (error) {
       errors.push(
-        `${packageName} uses native ${usage.api.label} in ${usage.location}, but package browserslist includes unsupported targets: ${unsupportedTargets.join(", ")}.`,
+        `${contractName} browserslist does not resolve: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   }
 
-  try {
-    browserslist(packageJson.browserslist, { path: packageRoot });
-  } catch (error) {
-    errors.push(
-      `${packageName} browserslist does not resolve: ${
-        error instanceof Error ? error.message : String(error)
-      }`,
-    );
+  if (browserslistEnvironments.isSplit) {
+    errors.push(...getRootBaselineErrors(packageName, environmentMinimums));
   }
 
   if (!publicReadme) {
-    errors.push(
-      `${packageName} declares browserslist but has no README.md or README.github.md.`,
-    );
+    errors.push(`${packageName} declares browserslist but has no README.md or README.github.md.`);
     return errors;
   }
 
-  const actualBullets = getBrowserSupportBullets(publicReadme);
-  const expectedBullets = formatBrowserSupportBullets(minimums);
+  if (browserslistEnvironments.isSplit) {
+    const actualTable = getBrowserSupportTable(publicReadme);
+    const expectedTable = normalizeBrowserSupportTable(formatBrowserSupportTable(environmentMinimums));
 
-  if (actualBullets.length === 0) {
-    errors.push(
-      `${packageName} ${publicReadmeFileName} is missing a Browser Support bullet list.`,
-    );
-  } else if (actualBullets.join("\n") !== expectedBullets.join("\n")) {
-    errors.push(
-      [
-        `${packageName} ${publicReadmeFileName} Browser Support bullets do not match package browserslist.`,
-        "Expected:",
-        ...expectedBullets,
-        "Actual:",
-        ...actualBullets,
-      ].join("\n"),
-    );
+    if (actualTable.length === 0) {
+      errors.push(`${packageName} ${publicReadmeFileName} is missing a Browser Support table.`);
+    } else if (actualTable.join("\n") !== expectedTable.join("\n")) {
+      errors.push(
+        [
+          `${packageName} ${publicReadmeFileName} Browser Support table does not match package browserslist environments.`,
+          "Expected:",
+          ...formatBrowserSupportTable(environmentMinimums),
+          "Actual:",
+          ...getBrowserSupportSection(publicReadme)
+            .split("\n")
+            .filter((line) => line.trimStart().startsWith("|")),
+        ].join("\n"),
+      );
+    }
+  } else {
+    const minimums = environmentMinimums.get("production");
+    const actualBullets = getBrowserSupportBullets(publicReadme);
+    const expectedBullets = formatBrowserSupportBullets(minimums);
+
+    if (actualBullets.length === 0) {
+      errors.push(`${packageName} ${publicReadmeFileName} is missing a Browser Support bullet list.`);
+    } else if (actualBullets.join("\n") !== expectedBullets.join("\n")) {
+      errors.push(
+        [
+          `${packageName} ${publicReadmeFileName} Browser Support bullets do not match package browserslist.`,
+          "Expected:",
+          ...expectedBullets,
+          "Actual:",
+          ...actualBullets,
+        ].join("\n"),
+      );
+    }
   }
 
   return errors;
 }
 
 export function getBrowserSupportErrors(
-  workspaceRoot = nodePath.resolve(
-    nodePath.dirname(fileURLToPath(import.meta.url)),
-    "../..",
-  ),
+  workspaceRoot = nodePath.resolve(nodePath.dirname(fileURLToPath(import.meta.url)), "../.."),
 ) {
   const packageRoots = resolveWorkspacePackageRoots(workspaceRoot);
   const workspacePackages = getWorkspacePackageMap(packageRoots);
 
   return packageRoots.flatMap((packageRoot) =>
-    getPackageBrowserSupportErrors(
-      packageRoot,
-      workspaceRoot,
-      workspacePackages,
-    ),
+    getPackageBrowserSupportErrors(packageRoot, workspaceRoot, workspacePackages),
   );
 }
 

@@ -12,7 +12,7 @@
 
 ### cameraPermissionGranted?
 
-> `optional` **cameraPermissionGranted**: `boolean`
+> `optional` **cameraPermissionGranted?**: `boolean`
 
 ***
 

@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /** Represents the type of scanned barcode */
 export type BarcodeType =
@@ -32,10 +30,7 @@ export type BarcodeData = {
   /** Format of recognized barcode. */
   barcodeType: BarcodeType;
 
-  /**
-   * True if returned result is uncertain, i.e. if scanned barcode was
-   * incomplete (has parts of it missing).
-   */
+  /** True if returned result is uncertain, i.e. if scanned barcode was incomplete (has parts of it missing). */
   uncertain: boolean;
 
   /** String representation of data inside barcode. */

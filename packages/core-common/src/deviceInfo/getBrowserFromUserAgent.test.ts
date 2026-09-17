@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, describe, expect, test, vi } from "vitest";
+
 import { BrowserInfo, detectBrowser } from "./getBrowserFromUserAgent";
 
 describe("detectBrowser", () => {
@@ -119,13 +118,10 @@ describe("detectBrowser", () => {
     ],
   ];
 
-  test.each(testCases)(
-    "should detect browser for %s",
-    (userAgent, expected) => {
-      vi.stubGlobal("navigator", { userAgent });
-      expect(detectBrowser()).toEqual(expected);
-    },
-  );
+  test.each(testCases)("should detect browser for %s", (userAgent, expected) => {
+    vi.stubGlobal("navigator", { userAgent });
+    expect(detectBrowser()).toEqual(expected);
+  });
 
   // Test for iOS WebView
   test("should detect iOS WebView", () => {

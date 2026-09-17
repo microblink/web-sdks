@@ -1,13 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { beforeAll, describe, expect, test, vi } from "vitest";
-import {
-  createCameras,
-  findIdealCamera,
-  obtainVideoInputDevices,
-} from "../core/cameraUtils";
+
+import { createCameras, findIdealCamera, obtainVideoInputDevices } from "../core/cameraUtils";
 import { mediaMocker } from "../media-mock/MediaMocker";
 
 // Test constants for better maintainability
@@ -66,17 +61,13 @@ describe("iPhones", () => {
     test("iPhone X selects Back Camera when provided back facing", async () => {
       let cameraInstances = await getCameraInstances();
 
-      expect(
-        (await findIdealCamera(cameraInstances, "1080p", "back")).name,
-      ).toBe("Back Camera");
+      expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe("Back Camera");
 
       mediaMocker.reverseCameraOrder();
       cameraInstances = await getCameraInstances();
 
       // This is expected
-      expect(
-        (await findIdealCamera(cameraInstances, "1080p", "back")).name,
-      ).toBe("Back Telephoto Camera");
+      expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe("Back Telephoto Camera");
     });
   });
 
@@ -93,31 +84,23 @@ describe("iPhones", () => {
     test("iPhone 15 selects Back Dual Wide Camera when requesting back facing ", async () => {
       let cameraInstances = await getCameraInstances();
 
-      expect(
-        (await findIdealCamera(cameraInstances, "1080p", "back")).name,
-      ).toBe(DEVICE_NAMES.IPHONE_15.BACK);
+      expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe(DEVICE_NAMES.IPHONE_15.BACK);
 
       mediaMocker.reverseCameraOrder();
       cameraInstances = await getCameraInstances();
 
-      expect(
-        (await findIdealCamera(cameraInstances, "1080p", "back")).name,
-      ).toBe(DEVICE_NAMES.IPHONE_15.BACK);
+      expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe(DEVICE_NAMES.IPHONE_15.BACK);
     });
 
     test("iPhone 15 selects Front Camera when requesting front facing ", async () => {
       let cameraInstances = await getCameraInstances();
 
-      expect(
-        (await findIdealCamera(cameraInstances, "1080p", "front")).name,
-      ).toBe(DEVICE_NAMES.IPHONE_15.FRONT);
+      expect((await findIdealCamera(cameraInstances, "1080p", "front")).name).toBe(DEVICE_NAMES.IPHONE_15.FRONT);
 
       mediaMocker.reverseCameraOrder();
       cameraInstances = await getCameraInstances();
 
-      expect(
-        (await findIdealCamera(cameraInstances, "1080p", "front")).name,
-      ).toBe(DEVICE_NAMES.IPHONE_15.FRONT);
+      expect((await findIdealCamera(cameraInstances, "1080p", "front")).name).toBe(DEVICE_NAMES.IPHONE_15.FRONT);
     });
 
     describe("Camera picking on iPhone SE", () => {
@@ -131,31 +114,23 @@ describe("iPhones", () => {
       test("iPhone SE selects Back Camera when requesting back facing ", async () => {
         let cameraInstances = await getCameraInstances();
 
-        expect(
-          (await findIdealCamera(cameraInstances, "1080p", "back")).name,
-        ).toBe(DEVICE_NAMES.IPHONE_SE.BACK);
+        expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe(DEVICE_NAMES.IPHONE_SE.BACK);
 
         mediaMocker.reverseCameraOrder();
         cameraInstances = await getCameraInstances();
 
-        expect(
-          (await findIdealCamera(cameraInstances, "1080p", "back")).name,
-        ).toBe(DEVICE_NAMES.IPHONE_SE.BACK);
+        expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe(DEVICE_NAMES.IPHONE_SE.BACK);
       });
 
       test("iPhone SE selects Front Camera when requesting front facing ", async () => {
         let cameraInstances = await getCameraInstances();
 
-        expect(
-          (await findIdealCamera(cameraInstances, "1080p", "front")).name,
-        ).toBe(DEVICE_NAMES.IPHONE_SE.FRONT);
+        expect((await findIdealCamera(cameraInstances, "1080p", "front")).name).toBe(DEVICE_NAMES.IPHONE_SE.FRONT);
 
         mediaMocker.reverseCameraOrder();
         cameraInstances = await getCameraInstances();
 
-        expect(
-          (await findIdealCamera(cameraInstances, "1080p", "front")).name,
-        ).toBe(DEVICE_NAMES.IPHONE_SE.FRONT);
+        expect((await findIdealCamera(cameraInstances, "1080p", "front")).name).toBe(DEVICE_NAMES.IPHONE_SE.FRONT);
       });
     });
   });
@@ -172,32 +147,24 @@ describe("Camera picking on Samsung S21FE", () => {
   test("Samsung S21FE selects camera2 0, facing back when requesting back facing ", async () => {
     let cameraInstances = await getCameraInstances();
 
-    expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe(
-      DEVICE_NAMES.SAMSUNG_S21FE.BACK,
-    );
+    expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe(DEVICE_NAMES.SAMSUNG_S21FE.BACK);
 
     mediaMocker.reverseCameraOrder();
     cameraInstances = await getCameraInstances();
 
-    expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe(
-      DEVICE_NAMES.SAMSUNG_S21FE.BACK,
-    );
+    expect((await findIdealCamera(cameraInstances, "1080p", "back")).name).toBe(DEVICE_NAMES.SAMSUNG_S21FE.BACK);
   });
 
   test("Samsung S21FE selects camera2 3, facing front when requesting front facing ", async () => {
     let cameraInstances = await getCameraInstances();
 
     // Ordering matters here
-    expect(
-      (await findIdealCamera(cameraInstances, "1080p", "front")).name,
-    ).toBe("camera2 1, facing front");
+    expect((await findIdealCamera(cameraInstances, "1080p", "front")).name).toBe("camera2 1, facing front");
 
     mediaMocker.reverseCameraOrder();
     cameraInstances = await getCameraInstances();
 
-    expect(
-      (await findIdealCamera(cameraInstances, "1080p", "front")).name,
-    ).toBe(DEVICE_NAMES.SAMSUNG_S21FE.FRONT);
+    expect((await findIdealCamera(cameraInstances, "1080p", "front")).name).toBe(DEVICE_NAMES.SAMSUNG_S21FE.FRONT);
   });
 });
 
@@ -213,11 +180,7 @@ describe("Camera picking on desktop with single front facing camera", () => {
   test("Desktop with single front facing camera returns the front camera even when back facing is requested", async () => {
     const cameraInstances = await getCameraInstances();
 
-    const selectedCamera = await findIdealCamera(
-      cameraInstances,
-      "1080p",
-      "back",
-    );
+    const selectedCamera = await findIdealCamera(cameraInstances, "1080p", "back");
     expect(selectedCamera.name).toBe(DEVICE_NAMES.DESKTOP.FRONT);
     expect(selectedCamera.facingMode).toBe("front");
   });
@@ -225,11 +188,7 @@ describe("Camera picking on desktop with single front facing camera", () => {
   test("Desktop with single front facing camera returns the front camera when front facing is requested", async () => {
     const cameraInstances = await getCameraInstances();
 
-    const selectedCamera = await findIdealCamera(
-      cameraInstances,
-      "1080p",
-      "front",
-    );
+    const selectedCamera = await findIdealCamera(cameraInstances, "1080p", "front");
     expect(selectedCamera.name).toBe(DEVICE_NAMES.DESKTOP.FRONT);
     expect(selectedCamera.facingMode).toBe("front");
   });

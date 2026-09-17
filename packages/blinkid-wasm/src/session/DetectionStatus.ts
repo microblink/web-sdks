@@ -1,12 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * Represents the status of the document detection process.
  *
- * This type represents all possible states that can occur during document
- * detection:
+ * This type represents all possible states that can occur during document detection:
  *
  * - `failed`
  *

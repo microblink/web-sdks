@@ -2,7 +2,26 @@
 
 This package provides camera management for web applications. It handles camera selection, permissions, video stream management, and provides access to video frames for further processing. It is framework-agnostic and can be used with or without a UI.
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/camera-manager`:
+
+| Entrypoint | Minified | Gzip     |
+| ---------- | -------- | -------- |
+| `root`     | 92.41 kB | 26.20 kB |
+| `/core`    | 41.72 kB | 12.78 kB |
+| `/ui`      | 59.81 kB | 16.48 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Overview
+
+See the [custom UI example](../../apps/examples/camera-manager-custom-ui/) for a custom interface built with the `/core` entrypoint.
 
 - Handles camera selection, permissions, and video stream lifecycle.
 - Provides access to video frames for downstream processing.
@@ -10,14 +29,17 @@ This package provides camera management for web applications. It handles camera 
 
 ## Browser Support
 
-This package supports camera-based flows in these browser versions and newer:
+The package exports support these browser versions and newer:
 
-- Chrome / Chromium 91 (desktop and Android)
-- Edge 91
-- Opera 84
-- Firefox 132 (desktop)
-- Safari 15.4 (macOS)
-- iOS Safari 15.4
+| Browser                     | Root | `/core` | `/ui` |
+| --------------------------- | ---- | ------- | ----- |
+| Chrome / Chromium (desktop) | 91   | 91      | 91    |
+| Chrome / Chromium (Android) | 91   | 91      | 91    |
+| Edge                        | 91   | 91      | 91    |
+| Opera                       | 84   | 84      | 84    |
+| Firefox (desktop)           | 132  | 132     | 132   |
+| Safari (macOS)              | 15.4 | 15.4    | 15.4  |
+| iOS Safari                  | 15.4 | 15.4    | 15.4  |
 
 The package must run in a
 [secure context](https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts)
@@ -48,10 +70,13 @@ pnpm add @microblink/camera-manager
 
 ## Usage
 
-### Basic Example
+Use `/core` for framework-independent camera management and `/ui` for the built-in interface. The package root still
+exports both entrypoints for compatibility until the next major release.
+
+### Core API
 
 ```js
-import { CameraManager } from "@microblink/camera-manager";
+import { CameraManager } from "@microblink/camera-manager/core";
 
 const cameraManager = new CameraManager();
 
@@ -92,14 +117,70 @@ See the [`camera-manager` example](../../apps/examples/camera-manager/src/App.ts
 
 ### UI Integration
 
+The root and `/ui` entries require the UI peer dependencies. Install them explicitly; they are optional package peers
+only so `/core` consumers do not install a Solid runtime:
+
+```sh
+npm install solid-js @ark-ui/solid solid-zustand @solid-primitives/keyed
+```
+
 To use the built-in UI, use:
 
 ```js
-import { createCameraManagerUi } from "@microblink/camera-manager";
+import { CameraManager } from "@microblink/camera-manager/core";
+import { createCameraManagerUi } from "@microblink/camera-manager/ui";
 
 const cameraUi = await createCameraManagerUi(cameraManager, document.body);
 // Optionally, add cleanup:
 cameraUi.dismount();
+```
+
+Camera selector visibility can be configured without changing automatic camera
+selection or the `preferredCameraDeviceId` behavior:
+
+```js
+const cameraUi = await createCameraManagerUi(cameraManager, document.body, {
+  showCameraSelector: false,
+});
+```
+
+`showCameraSelector` defaults to `true`. The selector is rendered when multiple
+cameras are available.
+
+#### Styling
+
+The Camera Manager UI can be branded by setting these CSS custom properties on
+its host element:
+
+- `--mb-ui-font`
+- `--color-primary`
+- `--color-success`
+- `--color-error`
+- `--color-warning`
+
+The semantic color properties accept space-separated RGB channel values, such
+as `--color-primary: 0 98 242`.
+
+The following Shadow Parts are supported customization seams:
+
+- `capture-screen-part`
+- `video-element-part`
+- `camera-select-part`
+- `mirror-camera-button-part`
+- `torch-button-part`
+- `close-button-part`
+
+For example:
+
+```css
+#mb-camera-host {
+  --mb-ui-font: "Inter", sans-serif;
+  --color-primary: 32 94 224;
+}
+
+#mb-camera-host::part(camera-select-part) {
+  max-width: 20rem;
+}
 ```
 
 ### Internationalization

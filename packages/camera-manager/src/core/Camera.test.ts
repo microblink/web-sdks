@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { beforeEach, describe, expect, test, vi } from "vitest";
+
 import { createMockInputDeviceInfo } from "../media-mock/createInputDeviceInfo";
 import { Camera, VideoResolutionName, videoResolutions } from "./Camera";
 
@@ -125,9 +124,7 @@ describe("Camera resolution fallback", () => {
     // Verify second call was with 1080p constraints
     const secondCall = mockGetUserMedia.mock.calls[1][0];
     expect(secondCall.video.width.ideal).toBe(videoResolutions["1080p"].width);
-    expect(secondCall.video.height.ideal).toBe(
-      videoResolutions["1080p"].height,
-    );
+    expect(secondCall.video.height.ideal).toBe(videoResolutions["1080p"].height);
   });
 
   test("should fallback from 1080p to 720p when 1080p fails", async () => {
@@ -179,9 +176,7 @@ describe("Camera resolution fallback", () => {
       }),
     );
 
-    await expect(camera.startStream("720p")).rejects.toThrow(
-      "Failed to get camera stream",
-    );
+    await expect(camera.startStream("720p")).rejects.toThrow("Failed to get camera stream");
   });
 
   test("should use maxSupportedResolution when available", async () => {
@@ -233,9 +228,7 @@ describe("Camera resolution fallback", () => {
   });
 
   test("should handle video resolution names correctly", () => {
-    const resolutionNames: VideoResolutionName[] = Object.keys(
-      videoResolutions,
-    ) as VideoResolutionName[];
+    const resolutionNames: VideoResolutionName[] = Object.keys(videoResolutions) as VideoResolutionName[];
     expect(resolutionNames).toEqual(["720p", "1080p", "4k"]);
 
     // Test that each resolution has correct dimensions

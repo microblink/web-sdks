@@ -1,11 +1,10 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
   "mainEntryPointFilePath": "<projectFolder>/types/index.d.ts",
-  "bundledPackages": [
-    "@microblink/feedback-stabilizer",
-    "@microblink/ux-common"
-  ],
-  "compiler": {},
+  "bundledPackages": ["@microblink/feedback-stabilizer", "@microblink/ux-common"],
+  "compiler": {
+    "tsconfigFilePath": "<projectFolder>/tsconfig.api-extractor.json"
+  },
   "apiReport": {
     "enabled": false
   },

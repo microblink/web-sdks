@@ -1,11 +1,6 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-/**
- * RedactionMode is used to define level of redaction performed on recognizer
- * result.
- */
+/** RedactionMode is used to define level of redaction performed on recognizer result. */
 export type RedactionMode =
   /** Redaction will not be performed. */
   | "none"

@@ -1,15 +1,13 @@
 {
   "name": "@microblink/core-common",
-  "private": true,
   "version": "1.0.2",
-  "scripts": {
-    "build": "tsc",
-    "build:publish": "tsc",
-    "clean": "rimraf .turbo types dist *.tgz",
-    "lint": "tsc --emitDeclarationOnly false --noEmit",
-    "test": "vitest --run",
-    "test:watch": "vitest --watch"
-  },
+  "private": true,
+  "keywords": [],
+  "license": "ISC",
+  "files": [
+    "dist",
+    "types"
+  ],
   "type": "module",
   "exports": {
     "./createProxyWorker": {
@@ -34,22 +32,29 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types dist *.tgz",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
   "dependencies": {
-    "comlink": "^4.4.2",
-    "common-tags": "^1.8.2",
-    "nanoid": "^5.0.2"
+    "comlink": "catalog:",
+    "common-tags": "catalog:utils",
+    "nanoid": "^5.1.16"
   },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
-    "@types/common-tags": "^1.8.3",
-    "rimraf": "^6.0.1",
-    "typescript": "5.8.3",
-    "vitest": "^3.0.8"
-  },
-  "keywords": [],
-  "license": "ISC"
+    "@types/common-tags": "catalog:",
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "typescript": "catalog:typescript",
+    "vitest": "catalog:test"
+  }
 }

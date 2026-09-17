@@ -10,9 +10,9 @@
 
 The worker scanning session.
 
-## Type declaration
+## Type Declaration
 
-### getSessionId()
+### getSessionId
 
 > **getSessionId**: () => `string`
 
@@ -24,7 +24,7 @@ Gets the session ID.
 
 The session ID.
 
-### getSessionNumber()
+### getSessionNumber
 
 > **getSessionNumber**: () => `number`
 
@@ -36,7 +36,7 @@ Gets the session number.
 
 The session number.
 
-### getSettings()
+### getSettings
 
 > **getSettings**: () => `BlinkCardSessionSettings`
 
@@ -52,7 +52,7 @@ The settings.
 
 > **ping**: [`BlinkCardWorker`](../classes/BlinkCardWorker.md)\[`"reportPinglet"`\]
 
-### process()
+### process
 
 > **process**: (`image`) => [`ProcessResultWithBuffer`](ProcessResultWithBuffer.md)
 
@@ -70,7 +70,7 @@ The settings.
 
 > **sendPinglets**: [`BlinkCardWorker`](../classes/BlinkCardWorker.md)\[`"sendPinglets"`\]
 
-### showDemoOverlay()
+### showDemoOverlay
 
 > **showDemoOverlay**: () => `boolean`
 
@@ -82,7 +82,7 @@ Shows the demo overlay.
 
 Whether the demo overlay is shown.
 
-### showProductionOverlay()
+### showProductionOverlay
 
 > **showProductionOverlay**: () => `boolean`
 

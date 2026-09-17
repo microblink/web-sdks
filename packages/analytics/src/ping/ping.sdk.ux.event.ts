@@ -3,12 +3,10 @@
  *
  * AUTO-GENERATED FILE!!! DO NOT MODIFY!!!
  *
- * ANY UNAUTHORIZED USE OR SALE, DUPLICATION, OR DISTRIBUTION
- * OF THIS PROGRAM OR ANY OF ITS PARTS, IN SOURCE OR BINARY FORMS,
- * WITH OR WITHOUT MODIFICATION, WITH THE PURPOSE OF ACQUIRING
- * UNLAWFUL MATERIAL OR ANY OTHER BENEFIT IS PROHIBITED!
- * THIS PROGRAM IS PROTECTED BY COPYRIGHT LAWS AND YOU MAY NOT
- * REVERSE ENGINEER, DECOMPILE, OR DISASSEMBLE IT.
+ * ANY UNAUTHORIZED USE OR SALE, DUPLICATION, OR DISTRIBUTION OF THIS PROGRAM OR ANY OF ITS PARTS, IN SOURCE OR BINARY
+ * FORMS, WITH OR WITHOUT MODIFICATION, WITH THE PURPOSE OF ACQUIRING UNLAWFUL MATERIAL OR ANY OTHER BENEFIT IS
+ * PROHIBITED! THIS PROGRAM IS PROTECTED BY COPYRIGHT LAWS AND YOU MAY NOT REVERSE ENGINEER, DECOMPILE, OR DISASSEMBLE
+ * IT.
  */
 
 import type { PingBase } from "./ping.base";
@@ -18,6 +16,8 @@ export type PingUxEventData = {
   errorMessageType?: ErrorMessageType;
   alertType?: AlertType;
   helpCloseType?: HelpCloseType;
+  cameraFailureCategory?: string;
+  closeReason?: CloseReason;
 };
 type EventType =
   | "CameraStarted"
@@ -32,7 +32,9 @@ type EventType =
   | "StepTimeout"
   | "AppMovedToBackground"
   | "InactivityTimeout"
-  | "UnsupportedBarcodeTimeout";
+  | "UnsupportedBarcodeTimeout"
+  | "CameraOpenFailed"
+  | "FaceCaptureScreenDisplayed";
 type ErrorMessageType =
   | "MoveCloser"
   | "MoveFarther"
@@ -53,12 +55,7 @@ type AlertType =
   | "InactivityTimeout"
   | "UnsupportedBarcodeTimeout";
 type HelpCloseType = "ContentSkipped" | "ContentFullyViewed";
+type CloseReason = "User" | "Sdk" | "SystemError";
 
-/**
- * Ping type for ping.sdk.ux.event
- */
-export type PingUxEvent = PingBase<
-  "ping.sdk.ux.event",
-  "1.2.0",
-  PingUxEventData
->;
+/** Ping type for ping.sdk.ux.event */
+export type PingUxEvent = PingBase<"ping.sdk.ux.event", "1.3.0", PingUxEventData>;

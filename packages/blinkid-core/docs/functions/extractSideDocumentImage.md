@@ -6,7 +6,7 @@
 
 # Function: extractSideDocumentImage()
 
-> **extractSideDocumentImage**(`blinkIdScanningResult`, `side`): `null` \| `ImageData`
+> **extractSideDocumentImage**(`blinkIdScanningResult`, `side`): `ImageData` \| `null`
 
 Extracts the document image for a given side from the scanning result.
 
@@ -26,6 +26,6 @@ The side to extract the document image for.
 
 ## Returns
 
-`null` \| `ImageData`
+`ImageData` \| `null`
 
 The document image for the given side.

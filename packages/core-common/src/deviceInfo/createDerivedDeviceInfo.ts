@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { DerivedDeviceInfo } from "./deviceInfo";
 import { getAppleDeviceModel } from "./getAppleDeviceModel";
@@ -8,10 +6,7 @@ import { detectBrowser } from "./getBrowserFromUserAgent";
 import { getOsFromUserAgent, OperatingSystem } from "./getOsFromUserAgent";
 import type { FormFactor, UADataValues } from "./navigator-types";
 
-export function createDerivedDeviceInfo(
-  userAgent: string,
-  userAgentData?: UADataValues,
-): DerivedDeviceInfo {
+export function createDerivedDeviceInfo(userAgent: string, userAgentData?: UADataValues): DerivedDeviceInfo {
   const appleDeviceModel = getAppleDeviceModel();
 
   // Get model
@@ -56,20 +51,15 @@ export function createDerivedDeviceInfo(
 
   if (userAgentData?.brands?.length) {
     const significantBrand =
-      userAgentData.brands.find(
-        (b) => !/not.a.brand/i.test(b.brand) && b.brand !== "Chromium",
-      ) ?? userAgentData.brands.find((b) => !/not.a.brand/i.test(b.brand));
+      userAgentData.brands.find((b) => !/not.a.brand/i.test(b.brand) && b.brand !== "Chromium") ??
+      userAgentData.brands.find((b) => !/not.a.brand/i.test(b.brand));
 
     browserBrand = significantBrand?.brand ?? "";
 
     if (userAgentData.fullVersionList) {
-      browserVersion =
-        userAgentData.fullVersionList.find((b) => b.brand === browserBrand)
-          ?.version ?? "";
+      browserVersion = userAgentData.fullVersionList.find((b) => b.brand === browserBrand)?.version ?? "";
     } else {
-      browserVersion =
-        userAgentData.brands.find((b) => b.brand === browserBrand)?.version ??
-        "";
+      browserVersion = userAgentData.brands.find((b) => b.brand === browserBrand)?.version ?? "";
     }
   } else {
     const browserInfo = detectBrowser();

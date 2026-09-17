@@ -1,5 +1,12 @@
 # @microblink/wasm-common
 
+## 2.3.0
+
+###
+
+- Improved typescript type definitions
+- Added `simd-relaxed` and `simd-relaxed-threads` to the `wasVariants` constant
+
 ## 2.2.0
 
 ### Minor Changes

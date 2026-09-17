@@ -8,13 +8,10 @@
 
 > **BlinkIdVerifyRequestVerificationContext** = `"Remote"` \| `"InPerson"`
 
-Defines the context under which document verification is performed as part of
-the `UseCase` settings. It describes the setup and conditions in which
-verification occurs.
+Defines the context under which document verification is performed as part of the `UseCase` settings. It describes
+the setup and conditions in which verification occurs.
 
-- `"Remote"`: Default policy. Document verification is performed in a remote
-  setting where a user is scanning the document in their own space,
-  unsupervised.
-- `"InPerson"`: Document verification is performed in an in-person environment
-  in which a trained employee is scanning the document. <br/> Document
-  liveness checks are not performed when `InPerson` policy is set.
+- `"Remote"`: Default policy. Document verification is performed in a remote setting where a user is scanning the
+  document in their own space, unsupervised.
+- `"InPerson"`: Document verification is performed in an in-person environment in which a trained employee is scanning
+  the document. <br/> Document liveness checks are not performed when `InPerson` policy is set.

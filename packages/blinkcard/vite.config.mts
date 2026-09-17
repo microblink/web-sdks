@@ -1,15 +1,12 @@
 /// <reference types="vitest/config" />
 
-import {
-  getPackagePath,
-  linkResources,
-  getBrowserslistEsbuildTarget,
-} from "@microblink/repo-utils";
+import { getPackagePath, linkResources, getBrowserslistEsbuildTarget } from "@microblink/repo-utils";
 import { defineConfig } from "vite";
-import { dependencies } from "./package.json";
 import { fs, path } from "zx";
 
-const resourcesDir = path.resolve(__dirname, "public", "resources");
+import { dependencies } from "./package.json" with { type: "json" };
+
+const resourcesDir = path.resolve(import.meta.dirname, "public", "resources");
 
 export default defineConfig((config) => ({
   build: {
@@ -51,9 +48,6 @@ async function moveBlinkCardResources() {
   fs.ensureDirSync(resourcesDir);
 
   for (const filePath of files) {
-    await linkResources(
-      path.join(distPath, filePath),
-      path.join(resourcesDir, filePath),
-    );
+    await linkResources(path.join(distPath, filePath), path.join(resourcesDir, filePath));
   }
 }

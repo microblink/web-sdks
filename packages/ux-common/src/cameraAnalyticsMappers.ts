@@ -1,24 +1,10 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type {
-  PingCameraHardwareInfoData,
-  PingCameraInputInfoData,
-} from "@microblink/analytics/ping";
-import type {
-  Camera,
-  ExtractionArea,
-  FacingMode,
-  Resolution,
-} from "@microblink/camera-manager";
+import type { PingCameraHardwareInfoData, PingCameraInputInfoData } from "@microblink/analytics/ping";
+import type { Camera, ExtractionArea, FacingMode, Resolution } from "@microblink/camera-manager/core";
 
-/**
- * Maps a camera facing mode to the analytics ping facing value.
- */
-function mapCameraFacingToPingFacing(
-  facing: FacingMode,
-): PingCameraInputInfoData["cameraFacing"] {
+/** Maps a camera facing mode to the analytics ping facing value. */
+function mapCameraFacingToPingFacing(facing: FacingMode): PingCameraInputInfoData["cameraFacing"] {
   switch (facing) {
     case "front":
       return "Front";
@@ -29,9 +15,7 @@ function mapCameraFacingToPingFacing(
   }
 }
 
-/**
- * Converts camera input data to the analytics ping shape.
- */
+/** Converts camera input data to the analytics ping shape. */
 export function convertCameraInputToPingData(
   selectedCamera: Camera,
   videoResolution: Resolution,
@@ -51,12 +35,8 @@ export function convertCameraInputToPingData(
   };
 }
 
-/**
- * Converts a camera to the analytics ping camera hardware shape.
- */
-export function convertCameraToPingCamera(
-  camera: Camera,
-): PingCameraHardwareInfoData["availableCameras"][number] {
+/** Converts a camera to the analytics ping camera hardware shape. */
+export function convertCameraToPingCamera(camera: Camera): PingCameraHardwareInfoData["availableCameras"][number] {
   return {
     deviceId: camera.name,
     cameraFacing: mapCameraFacingToPingFacing(camera.facingMode),
@@ -65,22 +45,15 @@ export function convertCameraToPingCamera(
   };
 }
 
-/**
- * Derives a stable deduplication key for a camera, used to detect hardware list changes.
- */
+/** Derives a stable deduplication key for a camera, used to detect hardware list changes. */
 export function buildCameraAnalyticsKey(camera: Camera): string {
   const facing = camera.facingMode ?? "unknown";
   const focus = camera.singleShotSupported ? "auto" : "fixed";
   return `${camera.name}|${facing}|${focus}`;
 }
 
-/**
- * Returns true if the set of camera keys differs from the previously reported set.
- */
-export function hasCameraListChanged(
-  nextKeys: Set<string>,
-  reportedCameraKeys: Set<string>,
-): boolean {
+/** Returns true if the set of camera keys differs from the previously reported set. */
+export function hasCameraListChanged(nextKeys: Set<string>, reportedCameraKeys: Set<string>): boolean {
   if (nextKeys.size !== reportedCameraKeys.size) {
     return true;
   }

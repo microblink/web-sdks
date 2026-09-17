@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -13,8 +11,7 @@ const mockSleep = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 // Mock the sleep utility to resolve immediately, preventing tests from hanging
 // when code awaits sleep() with fake timers enabled.
 vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@microblink/ux-common/utils")>();
+  const actual = await importOriginal<typeof import("@microblink/ux-common/utils")>();
   return {
     ...actual,
     sleep: mockSleep,
@@ -29,27 +26,26 @@ import {
   setupDestroyableTeardown,
   tickRaf,
 } from "@microblink/test-utils";
-import { blinkCardUiStateMap } from "./blinkcard-ui-state";
-import { BlinkCardUxManager } from "./BlinkCardUxManager";
-import {
-  createBlinkCardCameraHarness,
-  createBlinkCardUnitSessionMock,
-  type BlinkCardSessionMock,
-} from "./test-helpers.integration";
+
 import {
   createDeviceInfo,
   createProcessResult,
   createScanningResult,
   createSessionSettings,
 } from "./__testdata/blinkcardTestFixtures";
+import { blinkCardUiStateMap } from "./blinkcard-ui-state";
+import { BlinkCardUxManager } from "./BlinkCardUxManager";
+import type { BlinkCardUxManagerOptions } from "./createBlinkCardUxManager";
+import {
+  createBlinkCardCameraHarness,
+  createBlinkCardUnitSessionMock,
+  type BlinkCardSessionMock,
+} from "./test-helpers.integration";
 
 /**
- * Test file role:
- * - Verifies BlinkCardUxManager callback/lifecycle contracts.
- * - Uses a small stabilizer seam helper when tests need to assert behavior
- *   after a chosen UI state is applied.
- * - Does not own processResult -> ui-state mapping coverage (see ui-state tests),
- *   and does not own end-to-end scan flow coverage (see integration tests).
+ * Test file role: - Verifies BlinkCardUxManager callback/lifecycle contracts. - Uses a small stabilizer seam helper
+ * when tests need to assert behavior after a chosen UI state is applied. - Does not own processResult -> ui-state
+ * mapping coverage (see ui-state tests), and does not own end-to-end scan flow coverage (see integration tests).
  */
 
 type BlinkCardCameraHarness = ReturnType<typeof createBlinkCardCameraHarness>;
@@ -58,14 +54,14 @@ type CreateManagerOptions = {
   showDemoOverlay?: boolean;
   showProductionOverlay?: boolean;
   deviceInfo?: ReturnType<typeof createDeviceInfo>;
+  managerOptions?: BlinkCardUxManagerOptions;
 };
 
 const trackManager = setupDestroyableTeardown<BlinkCardUxManager>();
 
 /**
- * Unit-test seam: some tests in this file validate callback wiring once a state
- * is selected, not state-selection itself (covered by ui-state + integration tests).
- * We intentionally inject a stabilizer state and flush RAF to apply it.
+ * Unit-test seam: some tests in this file validate callback wiring once a state is selected, not state-selection itself
+ * (covered by ui-state + integration tests). We intentionally inject a stabilizer state and flush RAF to apply it.
  */
 const applyStabilizedUiStateForContractTest = async (
   manager: BlinkCardUxManager,
@@ -83,10 +79,8 @@ const createBlinkCardUxManager = (
   trackManager(
     new BlinkCardUxManager(
       cameraHarness.cameraManager,
-      scanningSession as unknown as ConstructorParameters<
-        typeof BlinkCardUxManager
-      >[1],
-      {},
+      scanningSession as unknown as ConstructorParameters<typeof BlinkCardUxManager>[1],
+      options.managerOptions ?? {},
       options.sessionSettings ?? createSessionSettings(),
       options.showDemoOverlay ?? false,
       options.showProductionOverlay ?? false,
@@ -107,16 +101,10 @@ const createBlinkCardTestContext = ({
 } = {}) => {
   const cameraHarness = createBlinkCardCameraHarness(
     fakeCameraOptions ??
-      (initialCameraPermission
-        ? { initialState: { cameraPermission: initialCameraPermission } }
-        : undefined),
+      (initialCameraPermission ? { initialState: { cameraPermission: initialCameraPermission } } : undefined),
   );
   const scanningSession = createBlinkCardUnitSessionMock(sessionSettings);
-  const manager = createBlinkCardUxManager(
-    cameraHarness,
-    scanningSession,
-    managerOptions,
-  );
+  const manager = createBlinkCardUxManager(cameraHarness, scanningSession, managerOptions);
 
   return {
     cameraHarness,
@@ -131,8 +119,7 @@ beforeEach(() => {
 
 describe("BlinkCardUxManager - startup and camera analytics", () => {
   test("logs device info and playback events", () => {
-    const { cameraHarness, manager, scanningSession } =
-      createBlinkCardTestContext();
+    const { cameraHarness, manager, scanningSession } = createBlinkCardTestContext();
 
     expect(scanningSession.ping).toHaveBeenCalledWith({
       schemaName: "ping.browser.device.info",
@@ -140,14 +127,8 @@ describe("BlinkCardUxManager - startup and camera analytics", () => {
       data: manager.deviceInfo,
     });
 
-    const logCameraStartedEventSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraStartedEvent",
-    );
-    const logCameraClosedEventSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraClosedEvent",
-    );
+    const logCameraStartedEventSpy = vi.spyOn(manager.analytics, "logCameraStartedEvent");
+    const logCameraClosedEventSpy = vi.spyOn(manager.analytics, "logCameraClosedEvent");
     const sendPingletsSpy = vi.spyOn(manager.analytics, "sendPinglets");
 
     logCameraStartedEventSpy.mockClear();
@@ -209,14 +190,8 @@ describe("BlinkCardUxManager - package-specific: camera permission analytics", (
     });
 
     const checkSpy = vi.spyOn(manager.analytics, "logCameraPermissionCheck");
-    const requestSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraPermissionRequest",
-    );
-    const responseSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraPermissionUserResponse",
-    );
+    const requestSpy = vi.spyOn(manager.analytics, "logCameraPermissionRequest");
+    const responseSpy = vi.spyOn(manager.analytics, "logCameraPermissionUserResponse");
     const sendSpy = vi.spyOn(manager.analytics, "sendPinglets");
 
     checkSpy.mockClear();
@@ -272,10 +247,7 @@ describe("BlinkCardUxManager - package-specific: camera input analytics", () => 
     const { cameraHarness, manager } = createBlinkCardTestContext({
       fakeCameraOptions,
     });
-    const logCameraInputInfoSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraInputInfo",
-    );
+    const logCameraInputInfoSpy = vi.spyOn(manager.analytics, "logCameraInputInfo");
 
     logCameraInputInfoSpy.mockClear();
 
@@ -312,10 +284,7 @@ describe("BlinkCardUxManager - package-specific: camera input analytics", () => 
     const { cameraHarness, manager } = createBlinkCardTestContext({
       fakeCameraOptions,
     });
-    const logCameraInputInfoSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraInputInfo",
-    );
+    const logCameraInputInfoSpy = vi.spyOn(manager.analytics, "logCameraInputInfo");
 
     logCameraInputInfoSpy.mockClear();
 
@@ -335,10 +304,7 @@ describe("BlinkCardUxManager - package-specific: camera input analytics", () => 
 
   test("does not send delayed camera input ping after reset or observer cleanup", async () => {
     const resetContext = createBlinkCardTestContext({ fakeCameraOptions });
-    const resetSpy = vi.spyOn(
-      resetContext.manager.analytics,
-      "logCameraInputInfo",
-    );
+    const resetSpy = vi.spyOn(resetContext.manager.analytics, "logCameraInputInfo");
 
     resetSpy.mockClear();
     resetContext.cameraHarness.emitCameraState({
@@ -349,10 +315,7 @@ describe("BlinkCardUxManager - package-specific: camera input analytics", () => 
     expect(resetSpy).not.toHaveBeenCalled();
 
     const cleanupContext = createBlinkCardTestContext({ fakeCameraOptions });
-    const cleanupSpy = vi.spyOn(
-      cleanupContext.manager.analytics,
-      "logCameraInputInfo",
-    );
+    const cleanupSpy = vi.spyOn(cleanupContext.manager.analytics, "logCameraInputInfo");
 
     cleanupSpy.mockClear();
     cleanupContext.cameraHarness.emitCameraState({
@@ -369,9 +332,7 @@ describe("BlinkCardUxManager - package-specific: camera frame-capture loop error
     const { cameraHarness, manager } = createBlinkCardTestContext();
     const logErrorEventSpy = vi.spyOn(manager.analytics, "logErrorEvent");
     const sendPingletsSpy = vi.spyOn(manager.analytics, "sendPinglets");
-    const error = new Error(
-      "Frame capture callback did not return an ArrayBuffer.",
-    );
+    const error = new Error("Frame capture callback did not return an ArrayBuffer.");
 
     logErrorEventSpy.mockClear();
     sendPingletsSpy.mockClear();
@@ -415,8 +376,7 @@ describe("BlinkCardUxManager - session lifecycle: reset behavior", () => {
   });
 
   test("reset clears all callbacks", async () => {
-    const { cameraHarness, manager, scanningSession } =
-      createBlinkCardTestContext();
+    const { cameraHarness, manager, scanningSession } = createBlinkCardTestContext();
     const uiStateSpy = vi.fn();
     const resultSpy = vi.fn();
     const frameProcessSpy = vi.fn();
@@ -440,7 +400,7 @@ describe("BlinkCardUxManager - session lifecycle: reset behavior", () => {
     await cameraHarness.emitFrame(createFakeImageData());
     await flushUiRaf();
 
-    manager.setTimeoutDuration(1000);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: 1000, scanStepTimeoutMs: 1000 });
     cameraHarness.emitPlaybackState("capturing");
     vi.advanceTimersByTime(1000);
 
@@ -448,60 +408,6 @@ describe("BlinkCardUxManager - session lifecycle: reset behavior", () => {
     expect(resultSpy).not.toHaveBeenCalled();
     expect(frameProcessSpy).not.toHaveBeenCalled();
     expect(errorSpy).not.toHaveBeenCalled();
-  });
-});
-
-describe("BlinkCardUxManager - timeout behavior", () => {
-  beforeEach(() => {
-    vi.useFakeTimers();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  test("triggers timeout and error callback", () => {
-    const { cameraHarness, manager } = createBlinkCardTestContext();
-    const timeoutSpy = vi.spyOn(manager.analytics, "logStepTimeoutEvent");
-    const errorCallback = vi.fn();
-
-    manager.addOnErrorCallback(errorCallback);
-    manager.setTimeoutDuration(1000);
-
-    timeoutSpy.mockClear();
-    cameraHarness.emitPlaybackState("capturing");
-    vi.advanceTimersByTime(1000);
-
-    expect(errorCallback).toHaveBeenCalledWith("timeout");
-    expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
-    expect(timeoutSpy).toHaveBeenCalledTimes(1);
-  });
-
-  test("clears timeout when stopping capture", () => {
-    const { cameraHarness, manager } = createBlinkCardTestContext();
-    const errorCallback = vi.fn();
-
-    manager.addOnErrorCallback(errorCallback);
-    manager.setTimeoutDuration(1000);
-
-    cameraHarness.emitPlaybackState("capturing");
-    cameraHarness.emitPlaybackState("idle");
-    vi.advanceTimersByTime(1100);
-
-    expect(errorCallback).not.toHaveBeenCalled();
-  });
-
-  test("does not set timeout when timeout duration is null", () => {
-    const { cameraHarness, manager } = createBlinkCardTestContext();
-    const errorCallback = vi.fn();
-
-    manager.addOnErrorCallback(errorCallback);
-    manager.setTimeoutDuration(null);
-
-    cameraHarness.emitPlaybackState("capturing");
-    vi.advanceTimersByTime(20_000);
-
-    expect(errorCallback).not.toHaveBeenCalled();
   });
 });
 
@@ -516,10 +422,7 @@ describe("BlinkCardUxManager - state transitions: shared callback contracts", ()
 
   test("logs error message events when UI state changes to an error state", async () => {
     const { manager } = createBlinkCardTestContext();
-    const logErrorMessageEventSpy = vi.spyOn(
-      manager.analytics,
-      "logErrorMessageEvent",
-    );
+    const logErrorMessageEventSpy = vi.spyOn(manager.analytics, "logErrorMessageEvent");
 
     logErrorMessageEventSpy.mockClear();
     await applyStabilizedUiStateForContractTest(manager, "BLUR_DETECTED");
@@ -529,10 +432,7 @@ describe("BlinkCardUxManager - state transitions: shared callback contracts", ()
 
   test("triggers short haptic feedback when the RAF loop transitions to an error state", async () => {
     const { manager } = createBlinkCardTestContext();
-    const shortSpy = vi.spyOn(
-      manager.getHapticFeedbackManager(),
-      "triggerShort",
-    );
+    const shortSpy = vi.spyOn(manager.getHapticFeedbackManager(), "triggerShort");
 
     shortSpy.mockClear();
     await applyStabilizedUiStateForContractTest(manager, "BLUR_DETECTED");
@@ -551,8 +451,7 @@ describe("BlinkCardUxManager - state transitions: capture flow integration", () 
   });
 
   test("stops capture after first-side success and resumes capture on INTRO_BACK", async () => {
-    const { cameraHarness, manager, scanningSession } =
-      createBlinkCardTestContext();
+    const { cameraHarness, manager, scanningSession } = createBlinkCardTestContext();
 
     scanningSession.process.mockResolvedValue(
       createProcessResult({
@@ -573,8 +472,7 @@ describe("BlinkCardUxManager - state transitions: capture flow integration", () 
   });
 
   test("emits scan result when CARD_CAPTURED UI state is applied", async () => {
-    const { cameraHarness, manager, scanningSession } =
-      createBlinkCardTestContext();
+    const { cameraHarness, manager, scanningSession } = createBlinkCardTestContext();
     const resultCallback = vi.fn();
 
     manager.addOnResultCallback(resultCallback);
@@ -601,9 +499,7 @@ describe("BlinkCardUxManager - state transitions: capture flow integration", () 
 
     manager.addOnErrorCallback(errorCallback);
     manager.addOnResultCallback(resultCallback);
-    scanningSession.getResult.mockRejectedValue(
-      new Error("Worker RPC failure"),
-    );
+    scanningSession.getResult.mockRejectedValue(new Error("Worker RPC failure"));
 
     await applyStabilizedUiStateForContractTest(manager, "CARD_CAPTURED");
 
@@ -626,13 +522,9 @@ describe("BlinkCardUxManager - state transitions: capture flow integration", () 
 
   test("reports non-fatal pinglets when frame processing rejects with a recoverable error", async () => {
     const { cameraHarness, scanningSession } = createBlinkCardTestContext();
-    scanningSession.process.mockRejectedValue(
-      new Error("Worker process failure"),
-    );
+    scanningSession.process.mockRejectedValue(new Error("Worker process failure"));
 
-    await expect(
-      cameraHarness.emitFrame(createFakeImageData()),
-    ).rejects.toThrow("Worker process failure");
+    await expect(cameraHarness.emitFrame(createFakeImageData())).rejects.toThrow("Worker process failure");
 
     expect(scanningSession.ping).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -648,21 +540,18 @@ describe("BlinkCardUxManager - state transitions: capture flow integration", () 
 
   test("reports non-fatal pinglets when frame processing rejects with a WASM runtime error", async () => {
     const { cameraHarness, scanningSession } = createBlinkCardTestContext();
-    scanningSession.process.mockRejectedValue(
-      new Error("table index is out of bounds RuntimeError"),
-    );
+    scanningSession.process.mockRejectedValue(new Error("table index is out of bounds RuntimeError"));
 
-    await expect(
-      cameraHarness.emitFrame(createFakeImageData()),
-    ).rejects.toThrow("table index is out of bounds RuntimeError");
+    await expect(cameraHarness.emitFrame(createFakeImageData())).rejects.toThrow(
+      "table index is out of bounds RuntimeError",
+    );
 
     expect(scanningSession.ping).toHaveBeenCalledWith(
       expect.objectContaining({
         schemaName: "ping.error",
         data: expect.objectContaining({
           errorType: "NonFatal",
-          errorMessage:
-            "ux.frameCapture: table index is out of bounds RuntimeError",
+          errorMessage: "ux.frameCapture: table index is out of bounds RuntimeError",
         }),
       }),
     );
@@ -676,9 +565,7 @@ describe("BlinkCardUxManager - state transitions: capture flow integration", () 
 
     scanningSession.process.mockRejectedValue(frameTransferError);
 
-    await expect(
-      cameraHarness.emitFrame(createFakeImageData()),
-    ).rejects.toThrow("Failed to transfer frame to worker");
+    await expect(cameraHarness.emitFrame(createFakeImageData())).rejects.toThrow("Failed to transfer frame to worker");
 
     expect(scanningSession.ping).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -695,18 +582,14 @@ describe("BlinkCardUxManager - state transitions: capture flow integration", () 
   test("skips overlapping process calls while a previous frame is still processing", async () => {
     const { cameraHarness, scanningSession } = createBlinkCardTestContext();
     let resolveFirst!: (value: ProcessResultWithBuffer) => void;
-    const firstProcessPromise = new Promise<ProcessResultWithBuffer>(
-      (resolve) => {
-        resolveFirst = resolve;
-      },
-    );
+    const firstProcessPromise = new Promise<ProcessResultWithBuffer>((resolve) => {
+      resolveFirst = resolve;
+    });
 
     scanningSession.process.mockReturnValueOnce(firstProcessPromise);
 
     const firstFramePromise = cameraHarness.emitFrame(createFakeImageData());
-    const secondFrameResult = await cameraHarness.emitFrame(
-      createFakeImageData(),
-    );
+    const secondFrameResult = await cameraHarness.emitFrame(createFakeImageData());
 
     expect(secondFrameResult).toBeUndefined();
     expect(scanningSession.process).toHaveBeenCalledTimes(1);

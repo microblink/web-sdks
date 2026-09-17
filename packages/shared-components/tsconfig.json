@@ -3,7 +3,7 @@
   "compilerOptions": {
     "emitDeclarationOnly": true,
     "declarationDir": "types",
-    // "rootDir": "src",
+    "rootDir": "src",
     "jsx": "preserve",
     "moduleResolution": "Bundler",
     "jsxImportSource": "solid-js"

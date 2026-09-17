@@ -1,17 +1,13 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+
 import { AnalyticService } from "./AnalyticService";
-import type {
-  PingBrowserDeviceInfoData,
-  PingCameraHardwareInfoData,
-} from "./ping";
+import type { Ping, PingBrowserDeviceInfoData, PingCameraHardwareInfoData } from "./ping";
 
 describe("AnalyticsService", () => {
-  let mockPingFn: ReturnType<typeof vi.fn>;
-  let mockSendPingletsFn: ReturnType<typeof vi.fn>;
+  let mockPingFn: Mock<(ping: Ping) => Promise<void>>;
+  let mockSendPingletsFn: Mock<() => Promise<void>>;
   let analyticsService: AnalyticService;
 
   beforeEach(() => {
@@ -36,18 +32,13 @@ describe("AnalyticsService", () => {
     });
 
     it("should handle sendPingletsFn errors gracefully", async () => {
-      const consoleWarnSpy = vi
-        .spyOn(console, "warn")
-        .mockImplementation(() => undefined);
+      const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
       mockSendPingletsFn.mockRejectedValue(new Error("Network error"));
 
       await analyticsService.sendPinglets();
 
       expect(mockSendPingletsFn).toHaveBeenCalledOnce();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        "Send pinglets failed:",
-        expect.any(Error),
-      );
+      expect(consoleWarnSpy).toHaveBeenCalledWith("Send pinglets failed:", expect.any(Error));
 
       consoleWarnSpy.mockRestore();
     });
@@ -102,7 +93,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "CameraStarted",
         },
@@ -114,9 +105,36 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "CameraClosed",
+          closeReason: undefined,
+        },
+      });
+    });
+
+    it("should log camera closed event with a close reason", async () => {
+      await analyticsService.logCameraClosedEvent("SystemError");
+
+      expect(mockPingFn).toHaveBeenCalledWith({
+        schemaName: "ping.sdk.ux.event",
+        schemaVersion: "1.3.0",
+        data: {
+          eventType: "CameraClosed",
+          closeReason: "SystemError",
+        },
+      });
+    });
+
+    it("should log camera open failed with a failure category", async () => {
+      await analyticsService.logCameraOpenFailedEvent("PERMISSION_DENIED");
+
+      expect(mockPingFn).toHaveBeenCalledWith({
+        schemaName: "ping.sdk.ux.event",
+        schemaVersion: "1.3.0",
+        data: {
+          eventType: "CameraOpenFailed",
+          cameraFailureCategory: "PERMISSION_DENIED",
         },
       });
     });
@@ -128,7 +146,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "HelpOpened",
         },
@@ -140,7 +158,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "HelpClosed",
           helpCloseType: "ContentFullyViewed",
@@ -153,7 +171,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "HelpClosed",
           helpCloseType: "ContentSkipped",
@@ -166,7 +184,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "HelpTooltipDisplayed",
         },
@@ -180,7 +198,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "CloseButtonClicked",
         },
@@ -192,7 +210,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "OnboardingInfoDisplayed",
         },
@@ -206,7 +224,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "AlertDisplayed",
           alertType: "NetworkError",
@@ -221,7 +239,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "ErrorMessage",
           errorMessageType: "EliminateBlur",
@@ -236,7 +254,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "AppMovedToBackground",
         },
@@ -250,7 +268,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "StepTimeout",
         },
@@ -262,7 +280,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "InactivityTimeout",
         },
@@ -274,7 +292,7 @@ describe("AnalyticsService", () => {
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.sdk.ux.event",
-        schemaVersion: "1.2.0",
+        schemaVersion: "1.3.0",
         data: {
           eventType: "UnsupportedBarcodeTimeout",
         },
@@ -309,8 +327,7 @@ describe("AnalyticsService", () => {
         cameraFrameHeight: mockVideoResolution.height,
         roiWidth: mockExtractionArea.width,
         roiHeight: mockExtractionArea.height,
-        viewPortAspectRatio:
-          mockExtractionArea.width / mockExtractionArea.height,
+        viewPortAspectRatio: mockExtractionArea.width / mockExtractionArea.height,
       });
 
       expect(mockPingFn).toHaveBeenCalledWith({
@@ -516,18 +533,13 @@ describe("AnalyticsService", () => {
 
   describe("error handling", () => {
     it("should handle ping function errors gracefully", async () => {
-      const consoleWarnSpy = vi
-        .spyOn(console, "warn")
-        .mockImplementation(() => undefined);
+      const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
       mockPingFn.mockRejectedValue(new Error("Network error"));
 
       await analyticsService.logCameraStartedEvent();
 
       expect(mockPingFn).toHaveBeenCalledOnce();
-      expect(consoleWarnSpy).toHaveBeenCalledWith(
-        "UX analytics ping failed:",
-        expect.any(Error),
-      );
+      expect(consoleWarnSpy).toHaveBeenCalledWith("UX analytics ping failed:", expect.any(Error));
 
       consoleWarnSpy.mockRestore();
     });
@@ -535,9 +547,7 @@ describe("AnalyticsService", () => {
 
   describe("log events", () => {
     it("should log warning messages", async () => {
-      await analyticsService.logWarning(
-        "Device orientation analytics unavailable",
-      );
+      await analyticsService.logWarning("Device orientation analytics unavailable");
 
       expect(mockPingFn).toHaveBeenCalledWith({
         schemaName: "ping.log",

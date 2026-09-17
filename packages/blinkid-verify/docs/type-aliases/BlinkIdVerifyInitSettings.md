@@ -10,5 +10,5 @@
 
 Configuration options for initializing the BlinkIdVerify core.
 
-This type extends the BlinkIdVerifyWorkerInitSettings type by making the userId and useLightweightBuild properties optional.
-It allows for partial configuration of the initialization settings.
+This type extends the BlinkIdVerifyWorkerInitSettings type by making the userId and useLightweightBuild properties
+optional. It allows for partial configuration of the initialization settings.

@@ -1,40 +1,17 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
+
+import { BlinkIdScanningResult, loadBlinkIdCore, RemoteScanningSession } from "@microblink/blinkid-core";
+
+import "./index.css";
+
+import { createBlinkIdUxManager, createBlinkIdFeedbackUi } from "@microblink/blinkid-ux-manager";
+import { CameraManager, createCameraManagerUi } from "@microblink/camera-manager";
+import { Component, createEffect, createSignal, Match, Show, Switch } from "solid-js";
 
 /* @refresh reload */
 import styles from "./App.module.css";
-import "./index.css";
 
-import {
-  BlinkIdScanningResult,
-  loadBlinkIdCore,
-  RemoteScanningSession,
-} from "@microblink/blinkid-core";
-import {
-  createBlinkIdUxManager,
-  createBlinkIdFeedbackUi,
-} from "@microblink/blinkid-ux-manager";
-import {
-  CameraManager,
-  createCameraManagerUi,
-} from "@microblink/camera-manager";
-
-import {
-  Component,
-  createEffect,
-  createSignal,
-  Match,
-  Show,
-  Switch,
-} from "solid-js";
-
-type SignupSteps =
-  | "intro"
-  | "form-input"
-  | "document-scan"
-  | "success"
-  | "error";
+type SignupSteps = "intro" | "form-input" | "document-scan" | "success" | "error";
 
 export const App: Component = () => {
   // These are the signals that will be used to manage the state of the application
@@ -43,8 +20,7 @@ export const App: Component = () => {
   const [step, setStep] = createSignal<SignupSteps>("intro");
   const [loading, setLoading] = createSignal<boolean>(false);
   const [result, setResult] = createSignal<BlinkIdScanningResult>();
-  const [blinkIdSession, setBlinkIdSession] =
-    createSignal<RemoteScanningSession>();
+  const [blinkIdSession, setBlinkIdSession] = createSignal<RemoteScanningSession>();
 
   /**
    * Derived signal that removes the images from the result object
@@ -121,10 +97,7 @@ export const App: Component = () => {
           const cameraManager = new CameraManager();
 
           // we create the UX manager
-          const blinkIdUxManager = await createBlinkIdUxManager(
-            cameraManager,
-            core,
-          );
+          const blinkIdUxManager = await createBlinkIdUxManager(cameraManager, core);
 
           blinkIdUxManager.addOnResultCallback((result) => {
             setResult(result);
@@ -142,9 +115,7 @@ export const App: Component = () => {
           await cameraManager.startCameraStream();
 
           // this creates the feedback UI and attaches it to the camera UI
-          createBlinkIdFeedbackUi(blinkIdUxManager, cameraUi, {
-            preserveSdkInstance: true,
-          });
+          createBlinkIdFeedbackUi(blinkIdUxManager, cameraUi, {});
 
           await cameraManager.startFrameCapture();
         })();
@@ -173,28 +144,13 @@ export const App: Component = () => {
             >
               <div class={styles.formGroup}>
                 <label class={styles.label}>Email Address</label>
-                <input
-                  type="email"
-                  class={styles.input}
-                  required
-                  placeholder="your@email.com"
-                />
+                <input type="email" class={styles.input} required placeholder="your@email.com" />
               </div>
               <div class={styles.formGroup}>
                 <label class={styles.label}>Phone Number</label>
-                <input
-                  type="tel"
-                  class={styles.input}
-                  required
-                  placeholder="+1 (555) 555-5555"
-                />
+                <input type="tel" class={styles.input} required placeholder="+1 (555) 555-5555" />
               </div>
-              <button
-                class={styles.button}
-                type="button"
-                onClick={() => setStep("document-scan")}
-                disabled={loading()}
-              >
+              <button class={styles.button} type="button" onClick={() => setStep("document-scan")} disabled={loading()}>
                 <div class={styles.buttonContent}>
                   {loading() && <div class={styles.buttonSpinner} />}
                   <span>Continue to Document Scan</span>
@@ -215,9 +171,7 @@ export const App: Component = () => {
             <h2>Results:</h2>
             {/* results */}
             <Show when={resultWithoutImages()}>
-              <pre class={styles.results}>
-                {JSON.stringify(resultWithoutImages()!, null, 2)}
-              </pre>
+              <pre class={styles.results}>{JSON.stringify(resultWithoutImages()!, null, 2)}</pre>
             </Show>
           </div>
         </Match>

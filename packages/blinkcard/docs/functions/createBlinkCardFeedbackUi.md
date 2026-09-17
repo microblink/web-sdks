@@ -34,8 +34,4 @@ The options for the createBlinkCardFeedbackUi function.
 
 The function to unmount the feedback UI.
 
-> (): `void`
-
-### Returns
-
-`void`
+() => `void`

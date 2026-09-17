@@ -10,9 +10,8 @@
 
 Represents the configuration settings for a scanning session.
 
-This structure holds the settings related to the resources initialization,
-input image source, and specific scanning configurations that define how the
-scanning session should behave.
+This structure holds the settings related to the resources initialization, input image source, and specific scanning
+configurations that define how the scanning session should behave.
 
 ## Properties
 
@@ -22,9 +21,8 @@ scanning session should behave.
 
 The type of image source for the scanning session.
 
-This type is used to indicate whether an image was obtained from a video
-stream or a single-source input such as a standalone photo. The default is
-set to `Video`.
+This type is used to indicate whether an image was obtained from a video stream or a single-source input such as a
+standalone photo. The default is set to `Video`.
 
 ***
 

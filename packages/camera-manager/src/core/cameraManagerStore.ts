@@ -1,89 +1,57 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { subscribeWithSelector } from "zustand/middleware";
 import { createStore as createZustandStore } from "zustand/vanilla";
+
+import { deepClone } from "../utils/deepClone";
 import { Camera, FacingMode, Resolution } from "./Camera";
 import { CameraError } from "./cameraError";
-import { deepClone } from "../utils/deepClone";
 import { ExtractionArea } from "./VideoFrameProcessor";
 
-/**
- * The playback state of the camera manager.
- */
+/** The playback state of the camera manager. */
 export type PlaybackState = "idle" | "playback" | "capturing";
 
-export type CameraPermission =
-  | "prompt"
-  | "granted"
-  | "denied"
-  | "blocked"
-  | undefined;
+export type CameraPermission = "prompt" | "granted" | "denied" | "blocked" | undefined;
 
-/**
- * The camera manager store.
- */
+/** The camera manager store. */
 export type CameraManagerStore = {
-  /**
-   * The video element that will display the camera stream.
-   */
+  /** The video element that will display the camera stream. */
   videoElement?: HTMLVideoElement;
 
-  /**
-   * The resolution of the video on the `videoElement`
-   */
+  /** The resolution of the video on the `videoElement` */
   videoResolution?: Resolution;
 
-  /**
-   * Defines the area of the video which will be sent for processing.
-   */
+  /** Defines the area of the video which will be sent for processing. */
   extractionArea?: ExtractionArea;
 
-  /**
-   * The list of cameras that are available to the user.
-   */
+  /** The list of cameras that are available to the user. */
   cameras: Camera[];
 
-  /**
-   * Browser camera permission.
-   */
+  /** Browser camera permission. */
   cameraPermission: CameraPermission;
 
   /**
-   * The facing mode filter that will be used to filter the available cameras.
-   * Can be a single facing mode or an array of facing modes.
+   * The facing mode filter that will be used to filter the available cameras. Can be a single facing mode or an array
+   * of facing modes.
    */
   facingFilter?: FacingMode[];
 
-  /**
-   * The currently selected camera.
-   */
+  /** The currently selected camera. */
   selectedCamera?: Camera;
 
-  /**
-   * Capturing / playing / idle.
-   */
+  /** Capturing / playing / idle. */
   playbackState: PlaybackState;
 
-  /**
-   * Indicates if the camera is currently being swapped.
-   */
+  /** Indicates if the camera is currently being swapped. */
   isSwappingCamera: boolean;
 
-  /**
-   * Indicates if camera list is currently being queried.
-   */
+  /** Indicates if camera list is currently being queried. */
   isQueryingCameras: boolean;
 
-  /**
-   * Indicates if the captured frames will be mirrored horizontally
-   */
+  /** Indicates if the captured frames will be mirrored horizontally */
   mirrorX: boolean;
 
-  /**
-   * If the Camera manager has encountered an error, this will be set to the error.
-   */
+  /** If the Camera manager has encountered an error, this will be set to the error. */
   errorState?: Error | CameraError;
 };
 
@@ -112,8 +80,8 @@ const initialState: CameraManagerStore = {
  *
  * The Zustand store. Use only if you know what you're doing.
  *
- * Never set the state as this will break the application logic. We do not have
- * two-way binding. Make sure you only observe the state.
+ * Never set the state as this will break the application logic. We do not have two-way binding. Make sure you only
+ * observe the state.
  *
  * Prefer using subscriptions if you require observable state.
  *

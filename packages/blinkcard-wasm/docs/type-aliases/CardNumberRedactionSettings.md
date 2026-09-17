@@ -24,8 +24,7 @@ Defines the mode of card number redaction.
 
 > **prefixDigitsVisible**: `number`
 
-Defines how many digits at the beginning of the card number remain visible
-after redaction.
+Defines how many digits at the beginning of the card number remain visible after redaction.
 
 ***
 
@@ -33,5 +32,4 @@ after redaction.
 
 > **suffixDigitsVisible**: `number`
 
-Defines how many digits at the end of the card number remain visible after
-redaction.
+Defines how many digits at the end of the card number remain visible after redaction.

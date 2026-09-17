@@ -1,26 +1,17 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, describe, expect, test, vi } from "vitest";
-import {
-  mapScreenOrientationType,
-  subscribeToDeviceOrientation,
-} from "./deviceOrientationAnalytics";
+
+import { mapScreenOrientationType, subscribeToDeviceOrientation } from "./deviceOrientationAnalytics";
 
 type MockScreenOrientation = ScreenOrientation & {
   dispatchChange: () => void;
   setType: (type: ScreenOrientation["type"]) => void;
 };
 
-const originalWindowOrientationDescriptor = Object.getOwnPropertyDescriptor(
-  window,
-  "orientation",
-);
+const originalWindowOrientationDescriptor = Object.getOwnPropertyDescriptor(window, "orientation");
 
-function createScreenOrientationMock(
-  initialType: ScreenOrientation["type"],
-): MockScreenOrientation {
+function createScreenOrientationMock(initialType: ScreenOrientation["type"]): MockScreenOrientation {
   const eventTarget = new EventTarget();
   let type = initialType;
 
@@ -49,11 +40,7 @@ function setWindowOrientation(orientation: number | undefined) {
 
 function restoreWindowOrientation() {
   if (originalWindowOrientationDescriptor) {
-    Object.defineProperty(
-      window,
-      "orientation",
-      originalWindowOrientationDescriptor,
-    );
+    Object.defineProperty(window, "orientation", originalWindowOrientationDescriptor);
     return;
   }
 
@@ -69,13 +56,9 @@ describe("deviceOrientationAnalytics", () => {
 
   test("maps Screen Orientation API types to analytics orientations", () => {
     expect(mapScreenOrientationType("portrait-primary")).toBe("Portrait");
-    expect(mapScreenOrientationType("portrait-secondary")).toBe(
-      "PortraitUpside",
-    );
+    expect(mapScreenOrientationType("portrait-secondary")).toBe("PortraitUpside");
     expect(mapScreenOrientationType("landscape-primary")).toBe("LandscapeLeft");
-    expect(mapScreenOrientationType("landscape-secondary")).toBe(
-      "LandscapeRight",
-    );
+    expect(mapScreenOrientationType("landscape-secondary")).toBe("LandscapeRight");
   });
 
   test("reports the initial screen orientation and change events", () => {
@@ -137,9 +120,7 @@ describe("deviceOrientationAnalytics", () => {
     vi.stubGlobal("screen", {});
     setWindowOrientation(undefined);
 
-    expect(() =>
-      subscribeToDeviceOrientation(onOrientation, onFailure),
-    ).not.toThrow();
+    expect(() => subscribeToDeviceOrientation(onOrientation, onFailure)).not.toThrow();
     expect(onOrientation).not.toHaveBeenCalled();
     expect(onFailure).toHaveBeenCalledWith(
       "Device orientation analytics unavailable: browser does not expose a supported orientation API.",

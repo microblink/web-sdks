@@ -1,12 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
-
-import { vi } from "vitest";
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { EmbindObject } from "@microblink/wasm-common";
+import { vi } from "vitest";
 
-export const createScanningSessionMock = <T extends EmbindObject<{}>>(
+export const createScanningSessionMock = <T extends EmbindObject<Record<string, unknown>>>(
   overrides: Partial<T> = {},
 ): T => {
   return {

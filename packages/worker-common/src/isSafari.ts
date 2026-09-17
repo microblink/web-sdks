@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * Checks if the current environment is iOS.
@@ -19,7 +17,6 @@ export function isIOS(): boolean {
  */
 export function isSafari(): boolean {
   const userAgent = self.navigator.userAgent.toLowerCase();
-  const isSafariBrowser =
-    userAgent.includes("safari") && !userAgent.includes("chrome");
+  const isSafariBrowser = userAgent.includes("safari") && !userAgent.includes("chrome");
   return isSafariBrowser || isIOS();
 }

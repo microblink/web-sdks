@@ -1,13 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 export type CanvasRenderingMode = "2d" | "webgl2";
 export type ImageSource = HTMLVideoElement | HTMLCanvasElement | ImageBitmap;
 
-/**
- * Options for the VideoFrameProcessor.
- */
+/** Options for the VideoFrameProcessor. */
 export type VideoFrameProcessorInitOptions = {
   canvasRenderingMode?: CanvasRenderingMode;
   fallbackWebGlTo2d?: boolean;
@@ -15,29 +11,27 @@ export type VideoFrameProcessorInitOptions = {
 
 /**
  * Check if an ArrayBuffer is detached
+ *
  * @param buffer - ArrayBuffer to check
- * @returns true if the buffer is detached, false otherwise
+ * @returns True if the buffer is detached, false otherwise
  */
 export function isBufferDetached(buffer: ArrayBuffer): boolean {
-  const actualBuffer = getBuffer(buffer);
   // es2024
-  if ("detached" in actualBuffer) {
-    const detached = actualBuffer.detached as boolean;
+  if ("detached" in buffer) {
+    const detached = buffer.detached as boolean;
     return detached;
   }
   // fallback
   try {
     // Try to create a view on the buffer
-    new Uint8Array(actualBuffer);
+    new Uint8Array(buffer);
     return false; // If successful, buffer is not detached
   } catch (e) {
     return true; // If it throws, buffer is detached
   }
 }
 
-/**
- * The extraction area.
- */
+/** The extraction area. */
 export type ExtractionArea = {
   x: number;
   y: number;
@@ -45,16 +39,14 @@ export type ExtractionArea = {
   height: number;
 };
 
-/**
- * VideoFrameProcessor captures frames from video or image sources using either 2D or WebGL2 rendering
- */
+/** VideoFrameProcessor captures frames from video or image sources using either 2D or WebGL2 rendering */
 export class VideoFrameProcessor {
   #canvas: HTMLCanvasElement;
   #context2d: CanvasRenderingContext2D | null = null;
   #contextWebGl2: WebGL2RenderingContext | null = null;
   #webGl2Texture: WebGLTexture | null = null;
   #webGl2Framebuffer: WebGLFramebuffer | null = null;
-  #buffer: Uint8ClampedArray | null = null;
+  #buffer: Uint8ClampedArray<ArrayBuffer> | null = null;
   #cachedWidth = 0;
   #cachedHeight = 0;
   #canvasRenderingMode: CanvasRenderingMode;
@@ -66,8 +58,7 @@ export class VideoFrameProcessor {
    * @param options - The options for the VideoFrameProcessor.
    */
   constructor(options: VideoFrameProcessorInitOptions = {}) {
-    const { canvasRenderingMode = "webgl2", fallbackWebGlTo2d = true } =
-      options;
+    const { canvasRenderingMode = "webgl2", fallbackWebGlTo2d = true } = options;
 
     this.#canvasRenderingMode = canvasRenderingMode;
     this.#canvas = document.createElement("canvas");
@@ -80,9 +71,7 @@ export class VideoFrameProcessor {
         this.#initializeWebGl2Context();
       } catch (error) {
         if (fallbackWebGlTo2d) {
-          console.warn(
-            "Failed to create WebGL2 context, falling back to 2D canvas",
-          );
+          console.warn("Failed to create WebGL2 context, falling back to 2D canvas");
           this.#canvasRenderingMode = "2d";
           this.#initialize2dContext();
         } else {
@@ -90,15 +79,11 @@ export class VideoFrameProcessor {
         }
       }
     } else {
-      throw new Error(
-        `Unsupported rendering context: ${canvasRenderingMode as CanvasRenderingMode}`,
-      );
+      throw new Error(`Unsupported rendering context: ${canvasRenderingMode as CanvasRenderingMode}`);
     }
   }
 
-  /**
-   * Initializes the 2D canvas context.
-   */
+  /** Initializes the 2D canvas context. */
   #initialize2dContext(): void {
     const ctx = this.#canvas.getContext("2d", {
       alpha: false,
@@ -108,9 +93,7 @@ export class VideoFrameProcessor {
     this.#context2d = ctx;
   }
 
-  /**
-   * Initializes the WebGL2 context and resources.
-   */
+  /** Initializes the WebGL2 context and resources. */
   #initializeWebGl2Context(): void {
     // Create and configure WebGL2 context
     const ctx = this.#canvas.getContext("webgl2", {
@@ -145,26 +128,24 @@ export class VideoFrameProcessor {
 
     // Configure framebuffer
     ctx.bindFramebuffer(ctx.FRAMEBUFFER, framebuffer);
-    ctx.framebufferTexture2D(
-      ctx.FRAMEBUFFER,
-      ctx.COLOR_ATTACHMENT0,
-      ctx.TEXTURE_2D,
-      texture,
-      0,
-    );
+    ctx.framebufferTexture2D(ctx.FRAMEBUFFER, ctx.COLOR_ATTACHMENT0, ctx.TEXTURE_2D, texture, 0);
   }
 
   /**
    * Returns ownership of an ArrayBuffer to the processor for reuse.
    *
-   * This should only be called with ArrayBuffers that were originally from this processor.
-   * Typically used after transferring the buffer to/from a worker.
+   * This should only be called with ArrayBuffers that were originally from this processor. Typically used after
+   * transferring the buffer to/from a worker.
    *
    * @param arrayBuffer - The array buffer to reattach.
    */
   reattachArrayBuffer(arrayBuffer: ArrayBufferLike): void {
     // Might be a view, so get the underlying buffer
     const actualBuffer = getBuffer(arrayBuffer);
+
+    if (!(actualBuffer instanceof ArrayBuffer)) {
+      throw new Error("SharedArrayBuffer is not supported!");
+    }
 
     if (isBufferDetached(actualBuffer)) {
       throw new Error("Can't use a detached array buffer!");
@@ -176,16 +157,14 @@ export class VideoFrameProcessor {
     if (actualBuffer.byteLength === requiredSize) {
       this.#buffer = new Uint8ClampedArray(actualBuffer);
     } else {
-      throw new Error(
-        `ArrayBuffer size mismatch: expected ${requiredSize}, got ${actualBuffer.byteLength}`,
-      );
+      throw new Error(`ArrayBuffer size mismatch: expected ${requiredSize}, got ${actualBuffer.byteLength}`);
     }
   }
 
   /**
    * Used to check if the processor owns the buffer.
    *
-   * @returns true if the processor owns the buffer, false otherwise.
+   * @returns True if the processor owns the buffer, false otherwise.
    */
   isBufferDetached(): boolean {
     if (!this.#buffer) {
@@ -208,9 +187,8 @@ export class VideoFrameProcessor {
   }
 
   /**
-   * Used to get the current ImageData object with the current buffer. Useful
-   * when you need to get the same `ImageData` object multiple times after the
-   * original `ImageData` buffer has been detached
+   * Used to get the current ImageData object with the current buffer. Useful when you need to get the same `ImageData`
+   * object multiple times after the original `ImageData` buffer has been detached
    *
    * @returns ImageData object with the current buffer
    */
@@ -229,12 +207,10 @@ export class VideoFrameProcessor {
    * @returns The image data.
    */
   #getImageData2d(source: ImageSource, area?: ExtractionArea): ImageData {
-    if (!this.#context2d)
-      throw new Error("CanvasRenderingContext2D is missing!");
+    if (!this.#context2d) throw new Error("CanvasRenderingContext2D is missing!");
 
     const fullWidth = "videoWidth" in source ? source.videoWidth : source.width;
-    const fullHeight =
-      "videoHeight" in source ? source.videoHeight : source.height;
+    const fullHeight = "videoHeight" in source ? source.videoHeight : source.height;
 
     // Use area dimensions if provided, otherwise use full dimensions
     const x = area?.x ?? 0;
@@ -258,17 +234,12 @@ export class VideoFrameProcessor {
    * @returns The image data.
    */
   #getImageDataWebGl2(source: ImageSource, area?: ExtractionArea): ImageData {
-    if (
-      !this.#contextWebGl2 ||
-      !this.#webGl2Texture ||
-      !this.#webGl2Framebuffer
-    ) {
+    if (!this.#contextWebGl2 || !this.#webGl2Texture || !this.#webGl2Framebuffer) {
       throw new Error("WebGL2 context or resources are missing!");
     }
 
     const fullWidth = "videoWidth" in source ? source.videoWidth : source.width;
-    const fullHeight =
-      "videoHeight" in source ? source.videoHeight : source.height;
+    const fullHeight = "videoHeight" in source ? source.videoHeight : source.height;
 
     // Use area dimensions if provided, otherwise use full dimensions
     const x = area?.x ?? 0;
@@ -347,9 +318,7 @@ export class VideoFrameProcessor {
     }
   }
 
-  /**
-   * Clean up resources.
-   */
+  /** Clean up resources. */
   dispose(): void {
     if (this.#contextWebGl2) {
       if (this.#webGl2Texture) {
@@ -368,8 +337,7 @@ export class VideoFrameProcessor {
 }
 
 /**
- * Converts a view to a buffer, since both match the type signature of
- * `ArrayBufferLike`.
+ * Converts a view to a buffer, since both match the type signature of `ArrayBufferLike`.
  *
  * @param buffer - The buffer or view to convert
  * @returns The actual underlying buffer

@@ -12,22 +12,22 @@
 
 ### city?
 
-> `optional` **city**: [`StringCompleteness`](StringCompleteness.md)
+> `optional` **city?**: [`StringCompleteness`](StringCompleteness.md)
 
 ***
 
 ### jurisdiction?
 
-> `optional` **jurisdiction**: [`StringCompleteness`](StringCompleteness.md)
+> `optional` **jurisdiction?**: [`StringCompleteness`](StringCompleteness.md)
 
 ***
 
 ### postalCode?
 
-> `optional` **postalCode**: [`StringCompleteness`](StringCompleteness.md)
+> `optional` **postalCode?**: [`StringCompleteness`](StringCompleteness.md)
 
 ***
 
 ### street?
 
-> `optional` **street**: [`StringCompleteness`](StringCompleteness.md)
+> `optional` **street?**: [`StringCompleteness`](StringCompleteness.md)

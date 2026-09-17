@@ -1,16 +1,13 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import { Dialog } from "@ark-ui/solid";
 import { Modal } from "@microblink/shared-components/Modal";
 import { type Component, createEffect, on } from "solid-js";
-import { useBlinkIdVerifyUiStore } from "../BlinkIdVerifyUiStoreContext";
+import { Dynamic } from "solid-js/web";
 
 import CorrectFraming from "../assets/onboarding/correct_framing.svg?component-solid";
 import CorrectFramingDesktop from "../assets/onboarding/correct_framing_desktop.svg?component-solid";
-
-import { Dialog } from "@ark-ui/solid";
-import { Dynamic } from "solid-js/web";
+import { useBlinkIdVerifyUiStore } from "../BlinkIdVerifyUiStoreContext";
 import { useLocalization } from "../LocalizationContext";
 
 /**
@@ -18,9 +15,7 @@ import { useLocalization } from "../LocalizationContext";
  *
  * @returns The OnboardingGuideModal component.
  */
-export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
-  props,
-) => {
+export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (props) => {
   const { t } = useLocalization();
 
   const { store, updateStore } = useBlinkIdVerifyUiStore();
@@ -63,9 +58,7 @@ export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
               compact:grid-rows-[minmax(0,1fr)]"
           >
             <Dynamic
-              component={
-                props.isDesktop ? CorrectFramingDesktop : CorrectFraming
-              }
+              component={props.isDesktop ? CorrectFramingDesktop : CorrectFraming}
               aria-hidden="true"
               class="w-full max-w-[17.5rem] m-x-auto compact:col-start-1
                 compact:self-start compact:max-w-[11.25rem]"
@@ -75,16 +68,10 @@ export const OnboardingGuideModal: Component<{ isDesktop: boolean }> = (
                 compact:overflow-y-auto"
             >
               <Dialog.Title class="dialog-title compact:!text-left">
-                {props.isDesktop
-                  ? t.onboarding_modal.title_desktop
-                  : t.onboarding_modal.title}
+                {props.isDesktop ? t.onboarding_modal.title_desktop : t.onboarding_modal.title}
               </Dialog.Title>
               <Dialog.Description class="dialog-description compact:!text-left">
-                <p>
-                  {props.isDesktop
-                    ? t.onboarding_modal.details_desktop
-                    : t.onboarding_modal.details}
-                </p>
+                <p>{props.isDesktop ? t.onboarding_modal.details_desktop : t.onboarding_modal.details}</p>
               </Dialog.Description>
             </div>
           </article>

@@ -30,7 +30,7 @@ The list of cameras that are available to the user.
 
 ### errorState?
 
-> `optional` **errorState**: `Error` \| [`CameraError`](../classes/CameraError.md)
+> `optional` **errorState?**: `Error` \| [`CameraError`](../classes/CameraError.md)
 
 If the Camera manager has encountered an error, this will be set to the error.
 
@@ -38,7 +38,7 @@ If the Camera manager has encountered an error, this will be set to the error.
 
 ### extractionArea?
 
-> `optional` **extractionArea**: [`ExtractionArea`](ExtractionArea.md)
+> `optional` **extractionArea?**: [`ExtractionArea`](ExtractionArea.md)
 
 Defines the area of the video which will be sent for processing.
 
@@ -46,10 +46,10 @@ Defines the area of the video which will be sent for processing.
 
 ### facingFilter?
 
-> `optional` **facingFilter**: [`FacingMode`](FacingMode.md)[]
+> `optional` **facingFilter?**: [`FacingMode`](FacingMode.md)[]
 
-The facing mode filter that will be used to filter the available cameras.
-Can be a single facing mode or an array of facing modes.
+The facing mode filter that will be used to filter the available cameras. Can be a single facing mode or an array
+of facing modes.
 
 ***
 
@@ -87,7 +87,7 @@ Capturing / playing / idle.
 
 ### selectedCamera?
 
-> `optional` **selectedCamera**: [`Camera`](../classes/Camera.md)
+> `optional` **selectedCamera?**: [`Camera`](../classes/Camera.md)
 
 The currently selected camera.
 
@@ -95,7 +95,7 @@ The currently selected camera.
 
 ### videoElement?
 
-> `optional` **videoElement**: `HTMLVideoElement`
+> `optional` **videoElement?**: `HTMLVideoElement`
 
 The video element that will display the camera stream.
 
@@ -103,6 +103,6 @@ The video element that will display the camera stream.
 
 ### videoResolution?
 
-> `optional` **videoResolution**: [`Resolution`](Resolution.md)
+> `optional` **videoResolution?**: [`Resolution`](Resolution.md)
 
 The resolution of the video on the `videoElement`

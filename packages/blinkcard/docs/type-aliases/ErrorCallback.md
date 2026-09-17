@@ -4,7 +4,7 @@
 
 [@microblink/blinkcard](../README.md) / ErrorCallback
 
-# Type Alias: ErrorCallback()
+# Type Alias: ErrorCallback
 
 > **ErrorCallback** = (`error`) => `void`
 

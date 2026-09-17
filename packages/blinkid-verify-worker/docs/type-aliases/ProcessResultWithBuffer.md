@@ -10,7 +10,7 @@
 
 The process result with buffer.
 
-## Type declaration
+## Type Declaration
 
 ### arrayBuffer
 

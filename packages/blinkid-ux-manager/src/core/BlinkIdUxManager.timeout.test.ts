@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkIdScanningResult,
@@ -10,7 +8,7 @@ import type {
   RemoteScanningSession,
   ScanningStatus,
 } from "@microblink/blinkid-core";
-import type { CameraManager } from "@microblink/camera-manager";
+import type { CameraManager } from "@microblink/camera-manager/core";
 import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
 import {
   advanceAndFlushUi,
@@ -21,18 +19,16 @@ import {
 } from "@microblink/test-utils/vitest";
 import type { PartialDeep } from "type-fest";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
+import { blankProcessResult } from "./__testdata/blankProcessResult";
+import { blinkIdUiStateMap } from "./blinkid-ui-state";
 import {
   defaultBlinkIdDesktopTimeoutConfiguration,
   defaultBlinkIdTimeoutConfiguration,
   type BlinkIdTimeoutConfiguration,
 } from "./BlinkIdTimeoutConfiguration";
-import type {
-  BlinkIdFrameProcessCallback,
-  BlinkIdProgress,
-} from "./BlinkIdUxManager";
+import type { BlinkIdFrameProcessCallback, BlinkIdProgress } from "./BlinkIdUxManager";
 import { BlinkIdUxManager } from "./BlinkIdUxManager";
-import { blankProcessResult } from "./__testdata/blankProcessResult";
-import { blinkIdUiStateMap } from "./blinkid-ui-state";
 
 const sessionSettings = {
   inputImageSource: "video",
@@ -40,11 +36,10 @@ const sessionSettings = {
   scanningSettings: {},
 } as BlinkIdSessionSettings;
 
-const createProcessResult = (
-  overrides: PartialDeep<ProcessResultWithBuffer> = {},
-): ProcessResultWithBuffer => {
-  const inputImageAnalysisResult = (overrides.inputImageAnalysisResult ??
-    {}) as Partial<ProcessResultWithBuffer["inputImageAnalysisResult"]>;
+const createProcessResult = (overrides: PartialDeep<ProcessResultWithBuffer> = {}): ProcessResultWithBuffer => {
+  const inputImageAnalysisResult = (overrides.inputImageAnalysisResult ?? {}) as Partial<
+    ProcessResultWithBuffer["inputImageAnalysisResult"]
+  >;
   const resultCompleteness = (overrides.resultCompleteness ?? {}) as Partial<
     ProcessResultWithBuffer["resultCompleteness"]
   >;
@@ -64,7 +59,7 @@ const createProcessResult = (
     resultCompleteness: {
       ...blankProcessResult.resultCompleteness,
       ...resultCompleteness,
-    } as ProcessResultWithBuffer["resultCompleteness"],
+    },
     arrayBuffer: arrayBuffer ?? new ArrayBuffer(8),
   };
 };
@@ -187,10 +182,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     );
     managers.add(manager);
 
-    expect(
-      manager.getTimeoutConfiguration()
-        .partiallySupportedBarcodeResolveTimeoutMs,
-    ).toEqual(
+    expect(manager.getTimeoutConfiguration().partiallySupportedBarcodeResolveTimeoutMs).toEqual(
       defaultBlinkIdDesktopTimeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
     );
   });
@@ -205,10 +197,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     );
     managers.add(manager);
 
-    expect(
-      manager.getTimeoutConfiguration()
-        .partiallySupportedBarcodeResolveTimeoutMs,
-    ).toEqual(
+    expect(manager.getTimeoutConfiguration().partiallySupportedBarcodeResolveTimeoutMs).toEqual(
       defaultBlinkIdTimeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
     );
   });
@@ -272,8 +261,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
   });
 
   test("restarts inactivity timeout only after the stabilized BlinkID UI state changes", async () => {
-    const inactivityTimeoutMs =
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 200;
+    const inactivityTimeoutMs = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 200;
     const { cameraManager, manager, getLatestProgress } = createManager({
       inactivityTimeoutMs,
       scanStepTimeoutMs: 5000,
@@ -281,9 +269,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     managers.add(manager);
 
     cameraManager.emitPlaybackState("capturing");
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
     await cameraManager.emitFrame(createFakeImageData());
     await vi.advanceTimersByTimeAsync(40);
 
@@ -305,9 +291,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(progress.inactivityResetUiStateKey).toBe("FRONT_PAGE_NOT_IN_FRAME");
     expect(progress.inactivity.configuredMs).toBe(inactivityTimeoutMs);
     expect(progress.inactivity.remainingMs).toBeGreaterThan(0);
-    expect(progress.inactivity.remainingMs).toBeLessThanOrEqual(
-      inactivityTimeoutMs,
-    );
+    expect(progress.inactivity.remainingMs).toBeLessThanOrEqual(inactivityTimeoutMs);
   });
 
   test("does not reset inactivity timeout for repeated identical mapped states", async () => {
@@ -361,47 +345,35 @@ describe("BlinkIdUxManager timeout behavior", () => {
 
     const errorSpy = vi.fn();
     manager.addOnErrorCallback(errorSpy);
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
 
     cameraManager.emitPlaybackState("capturing");
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
     await cameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(150);
 
     expect(manager.uiState.key).toBe("PROCESSING_BARCODE");
 
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 1_000,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 1_000);
 
     expect(errorSpy).not.toHaveBeenCalled();
     expect(cameraManager.stopFrameCapture).not.toHaveBeenCalled();
   });
 
   test("fires scan-step timeout while PROCESSING_BARCODE is visible", async () => {
-    const scanStepTimeoutMs =
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 1_000;
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager({
-        inactivityTimeoutMs: null,
-        scanStepTimeoutMs,
-      });
+    const scanStepTimeoutMs = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 1_000;
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager({
+      inactivityTimeoutMs: null,
+      scanStepTimeoutMs,
+    });
     managers.add(manager);
 
     const errorSpy = vi.fn();
     manager.addOnErrorCallback(errorSpy);
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
 
     cameraManager.emitPlaybackState("capturing");
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
     await cameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(150);
 
@@ -419,25 +391,19 @@ describe("BlinkIdUxManager timeout behavior", () => {
   });
 
   test("resets scan-step timeout when PROCESSING_BARCODE becomes visible", async () => {
-    const scanStepTimeoutMs =
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 1_000;
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager({
-        inactivityTimeoutMs: null,
-        scanStepTimeoutMs,
-      });
+    const scanStepTimeoutMs = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 1_000;
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager({
+      inactivityTimeoutMs: null,
+      scanStepTimeoutMs,
+    });
     managers.add(manager);
 
     const errorSpy = vi.fn();
     manager.addOnErrorCallback(errorSpy);
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
 
     cameraManager.emitPlaybackState("capturing");
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 500,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 500);
     await cameraManager.emitFrame(createFakeImageData());
     await flushUiRaf();
 
@@ -455,13 +421,11 @@ describe("BlinkIdUxManager timeout behavior", () => {
   });
 
   test("keeps inactivity timeout active for BARCODE_NOT_IN_FRAME", async () => {
-    const inactivityTimeoutMs =
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 500;
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager({
-        inactivityTimeoutMs,
-        scanStepTimeoutMs: 20_000,
-      });
+    const inactivityTimeoutMs = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 500;
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager({
+      inactivityTimeoutMs,
+      scanStepTimeoutMs: 20_000,
+    });
     managers.add(manager);
 
     const errorSpy = vi.fn();
@@ -469,9 +433,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     scanningSession.process.mockResolvedValue(barcodeNotInFrameResult());
 
     cameraManager.emitPlaybackState("capturing");
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
     await cameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(150);
 
@@ -489,23 +451,17 @@ describe("BlinkIdUxManager timeout behavior", () => {
   });
 
   test("reports paused inactivity progress while PROCESSING_BARCODE is visible", async () => {
-    const inactivityTimeoutMs =
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 500;
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager({
-        inactivityTimeoutMs,
-        scanStepTimeoutMs: 20_000,
-      });
+    const inactivityTimeoutMs = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 500;
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager({
+      inactivityTimeoutMs,
+      scanStepTimeoutMs: 20_000,
+    });
     managers.add(manager);
 
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
 
     cameraManager.emitPlaybackState("capturing");
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
     await cameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(150);
 
@@ -533,9 +489,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     });
     managers.add(manager);
 
-    scanningSession.process.mockResolvedValue(
-      partiallySupportedBarcodeResult(),
-    );
+    scanningSession.process.mockResolvedValue(partiallySupportedBarcodeResult());
     scanningSession.getScanningStatus
       .mockResolvedValueOnce("scanning-barcode-in-progress")
       .mockResolvedValue("side-scanned");
@@ -561,23 +515,18 @@ describe("BlinkIdUxManager timeout behavior", () => {
         barcodeModule: { presenceMandatory: true },
       },
     } as BlinkIdSessionSettings;
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager(
-        {
-          inactivityTimeoutMs: null,
-          scanStepTimeoutMs: null,
-          partiallySupportedBarcodeResolveTimeoutMs: 100,
-        },
-        mandatoryBarcodeSessionSettings,
-      );
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager(
+      {
+        inactivityTimeoutMs: null,
+        scanStepTimeoutMs: null,
+        partiallySupportedBarcodeResolveTimeoutMs: 100,
+      },
+      mandatoryBarcodeSessionSettings,
+    );
     managers.add(manager);
 
-    scanningSession.process.mockResolvedValue(
-      partiallySupportedBarcodeResult(),
-    );
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.process.mockResolvedValue(partiallySupportedBarcodeResult());
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
 
     cameraManager.emitPlaybackState("capturing");
     await cameraManager.emitFrame(createFakeImageData());
@@ -644,42 +593,34 @@ describe("BlinkIdUxManager timeout behavior", () => {
       processResult: partiallySupportedBarcodeResult(),
       scanningStatus: "scanning-side-in-progress",
     },
-  ])(
-    "does not resolve partially supported barcode step when $name",
-    async ({ processResult, scanningStatus }) => {
-      const { cameraManager, scanningSession, manager } = createManager({
-        inactivityTimeoutMs: null,
-        scanStepTimeoutMs: null,
-        partiallySupportedBarcodeResolveTimeoutMs: 100,
-      });
-      managers.add(manager);
-
-      scanningSession.process.mockResolvedValue(processResult);
-      scanningSession.getScanningStatus.mockResolvedValue(scanningStatus);
-
-      cameraManager.emitPlaybackState("capturing");
-      await cameraManager.emitFrame(createFakeImageData());
-      await vi.advanceTimersByTimeAsync(100);
-
-      expect(scanningSession.resolveCurrentStep).not.toHaveBeenCalled();
-    },
-  );
-
-  test("does not resolve partially supported barcode step when the timer is disabled", async () => {
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager({
-        inactivityTimeoutMs: null,
-        scanStepTimeoutMs: null,
-        partiallySupportedBarcodeResolveTimeoutMs: null,
-      });
+  ])("does not resolve partially supported barcode step when $name", async ({ processResult, scanningStatus }) => {
+    const { cameraManager, scanningSession, manager } = createManager({
+      inactivityTimeoutMs: null,
+      scanStepTimeoutMs: null,
+      partiallySupportedBarcodeResolveTimeoutMs: 100,
+    });
     managers.add(manager);
 
-    scanningSession.process.mockResolvedValue(
-      partiallySupportedBarcodeResult(),
-    );
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.process.mockResolvedValue(processResult);
+    scanningSession.getScanningStatus.mockResolvedValue(scanningStatus);
+
+    cameraManager.emitPlaybackState("capturing");
+    await cameraManager.emitFrame(createFakeImageData());
+    await vi.advanceTimersByTimeAsync(100);
+
+    expect(scanningSession.resolveCurrentStep).not.toHaveBeenCalled();
+  });
+
+  test("does not resolve partially supported barcode step when the timer is disabled", async () => {
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager({
+      inactivityTimeoutMs: null,
+      scanStepTimeoutMs: null,
+      partiallySupportedBarcodeResolveTimeoutMs: null,
+    });
+    managers.add(manager);
+
+    scanningSession.process.mockResolvedValue(partiallySupportedBarcodeResult());
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
 
     cameraManager.emitPlaybackState("capturing");
     await cameraManager.emitFrame(createFakeImageData());
@@ -704,9 +645,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     });
     managers.add(manager);
 
-    scanningSession.process.mockResolvedValue(
-      partiallySupportedBarcodeResult(),
-    );
+    scanningSession.process.mockResolvedValue(partiallySupportedBarcodeResult());
     scanningSession.getScanningStatus
       .mockResolvedValueOnce("scanning-barcode-in-progress")
       .mockResolvedValue("side-scanned");
@@ -728,42 +667,29 @@ describe("BlinkIdUxManager timeout behavior", () => {
   });
 
   test("reports partially supported barcode resolve timer progress", async () => {
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager({
-        inactivityTimeoutMs: null,
-        scanStepTimeoutMs: null,
-        partiallySupportedBarcodeResolveTimeoutMs: 100,
-      });
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager({
+      inactivityTimeoutMs: null,
+      scanStepTimeoutMs: null,
+      partiallySupportedBarcodeResolveTimeoutMs: 100,
+    });
     managers.add(manager);
 
-    scanningSession.process.mockResolvedValue(
-      partiallySupportedBarcodeResult(),
-    );
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.process.mockResolvedValue(partiallySupportedBarcodeResult());
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
 
     cameraManager.emitPlaybackState("capturing");
     await cameraManager.emitFrame(createFakeImageData());
     await flushUiRaf();
 
     const runningProgress = getLatestProgress();
-    expect(runningProgress.partiallySupportedBarcodeResolve.configuredMs).toBe(
-      100,
-    );
-    expect(runningProgress.partiallySupportedBarcodeResolve.status).toBe(
-      "running",
-    );
-    expect(
-      runningProgress.partiallySupportedBarcodeResolve.remainingMs,
-    ).toBeLessThanOrEqual(100);
+    expect(runningProgress.partiallySupportedBarcodeResolve.configuredMs).toBe(100);
+    expect(runningProgress.partiallySupportedBarcodeResolve.status).toBe("running");
+    expect(runningProgress.partiallySupportedBarcodeResolve.remainingMs).toBeLessThanOrEqual(100);
 
     cameraManager.emitPlaybackState("playback");
     await flushUiRaf();
 
-    expect(getLatestProgress().partiallySupportedBarcodeResolve.status).toBe(
-      "paused",
-    );
+    expect(getLatestProgress().partiallySupportedBarcodeResolve.status).toBe("paused");
   });
 
   test("clears partially supported barcode resolve timer on reset", async () => {
@@ -774,12 +700,8 @@ describe("BlinkIdUxManager timeout behavior", () => {
     });
     managers.add(manager);
 
-    scanningSession.process.mockResolvedValue(
-      partiallySupportedBarcodeResult(),
-    );
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.process.mockResolvedValue(partiallySupportedBarcodeResult());
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
 
     cameraManager.emitPlaybackState("capturing");
     await cameraManager.emitFrame(createFakeImageData());
@@ -825,12 +747,8 @@ describe("BlinkIdUxManager timeout behavior", () => {
     });
     managers.add(manager);
 
-    scanningSession.process.mockResolvedValue(
-      partiallySupportedBarcodeResult(),
-    );
-    scanningSession.getScanningStatus.mockResolvedValue(
-      "scanning-barcode-in-progress",
-    );
+    scanningSession.process.mockResolvedValue(partiallySupportedBarcodeResult());
+    scanningSession.getScanningStatus.mockResolvedValue("scanning-barcode-in-progress");
     scanningSession.resolveCurrentStep.mockRejectedValue(new Error("nope"));
 
     cameraManager.emitPlaybackState("capturing");
@@ -914,9 +832,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     manager.addOnErrorCallback(errorSpy);
 
     let visibilityState: DocumentVisibilityState = "visible";
-    vi.spyOn(document, "visibilityState", "get").mockImplementation(
-      () => visibilityState,
-    );
+    vi.spyOn(document, "visibilityState", "get").mockImplementation(() => visibilityState);
 
     cameraManager.emitPlaybackState("capturing");
     await vi.advanceTimersByTimeAsync(90);
@@ -940,13 +856,11 @@ describe("BlinkIdUxManager timeout behavior", () => {
   });
 
   test("advanceToNextStep restarts inactivity timeout only after the stabilized UI state changes", async () => {
-    const inactivityTimeoutMs =
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 200;
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager({
-        inactivityTimeoutMs,
-        scanStepTimeoutMs: 5000,
-      });
+    const inactivityTimeoutMs = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 200;
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager({
+      inactivityTimeoutMs,
+      scanStepTimeoutMs: 5000,
+    });
     managers.add(manager);
 
     let advance: Parameters<BlinkIdFrameProcessCallback>[1] | undefined;
@@ -957,9 +871,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     scanningSession.getScanningStatus.mockResolvedValue("side-scanned");
 
     cameraManager.emitPlaybackState("capturing");
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
     await cameraManager.emitFrame(createFakeImageData());
     expect(advance).toBeDefined();
 
@@ -984,9 +896,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     expect(progress.inactivityResetUiStateKey).toBe("PAGE_CAPTURED");
     expect(progress.inactivity.configuredMs).toBe(inactivityTimeoutMs);
     expect(progress.inactivity.remainingMs).toBeGreaterThan(0);
-    expect(progress.inactivity.remainingMs).toBeLessThanOrEqual(
-      inactivityTimeoutMs,
-    );
+    expect(progress.inactivity.remainingMs).toBeLessThanOrEqual(inactivityTimeoutMs);
   });
 
   test("triggerStepTimeout from frame process callback invokes timeout handling", async () => {
@@ -1114,9 +1024,7 @@ describe("BlinkIdUxManager timeout behavior", () => {
     await flushUiRaf();
 
     const pausedProgress = getLatestProgress();
-    expect(pausedProgress.perSide.remainingMs).toBeLessThanOrEqual(
-      runningPerSideRemainingMs!,
-    );
+    expect(pausedProgress.perSide.remainingMs).toBeLessThanOrEqual(runningPerSideRemainingMs!);
     expect(pausedProgress).toEqual({
       uiStateKey: "INTRO_FRONT_PAGE",
       inactivity: {
@@ -1191,35 +1099,27 @@ describe("BlinkIdUxManager timeout behavior", () => {
   });
 
   test("onProgress updates the inactivity reset key after the stabilized UI state changes", async () => {
-    const inactivityTimeoutMs =
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 200;
-    const { cameraManager, scanningSession, manager, getLatestProgress } =
-      createManager({
-        inactivityTimeoutMs,
-        scanStepTimeoutMs: 5000,
-      });
+    const inactivityTimeoutMs = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 200;
+    const { cameraManager, scanningSession, manager, getLatestProgress } = createManager({
+      inactivityTimeoutMs,
+      scanStepTimeoutMs: 5000,
+    });
     managers.add(manager);
 
     scanningSession.process.mockResolvedValueOnce(cameraTooFarResult());
 
     cameraManager.emitPlaybackState("capturing");
-    await vi.advanceTimersByTimeAsync(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100,
-    );
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
     await cameraManager.emitFrame(createFakeImageData());
     await advanceAndFlushUi(150);
 
     const progress = getLatestProgress();
     expect(progress.uiStateKey).toBe("DOCUMENT_FRAMING_CAMERA_TOO_FAR");
     expect(progress.mappedUiStateKey).toBe("DOCUMENT_FRAMING_CAMERA_TOO_FAR");
-    expect(progress.inactivityResetUiStateKey).toBe(
-      "DOCUMENT_FRAMING_CAMERA_TOO_FAR",
-    );
+    expect(progress.inactivityResetUiStateKey).toBe("DOCUMENT_FRAMING_CAMERA_TOO_FAR");
     expect(progress.inactivity.configuredMs).toBe(inactivityTimeoutMs);
     expect(progress.inactivity.remainingMs).toBeGreaterThan(0);
-    expect(progress.inactivity.remainingMs).toBeLessThanOrEqual(
-      inactivityTimeoutMs,
-    );
+    expect(progress.inactivity.remainingMs).toBeLessThanOrEqual(inactivityTimeoutMs);
     expect(progress.inactivity.status).toBe("running");
   });
 });

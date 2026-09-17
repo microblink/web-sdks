@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /*
   Augments global types for the Image Capture API by adding
@@ -9,28 +7,18 @@
   https://www.w3.org/TR/mediacapture-streams/
  */
 
-/**
- * The focus mode.
- */
+/** The focus mode. */
 type FocusMode = "none" | "manual" | "single-shot" | "continuous";
 
-/**
- * The exposure mode.
- */
+/** The exposure mode. */
 type ExposureMode = "continuous" | "manual";
 
-/**
- * Partial on iOS Safari
- */
+/** Partial on iOS Safari */
 type SteppedRange = Partial<{ min: number; max: number; step: number }>;
 
-/**
- * The global interface.
- */
+/** The global interface. */
 declare global {
-  /**
-   * The media track capabilities.
-   */
+  /** The media track capabilities. */
   interface MediaTrackCapabilities {
     torch?: MediaTrackSettings["torch"];
     focusMode?: FocusMode[];
@@ -46,9 +34,7 @@ declare global {
     powerEfficient?: boolean[];
   }
 
-  /**
-   * The media track settings.
-   */
+  /** The media track settings. */
   interface MediaTrackSettings {
     torch?: boolean;
     focusMode?: FocusMode;
@@ -64,17 +50,13 @@ declare global {
     powerEfficient?: boolean;
   }
 
-  /**
-   * So far only used to apply torch?
-   */
+  /** So far only used to apply torch? */
   interface MediaTrackConstraintSet {
     torch?: MediaTrackSettings["torch"];
     focusMode?: FocusMode[];
   }
 
-  /**
-   * The media track supported constraints.
-   */
+  /** The media track supported constraints. */
   interface MediaTrackSupportedConstraints {
     torch?: boolean;
     volume?: boolean;
@@ -83,9 +65,7 @@ declare global {
     focusMode?: FocusMode[];
   }
 
-  /**
-   * The window interface.
-   */
+  /** The window interface. */
   interface Window {
     __mbCameraManagerCssCode?: string;
   }

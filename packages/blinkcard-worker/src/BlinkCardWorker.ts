@@ -1,30 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
-
-import sizeManifest from "@microblink/blinkcard-wasm/size-manifest.json";
-import { buildResourcePath } from "@microblink/worker-common/buildResourcePath";
-import {
-  downloadResourceBuffer,
-  type DownloadProgress,
-} from "@microblink/worker-common/downloadResourceBuffer";
-import {
-  LicenseError,
-  ServerPermissionError,
-} from "@microblink/worker-common/errors";
-import { getCrossOriginWorkerURL } from "@microblink/worker-common/getCrossOriginWorkerURL";
-import { getWasmFileSize } from "@microblink/worker-common/getWasmFileSize";
-import { isIOS } from "@microblink/worker-common/isSafari";
-import { obtainNewServerPermission } from "@microblink/worker-common/licencing";
-import { mbToWasmPages } from "@microblink/worker-common/mbToWasmPages";
-import {
-  getMicroblinkProxyPingFlags,
-  sanitizeProxyUrls,
-  validateLicenseProxyPermissions,
-  type SanitizedProxyUrls,
-} from "@microblink/worker-common/proxy-url-validator";
-import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
-import { expose, finalizer, proxy, ProxyMarked, transfer } from "comlink";
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { Ping } from "@microblink/analytics/ping";
 import type {
@@ -37,15 +11,33 @@ import type {
   EmscriptenModuleFactory,
   WasmVariant,
 } from "@microblink/blinkcard-wasm";
+import sizeManifest from "@microblink/blinkcard-wasm/size-manifest.json";
+import { buildResourcePath } from "@microblink/worker-common/buildResourcePath";
+import { createWasmInstantiator, downloadAndCompileWasm } from "@microblink/worker-common/compileWasm";
+import { downloadResourceBuffer, type DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
+import { LicenseError, ServerPermissionError } from "@microblink/worker-common/errors";
+import { getCrossOriginWorkerURL } from "@microblink/worker-common/getCrossOriginWorkerURL";
+import { getWasmFileSize } from "@microblink/worker-common/getWasmFileSize";
+import { isIOS } from "@microblink/worker-common/isSafari";
+import { obtainNewServerPermission } from "@microblink/worker-common/licencing";
+import { mbToWasmPages } from "@microblink/worker-common/mbToWasmPages";
+import {
+  getMicroblinkProxyPingFlags,
+  sanitizeProxyUrls,
+  validateLicenseProxyPermissions,
+  type SanitizedProxyUrls,
+} from "@microblink/worker-common/proxy-url-validator";
+import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
+import { getSdkInitPlatformDetails, isThreadedWasmVariant } from "@microblink/worker-common/wasmVariant";
 import { installWorkerCrashReporter } from "@microblink/worker-common/workerCrashReporter";
+import { expose, finalizer, proxy, ProxyMarked, transfer } from "comlink";
 
 export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
 
 const createFrameTransferError = (message: string, error: unknown) => {
-  const causeMessage =
-    error instanceof Error && error.message ? `: ${error.message}` : "";
+  const causeMessage = error instanceof Error && error.message ? `: ${error.message}` : "";
 
   const frameTransferError = new Error(
     `${message}${causeMessage}`,
@@ -56,39 +48,23 @@ const createFrameTransferError = (message: string, error: unknown) => {
   return frameTransferError;
 };
 
-/**
- * The BlinkCard worker.
- */
+/** The BlinkCard worker. */
 export class BlinkCardWorker {
-  /**
-   * The Wasm module.
-   */
+  /** The Wasm module. */
   #wasmModule?: BlinkCardWasmModule;
-  /**
-   * Active scanning session created by this worker.
-   */
+  /** Active scanning session created by this worker. */
   #activeSession?: BlinkCardScanningSession;
-  /**
-   * The progress status callback.
-   */
+  /** The progress status callback. */
   progressStatusCallback?: ProgressStatusCallback;
-  /**
-   * Whether the demo overlay is shown.
-   */
+  /** Whether the demo overlay is shown. */
   #showDemoOverlay = true;
-  /**
-   * Whether the production overlay is shown.
-   */
+  /** Whether the production overlay is shown. */
   #showProductionOverlay = true;
 
-  /**
-   * The current session number.
-   */
+  /** The current session number. */
   #currentSessionNumber = 0;
 
-  /**
-   * Sanitized proxy URLs for Microblink services.
-   */
+  /** Sanitized proxy URLs for Microblink services. */
   #proxyUrls?: SanitizedProxyUrls;
 
   #userId!: string;
@@ -109,8 +85,7 @@ export class BlinkCardWorker {
           sessionNumber,
           data: {
             errorType: "Crash",
-            errorMessage:
-              error instanceof Error ? error.message : String(error),
+            errorMessage: error instanceof Error ? error.message : String(error),
             stackTrace: error instanceof Error ? error.stack : undefined,
           },
         });
@@ -119,9 +94,7 @@ export class BlinkCardWorker {
     });
   }
 
-  /**
-   * This method loads the Wasm module.
-   */
+  /** This method loads the Wasm module. */
   async #loadWasm({ resourceUrl, wasmVariant, initialMemory }: LoadWasmParams) {
     if (this.#wasmModule) {
       console.warn("Wasm already loaded, skipping loadWasm");
@@ -138,16 +111,14 @@ export class BlinkCardWorker {
 
     const crossOriginWorkerUrl = await getCrossOriginWorkerURL(workerUrl);
 
-    const imported = (await import(
-      /* @vite-ignore */ crossOriginWorkerUrl
-    )) as {
+    const imported = (await import(/* @vite-ignore */ crossOriginWorkerUrl)) as {
       default: EmscriptenModuleFactory<BlinkCardWasmModule>;
     };
 
     const createModule = imported.default;
 
     // use default memory settings if not provided
-    if (!initialMemory) {
+    if (initialMemory === undefined || initialMemory === 0) {
       // safari requires a larger initial memory allocation as it often block memory growth
       initialMemory = isIOS() ? 700 : 200;
     }
@@ -155,7 +126,7 @@ export class BlinkCardWorker {
     const wasmMemory = new WebAssembly.Memory({
       initial: mbToWasmPages(initialMemory),
       maximum: mbToWasmPages(2048),
-      shared: wasmVariant === "simd-threads",
+      shared: isThreadedWasmVariant(wasmVariant),
     });
 
     // Create progress trackers for each download
@@ -180,12 +151,9 @@ export class BlinkCardWorker {
 
       const totalFinished = wasmProgress.finished && dataProgress.finished;
       const totalLoaded = wasmProgress.loaded + dataProgress.loaded;
-      const totalLength =
-        wasmProgress.contentLength + dataProgress.contentLength;
+      const totalLength = wasmProgress.contentLength + dataProgress.contentLength;
 
-      const combinedPercent = totalFinished
-        ? 100
-        : Math.min(Math.round((totalLoaded / totalLength) * 100), 100);
+      const combinedPercent = totalFinished ? 100 : Math.min(Math.round((totalLoaded / totalLength) * 100), 100);
 
       // Check if enough time has elapsed since the last update
       const currentTime = performance.now();
@@ -215,14 +183,11 @@ export class BlinkCardWorker {
       void throttledCombinedProgress();
     };
 
-    const getExpectedSize = (params: {
-      fileType: "wasm" | "data";
-      variant: WasmVariant;
-    }) => getWasmFileSize(params, sizeManifest);
+    const getExpectedSize = (params: { fileType: "wasm" | "data"; variant: WasmVariant }) =>
+      getWasmFileSize(params, sizeManifest);
 
-    // Replace simple fetch with progress tracking for both wasm and data downloads
-    const [preloadedWasm, preloadedData] = await Promise.all([
-      downloadResourceBuffer(
+    const [compiledWasm, preloadedData] = await Promise.all([
+      downloadAndCompileWasm(
         {
           url: wasmUrl,
           fileType: "wasm",
@@ -244,8 +209,7 @@ export class BlinkCardWorker {
 
     // Ensure final 100% progress update is sent
     if (this.progressStatusCallback && wasmProgress && dataProgress) {
-      const totalLength =
-        wasmProgress.contentLength + dataProgress.contentLength;
+      const totalLength = wasmProgress.contentLength + dataProgress.contentLength;
       this.progressStatusCallback({
         loaded: totalLength,
         contentLength: totalLength,
@@ -254,9 +218,7 @@ export class BlinkCardWorker {
       });
     }
 
-    /**
-     * https://emscripten.org/docs/api_reference/module.html#module-object
-     */
+    /** https://emscripten.org/docs/api_reference/module.html#module-object */
     this.#wasmModule = await createModule({
       locateFile: (path) => {
         // variantUrl already ends with the wasm variant segment
@@ -306,7 +268,7 @@ export class BlinkCardWorker {
       // for this userspace cross-origin worker workaround but rejected: it is
       // incompatible with our `-sDYNAMIC_EXECUTION=0` (no-eval) CSP hardening.
       mainScriptUrlOrBlob: crossOriginWorkerUrl,
-      wasmBinary: preloadedWasm,
+      instantiateWasm: createWasmInstantiator(compiledWasm),
       getPreloadedPackage() {
         return preloadedData;
       },
@@ -348,17 +310,9 @@ export class BlinkCardWorker {
     }
   }
 
-  /**
-   * This method initializes the BlinkCard Wasm module.
-   */
-  async initBlinkCard(
-    settings: BlinkCardWorkerInitSettings,
-    progressCallback?: ProgressStatusCallback,
-  ) {
-    const resourcesPath = new URL(
-      "resources/",
-      settings.resourcesLocation,
-    ).toString();
+  /** This method initializes the BlinkCard Wasm module. */
+  async initBlinkCard(settings: BlinkCardWorkerInitSettings, progressCallback?: ProgressStatusCallback) {
+    const resourcesPath = new URL("resources/", settings.resourcesLocation).toString();
 
     this.progressStatusCallback = progressCallback;
     this.#userId = settings.userId;
@@ -377,37 +331,26 @@ export class BlinkCardWorker {
     }
 
     // Initialize with license key
-    const licenseUnlockResult = this.#wasmModule.initializeWithLicenseKey(
-      settings.licenseKey,
-      settings.userId,
-      false,
-    );
+    const licenseUnlockResult = this.#wasmModule.initializeWithLicenseKey(settings.licenseKey, settings.userId, false);
 
     // Queue init pinglet before remote license check; flush only if init fails.
     this.reportPinglet({
       schemaName: "ping.sdk.init.start",
-      schemaVersion: "2.0.0",
+      schemaVersion: "3.0.0",
       sessionNumber: 0,
       data: {
         packageName: self.location.hostname,
         platform: "Emscripten",
-        // TODO: update this after pinglets schema is updated
-        platformDetails:
-          wasmVariant === "simd" ? "advanced" : "advanced-threads",
+        platformDetails: getSdkInitPlatformDetails(false, wasmVariant),
         product: "BlinkCard",
         userId: this.#userId,
-        ...getMicroblinkProxyPingFlags(
-          settings.microblinkProxyUrl,
-          licenseUnlockResult,
-        ),
+        ...getMicroblinkProxyPingFlags(settings.microblinkProxyUrl, licenseUnlockResult),
       },
     });
 
     if (licenseUnlockResult.licenseError) {
       // we do not flush pinglets here because we don't know if license allows it
-      throw new LicenseError(
-        "License unlock error: " + licenseUnlockResult.licenseError,
-      );
+      throw new LicenseError("License unlock error: " + licenseUnlockResult.licenseError);
     }
 
     if (settings.microblinkProxyUrl) {
@@ -427,12 +370,9 @@ export class BlinkCardWorker {
 
     // Check if we need to obtain a server permission
     if (licenseUnlockResult.unlockResult === "requires-server-permission") {
-      const shouldUseBaltazarProxy =
-        this.#proxyUrls?.baltazar && licenseUnlockResult.allowBaltazarProxy;
+      const shouldUseBaltazarProxy = this.#proxyUrls?.baltazar && licenseUnlockResult.allowBaltazarProxy;
 
-      const baltazarProxyUrl = shouldUseBaltazarProxy
-        ? this.#proxyUrls?.baltazar
-        : undefined;
+      const baltazarProxyUrl = shouldUseBaltazarProxy ? this.#proxyUrls?.baltazar : undefined;
 
       if (baltazarProxyUrl) {
         console.debug(`Using Baltazar proxy URL: ${baltazarProxyUrl}`);
@@ -442,14 +382,10 @@ export class BlinkCardWorker {
         ? await obtainNewServerPermission(licenseUnlockResult, baltazarProxyUrl)
         : await obtainNewServerPermission(licenseUnlockResult);
 
-      const serverPermissionResult = this.#wasmModule.submitServerPermission(
-        serverPermissionResponse,
-      );
+      const serverPermissionResult = this.#wasmModule.submitServerPermission(serverPermissionResponse);
 
       if (serverPermissionResult?.error) {
-        throw new ServerPermissionError(
-          "Server unlock error: " + serverPermissionResult.error,
-        );
+        throw new ServerPermissionError("Server unlock error: " + serverPermissionResult.error);
       }
     }
 
@@ -484,18 +420,13 @@ export class BlinkCardWorker {
    * @param sessionSettings - The options for the session.
    * @returns The session.
    */
-  createScanningSession(
-    sessionSettings?: BlinkCardSessionSettingsInput,
-  ): WorkerScanningSession & ProxyMarked {
+  createScanningSession(sessionSettings?: BlinkCardSessionSettingsInput): WorkerScanningSession & ProxyMarked {
     if (!this.#wasmModule) {
       throw new Error("Wasm module not loaded");
     }
 
     try {
-      const session = this.#wasmModule.createScanningSession(
-        sessionSettings ?? {},
-        this.#userId,
-      );
+      const session = this.#wasmModule.createScanningSession(sessionSettings ?? {}, this.#userId);
 
       this.#currentSessionNumber++;
 
@@ -524,15 +455,10 @@ export class BlinkCardWorker {
    * @param session - The BlinkCard scanning session.
    * @returns The proxy session.
    */
-  #createProxySession(
-    session: BlinkCardScanningSession,
-  ): WorkerScanningSession & ProxyMarked {
+  #createProxySession(session: BlinkCardScanningSession): WorkerScanningSession & ProxyMarked {
     this.#activeSession = session;
 
-    /**
-     * this is a custom session that will be proxied
-     * it handles the transfer of the image data buffer
-     */
+    /** This is a custom session that will be proxied it handles the transfer of the image data buffer */
     const customSession: InternalWorkerScanningSession = {
       getResult: () => {
         try {
@@ -548,8 +474,7 @@ export class BlinkCardWorker {
             sessionNumber: session.getSessionNumber(),
             data: {
               errorType: "NonFatal",
-              errorMessage:
-                error instanceof Error ? error.message : String(error),
+              errorMessage: error instanceof Error ? error.message : String(error),
               stackTrace: error instanceof Error ? error.stack : undefined,
             },
           });
@@ -572,10 +497,7 @@ export class BlinkCardWorker {
               [image.data.buffer],
             );
           } catch (error) {
-            const frameTransferError = createFrameTransferError(
-              "Failed to transfer frame from worker",
-              error,
-            );
+            const frameTransferError = createFrameTransferError("Failed to transfer frame from worker", error);
 
             if (!this.#wasmModule) {
               throw frameTransferError;
@@ -597,10 +519,7 @@ export class BlinkCardWorker {
 
           return transferPackage;
         } catch (error) {
-          if (
-            error instanceof Error &&
-            error.name === FRAME_TRANSFER_ERROR_NAME
-          ) {
+          if (error instanceof Error && error.name === FRAME_TRANSFER_ERROR_NAME) {
             throw error;
           }
 
@@ -614,8 +533,7 @@ export class BlinkCardWorker {
             sessionNumber: session.getSessionNumber(),
             data: {
               errorType: "NonFatal",
-              errorMessage:
-                error instanceof Error ? error.message : String(error),
+              errorMessage: error instanceof Error ? error.message : String(error),
               stackTrace: error instanceof Error ? error.stack : undefined,
             },
           });
@@ -647,8 +565,7 @@ export class BlinkCardWorker {
             sessionNumber: session.getSessionNumber(),
             data: {
               errorType: "NonFatal",
-              errorMessage:
-                error instanceof Error ? error.message : String(error),
+              errorMessage: error instanceof Error ? error.message : String(error),
               stackTrace: error instanceof Error ? error.stack : undefined,
             },
           });
@@ -681,18 +598,14 @@ export class BlinkCardWorker {
     return proxy(customSession);
   }
 
-  /**
-   * This method is called when the worker is terminated.
-   */
+  /** This method is called when the worker is terminated. */
   [finalizer]() {
     // console.debug("Comlink.finalizer called on proxyWorker");
     // Can't use this as the `proxyWorker` gets randomly GC'd, even if in use
     // self.close();
   }
 
-  /**
-   * Terminates the workers and the Wasm runtime.
-   */
+  /** Terminates the workers and the Wasm runtime. */
   async terminate() {
     const gracePeriod = 5000;
 
@@ -706,10 +619,7 @@ export class BlinkCardWorker {
           this.#activeSession.delete();
         }
       } catch (error) {
-        console.warn(
-          "Failed to delete BlinkCard session during terminate:",
-          error,
-        );
+        console.warn("Failed to delete BlinkCard session during terminate:", error);
         if (!this.#wasmModule) {
           return;
         }
@@ -720,8 +630,7 @@ export class BlinkCardWorker {
           sessionNumber: this.#currentSessionNumber,
           data: {
             errorType: "NonFatal",
-            errorMessage:
-              error instanceof Error ? error.message : String(error),
+            errorMessage: error instanceof Error ? error.message : String(error),
             stackTrace: error instanceof Error ? error.stack : undefined,
           },
         });
@@ -734,9 +643,7 @@ export class BlinkCardWorker {
     if (!this.#wasmModule) {
       this.#cleanupCrashReporter?.();
       this.#cleanupCrashReporter = undefined;
-      console.warn(
-        "No Wasm module loaded during worker termination. Skipping cleanup.",
-      );
+      console.warn("No Wasm module loaded during worker termination. Skipping cleanup.");
 
       self.close();
       return;
@@ -753,10 +660,7 @@ export class BlinkCardWorker {
     // Wait for any in-flight ping requests to finish, but don't wait forever
     const startTime = Date.now();
 
-    while (
-      this.#wasmModule.arePingRequestsInProgress() &&
-      Date.now() - startTime < gracePeriod
-    ) {
+    while (this.#wasmModule.arePingRequestsInProgress() && Date.now() - startTime < gracePeriod) {
       // wait 100ms between checks
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
@@ -770,41 +674,25 @@ export class BlinkCardWorker {
   }
 }
 
-/**
- * The BlinkCard worker.
- */
+/** The BlinkCard worker. */
 const blinkCardWorker = new BlinkCardWorker();
 
-/**
- * The BlinkCard worker proxy.
- */
+/** The BlinkCard worker proxy. */
 expose(blinkCardWorker);
 
-/**
- * The BlinkCard worker proxy.
- */
+/** The BlinkCard worker proxy. */
 export type BlinkCardWorkerProxy = Omit<BlinkCardWorker, typeof finalizer>;
 
-/**
- * This is a workaround for the fact that the types are not exported.
- */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface _BlinkCardScanningResult extends BlinkCardScanningResult {}
+/** This is a workaround for the fact that the types are not exported. */
+type _BlinkCardScanningResult = BlinkCardScanningResult;
 
-/**
- * The process result with buffer.
- */
+/** The process result with buffer. */
 export type ProcessResultWithBuffer = BlinkCardProcessResult & {
   arrayBuffer: ArrayBuffer;
 };
 
-/**
- * The worker scanning session.
- */
-export type WorkerScanningSession = Omit<
-  BlinkCardScanningSession,
-  "process" | "deleteLater" | "isAliasOf"
-> & {
+/** The worker scanning session. */
+export type WorkerScanningSession = Omit<BlinkCardScanningSession, "process" | "deleteLater" | "isAliasOf"> & {
   process: (image: ImageData) => ProcessResultWithBuffer;
   /**
    * Gets the settings.
@@ -846,13 +734,13 @@ type InternalWorkerScanningSession = WorkerScanningSession &
 /**
  * Initialization settings for the BlinkCard worker.
  *
- * These settings control how the BlinkCard worker is initialized and configured,
- * including resource locations, memory allocation, and build variants.
+ * These settings control how the BlinkCard worker is initialized and configured, including resource locations, memory
+ * allocation, and build variants.
  */
 export type BlinkCardWorkerInitSettings = {
   /**
-   * The license key required to unlock and use the BlinkCard SDK.
-   * This must be a valid license key obtained from Microblink.
+   * The license key required to unlock and use the BlinkCard SDK. This must be a valid license key obtained from
+   * Microblink.
    */
   licenseKey: string;
 
@@ -860,53 +748,46 @@ export type BlinkCardWorkerInitSettings = {
    * The URL of the Microblink proxy server. This proxy handles requests to Microblink's Baltazar and Ping servers.
    *
    * **Requirements:**
+   *
    * - Must be a valid HTTPS URL
    * - The proxy server must implement the expected Microblink API endpoints
    * - This feature is only available if explicitly permitted by your license
    *
    * **Endpoints:**
+   *
    * - Ping: `{proxyUrl}/ping`
    * - Baltazar: `{proxyUrl}/api/v2/status/check`
    *
-   * @example "https://your-proxy.example.com"
+   * @example
+   *   "https://your-proxy.example.com";
    */
   microblinkProxyUrl?: string;
 
   /**
-   * The parent directory where the `/resources` directory is hosted.
-   * Defaults to `window.location.href`, at the root of the current page.
+   * The parent directory where the `/resources` directory is hosted. Defaults to `window.location.href`, at the root of
+   * the current page.
    */
   resourcesLocation?: string;
 
-  /**
-   * A unique identifier for the user/session.
-   * Used for analytics and tracking purposes.
-   */
+  /** A unique identifier for the user/session. Used for analytics and tracking purposes. */
   userId: string;
 
-  /**
-   * The WebAssembly module variant to use.
-   * Different variants may offer different performance/size tradeoffs.
-   */
+  /** The WebAssembly module variant to use. Different variants may offer different performance/size tradeoffs. */
   wasmVariant?: WasmVariant;
 
   /**
-   * The initial memory allocation for the Wasm module, in megabytes.
-   * Larger values may improve performance but increase memory usage.
+   * The initial memory allocation for the Wasm module, in megabytes. Larger values may improve performance but increase
+   * memory usage.
    */
   initialMemory?: number;
 };
 
-/**
- * The load Wasm params.
- */
+/** The load Wasm params. */
 export type LoadWasmParams = {
   resourceUrl: string;
   wasmVariant: WasmVariant;
   initialMemory?: number;
 };
 
-/**
- * The progress status callback.
- */
+/** The progress status callback. */
 export type ProgressStatusCallback = (progress: DownloadProgress) => void;

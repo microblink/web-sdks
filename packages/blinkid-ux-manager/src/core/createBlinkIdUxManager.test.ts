@@ -1,25 +1,20 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type {
-  BlinkIdSessionSettings,
-  RemoteScanningSession,
-} from "@microblink/blinkid-core";
+import type { BlinkIdSessionSettings, RemoteScanningSession } from "@microblink/blinkid-core";
 import { getDeviceInfo } from "@microblink/blinkid-core";
-import type { CameraManager } from "@microblink/camera-manager";
+import type { CameraManager } from "@microblink/camera-manager/core";
 import { createFakeScanningSession } from "@microblink/test-utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+
 import { BlinkIdUxManager } from "./BlinkIdUxManager";
 import { createBlinkIdUxManager } from "./createBlinkIdUxManager";
 
 vi.mock("./BlinkIdUxManager", () => ({
-  BlinkIdUxManager: vi.fn(),
+  BlinkIdUxManager: vi.fn(class BlinkIdUxManagerMock {}),
 }));
 
 vi.mock("@microblink/blinkid-core", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@microblink/blinkid-core")>();
+  const actual = await importOriginal<typeof import("@microblink/blinkid-core")>();
   return {
     ...actual,
     getDeviceInfo: vi.fn(),
@@ -43,18 +38,15 @@ describe("createBlinkIdUxManager", () => {
       showProductionOverlay: SHOW_PRODUCTION_OVERLAY,
     });
 
-    const deviceInfo = { userAgent: "ua" } as Awaited<
-      ReturnType<typeof getDeviceInfo>
-    >;
+    const deviceInfo = { userAgent: "ua" } as Awaited<ReturnType<typeof getDeviceInfo>>;
     vi.mocked(getDeviceInfo).mockResolvedValue(deviceInfo);
 
     const instance = {} as BlinkIdUxManager;
-    vi.mocked(BlinkIdUxManager).mockImplementation(() => instance);
+    vi.mocked(BlinkIdUxManager).mockImplementation(function BlinkIdUxManagerMock() {
+      return instance;
+    });
 
-    const result = await createBlinkIdUxManager(
-      cameraManager,
-      scanningSession as unknown as RemoteScanningSession,
-    );
+    const result = await createBlinkIdUxManager(cameraManager, scanningSession as unknown as RemoteScanningSession);
 
     expect(result).toBe(instance);
     expect(getDeviceInfo).toHaveBeenCalledTimes(1);
@@ -83,17 +75,12 @@ describe("createBlinkIdUxManager", () => {
       resolvedSettings: sessionSettings,
     });
 
-    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<
-      ReturnType<typeof getDeviceInfo>
-    >);
-    vi.mocked(BlinkIdUxManager).mockImplementation(
-      () => ({}) as BlinkIdUxManager,
-    );
+    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<ReturnType<typeof getDeviceInfo>>);
+    vi.mocked(BlinkIdUxManager).mockImplementation(function BlinkIdUxManagerMock() {
+      return {} as BlinkIdUxManager;
+    });
 
-    await createBlinkIdUxManager(
-      cameraManager,
-      scanningSession as unknown as RemoteScanningSession,
-    );
+    await createBlinkIdUxManager(cameraManager, scanningSession as unknown as RemoteScanningSession);
 
     expect(BlinkIdUxManager).toHaveBeenCalledWith(
       cameraManager,
@@ -117,17 +104,12 @@ describe("createBlinkIdUxManager", () => {
       scanningStatus: "scanning-barcode-in-progress",
     });
 
-    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<
-      ReturnType<typeof getDeviceInfo>
-    >);
-    vi.mocked(BlinkIdUxManager).mockImplementation(
-      () => ({}) as BlinkIdUxManager,
-    );
+    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<ReturnType<typeof getDeviceInfo>>);
+    vi.mocked(BlinkIdUxManager).mockImplementation(function BlinkIdUxManagerMock() {
+      return {} as BlinkIdUxManager;
+    });
 
-    await createBlinkIdUxManager(
-      cameraManager,
-      scanningSession as unknown as RemoteScanningSession,
-    );
+    await createBlinkIdUxManager(cameraManager, scanningSession as unknown as RemoteScanningSession);
 
     expect(BlinkIdUxManager).toHaveBeenCalledWith(
       cameraManager,
@@ -156,18 +138,14 @@ describe("createBlinkIdUxManager", () => {
       resolvedSettings: sessionSettings,
     });
 
-    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<
-      ReturnType<typeof getDeviceInfo>
-    >);
-    vi.mocked(BlinkIdUxManager).mockImplementation(
-      () => ({}) as BlinkIdUxManager,
-    );
+    vi.mocked(getDeviceInfo).mockResolvedValue({ userAgent: "ua" } as Awaited<ReturnType<typeof getDeviceInfo>>);
+    vi.mocked(BlinkIdUxManager).mockImplementation(function BlinkIdUxManagerMock() {
+      return {} as BlinkIdUxManager;
+    });
 
-    await createBlinkIdUxManager(
-      cameraManager,
-      scanningSession as unknown as RemoteScanningSession,
-      { initialUiStateKey: "INTRO_DATA_PAGE" },
-    );
+    await createBlinkIdUxManager(cameraManager, scanningSession as unknown as RemoteScanningSession, {
+      initialUiStateKey: "INTRO_DATA_PAGE",
+    });
 
     expect(BlinkIdUxManager).toHaveBeenCalledWith(
       cameraManager,
@@ -186,17 +164,12 @@ describe("createBlinkIdUxManager", () => {
     const cameraManager = {} as CameraManager;
     const scanningSession = createFakeScanningSession({
       overrides: {
-        getResolvedSessionSettings: vi
-          .fn()
-          .mockRejectedValue(new Error("rpc failed")),
+        getResolvedSessionSettings: vi.fn().mockRejectedValue(new Error("rpc failed")),
       },
     });
 
     await expect(
-      createBlinkIdUxManager(
-        cameraManager,
-        scanningSession as unknown as RemoteScanningSession,
-      ),
+      createBlinkIdUxManager(cameraManager, scanningSession as unknown as RemoteScanningSession),
     ).rejects.toThrow("rpc failed");
 
     expect(scanningSession.ping).toHaveBeenCalledWith(

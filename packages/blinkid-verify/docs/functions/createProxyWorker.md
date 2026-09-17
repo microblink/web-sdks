@@ -10,11 +10,11 @@
 
 Creates a Comlink-proxied Web Worker (generic) with automatic ImageData buffer transfer.
 
-This function wraps the worker proxy to automatically transfer ImageData buffers when calling
-`session.process()`, eliminating ~8MB copy per frame during scanning.
+This function wraps the worker proxy to automatically transfer ImageData buffers when calling `session.process()`,
+eliminating ~8MB copy per frame during scanning.
 
-The wrapper intercepts `createScanningSession` and wraps the returned session to auto-transfer
-ImageData buffers when `process()` is called. This pattern is common across all Microblink SDKs.
+The wrapper intercepts `createScanningSession` and wraps the returned session to auto-transfer ImageData buffers when
+`process()` is called. This pattern is common across all Microblink SDKs.
 
 ## Type Parameters
 

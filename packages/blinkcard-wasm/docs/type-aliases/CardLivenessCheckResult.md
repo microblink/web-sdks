@@ -16,8 +16,7 @@ Structure representing the result of liveness checks for a card.
 
 > **cardHeldInHandCheckResult**: [`CheckResult`](CheckResult.md)
 
-Result of the liveness check that detects whether a card is being held in
-human hands.
+Result of the liveness check that detects whether a card is being held in human hands.
 
 ***
 
@@ -25,8 +24,7 @@ human hands.
 
 > **photocopyCheckResult**: [`CheckResult`](CheckResult.md)
 
-Result of the liveness check that detects whether the input image is a
-photocopy of a card.
+Result of the liveness check that detects whether the input image is a photocopy of a card.
 
 ***
 
@@ -34,5 +32,4 @@ photocopy of a card.
 
 > **screenCheckResult**: [`CheckResult`](CheckResult.md)
 
-Result of the liveness check that detects whether card is displayed on the
-screen.
+Result of the liveness check that detects whether card is displayed on the screen.

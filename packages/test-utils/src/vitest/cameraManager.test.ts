@@ -1,13 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { describe, expect, test, vi } from "vitest";
-import {
-  createFakeCameraHarness,
-  FakeCameraManager,
-  type FakeCameraManagerState,
-} from "./cameraManager";
+
+import { createFakeCameraHarness, FakeCameraManager, type FakeCameraManagerState } from "./cameraManager";
 
 describe("FakeCameraManager", () => {
   const imageData = {} as ImageData;
@@ -31,11 +26,9 @@ describe("FakeCameraManager", () => {
     const selectorListener = vi.fn();
 
     manager.subscribe(rootListener);
-    manager.subscribe(
-      (state: FakeCameraManagerState) => state.playbackState,
-      selectorListener,
-      { fireImmediately: true },
-    );
+    manager.subscribe((state: FakeCameraManagerState) => state.playbackState, selectorListener, {
+      fireImmediately: true,
+    });
 
     manager.emitPlaybackState("capturing");
     manager.emitPlaybackState("capturing");
@@ -51,14 +44,9 @@ describe("FakeCameraManager", () => {
     const manager = new FakeCameraManager();
     const selectorListener = vi.fn();
 
-    manager.subscribe(
-      (state: FakeCameraManagerState) => state.videoResolution?.width ?? 0,
-      selectorListener,
-      {
-        equalityFn: (next: number, previous: number) =>
-          Math.abs(next - previous) < 100,
-      },
-    );
+    manager.subscribe((state: FakeCameraManagerState) => state.videoResolution?.width ?? 0, selectorListener, {
+      equalityFn: (next: number, previous: number) => Math.abs(next - previous) < 100,
+    });
 
     manager.emitState({ videoResolution: { width: 1050, height: 720 } });
     manager.emitState({ videoResolution: { width: 1100, height: 720 } });
@@ -106,9 +94,7 @@ describe("FakeCameraManager", () => {
     harness.setIsActive(false);
 
     expect(callback).toHaveBeenCalledTimes(1);
-    expect(harness.fakeCameraManager.getCurrentState().playbackState).toBe(
-      "capturing",
-    );
+    expect(harness.fakeCameraManager.getCurrentState().playbackState).toBe("capturing");
     expect(harness.fakeCameraManager.isActive).toBe(false);
   });
 });

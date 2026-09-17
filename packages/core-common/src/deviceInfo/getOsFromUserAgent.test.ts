@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
+
 import { getOsFromUserAgent, OperatingSystem } from "./getOsFromUserAgent";
 
 describe("detectOSAndVersion", () => {
@@ -85,8 +84,7 @@ describe("detectOSAndVersion", () => {
       expected: { os: "Linux", version: "" },
     },
     {
-      description:
-        "should return empty string for an unidentifiable user agent",
+      description: "should return empty string for an unidentifiable user agent",
       userAgent: "Some obscure browser",
       expected: { os: "", version: "" },
     },
@@ -99,16 +97,13 @@ describe("detectOSAndVersion", () => {
     },
   ];
 
-  it.each(testCases)(
-    "$description",
-    ({ userAgent, maxTouchPoints, expected }) => {
-      vi.stubGlobal("navigator", {
-        userAgent,
-        maxTouchPoints,
-      });
+  it.each(testCases)("$description", ({ userAgent, maxTouchPoints, expected }) => {
+    vi.stubGlobal("navigator", {
+      userAgent,
+      maxTouchPoints,
+    });
 
-      const result = getOsFromUserAgent();
-      expect(result).toEqual(expected);
-    },
-  );
+    const result = getOsFromUserAgent();
+    expect(result).toEqual(expected);
+  });
 });

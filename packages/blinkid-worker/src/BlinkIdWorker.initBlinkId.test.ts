@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkIdProcessResult,
@@ -9,27 +7,29 @@ import type {
   DocumentClassInfo,
   RedactionSettings,
 } from "@microblink/blinkid-wasm";
-import {
-  LicenseError,
-  ServerPermissionError,
-} from "@microblink/worker-common/errors";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import * as Comlink from "comlink";
+import { BlinkIdWasmModule } from "@microblink/blinkid-wasm";
+import { BLINK_ID_RECOGNIZER_VERSION } from "@microblink/blinkid-wasm/BlinkIdRecognizerVersion";
+import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
+import { createLicenseUnlockResult } from "@microblink/test-utils/mocks/licensing";
+import { createScanningSessionMock } from "@microblink/test-utils/mocks/scanningSession";
 import {
   createWasmModuleMock,
   getLastModuleOverrides,
   resetLastModuleOverrides,
   setWasmModuleMock,
 } from "@microblink/test-utils/mocks/wasmModuleFactory";
-import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
-import { createLicenseUnlockResult } from "@microblink/test-utils/mocks/licensing";
-import { createScanningSessionMock } from "@microblink/test-utils/mocks/scanningSession";
-import { BlinkIdWasmModule } from "@microblink/blinkid-wasm";
+import type { DownloadProgress, DownloadResourceBufferOptions } from "@microblink/worker-common/downloadResourceBuffer";
+import { LicenseError, ServerPermissionError } from "@microblink/worker-common/errors";
+import * as Comlink from "comlink";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
 import { type RedactionSettingsResolver } from "./BlinkIdWorker";
-import type { BlinkIdOtaResource } from "./otaResources";
+import type { BlinkIdOtaResource, WriteBlinkIdOtaResourcesParamsLazy } from "./otaResources";
 
 const getCrossOriginWorkerURLMock = vi.fn();
 const downloadResourceBufferMock = vi.fn();
+const downloadAndCompileWasmMock = vi.fn();
+const createWasmInstantiatorMock = vi.fn();
 const detectWasmFeaturesMock = vi.fn();
 const validateLicenseProxyPermissionsMock = vi.fn();
 const sanitizeProxyUrlsMock = vi.fn();
@@ -37,7 +37,8 @@ const obtainNewServerPermissionMock = vi.fn();
 const resolveBlinkIdOtaResourcesMock = vi.fn();
 const resolveBlinkIdOtaResourcesFromLocationMock = vi.fn();
 const selectBlinkIdOtaResourcesMock = vi.fn();
-const writeBlinkIdOtaResourcesToMemfsMock = vi.fn();
+const writeBlinkIdOtaResourcesToMemfsLazyMock = vi.fn();
+const otaResourcesWriterMock = vi.fn();
 let workerEventListeners = new Map<string, EventListener[]>();
 
 /** Deterministic values for stubbed globals and mock return shapes. */
@@ -46,6 +47,9 @@ const userId = "test-user" as const;
 const wasmVariant = "simd-threads" as const;
 const otaResourcesPath = "/microblink/blinkid-ota" as const;
 const defaultOtaProviderUrl = "https://blinkid-ota.microblink.com";
+const defaultResourceDownloadTimeoutMs = 60_000;
+const compiledWasm = {} as WebAssembly.Module;
+const wasmInstantiator = vi.fn();
 
 vi.mock("comlink", () => {
   const finalizer = Symbol("finalizer");
@@ -66,24 +70,23 @@ vi.mock("@microblink/worker-common/downloadResourceBuffer", () => ({
   downloadResourceBuffer: downloadResourceBufferMock,
 }));
 
+vi.mock("@microblink/worker-common/compileWasm", () => ({
+  createWasmInstantiator: createWasmInstantiatorMock,
+  downloadAndCompileWasm: downloadAndCompileWasmMock,
+}));
+
 vi.mock("@microblink/worker-common/wasm-feature-detect", () => ({
   detectWasmFeatures: detectWasmFeaturesMock,
 }));
 
-vi.mock(
-  "@microblink/worker-common/proxy-url-validator",
-  async (importOriginal) => {
-    const actual =
-      await importOriginal<
-        typeof import("@microblink/worker-common/proxy-url-validator")
-      >();
-    return {
-      ...actual,
-      validateLicenseProxyPermissions: validateLicenseProxyPermissionsMock,
-      sanitizeProxyUrls: sanitizeProxyUrlsMock,
-    };
-  },
-);
+vi.mock("@microblink/worker-common/proxy-url-validator", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@microblink/worker-common/proxy-url-validator")>();
+  return {
+    ...actual,
+    validateLicenseProxyPermissions: validateLicenseProxyPermissionsMock,
+    sanitizeProxyUrls: sanitizeProxyUrlsMock,
+  };
+});
 
 vi.mock("@microblink/worker-common/licencing", () => ({
   obtainNewServerPermission: obtainNewServerPermissionMock,
@@ -93,10 +96,9 @@ vi.mock("./otaResources", () => ({
   BLINK_ID_OTA_RESOURCES_DIRECTORY: "ota-resources",
   BLINK_ID_OTA_RESOURCES_PATH: otaResourcesPath,
   resolveBlinkIdOtaResources: resolveBlinkIdOtaResourcesMock,
-  resolveBlinkIdOtaResourcesFromLocation:
-    resolveBlinkIdOtaResourcesFromLocationMock,
+  resolveBlinkIdOtaResourcesFromLocation: resolveBlinkIdOtaResourcesFromLocationMock,
   selectBlinkIdOtaResources: selectBlinkIdOtaResourcesMock,
-  writeBlinkIdOtaResourcesToMemfs: writeBlinkIdOtaResourcesToMemfsMock,
+  writeBlinkIdOtaResourcesToMemfsLazy: writeBlinkIdOtaResourcesToMemfsLazyMock,
 }));
 
 let BlinkIdWorker: typeof import("./BlinkIdWorker").BlinkIdWorker;
@@ -112,16 +114,12 @@ const getLatestWorkerListener = (type: string) => {
 };
 
 const getLastQueuedPinglet = (queuePingletMock: ReturnType<typeof vi.fn>) => {
-  const serializedPinglet = queuePingletMock.mock.calls[
-    queuePingletMock.mock.calls.length - 1
-  ]?.[0] as string;
+  const serializedPinglet = queuePingletMock.mock.calls[queuePingletMock.mock.calls.length - 1]?.[0] as string;
 
   return JSON.parse(serializedPinglet) as Record<string, unknown>;
 };
 
-const getLastQueuedPingletSessionNumber = (
-  queuePingletMock: ReturnType<typeof vi.fn>,
-): unknown =>
+const getLastQueuedPingletSessionNumber = (queuePingletMock: ReturnType<typeof vi.fn>): unknown =>
   queuePingletMock.mock.calls[queuePingletMock.mock.calls.length - 1]?.[3];
 
 describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
@@ -135,6 +133,8 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
   beforeEach(async () => {
     getCrossOriginWorkerURLMock.mockReset();
     downloadResourceBufferMock.mockReset();
+    downloadAndCompileWasmMock.mockReset();
+    createWasmInstantiatorMock.mockReset();
     detectWasmFeaturesMock.mockReset();
     validateLicenseProxyPermissionsMock.mockReset();
     sanitizeProxyUrlsMock.mockReset();
@@ -142,7 +142,8 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     resolveBlinkIdOtaResourcesMock.mockReset();
     resolveBlinkIdOtaResourcesFromLocationMock.mockReset();
     selectBlinkIdOtaResourcesMock.mockReset();
-    writeBlinkIdOtaResourcesToMemfsMock.mockReset();
+    writeBlinkIdOtaResourcesToMemfsLazyMock.mockReset();
+    otaResourcesWriterMock.mockReset();
 
     workerEventListeners = new Map();
 
@@ -152,32 +153,27 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       close: vi.fn(),
       location: { hostname: hostName },
       navigator: { userAgent: "Chrome" },
-      addEventListener: vi.fn(
-        (type: string, listener: EventListenerOrEventListenerObject) => {
-          const listeners = workerEventListeners.get(type) ?? [];
-          listeners.push(listener as EventListener);
-          workerEventListeners.set(type, listeners);
-        },
-      ),
-      removeEventListener: vi.fn(
-        (type: string, listener: EventListenerOrEventListenerObject) => {
-          const listeners = workerEventListeners.get(type) ?? [];
-          workerEventListeners.set(
-            type,
-            listeners.filter((entry) => entry !== listener),
-          );
-        },
-      ),
+      addEventListener: vi.fn((type: string, listener: EventListenerOrEventListenerObject) => {
+        const listeners = workerEventListeners.get(type) ?? [];
+        listeners.push(listener as EventListener);
+        workerEventListeners.set(type, listeners);
+      }),
+      removeEventListener: vi.fn((type: string, listener: EventListenerOrEventListenerObject) => {
+        const listeners = workerEventListeners.get(type) ?? [];
+        workerEventListeners.set(
+          type,
+          listeners.filter((entry) => entry !== listener),
+        );
+      }),
     });
 
     // Worker loads wasm from this URL; mock factory serves the seeded module.
-    const factoryUrl = new URL(
-      "../../test-utils/src/mocks/wasmModuleFactory.ts",
-      import.meta.url,
-    ).href;
+    const factoryUrl = new URL("../../test-utils/src/mocks/wasmModuleFactory.ts", import.meta.url).href;
     getCrossOriginWorkerURLMock.mockResolvedValue(factoryUrl);
     detectWasmFeaturesMock.mockResolvedValue(wasmVariant);
     downloadResourceBufferMock.mockResolvedValue(new ArrayBuffer(0));
+    downloadAndCompileWasmMock.mockResolvedValue(compiledWasm);
+    createWasmInstantiatorMock.mockReturnValue(wasmInstantiator);
     const providerResources = [
       {
         filename: "template-database.zzip",
@@ -193,14 +189,12 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
         url: "https://example.com/resources/ota-resources/template-database_1.0.zzip",
       },
     ];
-    resolveBlinkIdOtaResourcesFromLocationMock.mockResolvedValue(
-      hostedResources,
-    );
+    resolveBlinkIdOtaResourcesFromLocationMock.mockResolvedValue(hostedResources);
     selectBlinkIdOtaResourcesMock.mockImplementation(
-      (_hosted: BlinkIdOtaResource[], provider: BlinkIdOtaResource[]) =>
-        provider,
+      (_hosted: BlinkIdOtaResource[], provider: BlinkIdOtaResource[]) => provider,
     );
-    writeBlinkIdOtaResourcesToMemfsMock.mockResolvedValue(otaResourcesPath);
+    otaResourcesWriterMock.mockReturnValue(otaResourcesPath);
+    writeBlinkIdOtaResourcesToMemfsLazyMock.mockResolvedValue(otaResourcesWriterMock);
     sanitizeProxyUrlsMock.mockReturnValue({
       ping: "https://proxy.example.com/ping",
       baltazar: "https://proxy.example.com/api/v2/status/check",
@@ -214,6 +208,52 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     resetLastModuleOverrides();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+  });
+
+  it("hands the stream-compiled wasm module to Emscripten", async () => {
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId(baseInitSettings);
+
+    expect(downloadAndCompileWasmMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: "https://example.com/resources/full/simd-threads/BlinkIdModule.wasm",
+        fileType: "wasm",
+        timeoutMs: defaultResourceDownloadTimeoutMs,
+        resourceDescription: "BlinkID Wasm resource",
+      }),
+      expect.any(Function),
+    );
+    expect(downloadResourceBufferMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        timeoutMs: defaultResourceDownloadTimeoutMs,
+        resourceDescription: "BlinkID data resource",
+      }),
+      expect.any(Function),
+    );
+    expect(createWasmInstantiatorMock).toHaveBeenCalledWith(compiledWasm);
+
+    const moduleOverrides = getLastModuleOverrides();
+    expect(moduleOverrides?.wasmBinary).toBeUndefined();
+    expect(moduleOverrides?.instantiateWasm).toBe(wasmInstantiator);
+  });
+
+  it("fails initialization when the wasm binary cannot be downloaded", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+    downloadAndCompileWasmMock.mockRejectedValue(new TypeError("Failed to fetch"));
+
+    const worker = new BlinkIdWorker();
+    await expect(worker.initBlinkId(baseInitSettings)).rejects.toThrow("Failed to fetch");
+
+    expect(getLastModuleOverrides()).toBeUndefined();
+    expect(spies.initializeWithLicenseKey).not.toHaveBeenCalled();
   });
 
   it("does not flush pinglets after successful server permission flow", async () => {
@@ -239,15 +279,15 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(spies.queuePinglet.mock.invocationCallOrder[0]).toBeLessThan(
       obtainNewServerPermissionMock.mock.invocationCallOrder[0],
     );
-    expect(
-      spies.submitServerPermission.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      obtainNewServerPermissionMock.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+    expect(spies.submitServerPermission.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(obtainNewServerPermissionMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
     expect(spies.queuePinglet.mock.invocationCallOrder[0]).toBeLessThan(
       spies.initializeSdk.mock.invocationCallOrder[0],
     );
@@ -282,10 +322,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     );
   });
 
-  it("loads OTA resources by default using the default provider URL and recognizer version", async () => {
+  it("loads OTA resources by default using the default provider URL and bundled recognizer version", async () => {
     const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
       initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
-      getRecognizerVersion: vi.fn(() => "2.3.4"),
     });
     setWasmModuleMock(module);
 
@@ -294,14 +333,14 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
       resourceProviderUrl: defaultOtaProviderUrl,
-      genericVersion: "2.3.4",
+      genericVersion: BLINK_ID_RECOGNIZER_VERSION,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
     expect(resolveBlinkIdOtaResourcesFromLocationMock).toHaveBeenCalledWith({
       resourcesLocation: "https://example.com/resources/ota-resources",
-      timeoutMilis: undefined,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
-    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
-      module,
+    expect(writeBlinkIdOtaResourcesToMemfsLazyMock).toHaveBeenCalledWith({
       resources: [
         {
           filename: "template-database.zzip",
@@ -311,9 +350,174 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       ],
       directory: otaResourcesPath,
       fallbackOnError: true,
-      timeoutMilis: undefined,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
+    expect(otaResourcesWriterMock).toHaveBeenCalledWith(module);
     expect(spies.initializeSdk).toHaveBeenCalledOnce();
+  });
+
+  it("applies one configured inactivity timeout to Wasm, data, and OTA requests", async () => {
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+    const resourceDownloadTimeoutMs = 90_000;
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId({
+      ...baseInitSettings,
+      resourceDownloadTimeoutMs,
+    });
+
+    expect(downloadResourceBufferMock).toHaveBeenCalledWith(
+      expect.objectContaining({ timeoutMs: resourceDownloadTimeoutMs }),
+      expect.any(Function),
+    );
+    expect(resolveBlinkIdOtaResourcesFromLocationMock).toHaveBeenCalledWith(
+      expect.objectContaining({ timeoutMs: resourceDownloadTimeoutMs }),
+    );
+    expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith(
+      expect.objectContaining({ timeoutMs: resourceDownloadTimeoutMs }),
+    );
+    expect(writeBlinkIdOtaResourcesToMemfsLazyMock).toHaveBeenCalledWith(
+      expect.objectContaining({ timeoutMs: resourceDownloadTimeoutMs }),
+    );
+  });
+
+  it("rejects an invalid resource download timeout before fetching resources", async () => {
+    const worker = new BlinkIdWorker();
+
+    await expect(
+      worker.initBlinkId({
+        ...baseInitSettings,
+        resourceDownloadTimeoutMs: 0,
+      }),
+    ).rejects.toThrow("Invalid BlinkID resource download timeout: 0");
+
+    expect(resolveBlinkIdOtaResourcesFromLocationMock).not.toHaveBeenCalled();
+    expect(downloadResourceBufferMock).not.toHaveBeenCalled();
+  });
+
+  it("reports monotonic download progress through OTA persistence", async () => {
+    let now = 0;
+    vi.spyOn(performance, "now").mockImplementation(() => {
+      now += 40;
+      return now;
+    });
+
+    downloadResourceBufferMock.mockImplementation((options: DownloadResourceBufferOptions) => {
+      const contentLength = 100;
+      options.progressCallback?.({
+        loaded: contentLength,
+        contentLength,
+        progress: 100,
+        finished: true,
+      });
+      return Promise.resolve(new ArrayBuffer(contentLength));
+    });
+    downloadAndCompileWasmMock.mockImplementation((options: DownloadResourceBufferOptions) => {
+      const contentLength = 100;
+      options.progressCallback?.({
+        loaded: contentLength,
+        contentLength,
+        progress: 100,
+        finished: true,
+      });
+      return Promise.resolve(compiledWasm);
+    });
+
+    const selectedResources = [
+      { filename: "embedder.bin", version: "1.0.0", url: "embedder-url", contentLength: 80 },
+      { filename: "template.zzip", version: "1.0.0", url: "template-url", contentLength: 240 },
+      { filename: "knowledge.zzip", version: "1.0.0", url: "knowledge-url", contentLength: 480 },
+    ];
+    resolveBlinkIdOtaResourcesFromLocationMock.mockResolvedValue(selectedResources);
+    selectBlinkIdOtaResourcesMock.mockReturnValue(selectedResources);
+
+    let otaWriteFinished = false;
+    writeBlinkIdOtaResourcesToMemfsLazyMock.mockImplementation(
+      ({ progressCallback }: WriteBlinkIdOtaResourcesParamsLazy) => {
+        const otaLengths = new Map([
+          ["embedder.bin", 100],
+          ["template.zzip", 300],
+          ["knowledge.zzip", 600],
+        ]);
+
+        for (const [filename, contentLength] of otaLengths) {
+          progressCallback?.(filename, {
+            loaded: 0,
+            contentLength,
+            progress: 0,
+            finished: false,
+          });
+        }
+        for (const [filename, contentLength] of otaLengths) {
+          if (filename === "knowledge.zzip") {
+            progressCallback?.(filename, {
+              loaded: contentLength / 2,
+              contentLength,
+              progress: 50,
+              finished: false,
+            });
+          }
+          progressCallback?.(filename, {
+            loaded: contentLength,
+            contentLength,
+            progress: 100,
+            finished: false,
+          });
+        }
+
+        return Promise.resolve(() => {
+          otaWriteFinished = true;
+          for (const [filename, contentLength] of otaLengths) {
+            progressCallback?.(filename, {
+              loaded: contentLength,
+              contentLength,
+              progress: 100,
+              finished: true,
+            });
+          }
+          return otaResourcesPath;
+        });
+      },
+    );
+
+    const { module } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+    const progressEvents: DownloadProgress[] = [];
+    const progressCallback = vi.fn((progress: DownloadProgress) => {
+      if (progress.finished) {
+        expect(otaWriteFinished).toBe(true);
+      }
+      progressEvents.push(progress);
+    });
+
+    const worker = new BlinkIdWorker();
+    await worker.initBlinkId(baseInitSettings, progressCallback);
+
+    expect(progressEvents.length).toBeGreaterThan(3);
+    expect(progressEvents.map(({ progress }) => progress)).toEqual(
+      [...progressEvents.map(({ progress }) => progress)].sort((left, right) => left - right),
+    );
+    expect(progressEvents.some(({ contentLength }) => contentLength === 800)).toBe(true);
+    expect(progressEvents.some(({ contentLength }) => contentLength === 1_000)).toBe(true);
+    expect(progressEvents.some(({ contentLength }) => contentLength === 1_200)).toBe(true);
+    expect(progressEvents.some(({ loaded, contentLength }) => loaded > 0 && loaded < contentLength)).toBe(true);
+    expect(progressEvents.filter(({ finished }) => finished)).toEqual([
+      {
+        loaded: 1_200,
+        contentLength: 1_200,
+        progress: 100,
+        finished: true,
+      },
+    ]);
+    expect(progressEvents.at(-2)).toMatchObject({
+      progress: 99,
+      finished: false,
+    });
   });
 
   it("writes the resources selected from hosted and provider manifests", async () => {
@@ -350,13 +554,13 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
         },
       ],
     );
-    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
-      module,
+    expect(writeBlinkIdOtaResourcesToMemfsLazyMock).toHaveBeenCalledWith({
       resources: selectedResources,
       directory: otaResourcesPath,
       fallbackOnError: true,
-      timeoutMilis: undefined,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
+    expect(otaResourcesWriterMock).toHaveBeenCalledWith(module);
     expect(spies.initializeSdk).toHaveBeenCalledOnce();
   });
 
@@ -378,10 +582,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(selectBlinkIdOtaResourcesMock).not.toHaveBeenCalled();
     expect(resolveBlinkIdOtaResourcesFromLocationMock).toHaveBeenCalledWith({
       resourcesLocation: "https://example.com/resources/ota-resources",
-      timeoutMilis: undefined,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
-    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
-      module,
+    expect(writeBlinkIdOtaResourcesToMemfsLazyMock).toHaveBeenCalledWith({
       resources: [
         {
           filename: "template-database.zzip",
@@ -391,8 +594,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       ],
       directory: otaResourcesPath,
       fallbackOnError: true,
-      timeoutMilis: undefined,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
+    expect(otaResourcesWriterMock).toHaveBeenCalledWith(module);
     expect(spies.initializeSdk).toHaveBeenCalledOnce();
   });
 
@@ -414,14 +618,55 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     expect(resolveBlinkIdOtaResourcesFromLocationMock).toHaveBeenCalledWith({
       resourcesLocation: "https://cdn.example.com/ota",
-      timeoutMilis: undefined,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
     expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
       resourceProviderUrl: "https://ota.example.com",
-      genericVersion: "1.0.0",
+      genericVersion: BLINK_ID_RECOGNIZER_VERSION,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
-    expect(spies.getRecognizerVersion).toHaveBeenCalledOnce();
     expect(spies.initializeSdk).toHaveBeenCalledOnce();
+  });
+
+  it("downloads OTA resources while the wasm module is still loading", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    let releaseWasm: ((module: WebAssembly.Module) => void) | undefined;
+    let releaseOta: ((writeToMemfs: typeof otaResourcesWriterMock) => void) | undefined;
+    downloadAndCompileWasmMock.mockImplementation(
+      () =>
+        new Promise<WebAssembly.Module>((resolve) => {
+          releaseWasm = resolve;
+        }),
+    );
+    writeBlinkIdOtaResourcesToMemfsLazyMock.mockImplementation(
+      () =>
+        new Promise<typeof otaResourcesWriterMock>((resolve) => {
+          releaseOta = resolve;
+        }),
+    );
+
+    const worker = new BlinkIdWorker();
+    const initPromise = worker.initBlinkId(baseInitSettings);
+
+    await vi.waitFor(() => {
+      expect(downloadAndCompileWasmMock).toHaveBeenCalledOnce();
+      expect(writeBlinkIdOtaResourcesToMemfsLazyMock).toHaveBeenCalledOnce();
+    });
+    expect(otaResourcesWriterMock).not.toHaveBeenCalled();
+    expect(spies.initializeSdk).not.toHaveBeenCalled();
+
+    releaseOta?.(otaResourcesWriterMock);
+    releaseWasm?.(compiledWasm);
+    await initPromise;
+
+    expect(otaResourcesWriterMock).toHaveBeenCalledWith(module);
+    expect(otaResourcesWriterMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
   });
 
   it("loads OTA resources before initializing the SDK", async () => {
@@ -441,10 +686,10 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
       resourceProviderUrl: "https://ota.example.com",
-      genericVersion: "1.0.0",
+      genericVersion: BLINK_ID_RECOGNIZER_VERSION,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
-    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
-      module,
+    expect(writeBlinkIdOtaResourcesToMemfsLazyMock).toHaveBeenCalledWith({
       resources: [
         {
           filename: "template-database.zzip",
@@ -454,17 +699,17 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       ],
       directory: otaResourcesPath,
       fallbackOnError: true,
-      timeoutMilis: undefined,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
-    expect(
-      writeBlinkIdOtaResourcesToMemfsMock.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+    expect(otaResourcesWriterMock).toHaveBeenCalledWith(module);
+    expect(otaResourcesWriterMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
   });
 
-  it("trims OTA provider URL and recognizer version before resolving resources", async () => {
+  it("trims OTA provider URL before resolving resources", async () => {
     const { module } = createWasmModuleMock<BlinkIdWasmModule>({
       initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
-      getRecognizerVersion: vi.fn(() => "  2.3.4  "),
     });
     setWasmModuleMock(module);
 
@@ -479,7 +724,8 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
       resourceProviderUrl: "https://ota.example.com",
-      genericVersion: "2.3.4",
+      genericVersion: BLINK_ID_RECOGNIZER_VERSION,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
   });
 
@@ -500,36 +746,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     expect(resolveBlinkIdOtaResourcesMock).toHaveBeenCalledWith({
       resourceProviderUrl: defaultOtaProviderUrl,
-      genericVersion: "1.0.0",
+      genericVersion: BLINK_ID_RECOGNIZER_VERSION,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
-  });
-
-  it("falls back to hosted resources when recognizer version is blank", async () => {
-    const { module, spies } = createWasmModuleMock<BlinkIdWasmModule>({
-      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
-      getRecognizerVersion: vi.fn(() => "   "),
-    });
-    setWasmModuleMock(module);
-
-    const worker = new BlinkIdWorker();
-    await worker.initBlinkId(baseInitSettings);
-
-    expect(resolveBlinkIdOtaResourcesMock).not.toHaveBeenCalled();
-    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
-      module,
-      resources: [
-        {
-          filename: "template-database.zzip",
-          version: "1.0.0",
-          url: "https://example.com/resources/ota-resources/template-database_1.0.zzip",
-        },
-      ],
-      directory: otaResourcesPath,
-      fallbackOnError: true,
-      timeoutMilis: undefined,
-    });
-    expect(spies.initializeWithLicenseKey).toHaveBeenCalledOnce();
-    expect(spies.initializeSdk).toHaveBeenCalledOnce();
   });
 
   it("does not pass the loaded OTA resources path to created scanning sessions", async () => {
@@ -574,8 +793,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       },
     });
 
-    expect(writeBlinkIdOtaResourcesToMemfsMock).toHaveBeenCalledWith({
-      module,
+    expect(writeBlinkIdOtaResourcesToMemfsLazyMock).toHaveBeenCalledWith({
       resources: [
         {
           filename: "template-database.zzip",
@@ -585,8 +803,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       ],
       directory: otaResourcesPath,
       fallbackOnError: true,
-      timeoutMilis: undefined,
+      timeoutMs: defaultResourceDownloadTimeoutMs,
     });
+    expect(otaResourcesWriterMock).toHaveBeenCalledWith(module);
     expect(spies.initializeWithLicenseKey).toHaveBeenCalledOnce();
     expect(spies.initializeSdk).toHaveBeenCalledOnce();
   });
@@ -596,17 +815,13 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
     });
     setWasmModuleMock(module);
-    resolveBlinkIdOtaResourcesFromLocationMock.mockRejectedValue(
-      new Error("manifest-missing"),
-    );
+    resolveBlinkIdOtaResourcesFromLocationMock.mockRejectedValue(new Error("manifest-missing"));
 
     const worker = new BlinkIdWorker();
-    await expect(worker.initBlinkId(baseInitSettings)).rejects.toThrow(
-      "manifest-missing",
-    );
+    await expect(worker.initBlinkId(baseInitSettings)).rejects.toThrow("manifest-missing");
 
     expect(resolveBlinkIdOtaResourcesMock).not.toHaveBeenCalled();
-    expect(writeBlinkIdOtaResourcesToMemfsMock).not.toHaveBeenCalled();
+    expect(writeBlinkIdOtaResourcesToMemfsLazyMock).not.toHaveBeenCalled();
     expect(spies.initializeWithLicenseKey).not.toHaveBeenCalled();
     expect(spies.initializeSdk).not.toHaveBeenCalled();
   });
@@ -657,10 +872,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(sanitizeProxyUrlsMock).toHaveBeenCalledWith(proxyUrl);
     expect(spies.setPingProxyUrl).toHaveBeenCalledWith(`${proxyUrl}/ping`);
     const sanitizedBaltazar = "https://proxy.example.com/api/v2/status/check";
-    expect(obtainNewServerPermissionMock).toHaveBeenCalledWith(
-      licenseUnlockResult,
-      sanitizedBaltazar,
-    );
+    expect(obtainNewServerPermissionMock).toHaveBeenCalledWith(licenseUnlockResult, sanitizedBaltazar);
     expect(spies.queuePinglet).toHaveBeenCalledOnce();
     expect(obtainNewServerPermissionMock).toHaveBeenCalledOnce();
     expect(spies.submitServerPermission).toHaveBeenCalledOnce();
@@ -671,15 +883,15 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(spies.setPingProxyUrl.mock.invocationCallOrder[0]).toBeLessThan(
       spies.initializeSdk.mock.invocationCallOrder[0],
     );
-    expect(
-      obtainNewServerPermissionMock.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.submitServerPermission.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+    expect(obtainNewServerPermissionMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.submitServerPermission.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
   });
 
   it("throws Error and does not send pinglets when server permission request fails", async () => {
@@ -701,9 +913,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(spies.sendPinglets).not.toHaveBeenCalled();
     expect(spies.submitServerPermission).not.toHaveBeenCalled();
     expect(spies.initializeSdk).not.toHaveBeenCalled();
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.queuePinglet.mock.invocationCallOrder[0]);
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.queuePinglet.mock.invocationCallOrder[0],
+    );
   });
 
   it("throws ServerPermissionError and does not send pinglets when submitServerPermission returns an error", async () => {
@@ -719,21 +931,17 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     obtainNewServerPermissionMock.mockResolvedValue("server-permission");
     spies.submitServerPermission.mockReturnValue({ error: "server-error" });
 
-    await expect(worker.initBlinkId(baseInitSettings)).rejects.toThrow(
-      ServerPermissionError,
-    );
+    await expect(worker.initBlinkId(baseInitSettings)).rejects.toThrow(ServerPermissionError);
 
     expect(spies.initializeWithLicenseKey).toHaveBeenCalledOnce();
     expect(spies.queuePinglet).toHaveBeenCalledOnce();
     expect(obtainNewServerPermissionMock).toHaveBeenCalledOnce();
-    expect(spies.submitServerPermission).toHaveBeenCalledWith(
-      "server-permission",
-    );
+    expect(spies.submitServerPermission).toHaveBeenCalledWith("server-permission");
     expect(spies.sendPinglets).not.toHaveBeenCalled();
     expect(spies.initializeSdk).not.toHaveBeenCalled();
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.queuePinglet.mock.invocationCallOrder[0]);
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.queuePinglet.mock.invocationCallOrder[0],
+    );
   });
 
   it("queues crash pinglet and flushes when initializeSdk fails", async () => {
@@ -759,12 +967,10 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(spies.sendPinglets).toHaveBeenCalledOnce();
     expect(spies.submitServerPermission).toHaveBeenCalledOnce();
     expect(spies.initializeSdk).toHaveBeenCalledOnce();
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.queuePinglet.mock.invocationCallOrder[0]);
-    expect(spies.initializeSdk.mock.invocationCallOrder[0]).greaterThan(
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
       spies.queuePinglet.mock.invocationCallOrder[0],
     );
+    expect(spies.initializeSdk.mock.invocationCallOrder[0]).greaterThan(spies.queuePinglet.mock.invocationCallOrder[0]);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
       errorType: "Crash",
       errorMessage: "initializeSdk-error",
@@ -835,7 +1041,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     const moduleOverrides = getLastModuleOverrides();
     expect(moduleOverrides?.onAbort).toEqual(expect.any(Function));
 
-    (moduleOverrides?.onAbort as (what: unknown) => void)("fatal abort");
+    (moduleOverrides?.onAbort as (what: unknown) => void)?.("fatal abort");
 
     expect(spies.queuePinglet).toHaveBeenCalledTimes(1);
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
@@ -860,9 +1066,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     spies.queuePinglet.mockClear();
     spies.sendPinglets.mockClear();
 
-    expect(() => worker.createScanningSession()).toThrow(
-      "session-create-failed",
-    );
+    expect(() => worker.createScanningSession()).toThrow("session-create-failed");
     expect(spies.queuePinglet).toHaveBeenCalledTimes(1);
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
@@ -890,9 +1094,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     spies.queuePinglet.mockClear();
     spies.sendPinglets.mockClear();
 
-    expect(() => proxySession.process(createFakeImageData())).toThrow(
-      "process-failed",
-    );
+    expect(() => proxySession.process(createFakeImageData())).toThrow("process-failed");
     expect(spies.queuePinglet).toHaveBeenCalledTimes(1);
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
@@ -921,9 +1123,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     spies.queuePinglet.mockClear();
     spies.sendPinglets.mockClear();
 
-    expect(() => proxySession.process(createFakeImageData())).toThrow(
-      "RuntimeError: Out of bounds memory access",
-    );
+    expect(() => proxySession.process(createFakeImageData())).toThrow("RuntimeError: Out of bounds memory access");
     expect(spies.queuePinglet).toHaveBeenCalledTimes(1);
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
@@ -934,11 +1134,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
   });
 
   it("reports frame return transfer failures as crash pinglets", async () => {
-    const transferSpy = vi
-      .spyOn(Comlink, "transfer")
-      .mockImplementationOnce(() => {
-        throw new Error("buffer-transfer-failed");
-      });
+    const transferSpy = vi.spyOn(Comlink, "transfer").mockImplementationOnce(() => {
+      throw new Error("buffer-transfer-failed");
+    });
     const session = createScanningSessionMock<BlinkIdScanningSession>({
       process: vi.fn(
         () =>
@@ -970,8 +1168,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
       errorType: "Crash",
-      errorMessage:
-        "Failed to transfer frame from worker: buffer-transfer-failed",
+      errorMessage: "Failed to transfer frame from worker: buffer-transfer-failed",
     });
 
     transferSpy.mockRestore();
@@ -1099,10 +1296,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     proxySession.process(createFakeImageData());
     await proxySession.getResult();
 
-    expect(redactionSettingsResolver).toHaveBeenCalledWith(
-      documentClassInfo,
-      expect.any(Function),
-    );
+    expect(redactionSettingsResolver).toHaveBeenCalledWith(documentClassInfo, expect.any(Function));
     expect(session.getResult).toHaveBeenCalledWith(redactionSettings);
   });
 
@@ -1143,10 +1337,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     proxySession.process(createFakeImageData());
     await proxySession.getResult();
 
-    expect(redactionSettingsResolver).toHaveBeenCalledWith(
-      documentClassInfo,
-      expect.any(Function),
-    );
+    expect(redactionSettingsResolver).toHaveBeenCalledWith(documentClassInfo, expect.any(Function));
     expect(session.getResult).toHaveBeenCalledWith();
   });
 
@@ -1214,9 +1405,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
         documentRotation: "not-available",
       },
     } as BlinkIdProcessResult;
-    const redactionSettingsResolver = vi.fn(() =>
-      Promise.reject(new Error("resolver-failed")),
-    );
+    const redactionSettingsResolver = vi.fn(() => Promise.reject(new Error("resolver-failed")));
     const session = createScanningSessionMock<BlinkIdScanningSession>({
       process: vi.fn(() => processResult),
       getResult: vi.fn(),
@@ -1263,17 +1452,15 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       redactMrz: false,
     } satisfies RedactionSettings;
 
-    const redactionSettingsResolver = vi.fn<RedactionSettingsResolver>(
-      async (classInfo, getDefaultSettings) => {
-        const defaultSettings = await getDefaultSettings(classInfo);
+    const redactionSettingsResolver = vi.fn<RedactionSettingsResolver>(async (classInfo, getDefaultSettings) => {
+      const defaultSettings = await getDefaultSettings(classInfo);
 
-        return {
-          ...defaultSettings,
-          redactBarcode: true,
-          fields: [...(defaultSettings?.fields ?? []), "lastName"],
-        };
-      },
-    );
+      return {
+        ...defaultSettings,
+        redactBarcode: true,
+        fields: [...(defaultSettings?.fields ?? []), "lastName"],
+      };
+    });
 
     const session = createScanningSessionMock<BlinkIdScanningSession>({
       process: vi.fn(() => processResult),
@@ -1328,18 +1515,16 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       redactMrz: false,
     } satisfies RedactionSettings;
 
-    const redactionSettingsResolver = vi.fn<RedactionSettingsResolver>(
-      async (classInfo, getDefaultSettings) => {
-        const defaultSettings = await getDefaultSettings(classInfo);
+    const redactionSettingsResolver = vi.fn<RedactionSettingsResolver>(async (classInfo, getDefaultSettings) => {
+      const defaultSettings = await getDefaultSettings(classInfo);
 
-        return {
-          ...defaultSettings,
-          mode: undefined,
-          redactBarcode: undefined,
-          redactMrz: undefined,
-        };
-      },
-    );
+      return {
+        ...defaultSettings,
+        mode: undefined,
+        redactBarcode: undefined,
+        redactMrz: undefined,
+      };
+    });
 
     const session = createScanningSessionMock<BlinkIdScanningSession>({
       process: vi.fn(() => processResult),
@@ -1393,10 +1578,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       },
     } as unknown as BlinkIdProcessResult;
     const session = createScanningSessionMock<BlinkIdScanningSession>({
-      process: vi
-        .fn()
-        .mockReturnValueOnce(classifiedResult)
-        .mockReturnValueOnce(swapResult),
+      process: vi.fn().mockReturnValueOnce(classifiedResult).mockReturnValueOnce(swapResult),
     });
     const { module } = createWasmModuleMock<BlinkIdWasmModule>({
       initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
@@ -1409,13 +1591,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     const proxySession = worker.createScanningSession();
     proxySession.process(createFakeImageData());
-    const swapProcessResult = proxySession.process(
-      createFakeImageData(),
-    ) as BlinkIdProcessResult;
+    const swapProcessResult = proxySession.process(createFakeImageData()) as BlinkIdProcessResult;
 
-    expect(
-      swapProcessResult.inputImageAnalysisResult.documentClassInfo,
-    ).toBeUndefined();
+    expect(swapProcessResult.inputImageAnalysisResult.documentClassInfo).toBeUndefined();
   });
 
   it("does not reproject cached class info after a stability-test-failed document swap", async () => {
@@ -1443,10 +1621,7 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
       },
     } as unknown as BlinkIdProcessResult;
     const session = createScanningSessionMock<BlinkIdScanningSession>({
-      process: vi
-        .fn()
-        .mockReturnValueOnce(classifiedResult)
-        .mockReturnValueOnce(swapResult),
+      process: vi.fn().mockReturnValueOnce(classifiedResult).mockReturnValueOnce(swapResult),
     });
     const { module } = createWasmModuleMock<BlinkIdWasmModule>({
       initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
@@ -1459,13 +1634,9 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     const proxySession = worker.createScanningSession();
     proxySession.process(createFakeImageData());
-    const swapProcessResult = proxySession.process(
-      createFakeImageData(),
-    ) as BlinkIdProcessResult;
+    const swapProcessResult = proxySession.process(createFakeImageData()) as BlinkIdProcessResult;
 
-    expect(
-      swapProcessResult.inputImageAnalysisResult.documentClassInfo,
-    ).toBeUndefined();
+    expect(swapProcessResult.inputImageAnalysisResult.documentClassInfo).toBeUndefined();
   });
 
   it("does not resolve redaction settings when documentClassInfo is absent", async () => {
@@ -1562,15 +1733,15 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
     expect(spies.sendPinglets).not.toHaveBeenCalled();
 
     // allowPingProxy is false so ping proxy is not set; permission flow order unchanged.
-    expect(
-      obtainNewServerPermissionMock.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.submitServerPermission.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+    expect(obtainNewServerPermissionMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.submitServerPermission.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
   });
 
   it("throws LicenseError and does not send pinglets when license is invalid", async () => {
@@ -1586,17 +1757,15 @@ describe("BlinkIdWorker initBlinkId ping flush and proxy ordering", () => {
 
     const worker = new BlinkIdWorker();
 
-    await expect(worker.initBlinkId(baseInitSettings)).rejects.toThrow(
-      LicenseError,
-    );
+    await expect(worker.initBlinkId(baseInitSettings)).rejects.toThrow(LicenseError);
 
     expect(spies.initializeWithLicenseKey).toHaveBeenCalledOnce();
     expect(spies.queuePinglet).toHaveBeenCalledOnce();
     expect(spies.sendPinglets).not.toHaveBeenCalled();
     expect(spies.submitServerPermission).not.toHaveBeenCalled();
     expect(spies.initializeSdk).not.toHaveBeenCalled();
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.queuePinglet.mock.invocationCallOrder[0]);
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.queuePinglet.mock.invocationCallOrder[0],
+    );
   });
 });

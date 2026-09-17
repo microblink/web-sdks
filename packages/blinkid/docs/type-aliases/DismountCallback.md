@@ -4,7 +4,7 @@
 
 [@microblink/blinkid](../README.md) / DismountCallback
 
-# Type Alias: DismountCallback()
+# Type Alias: DismountCallback
 
 > **DismountCallback** = () => `void`
 

@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { EnvironmentProvider } from "@ark-ui/solid/environment";
 import { Component, createSignal, JSX, onMount, Show } from "solid-js";
@@ -26,11 +24,7 @@ export const SmartEnvironmentProvider: Component<{
   return (
     <>
       <Show when={rootNode()} fallback={<span ref={setRef} />}>
-        {(rootNode) => (
-          <EnvironmentProvider value={() => rootNode()}>
-            {props.children(rootNode())}
-          </EnvironmentProvider>
-        )}
+        {(rootNode) => <EnvironmentProvider value={() => rootNode()}>{props.children(rootNode())}</EnvironmentProvider>}
       </Show>
     </>
   );

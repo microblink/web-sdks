@@ -2,7 +2,24 @@
 
 This package provides the core BlinkID functionality for browser-based document scanning. It exposes a low-level API for initializing and controlling the BlinkID engine, managing sessions, and processing images. It can be used directly by end users for advanced or custom integrations, or as a dependency of higher-level packages such as [`@microblink/blinkid`](https://www.npmjs.com/package/@microblink/blinkid).
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/blinkid-core`:
+
+| Entrypoint | Minified | Gzip    |
+| ---------- | -------- | ------- |
+| `root`     | 26.90 kB | 8.19 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Overview
+
+See the [custom UI example](../../apps/examples/blinkid-custom-ui/) for an end-to-end scan with an application-owned interface.
 
 - Provides the main API for BlinkID scanning and recognition in the browser.
 - Handles initialization, licensing, and session management.
@@ -77,10 +94,13 @@ The directory contains the canonical files and `ota-resources.json`:
       "filename": "template-database.zzip",
       "version": "1.0.1",
       "url": "template-database.zzip",
+      "contentLength": 761242,
     },
   ],
 }
 ```
+
+Every manifest entry must include a positive integer `contentLength`.
 
 Set `otaResources.resourcesLocation` to override the baseline directory. By
 default, BlinkID also asks `https://blinkid-ota.microblink.com` for updates and
@@ -93,14 +113,44 @@ The provider must expose:
 GET {otaResourceProviderUrl}/api/v1/versions?generic_version={recognizerVersion}
 ```
 
-The SDK supplies `generic_version` from the BlinkID recognizer. The OTA
-settings are separate from top-level `resourcesLocation`, which points to the
-static SDK `resources` directory, and from `microblinkProxyUrl`, which proxies
-licensing and analytics traffic. Provider failures use the hosted baseline by
+The SDK supplies `generic_version` from the recognizer version embedded when the
+SDK is built, allowing OTA resolution and downloads to run in parallel with
+Wasm loading. The OTA settings are separate from top-level `resourcesLocation`,
+which points to the static SDK `resources` directory, and from
+`microblinkProxyUrl`, which proxies licensing and analytics traffic. Provider
+failures use the hosted baseline by
 default; `otaResources.strict: true` makes them fatal. A missing hosted baseline
 is always fatal because OTA files are no longer embedded in
 `BlinkIdModule.data`. Set `otaResources.checkForUpdates` to `false` to load the
 hosted baseline without contacting the provider.
+
+Set the top-level `resourceDownloadTimeoutMs` to configure how long any
+Wasm, data, or OTA request may receive no response headers or body data. It
+defaults to 60 seconds and resets whenever data arrives, allowing slow
+downloads to take as long as needed.
+
+### Initialization Download Progress
+
+Pass a callback as the second argument to `loadBlinkIdCore` to receive aggregate
+Wasm, data, and OTA download progress:
+
+```ts
+const core = await loadBlinkIdCore(
+  {
+    licenseKey: "your-license-key",
+    resourcesLocation: "/resources",
+  },
+  ({ loaded, contentLength, progress, finished }) => {
+    console.log({ loaded, contentLength, progress, finished });
+  },
+);
+```
+
+Use `progress` for a monotonic display value. `loaded` can reset when a resource
+is retried, including when a provider download falls back to its hosted
+resource, and `contentLength` can change when a response supplies an
+authoritative size. `finished` becomes `true` only after all selected OTA files
+have been written to the Wasm filesystem.
 
 ### Redaction Settings
 
@@ -115,10 +165,7 @@ const session = await core.createScanningSession(
   },
   {
     redactionSettingsResolver: (documentClassInfo) => {
-      if (
-        documentClassInfo.country?.id === "germany" &&
-        documentClassInfo.type?.id === "id"
-      ) {
+      if (documentClassInfo.country?.id === "germany" && documentClassInfo.type?.id === "id") {
         return {
           mode: "full-result",
           fields: ["documentNumber"],
@@ -146,14 +193,8 @@ const session = await core.createScanningSession(
     scanningMode: "automatic",
   },
   {
-    redactionSettingsResolver: async (
-      documentClassInfo,
-      getDefaultRedactionSettings,
-    ) => {
-      if (
-        documentClassInfo.country?.id === "germany" &&
-        documentClassInfo.type?.id === "id"
-      ) {
+    redactionSettingsResolver: async (documentClassInfo, getDefaultRedactionSettings) => {
+      if (documentClassInfo.country?.id === "germany" && documentClassInfo.type?.id === "id") {
         const defaults = await getDefaultRedactionSettings(documentClassInfo);
 
         return {

@@ -20,14 +20,6 @@ Defines the mode of cardholder name redaction.
 
 ***
 
-### cardNumberPrefixRedactionMode
-
-> **cardNumberPrefixRedactionMode**: [`RedactionMode`](RedactionMode.md)
-
-Defines the mode of card number prefix redaction.
-
-***
-
 ### cardNumberRedactionSettings
 
 > **cardNumberRedactionSettings**: [`CardNumberRedactionSettings`](CardNumberRedactionSettings.md)

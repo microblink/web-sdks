@@ -40,9 +40,9 @@ The device info.
 
 The internal state of the camera, implemented as a Zustand store.
 
-#### Type declaration
+#### Type Declaration
 
-##### subscribe()
+##### subscribe
 
 > **subscribe**: \{(`listener`): () => `void`; \<`U`\>(`selector`, `listener`, `options?`): () => `void`; \}
 
@@ -58,11 +58,7 @@ The internal state of the camera, implemented as a Zustand store.
 
 ###### Returns
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`
 
 ###### Call Signature
 
@@ -96,11 +92,7 @@ The internal state of the camera, implemented as a Zustand store.
 
 ###### Returns
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`
 
 ## Accessors
 
@@ -108,11 +100,11 @@ The internal state of the camera, implemented as a Zustand store.
 
 #### Get Signature
 
-> **get** **activeStream**(): `undefined` \| `MediaStream`
+> **get** **activeStream**(): `MediaStream` \| `undefined`
 
 ##### Returns
 
-`undefined` \| `MediaStream`
+`MediaStream` \| `undefined`
 
 ***
 
@@ -146,11 +138,11 @@ The device info.
 
 #### Get Signature
 
-> **get** **maxSupportedResolution**(): `undefined` \| `"720p"` \| `"1080p"` \| `"4k"`
+> **get** **maxSupportedResolution**(): `"720p"` \| `"1080p"` \| `"4k"` \| `undefined`
 
 ##### Returns
 
-`undefined` \| `"720p"` \| `"1080p"` \| `"4k"`
+`"720p"` \| `"1080p"` \| `"4k"` \| `undefined`
 
 ***
 
@@ -182,13 +174,12 @@ The device info.
 
 #### Get Signature
 
-> **get** **streamCapabilities**(): `undefined` \| `MediaTrackCapabilities`
+> **get** **streamCapabilities**(): `MediaTrackCapabilities` \| `undefined`
 
 Stream capabilities as reported by the stream.
 
-On iOS it's the same as `deviceCapabilities`. Firefox is only reporting
-rudimentary capabilities, so we can't rely on this for picking the right
-camera.
+On iOS it's the same as `deviceCapabilities`. Firefox is only reporting rudimentary capabilities, so we can't rely
+on this for picking the right camera.
 
 ##### See
 
@@ -196,7 +187,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getCapabilitie
 
 ##### Returns
 
-`undefined` \| `MediaTrackCapabilities`
+`MediaTrackCapabilities` \| `undefined`
 
 ***
 
@@ -226,13 +217,13 @@ https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getCapabilitie
 
 ### getVideoTrack()
 
-> **getVideoTrack**(): `undefined` \| `MediaStreamTrack`
+> **getVideoTrack**(): `MediaStreamTrack` \| `undefined`
 
 Gets the video track on the camera.
 
 #### Returns
 
-`undefined` \| `MediaStreamTrack`
+`MediaStreamTrack` \| `undefined`
 
 The video track.
 
@@ -248,9 +239,9 @@ Starts a stream with the specified resolution.
 
 ##### resolution
 
-The resolution to start the stream with.
+`"720p"` \| `"1080p"` \| `"4k"`
 
-`"720p"` | `"1080p"` | `"4k"`
+The resolution to start the stream with.
 
 #### Returns
 
@@ -292,11 +283,7 @@ Listener function that gets called when state changes
 
 Unsubscribe function
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`
 
 #### Call Signature
 
@@ -340,11 +327,7 @@ Optional subscription options
 
 Unsubscribe function
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`
 
 ***
 

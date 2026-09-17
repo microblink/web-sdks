@@ -1,9 +1,12 @@
 import nodeFs from "node:fs";
 import os from "node:os";
 import nodePath from "node:path";
+
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fs, path, type ProcessOutput } from "zx";
+
 import {
+  collapseClassWhitespace,
   getBrowserslistEsbuildTarget,
   getPackagePath,
   getResourcesPath,
@@ -16,15 +19,10 @@ function mockProcessOutput(output: string) {
   return { text: () => output } as unknown as ProcessOutput;
 }
 
-function createPackageWithBrowserslist(browserslist: string[]): string {
-  const packageRoot = nodeFs.mkdtempSync(
-    nodePath.join(os.tmpdir(), "browserslist-target-"),
-  );
+function createPackageWithBrowserslist(browserslist: string[] | Record<string, string[]>): string {
+  const packageRoot = nodeFs.mkdtempSync(nodePath.join(os.tmpdir(), "browserslist-target-"));
 
-  nodeFs.writeFileSync(
-    nodePath.join(packageRoot, "package.json"),
-    `${JSON.stringify({ browserslist }, null, 2)}\n`,
-  );
+  nodeFs.writeFileSync(nodePath.join(packageRoot, "package.json"), `${JSON.stringify({ browserslist }, null, 2)}\n`);
 
   return packageRoot;
 }
@@ -115,31 +113,21 @@ describe("Utils", () => {
 
         await linkResources(sourcePath, destinationPath);
 
-        expect(fs.ensureSymlink).toHaveBeenCalledWith(
-          sourcePath,
-          destinationPath,
-        );
+        expect(fs.ensureSymlink).toHaveBeenCalledWith(sourcePath, destinationPath);
         expect(fs.copy).not.toHaveBeenCalled();
       });
 
       describe("when symlinking fails", () => {
         beforeEach(() => {
-          vi.mocked(fs.ensureSymlink).mockRejectedValue(
-            new Error("EPERM: operation not permitted"),
-          );
+          vi.mocked(fs.ensureSymlink).mockRejectedValue(new Error("EPERM: operation not permitted"));
         });
 
         it("should accept a destination created by a concurrent symlink", async () => {
-          const error = Object.assign(
-            new Error("EEXIST: file already exists"),
-            {
-              code: "EEXIST",
-            },
-          );
+          const error = Object.assign(new Error("EEXIST: file already exists"), {
+            code: "EEXIST",
+          });
           vi.mocked(fs.ensureSymlink).mockRejectedValue(error);
-          vi.mocked(fs.existsSync)
-            .mockReturnValueOnce(false)
-            .mockReturnValueOnce(true);
+          vi.mocked(fs.existsSync).mockReturnValueOnce(false).mockReturnValueOnce(true);
 
           await linkResources(sourcePath, destinationPath);
 
@@ -149,10 +137,7 @@ describe("Utils", () => {
         it("should fall back to copying when copy succeeds", async () => {
           await linkResources(sourcePath, destinationPath);
 
-          expect(fs.ensureSymlink).toHaveBeenCalledWith(
-            sourcePath,
-            destinationPath,
-          );
+          expect(fs.ensureSymlink).toHaveBeenCalledWith(sourcePath, destinationPath);
           expect(fs.copy).toHaveBeenCalledWith(sourcePath, destinationPath, {
             overwrite: true,
           });
@@ -161,9 +146,7 @@ describe("Utils", () => {
         it("should throw error when copy also fails", async () => {
           vi.mocked(fs.copy).mockRejectedValue(new Error("Copy failed"));
 
-          await expect(
-            linkResources(sourcePath, destinationPath),
-          ).rejects.toThrow("Copy failed");
+          await expect(linkResources(sourcePath, destinationPath)).rejects.toThrow("Copy failed");
         });
       });
     });
@@ -203,9 +186,7 @@ describe("Utils", () => {
       await moveResources(packagePath, moveTo);
 
       expect(fs.ensureDirSync).toHaveBeenCalledWith(moveTo);
-      expect(fs.readdirSync).toHaveBeenCalledWith(
-        path.join(mockPkgPath, "dist", "resources"),
-      );
+      expect(fs.readdirSync).toHaveBeenCalledWith(path.join(mockPkgPath, "dist", "resources"));
 
       // Try symlink first
       expect(fs.ensureSymlink).toHaveBeenCalledTimes(2);
@@ -254,7 +235,7 @@ describe("Utils", () => {
       ]);
 
       try {
-        expect(getBrowserslistEsbuildTarget(packageRoot)).toEqual([
+        expect(getBrowserslistEsbuildTarget({ packageRoot })).toEqual([
           "chrome96",
           "edge96",
           "firefox114",
@@ -279,7 +260,7 @@ describe("Utils", () => {
       ]);
 
       try {
-        expect(getBrowserslistEsbuildTarget(packageRoot)).toEqual([
+        expect(getBrowserslistEsbuildTarget({ packageRoot })).toEqual([
           "chrome91",
           "edge91",
           "firefox89",
@@ -290,6 +271,71 @@ describe("Utils", () => {
       } finally {
         nodeFs.rmSync(packageRoot, { recursive: true, force: true });
       }
+    });
+
+    it("should select a named Browserslist environment", () => {
+      const packageRoot = createPackageWithBrowserslist({
+        production: ["Chrome >= 96", "Safari >= 16.4"],
+        core: ["Chrome >= 91", "Safari >= 15.4"],
+      });
+
+      try {
+        expect(getBrowserslistEsbuildTarget({ environment: "core", packageRoot })).toEqual(["chrome91", "safari15.4"]);
+      } finally {
+        nodeFs.rmSync(packageRoot, { recursive: true, force: true });
+      }
+    });
+
+    it("should target the lowest baseline across several environments", () => {
+      const packageRoot = createPackageWithBrowserslist({
+        production: ["Chrome >= 96", "Safari >= 16.4"],
+        core: ["Chrome >= 91", "Safari >= 16.4"],
+        ui: ["Chrome >= 96", "Safari >= 15.4"],
+      });
+
+      try {
+        expect(getBrowserslistEsbuildTarget({ environments: ["core", "ui"], packageRoot })).toEqual([
+          "chrome91",
+          "safari15.4",
+        ]);
+      } finally {
+        nodeFs.rmSync(packageRoot, { recursive: true, force: true });
+      }
+    });
+
+    it("should fail on an undeclared environment", () => {
+      const packageRoot = createPackageWithBrowserslist({ production: ["Chrome >= 96"] });
+
+      try {
+        expect(() => getBrowserslistEsbuildTarget({ environments: ["core"], packageRoot })).toThrow(
+          'Browserslist environment "core" is not declared',
+        );
+      } finally {
+        nodeFs.rmSync(packageRoot, { recursive: true, force: true });
+      }
+    });
+  });
+
+  describe("collapseClassWhitespace", () => {
+    const transform = (code: string, id = "Component.tsx") => {
+      const result = collapseClassWhitespace().transform(code, id);
+      return result === null ? null : result.code;
+    };
+
+    it("collapses whitespace in quoted class attributes", () => {
+      expect(transform('<div class="flex\n    items-center\n  gap-2" />')).toBe(
+        '<div class="flex items-center gap-2" />',
+      );
+    });
+
+    it("collapses braced class expressions while preserving interpolations", () => {
+      expect(transform("<div class={`grid\n  ${cols}   p-4`} classList={{ active:\n isActive }} />")).toBe(
+        "<div class={`grid ${cols} p-4`} classList={{ active: isActive }} />",
+      );
+    });
+
+    it("ignores non-script modules", () => {
+      expect(transform('.a { content: "class=\\"x   y\\"" }', "styles.css")).toBeNull();
     });
   });
 });

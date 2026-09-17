@@ -1,5 +1,11 @@
 # @microblink/feedback-stabilizer
 
+## 7.1.5
+
+###
+
+- Updated dependencies
+
 ## 7.1.4
 
 ### Patch Changes

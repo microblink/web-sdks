@@ -6,9 +6,8 @@
 
 # Interface: BlinkIdUxManager
 
-The BlinkIdUxManager class. This is the main class that manages the UX of
-the BlinkID SDK. It is responsible for handling the UI state, the timeout,
-the help tooltip, and the document class filter.
+The BlinkIdUxManager class. This is the main class that manages the UX of the BlinkID SDK. It is responsible for
+handling the UI state, the timeout, the help tooltip, and the document class filter.
 
 ## Properties
 
@@ -32,12 +31,12 @@ The device info.
 
 > `readonly` **feedbackStabilizer**: [`FeedbackStabilizer`](../classes/FeedbackStabilizer.md)\<[`BlinkIdUiStateMap`](../type-aliases/BlinkIdUiStateMap.md)\>
 
-The feedback stabilizer. Public to allow UI components to read scores,
-event queues, and call restartCurrentStateTimer() for help-tooltip resets.
+The feedback stabilizer. Public to allow UI components to read scores, event queues, and call
+restartCurrentStateTimer() for help-tooltip resets.
 
 ***
 
-### handleCameraManagerError()
+### handleCameraManagerError
 
 > **handleCameraManagerError**: (`error`) => `void`
 
@@ -135,9 +134,8 @@ Latest mapped candidate key before stabilization.
 
 > **get** **uiState**(): [`BlinkIdUiState`](../type-aliases/BlinkIdUiState.md)
 
-The current UI state. Updated internally by the RAF update loop.
-Read externally once at UI mount to seed the initial Solid signal value;
-subsequent updates are delivered via `addOnUiStateChangedCallback`.
+The current UI state. Updated internally by the RAF update loop. Read externally once at UI mount to seed the
+initial Solid signal value; subsequent updates are delivered via `addOnUiStateChangedCallback`.
 
 ##### Returns
 
@@ -171,29 +169,24 @@ Registers a callback function to filter document classes.
 
 [`DocumentClassFilter`](../type-aliases/DocumentClassFilter.md)
 
-A function that will be called with the document class
-info.
+A function that will be called with the document class info.
 
 #### Returns
 
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addDocumentClassFilter((docClassInfo) => {
-  return docClassInfo.country?.id === 'usa';
-});
+    return docClassInfo.country?.id === "usa";
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -210,29 +203,24 @@ Registers a callback function to be called when a document is filtered.
 
 (`documentClassInfo`) => `void`
 
-A function that will be called with the document class
-info.
+A function that will be called with the document class info.
 
 #### Returns
 
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnDocumentFilteredCallback((docClassInfo) => {
-  console.log('Document filtered:', docClassInfo);
-});
+    console.log("Document filtered:", docClassInfo);
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -241,8 +229,7 @@ cleanup();
 
 > **addOnErrorCallback**(`callback`): () => `void`
 
-Registers a callback function to be called when an error occurs during
-processing.
+Registers a callback function to be called when an error occurs during processing.
 
 #### Parameters
 
@@ -257,21 +244,17 @@ A function that will be called with the error state.
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnErrorCallback((error) => {
-  console.error('Processing error:', error);
-});
+    console.error("Processing error:", error);
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -288,33 +271,28 @@ Registers a callback function to be called when a frame is processed.
 
 [`BlinkIdFrameProcessCallback`](../type-aliases/BlinkIdFrameProcessCallback.md)
 
-A function that receives the processed frame result and
-controls for custom step advancement, step timeout triggering, and access to
-the last processed frame buffer.
+A function that receives the processed frame result and controls for custom step advancement,
+  step timeout triggering, and access to the last processed frame buffer.
 
 #### Returns
 
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnFrameProcessCallback((frameResult, advanceToNextStep) => {
-  console.log('Frame processed:', frameResult);
-  if (shouldAdvance(frameResult)) {
-    void advanceToNextStep();
-  }
-});
+    console.log("Frame processed:", frameResult);
+    if (shouldAdvance(frameResult)) {
+      void advanceToNextStep();
+    }
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -331,29 +309,24 @@ Registers a callback function to receive BlinkID progress snapshots.
 
 (`progress`) => `void`
 
-A function that will be called with progress data from
-the internal 30 FPS RAF loop.
+A function that will be called with progress data from the internal 30 FPS RAF loop.
 
 #### Returns
 
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnProgressCallback((progress) => {
-  console.log('BlinkID progress:', progress);
-});
+    console.log("BlinkID progress:", progress);
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -377,21 +350,17 @@ A function that will be called with the scan result.
 A cleanup function that, when called, will remove the registered
 callback.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnResultCallback((result) => {
-  console.log('Scan result:', result);
-});
+    console.log("Scan result:", result);
+  });
 
-// Later, to remove the callback:
-cleanup();
+  // Later, to remove the callback:
+  cleanup();
 ```
 
 ***
@@ -408,27 +377,22 @@ Adds a callback function to be executed when the UI state changes.
 
 (`uiState`) => `void`
 
-Function to be called when UI state changes. Receives the
-new UI state as parameter.
+Function to be called when UI state changes. Receives the new UI state as parameter.
 
 #### Returns
 
 A cleanup function that removes the callback when called.
 
-> (): `void`
-
-##### Returns
-
-`void`
+() => `void`
 
 #### Example
 
 ```ts
 const cleanup = manager.addOnUiStateChangedCallback((newState) => {
-  console.log('UI state changed to:', newState);
-});
+    console.log("UI state changed to:", newState);
+  });
 
-cleanup();
+  cleanup();
 ```
 
 ***
@@ -469,9 +433,8 @@ Clears the scanning session timeout.
 
 > **destroy**(): `void`
 
-Fully tears down the BlinkIdUxManager. Stops frame processing, cancels the
-scan timeout, removes all subscriptions and the RAF loop, and clears all
-registered callbacks. Should be called when the manager is no longer needed.
+Fully tears down the BlinkIdUxManager. Stops frame processing, cancels the scan timeout, removes all subscriptions
+and the RAF loop, and clears all registered callbacks. Should be called when the manager is no longer needed.
 
 Does not stop the camera stream or delete the scanning session.
 
@@ -543,7 +506,7 @@ Check if haptic feedback is currently enabled.
 
 `boolean`
 
-true if haptic feedback is enabled
+True if haptic feedback is enabled
 
 ***
 
@@ -557,7 +520,7 @@ Check if haptic feedback is supported by the current browser/device.
 
 `boolean`
 
-true if haptic feedback is supported
+True if haptic feedback is supported
 
 ***
 
@@ -647,8 +610,8 @@ If true, immediately applies and emits this state.
 
 Updates the BlinkID timeout configuration.
 
-Updating the configuration resets timeout tracking for the current scan
-step so the new durations take effect immediately.
+Updating the configuration resets timeout tracking for the current scan step so the new durations take effect
+immediately.
 
 #### Parameters
 
