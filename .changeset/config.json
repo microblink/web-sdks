@@ -29,9 +29,6 @@
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
   "ignore": [
-    "@microblink/*-example",
-    "@microblink/*-qa-app",
-    "@microblink/*-test",
-    "@microblink/public-repo-generator"
+    "@microblink/*-example"
   ]
 }

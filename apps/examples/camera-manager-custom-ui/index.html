@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Camera Manager Custom UI Example</title>
+  </head>
+  <body>
+    <main>
+      <h1>Camera Manager custom UI example</h1>
+      <p>This interface is owned by the application.</p>
+
+      <div class="controls">
+        <button id="start">Start camera</button>
+
+        <label>
+          Camera
+          <select id="camera" disabled></select>
+        </label>
+
+        <button id="capture" disabled>Start capture</button>
+        <button id="stop-capture" disabled>Stop capture</button>
+        <button id="stop" disabled>Stop camera</button>
+      </div>
+
+      <p id="status" role="status" aria-live="polite">Camera is stopped.</p>
+      <p id="error" class="error" role="alert" hidden></p>
+
+      <section class="preview" aria-label="Camera preview">
+        <video id="video" aria-label="Camera stream" playsinline muted></video>
+        <canvas id="canvas" aria-label="Latest captured frame"></canvas>
+      </section>
+
+      <p>
+        Frames captured:
+        <output id="frame-count">0</output>
+      </p>
+    </main>
+
+    <script type="module" src="/src/index.ts"></script>
+  </body>
+</html>

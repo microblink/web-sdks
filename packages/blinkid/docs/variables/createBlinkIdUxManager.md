@@ -4,7 +4,7 @@
 
 [@microblink/blinkid](../README.md) / createBlinkIdUxManager
 
-# Variable: createBlinkIdUxManager()
+# Variable: createBlinkIdUxManager
 
 > `const` **createBlinkIdUxManager**: (`cameraManager`, `scanningSession`, `options?`) => `Promise`\<[`BlinkIdUxManager`](../interfaces/BlinkIdUxManager.md)\>
 

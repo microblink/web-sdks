@@ -4,7 +4,7 @@
 
 [@microblink/blinkid-verify](../README.md) / resetCameraManagerStore
 
-# Variable: resetCameraManagerStore()
+# Variable: resetCameraManagerStore
 
 > `const` **resetCameraManagerStore**: () => `void`
 

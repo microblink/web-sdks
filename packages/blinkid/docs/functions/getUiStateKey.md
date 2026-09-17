@@ -6,14 +6,12 @@
 
 # Function: getUiStateKey()
 
-> **getUiStateKey**(`scanningStatus`, `inputImageAnalysisResult`, `scanningSettings`): `undefined` \| [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md)
+> **getUiStateKey**(`scanningStatus`, `inputImageAnalysisResult`, `scanningSettings`): [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md) \| `undefined`
 
-Determines the appropriate UI state key based on the current frame processing
-result and scanning settings.
+Determines the appropriate UI state key based on the current frame processing result and scanning settings.
 
-This function acts as a state machine, translating the low-level analysis and
-completeness results into a high-level UI state that drives the user
-interface.
+This function acts as a state machine, translating the low-level analysis and completeness results into a high-level
+UI state that drives the user interface.
 
 ## Parameters
 
@@ -31,6 +29,6 @@ interface.
 
 ## Returns
 
-`undefined` \| [`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md)
+[`BlinkIdUiMappableKey`](../type-aliases/BlinkIdUiMappableKey.md) \| `undefined`
 
 The UI state key representing what should be shown to the user.

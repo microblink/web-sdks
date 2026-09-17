@@ -12,6 +12,14 @@ Represents the account information of a single account on a card.
 
 ## Properties
 
+### binCheckResult
+
+> **binCheckResult**: [`CheckResult`](CheckResult.md)
+
+The result of the BIN check.
+
+***
+
 ### cardCategory
 
 > **cardCategory**: `string` \| `undefined`
@@ -38,8 +46,7 @@ The payment card's number prefix.
 
 > **cardNumberValid**: `boolean`
 
-Indicates whether the scanned card number is valid according to the Luhn
-algorithm.
+Indicates whether the scanned card number is valid according to the Luhn algorithm.
 
 ***
 
@@ -79,8 +86,7 @@ The name of the card issuer's country.
 
 > **issuerCountryCode**: `string` \| `undefined`
 
-The ISO 3166-1 alpha-3 country code of the card issuer's country (e.g.,
-"USA", "GBR", "HRV").
+The ISO 3166-1 alpha-3 country code of the card issuer's country (e.g., "USA", "GBR", "HRV").
 
 ***
 

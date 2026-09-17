@@ -1,10 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { BlinkIdScanningResult } from "@microblink/blinkid-wasm";
-import { describe, expect, it } from "vitest";
 import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
+import { describe, expect, it } from "vitest";
+
 import {
   extractBarcodeImage,
   extractFaceImage,
@@ -27,9 +26,7 @@ const createMockSingleSideScanningResult = (overrides = {}) => ({
 });
 
 // Mock factory for BlinkIdScanningResult
-const createMockBlinkIdScanningResult = (
-  overrides = {},
-): BlinkIdScanningResult => ({
+const createMockBlinkIdScanningResult = (overrides = {}): BlinkIdScanningResult => ({
   documentClassInfo: {
     country: { id: "usa", rawValue: "USA" },
     documentType: { id: "id", rawValue: "ID" },
@@ -108,10 +105,7 @@ const createMockBlinkIdScanningResult = (
   faceImageScanningSide: undefined,
   signatureImageScanningSide: undefined,
   barcodeImageScanningSide: undefined,
-  subResults: [
-    createMockSingleSideScanningResult(),
-    createMockSingleSideScanningResult(),
-  ],
+  subResults: [createMockSingleSideScanningResult(), createMockSingleSideScanningResult()],
   ...overrides,
 });
 
@@ -156,9 +150,7 @@ describe("extractSideInputImage", () => {
 
   it("should return null when input image is undefined", () => {
     const result = createMockBlinkIdScanningResult({
-      subResults: [
-        createMockSingleSideScanningResult({ inputImage: undefined }),
-      ],
+      subResults: [createMockSingleSideScanningResult({ inputImage: undefined })],
     });
 
     const image = extractSideInputImage(result, "first");
@@ -257,9 +249,7 @@ describe("extractSideDocumentImage", () => {
 
   it("should return null when document image is undefined", () => {
     const result = createMockBlinkIdScanningResult({
-      subResults: [
-        createMockSingleSideScanningResult({ documentImage: undefined }),
-      ],
+      subResults: [createMockSingleSideScanningResult({ documentImage: undefined })],
     });
 
     const image = extractSideDocumentImage(result, "first");

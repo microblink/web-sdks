@@ -1,10 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { obtainNewServerPermission } from "./licencing";
 import type { LicenseUnlockResult } from "@microblink/wasm-common";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+
+import { obtainNewServerPermission } from "./licencing";
 
 const mockUnlockResult: LicenseUnlockResult = {
   isTrial: false,
@@ -34,27 +33,25 @@ describe("obtainNewServerPermission", () => {
 
   it("should throw if baltazarUrl is not a string", async () => {
     await expect(
-      // @ts-expect-error
+      // @ts-expect-error: Verify runtime validation rejects null.
       obtainNewServerPermission(mockUnlockResult, null),
     ).rejects.toThrow(/Invalid baltazarUrl/);
     await expect(
-      // @ts-expect-error
+      // @ts-expect-error: Verify runtime validation rejects numbers.
       obtainNewServerPermission(mockUnlockResult, 123),
     ).rejects.toThrow(/Invalid baltazarUrl/);
     await expect(
-      // @ts-expect-error
+      // @ts-expect-error: Verify runtime validation rejects objects.
       obtainNewServerPermission(mockUnlockResult, {}),
     ).rejects.toThrow(/Invalid baltazarUrl/);
     // Empty string is also invalid
-    await expect(
-      obtainNewServerPermission(mockUnlockResult, ""),
-    ).rejects.toThrow(/Invalid baltazarUrl/);
+    await expect(obtainNewServerPermission(mockUnlockResult, "")).rejects.toThrow(/Invalid baltazarUrl/);
   });
 
   it("should throw if baltazarUrl is an invalid URL", async () => {
-    await expect(
-      obtainNewServerPermission(mockUnlockResult, "not-a-url"),
-    ).rejects.toThrow(/Invalid baltazarUrl format/);
+    await expect(obtainNewServerPermission(mockUnlockResult, "not-a-url")).rejects.toThrow(
+      /Invalid baltazarUrl format/,
+    );
   });
 
   it("should throw if server returns non-ok response", async () => {
@@ -67,9 +64,7 @@ describe("obtainNewServerPermission", () => {
         json: vi.fn(),
       }),
     );
-    await expect(
-      obtainNewServerPermission(mockUnlockResult, customUrl),
-    ).rejects.toThrow(/Server returned error: 500/);
+    await expect(obtainNewServerPermission(mockUnlockResult, customUrl)).rejects.toThrow(/Server returned error: 500/);
   });
 
   it("should return server permission on success", async () => {
@@ -100,13 +95,8 @@ describe("obtainNewServerPermission", () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {
       /* log */
     });
-    await expect(
-      obtainNewServerPermission(mockUnlockResult, customUrl),
-    ).rejects.toThrow("network error");
-    expect(consoleSpy).toHaveBeenCalledWith(
-      "Server permission request failed:",
-      error,
-    );
+    await expect(obtainNewServerPermission(mockUnlockResult, customUrl)).rejects.toThrow("network error");
+    expect(consoleSpy).toHaveBeenCalledWith("Server permission request failed:", error);
     consoleSpy.mockRestore();
   });
 });

@@ -1,15 +1,13 @@
 {
   "name": "@microblink/ux-common",
+  "version": "1.1.0",
   "private": true,
-  "version": "1.0.1",
-  "scripts": {
-    "build": "tsc",
-    "build:publish": "tsc",
-    "clean": "rimraf .turbo types dist *.tgz",
-    "lint": "tsc --emitDeclarationOnly false --noEmit",
-    "test": "vitest --run",
-    "test:watch": "vitest --watch"
-  },
+  "keywords": [],
+  "license": "ISC",
+  "files": [
+    "dist",
+    "types"
+  ],
   "type": "module",
   "exports": {
     "./hapticFeedback": {
@@ -32,23 +30,34 @@
       "types": "./types/RafLoop.d.ts",
       "import": "./dist/RafLoop.js"
     },
+    "./UxTimeoutHandler": {
+      "types": "./types/UxTimeoutHandler.d.ts",
+      "import": "./dist/UxTimeoutHandler.js"
+    },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types dist *.tgz",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
   "dependencies": {
     "@microblink/analytics": "workspace:^",
     "@microblink/camera-manager": "workspace:^"
   },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
-    "@vitest/browser": "^3.0.8",
-    "rimraf": "^6.0.1",
-    "typescript": "5.8.3",
-    "vitest": "^3.0.8"
-  },
-  "keywords": [],
-  "license": "ISC"
+    "@typescript/native": "catalog:typescript",
+    "@vitest/browser-playwright": "catalog:test",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "typescript": "catalog:typescript",
+    "vitest": "catalog:test"
+  }
 }

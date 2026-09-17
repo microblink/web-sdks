@@ -1,38 +1,25 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { cameraManagerStore } from "@microblink/camera-manager";
+import { cameraManagerStore } from "@microblink/camera-manager/core";
 import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import type { Component } from "solid-js";
-import {
-  createEffect,
-  createSignal,
-  Match,
-  onCleanup,
-  onMount,
-  Show,
-  Switch,
-} from "solid-js";
-import { createWithSignal } from "solid-zustand";
-import type { BlinkIdProcessingError } from "../core/BlinkIdProcessingError";
+import { createEffect, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
+import { create } from "solid-zustand";
+
 import { BlinkIdUiState } from "../core/blinkid-ui-state";
-import {
-  LocalizationProvider,
-  PartialLocalizationStrings,
-  useLocalization,
-} from "./LocalizationContext";
-import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
+import type { BlinkIdProcessingError } from "../core/BlinkIdProcessingError";
+import DemoOverlay from "./assets/demo-overlay.svg?component-solid";
+import MicroblinkOverlay from "./assets/microblink.svg?component-solid";
 
 // this triggers extraction of CSS from the UnoCSS plugin
 import "virtual:uno.css";
 
-import DemoOverlay from "./assets/demo-overlay.svg?component-solid";
-import MicroblinkOverlay from "./assets/microblink.svg?component-solid";
 import { useBlinkIdUiStore } from "./BlinkIdUiStoreContext";
 import { ErrorModal } from "./dialogs/ErrorModal";
 import { HelpButton, HelpModal } from "./dialogs/HelpModal";
 import { OnboardingGuideModal } from "./dialogs/OnboardingGuideModal";
+import { LocalizationProvider, PartialLocalizationStrings, useLocalization } from "./LocalizationContext";
+import { UiFeedbackOverlay } from "./UiFeedbackOverlay";
 
 export const getTimeoutAlertType = (
   errorState: BlinkIdProcessingError | undefined,
@@ -49,9 +36,8 @@ export const getTimeoutAlertType = (
 };
 
 /**
- * The BlinkIdFeedbackUi component. This is the main component that renders the
- * feedback UI for the BlinkID SDK. It is responsible for rendering the feedback
- * UI, the overlays, and the help button.
+ * The BlinkIdFeedbackUi component. This is the main component that renders the feedback UI for the BlinkID SDK. It is
+ * responsible for rendering the feedback UI, the overlays, and the help button.
  *
  * @param props - The props for the BlinkIdFeedbackUi component.
  * @returns The BlinkIdFeedbackUi component.
@@ -63,68 +49,53 @@ export const BlinkIdFeedbackUi: Component<{
 
   // `blinkIdUxManager` is not reactive, so we need to create a new signal for
   // the UI state. This is a hacky way to make the UI state reactive.
-  const [uiState, setUiState] = createSignal<BlinkIdUiState>(
-    store.blinkIdUxManager.uiState,
-  );
+  const [uiState, setUiState] = createSignal<BlinkIdUiState>(store.blinkIdUxManager.uiState);
 
   // Handle errors during scanning
-  const errorCallbackCleanup = store.blinkIdUxManager.addOnErrorCallback(
-    (errorState) => {
-      updateStore({ errorState });
-    },
-  );
+  const errorCallbackCleanup = store.blinkIdUxManager.addOnErrorCallback((errorState) => {
+    updateStore({ errorState });
+  });
 
   onMount(() => {
-    const cleanupDismountCallback =
-      store.cameraManagerComponent.addOnDismountCallback(() => {
-        cleanupDismountCallback();
+    const cleanupDismountCallback = store.cameraManagerComponent.addOnDismountCallback(() => {
+      cleanupDismountCallback();
 
-        // if not user-initiated, it's a regular dismount, not a button-click,
-        // so we early exit.
+      // if not user-initiated, it's a regular dismount, not a button-click,
+      // so we early exit.
 
-        // TODO: test if this store proxies capture values in a closure on declaration
-        if (!store.cameraManagerComponent.cameraManager.userInitiatedAbort) {
-          return;
-        }
+      // TODO: test if this store proxies capture values in a closure on declaration
+      if (!store.cameraManagerComponent.cameraManager.userInitiatedAbort) {
+        return;
+      }
 
-        void store.blinkIdUxManager.analytics.logCloseButtonClickedEvent();
-      });
+      void store.blinkIdUxManager.analytics.logCloseButtonClickedEvent();
+    });
   });
 
   // Handle document filtered during scanning
-  const documentFilteredCallbackCleanup =
-    store.blinkIdUxManager.addOnDocumentFilteredCallback(() => {
-      updateStore({ documentFiltered: true });
-      void store.blinkIdUxManager.analytics.logAlertDisplayedEvent(
-        "DocumentClassNotAllowed",
-      );
-    });
+  const documentFilteredCallbackCleanup = store.blinkIdUxManager.addOnDocumentFilteredCallback(() => {
+    updateStore({ documentFiltered: true });
+    void store.blinkIdUxManager.analytics.logAlertDisplayedEvent("DocumentClassNotAllowed");
+  });
 
-  const playbackState = createWithSignal(cameraManagerStore)(
-    (s) => s.playbackState,
-  );
+  const playbackState = create(cameraManagerStore)((s) => s.playbackState);
 
   // assume modal is displayed on camera error
-  const cameraErrorState = createWithSignal(cameraManagerStore)(
-    (s) => s.errorState,
-  );
+  const cameraErrorState = create(cameraManagerStore)((s) => s.errorState);
 
   const isProcessing = () => playbackState() === "capturing";
 
   // TODO: Cover cases where frame processing is paused by 3rd party modal dialogs
   const shouldShowFeedback = () => !isModalOpen();
 
-  const displayedTimeoutAlertType = () =>
-    store.showTimeoutModal ? getTimeoutAlertType(store.errorState) : undefined;
+  const displayedTimeoutAlertType = () => (store.showTimeoutModal ? getTimeoutAlertType(store.errorState) : undefined);
 
   const displayTimeoutModal = () => displayedTimeoutAlertType() !== undefined;
 
   const displayUnsupportedDocumentModal = () =>
-    Boolean(store.showUnsupportedDocumentModal) &&
-    store.errorState === "unsupported_document";
+    Boolean(store.showUnsupportedDocumentModal) && store.errorState === "unsupported_document";
 
-  const displayDocumentFilteredModal = () =>
-    Boolean(store.showDocumentFilteredModal) && store.documentFiltered;
+  const displayDocumentFilteredModal = () => Boolean(store.showDocumentFilteredModal) && store.documentFiltered;
 
   const isModalOpen = () => {
     return (
@@ -139,7 +110,9 @@ export const BlinkIdFeedbackUi: Component<{
     );
   };
 
-  createEffect(() => {
+  createEffect((previous: boolean) => {
+    if (isModalOpen() === previous) return previous;
+
     if (!isModalOpen()) {
       void store.blinkIdUxManager.cameraManager.startFrameCapture();
       store.blinkIdUxManager.startUiUpdateLoop();
@@ -147,7 +120,9 @@ export const BlinkIdFeedbackUi: Component<{
       void store.blinkIdUxManager.cameraManager.stopFrameCapture();
       store.blinkIdUxManager.stopUiUpdateLoop();
     }
-  });
+
+    return isModalOpen();
+  }, isModalOpen());
 
   const shouldShowDemoOverlay = () => {
     return store.blinkIdUxManager.showDemoOverlay;
@@ -157,8 +132,7 @@ export const BlinkIdFeedbackUi: Component<{
     return store.blinkIdUxManager.showProductionOverlay;
   };
 
-  const removeUiStateChangeCallback =
-    store.blinkIdUxManager.addOnUiStateChangedCallback(setUiState);
+  const removeUiStateChangeCallback = store.blinkIdUxManager.addOnUiStateChangedCallback(setUiState);
 
   onCleanup(() => {
     removeUiStateChangeCallback();
@@ -167,9 +141,7 @@ export const BlinkIdFeedbackUi: Component<{
   });
 
   const isDesktop = () => {
-    return store.blinkIdUxManager.deviceInfo?.derivedDeviceInfo.formFactors.includes(
-      "Desktop",
-    );
+    return store.blinkIdUxManager.deviceInfo?.derivedDeviceInfo.formFactors.includes("Desktop");
   };
 
   const extractionMode = store.blinkIdUxManager.extractionMode;
@@ -184,9 +156,7 @@ export const BlinkIdFeedbackUi: Component<{
 
   createEffect(() => {
     if (displayUnsupportedDocumentModal()) {
-      void store.blinkIdUxManager.analytics.logAlertDisplayedEvent(
-        "DocumentNotSupported",
-      );
+      void store.blinkIdUxManager.analytics.logAlertDisplayedEvent("DocumentNotSupported");
     }
   });
 
@@ -210,10 +180,7 @@ export const BlinkIdFeedbackUi: Component<{
               dialog_title: t.sdk_aria,
             });
 
-            const timeoutModalText = () =>
-              isDesktop()
-                ? t.timeout_modal.details_desktop
-                : t.timeout_modal.details;
+            const timeoutModalText = () => (isDesktop() ? t.timeout_modal.details_desktop : t.timeout_modal.details);
 
             return (
               <>
@@ -275,10 +242,7 @@ export const BlinkIdFeedbackUi: Component<{
           }}
         </SmartEnvironmentProvider>
 
-        <OnboardingGuideModal
-          isDesktop={isDesktop()}
-          extractionMode={extractionMode}
-        />
+        <OnboardingGuideModal isDesktop={isDesktop()} extractionMode={extractionMode} />
         <HelpModal isDesktop={isDesktop()} extractionMode={extractionMode} />
       </LocalizationProvider>
     </div>

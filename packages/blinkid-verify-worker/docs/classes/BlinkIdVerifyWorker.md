@@ -22,7 +22,7 @@ The BlinkID Verify worker.
 
 ### progressStatusCallback?
 
-> `optional` **progressStatusCallback**: [`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)
+> `optional` **progressStatusCallback?**: [`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)
 
 The progress status callback.
 

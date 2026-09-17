@@ -1,79 +1,51 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type {
-  BlinkCardProcessResult,
-  ScanningSettings,
-} from "@microblink/blinkcard-core";
+import type { BlinkCardProcessResult, ScanningSettings } from "@microblink/blinkcard-core";
 import { UiState } from "@microblink/feedback-stabilizer";
 import { match, P } from "ts-pattern";
 
-/**
- * The type of reticle to display.
- */
-export type BlinkCardReticleType =
-  | "searching"
-  | "processing"
-  | "error"
-  | "done"
-  | "flip";
+/** The type of reticle to display. */
+export type BlinkCardReticleType = "searching" | "processing" | "error" | "done" | "flip";
 
 /**
  * Intro state keys for BlinkCard UI.
  *
  * @remarks
- * These states display introductory screens that guide users to scan the correct
- * side of their card. They are NOT directly mappable from a `ProcessResult` —
- * `INTRO_FRONT` is the default initial state, and `INTRO_BACK` is automatically
- * reached via the chained transition after `FLIP_CARD`.
- *
- * Both states restart frame capture when entered (via `#handleUiStateUpdates`
- * in the manager), so the camera resumes scanning the correct side.
+ *   These states display introductory screens that guide users to scan the correct side of their card. They are NOT
+ *   directly mappable from a `ProcessResult` — `INTRO_FRONT` is the default initial state, and `INTRO_BACK` is
+ *   automatically reached via the chained transition after `FLIP_CARD`. Both states restart frame capture when entered
+ *   (via `#handleUiStateUpdates` in the manager), so the camera resumes scanning the correct side.
  */
 export const blinkCardUiIntroStateKeys = ["INTRO_FRONT", "INTRO_BACK"] as const;
 
-export type BlinkCardUiIntroStateKey =
-  (typeof blinkCardUiIntroStateKeys)[number];
+export type BlinkCardUiIntroStateKey = (typeof blinkCardUiIntroStateKeys)[number];
 
 /**
  * Page transition state keys for BlinkCard UI.
  *
  * @remarks
- * `FLIP_CARD` is a transition state that displays the card-flip animation and
- * instructions after the first side is captured. It is NOT directly mappable from
- * a `ProcessResult` — it is chained automatically from `FIRST_SIDE_CAPTURED`.
- *
- * After the transition animation completes, the flow automatically advances to
- * `INTRO_BACK` to begin scanning the back of the card.
- *
- * **Automatic flow:** `FIRST_SIDE_CAPTURED` → `FLIP_CARD` → `INTRO_BACK`
+ *   `FLIP_CARD` is a transition state that displays the card-flip animation and instructions after the first side is
+ *   captured. It is NOT directly mappable from a `ProcessResult` — it is chained automatically from
+ *   `FIRST_SIDE_CAPTURED`. After the transition animation completes, the flow automatically advances to `INTRO_BACK` to
+ *   begin scanning the back of the card. **Automatic flow:** `FIRST_SIDE_CAPTURED` → `FLIP_CARD` → `INTRO_BACK`
  */
 export const blinkCardPageTransitionKeys = ["FLIP_CARD"] as const;
 
-export type BlinkCardPageTransitionKey =
-  (typeof blinkCardPageTransitionKeys)[number];
+export type BlinkCardPageTransitionKey = (typeof blinkCardPageTransitionKeys)[number];
 
 /**
  * Success state keys for BlinkCard UI.
  *
  * @remarks
- * - `FIRST_SIDE_CAPTURED` — first side successfully scanned; triggers the
- *   `FLIP_CARD` chained transition and stops frame capture.
- * - `CARD_CAPTURED` — both sides fully scanned; triggers result retrieval
- *   and stops frame capture permanently.
+ *   - `FIRST_SIDE_CAPTURED` — first side successfully scanned; triggers the `FLIP_CARD` chained transition and stops
+ *     frame capture.
+ *   - `CARD_CAPTURED` — both sides fully scanned; triggers result retrieval and stops frame capture permanently.
  */
-export const blinkCardUiSuccessKeys = [
-  "FIRST_SIDE_CAPTURED",
-  "CARD_CAPTURED",
-] as const;
+export const blinkCardUiSuccessKeys = ["FIRST_SIDE_CAPTURED", "CARD_CAPTURED"] as const;
 
 export type BlinkCardUiSuccessKey = (typeof blinkCardUiSuccessKeys)[number];
 
-/**
- * Error state keys for BlinkCard UI. These are all directly mappable from a
- * `ProcessResult`.
- */
+/** Error state keys for BlinkCard UI. These are all directly mappable from a `ProcessResult`. */
 export const blinkCardUiErrorStateKeys = [
   "CARD_NOT_IN_FRAME_FRONT",
   "CARD_NOT_IN_FRAME_BACK",
@@ -86,23 +58,13 @@ export const blinkCardUiErrorStateKeys = [
   "CARD_TOO_CLOSE_TO_FRAME_EDGE",
 ] as const;
 
-export type BlinkCardUiErrorStateKey =
-  (typeof blinkCardUiErrorStateKeys)[number];
+export type BlinkCardUiErrorStateKey = (typeof blinkCardUiErrorStateKeys)[number];
 
-/**
- * Keys directly mappable from a `ProcessResult`.
- */
-export type BlinkCardUiMappableKey =
-  | BlinkCardUiErrorStateKey
-  | BlinkCardUiSuccessKey;
+/** Keys directly mappable from a `ProcessResult`. */
+export type BlinkCardUiMappableKey = BlinkCardUiErrorStateKey | BlinkCardUiSuccessKey;
 
-/**
- * The full union of all BlinkCard UI state keys.
- */
-export type BlinkCardUiStateKey =
-  | BlinkCardUiIntroStateKey
-  | BlinkCardPageTransitionKey
-  | BlinkCardUiMappableKey;
+/** The full union of all BlinkCard UI state keys. */
+export type BlinkCardUiStateKey = BlinkCardUiIntroStateKey | BlinkCardPageTransitionKey | BlinkCardUiMappableKey;
 
 /**
  * Extended UI state for BlinkCard.
@@ -118,9 +80,7 @@ export type BlinkCardUiStateMap = {
   };
 };
 
-/**
- * The UI state of BlinkCard.
- */
+/** The UI state of BlinkCard. */
 export type BlinkCardUiState = BlinkCardUiStateMap[keyof BlinkCardUiStateMap];
 
 const INTRO_DURATION = 2000;
@@ -128,9 +88,7 @@ const TRANSITION_DURATION = 2000;
 const SUCCESS_DURATION = 1000;
 const ERROR_DURATION = 1500;
 
-/**
- * The UI state map of BlinkCard.
- */
+/** The UI state map of BlinkCard. */
 export const blinkCardUiStateMap: BlinkCardUiStateMap = {
   // --- Intro states ---
   INTRO_FRONT: {
@@ -218,18 +176,16 @@ export const blinkCardUiStateMap: BlinkCardUiStateMap = {
 } as const;
 
 /**
- * Determines the appropriate UI state key based on the current frame processing
- * result and scanning settings.
+ * Determines the appropriate UI state key based on the current frame processing result and scanning settings.
  *
- * This function acts as a state machine, translating the low-level analysis and
- * completeness results into a high-level UI state that drives the user interface.
+ * This function acts as a state machine, translating the low-level analysis and completeness results into a high-level
+ * UI state that drives the user interface.
  *
- * Returns `undefined` for unrecognized frames (e.g. stability checks) — the
- * manager treats `undefined` as a no-op and does not ingest it into the
- * feedback stabilizer.
+ * Returns `undefined` for unrecognized frames (e.g. stability checks) — the manager treats `undefined` as a no-op and
+ * does not ingest it into the feedback stabilizer.
  *
- * @param frameProcessResult - The current (possibly partial) result of frame
- * processing, including image analysis and completeness.
+ * @param frameProcessResult - The current (possibly partial) result of frame processing, including image analysis and
+ *   completeness.
  * @param settings - Scanning settings that may influence state selection.
  * @returns The UI state key, or `undefined` if no state change is warranted.
  */
@@ -238,9 +194,7 @@ export function getUiStateKey(
   settings: ScanningSettings,
 ): BlinkCardUiMappableKey | undefined {
   return (
-    match<BlinkCardProcessResult, BlinkCardUiMappableKey | undefined>(
-      frameProcessResult,
-    )
+    match<BlinkCardProcessResult, BlinkCardUiMappableKey | undefined>(frameProcessResult)
       // Success: both sides captured
       .with(
         {
@@ -326,9 +280,7 @@ export function getUiStateKey(
         {
           inputImageAnalysisResult: {
             processingStatus: "image-preprocessing-failed",
-            blurDetectionStatus: P.when(
-              (status) => status === "detected" && settings.skipImagesWithBlur,
-            ),
+            blurDetectionStatus: P.when((status) => status === "detected" && settings.skipImagesWithBlur),
           },
         },
         () => "BLUR_DETECTED",

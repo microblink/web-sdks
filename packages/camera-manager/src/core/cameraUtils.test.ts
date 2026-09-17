@@ -1,19 +1,11 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { describe, expect, test } from "vitest";
-import { Camera, FacingMode, VideoResolutionName } from "./Camera";
-import {
-  createConstraints,
-  scoreCameraCapabilities,
-  filterCamerasByFacing,
-  findIdealCamera,
-} from "./cameraUtils";
 
-/**
- * A mock camera class for testing.
- */
+import { Camera, FacingMode, VideoResolutionName } from "./Camera";
+import { createConstraints, scoreCameraCapabilities, filterCamerasByFacing, findIdealCamera } from "./cameraUtils";
+
+/** A mock camera class for testing. */
 class MockCamera extends Camera {
   private _stream: MediaStream | null = null;
 
@@ -60,13 +52,9 @@ class MockCamera extends Camera {
     }
   }
 
-  private readonly _startStreamFn?: (
-    resolution: VideoResolutionName,
-  ) => Promise<MediaStream>;
+  private readonly _startStreamFn?: (resolution: VideoResolutionName) => Promise<MediaStream>;
 
-  override async startStream(
-    resolution: VideoResolutionName,
-  ): Promise<MediaStream> {
+  override async startStream(resolution: VideoResolutionName): Promise<MediaStream> {
     if (this._startStreamFn) {
       this._stream = await this._startStreamFn(resolution);
       return this._stream;
@@ -109,17 +97,14 @@ describe("createConstraints", () => {
     ["720p", 1280, 720],
     ["1080p", 1920, 1080],
     ["4k", 3840, 2160],
-  ])(
-    "sets correct resolution constraints for %s",
-    (resolution, width, height) => {
-      const constraints = createConstraints(resolution as VideoResolutionName);
-      expect(constraints.video).toMatchObject({
-        width: { ideal: width },
-        height: { ideal: height },
-        aspectRatio: { exact: width / height },
-      });
-    },
-  );
+  ])("sets correct resolution constraints for %s", (resolution, width, height) => {
+    const constraints = createConstraints(resolution as VideoResolutionName);
+    expect(constraints.video).toMatchObject({
+      width: { ideal: width },
+      height: { ideal: height },
+      aspectRatio: { exact: width / height },
+    });
+  });
 
   test("sets facing mode when provided", () => {
     const constraints = createConstraints("1080p", "front");
@@ -200,10 +185,7 @@ describe("filterCamerasByFacing", () => {
   });
 
   test("returns empty array when no matching cameras", () => {
-    const cameras = [
-      new MockCamera("Unknown Camera 1"),
-      new MockCamera("Unknown Camera 2"),
-    ];
+    const cameras = [new MockCamera("Unknown Camera 1"), new MockCamera("Unknown Camera 2")];
     const filtered = filterCamerasByFacing(cameras, "back");
     expect(filtered).toHaveLength(0);
   });
@@ -211,9 +193,7 @@ describe("filterCamerasByFacing", () => {
 
 describe("findIdealCamera", () => {
   test("throws error when no cameras available", async () => {
-    await expect(findIdealCamera([], "1080p", "back")).rejects.toThrow(
-      "No cameras found",
-    );
+    await expect(findIdealCamera([], "1080p", "back")).rejects.toThrow("No cameras found");
   });
 
   test("returns single camera when only one available", async () => {

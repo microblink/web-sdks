@@ -1,20 +1,12 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { beforeEach, describe, expect, test, vi } from "vitest";
-import {
-  createFakeImageData,
-  enableRafAwareFakeTimers,
-  setupDestroyableTeardown,
-} from "@microblink/test-utils";
+import { createFakeImageData, enableRafAwareFakeTimers, setupDestroyableTeardown } from "@microblink/test-utils";
 import { advanceAndFlushUi } from "@microblink/test-utils/vitest/timers";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
+import { createProcessResult, createScanningResult } from "./__testdata/blinkidTestFixtures";
 import { blinkIdUiStateMap } from "./blinkid-ui-state";
 import type { BlinkIdUxManager } from "./BlinkIdUxManager";
-import {
-  createProcessResult,
-  createScanningResult,
-} from "./__testdata/blinkidTestFixtures";
 import {
   createBlinkIdIntegrationContext,
   type CreateBlinkIdIntegrationContextOptions,
@@ -22,6 +14,7 @@ import {
 
 /**
  * Test file role:
+ *
  * - Smoke-tests public BlinkId scanning flow end-to-end with behavioral fakes.
  * - Covers frame processing, UI progression, timeout lifecycle, and result/error callbacks.
  * - Keeps mocking light and avoids internal-state forcing.
@@ -30,8 +23,7 @@ import {
 const mockSleep = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 
 vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@microblink/ux-common/utils")>();
+  const actual = await importOriginal<typeof import("@microblink/ux-common/utils")>();
   return {
     ...actual,
     sleep: mockSleep,
@@ -88,9 +80,7 @@ describe("BlinkIdUxManager integration smoke", () => {
 
     context.fakeCameraManager.emitPlaybackState("capturing");
     await context.fakeCameraManager.emitFrame(createFakeImageData());
-    await advanceAndFlushUi(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100,
-    );
+    await advanceAndFlushUi(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
 
     await vi.waitFor(() => {
       expect(context.fakeCameraManager.stopFrameCapture).toHaveBeenCalled();
@@ -119,10 +109,7 @@ describe("BlinkIdUxManager integration smoke", () => {
       },
       sessionOverrides: {
         process: vi.fn().mockResolvedValue(sideScannedProcessResult),
-        getScanningStatus: vi
-          .fn()
-          .mockResolvedValueOnce("scanning-side-in-progress")
-          .mockResolvedValue("side-scanned"),
+        getScanningStatus: vi.fn().mockResolvedValueOnce("scanning-side-in-progress").mockResolvedValue("side-scanned"),
       },
     });
     const manager = trackManager(context.manager);
@@ -172,11 +159,9 @@ describe("BlinkIdUxManager integration smoke", () => {
 
   test("busy guard drops overlapping frames during processing", async () => {
     let resolveFirst!: (value: ReturnType<typeof createProcessResult>) => void;
-    const pendingProcess = new Promise<ReturnType<typeof createProcessResult>>(
-      (resolve) => {
-        resolveFirst = resolve;
-      },
-    );
+    const pendingProcess = new Promise<ReturnType<typeof createProcessResult>>((resolve) => {
+      resolveFirst = resolve;
+    });
     const context = await createBlinkIdIntegrationContext({
       ...defaultContextOptions,
       sessionOverrides: {
@@ -185,12 +170,8 @@ describe("BlinkIdUxManager integration smoke", () => {
     });
     const manager = trackManager(context.manager);
 
-    const firstFramePromise = context.fakeCameraManager.emitFrame(
-      createFakeImageData(),
-    );
-    const secondFrameResult = await context.fakeCameraManager.emitFrame(
-      createFakeImageData(),
-    );
+    const firstFramePromise = context.fakeCameraManager.emitFrame(createFakeImageData());
+    const secondFrameResult = await context.fakeCameraManager.emitFrame(createFakeImageData());
 
     expect(secondFrameResult).toBeUndefined();
     expect(context.scanningSession.process).toHaveBeenCalledTimes(1);
@@ -235,9 +216,7 @@ describe("BlinkIdUxManager integration smoke", () => {
 
     context.fakeCameraManager.emitPlaybackState("capturing");
     await context.fakeCameraManager.emitFrame(createFakeImageData());
-    await advanceAndFlushUi(
-      blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100,
-    );
+    await advanceAndFlushUi(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
 
     await vi.waitFor(() => {
       expect(context.scanningSession.getResult).toHaveBeenCalled();

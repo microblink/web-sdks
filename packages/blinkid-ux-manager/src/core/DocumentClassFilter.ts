@@ -1,26 +1,19 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { DocumentClassInfo } from "@microblink/blinkid-core";
 
 /**
  * A type representing a filter function for document classification.
  *
- * This function is used to determine whether a document class is supported or
- * not. It takes a `DocumentClassInfo` object as input and returns a boolean
- * value:
+ * This function is used to determine whether a document class is supported or not. It takes a `DocumentClassInfo`
+ * object as input and returns a boolean value:
+ *
  * - `true`: The document class is supported.
- * - `false`: The document class is not supported, and the document will be
- * marked as "unsupported-document".
+ * - `false`: The document class is not supported, and the document will be marked as "unsupported-document".
  *
- * @param documentClassInfo - Information about the document class, such as country and type.
- * Each classification component is a wrapper object — compare against its `id`
- * (e.g. `documentClassInfo.country?.id === "usa"`); `id` is absent for
- * OTA-delivered classes unknown at build time (use `rawValue` for those).
- *
+ * @param documentClassInfo - Information about the document class, such as country and type. Each classification
+ *   component is a wrapper object — compare against its `id` (e.g. `documentClassInfo.country?.id === "usa"`); `id` is
+ *   absent for OTA-delivered classes unknown at build time (use `rawValue` for those).
  * @returns A boolean indicating whether the document class is supported.
  */
-export type DocumentClassFilter = (
-  documentClassInfo: DocumentClassInfo,
-) => boolean;
+export type DocumentClassFilter = (documentClassInfo: DocumentClassInfo) => boolean;

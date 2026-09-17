@@ -10,9 +10,9 @@
 
 The worker scanning session.
 
-## Type declaration
+## Type Declaration
 
-### getResolvedSessionSettings()
+### getResolvedSessionSettings
 
 > **getResolvedSessionSettings**: () => `BlinkIdSessionSettings`
 
@@ -24,14 +24,14 @@ Gets the resolved settings used to configure the recognizer.
 
 The resolved settings.
 
-### getResult()
+### getResult
 
 > **getResult**: () => `BlinkIdScanningResult` \| `Promise`\<`BlinkIdScanningResult`\>
 
 Returns the result of the scanning session.
 
-Applies resolved redaction settings when a resolver is configured and the
-document class info is available. Otherwise, SDK defaults apply.
+Applies resolved redaction settings when a resolver is configured and the document class info is available.
+Otherwise, SDK defaults apply.
 
 #### Returns
 
@@ -39,7 +39,7 @@ document class info is available. Otherwise, SDK defaults apply.
 
 The scanning result.
 
-### getScanningStatus()
+### getScanningStatus
 
 > **getScanningStatus**: () => `ScanningStatus`
 
@@ -51,7 +51,7 @@ Gets the scanning status.
 
 The scanning status.
 
-### getSettings()
+### getSettings
 
 > **getSettings**: () => `BlinkIdSessionSettings`
 
@@ -67,7 +67,7 @@ The settings.
 
 > **ping**: [`BlinkIdWorker`](../classes/BlinkIdWorker.md)\[`"reportPinglet"`\]
 
-### process()
+### process
 
 > **process**: (`image`) => [`ProcessResultWithBuffer`](ProcessResultWithBuffer.md) \| [`BlinkIdSessionErrorWithBuffer`](BlinkIdSessionErrorWithBuffer.md)
 
@@ -85,7 +85,7 @@ The settings.
 
 > **sendPinglets**: [`BlinkIdWorker`](../classes/BlinkIdWorker.md)\[`"sendPinglets"`\]
 
-### showDemoOverlay()
+### showDemoOverlay
 
 > **showDemoOverlay**: () => `boolean`
 
@@ -97,7 +97,7 @@ Shows the demo overlay.
 
 Whether the demo overlay is shown.
 
-### showProductionOverlay()
+### showProductionOverlay
 
 > **showProductionOverlay**: () => `boolean`
 

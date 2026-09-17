@@ -1,11 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
- * Represents the status of the document processing. This enum defines various
- * statuses that can occur during the processing of a document, indicating the
- * success or failure of different stages of the recognition and extraction
+ * Represents the status of the document processing. This enum defines various statuses that can occur during the
+ * processing of a document, indicating the success or failure of different stages of the recognition and extraction
  * process.
  */
 export type ProcessingStatus =
@@ -37,9 +34,8 @@ export type DetectionStatus =
   | "document-partially-visible";
 
 /**
- * Defines the progression of the scanning state machine. This status determines
- * the instructions and visual cues displayed to the user throughout the
- * multi-step scanning sequence.
+ * Defines the progression of the scanning state machine. This status determines the instructions and visual cues
+ * displayed to the user throughout the multi-step scanning sequence.
  */
 export type ScanningStatus =
   | "scanning-first"
@@ -66,12 +62,7 @@ export type Quadrilateral = {
 
 export type DocumentOrientation = "not-available" | "horizontal" | "vertical";
 
-export type DocumentRotation =
-  | "not-available"
-  | "zero"
-  | "clockwise-90"
-  | "counter-clockwise-90"
-  | "upside-down";
+export type DocumentRotation = "not-available" | "zero" | "clockwise-90" | "counter-clockwise-90" | "upside-down";
 
 export type InputImageAnalysisResult = {
   blurDetected: boolean;
@@ -84,16 +75,12 @@ export type InputImageAnalysisResult = {
   extractionInputImageAnalysisResult: {
     /** The location of the document quadrilateral in the frame. */
     documentLocation: Quadrilateral;
-    /**
-     * The status of the processing. Beeing either `success` or a potential
-     * `issue in the scannign process`
-     */
+    /** The status of the processing. Beeing either `success` or a potential `issue in the scannign process` */
     processingStatus: ProcessingStatus;
 
     /**
-     * The status of the detection. This status is used for guidance of the
-     * document placement. Giving instructions to the user on how to position
-     * the document in the frame.
+     * The status of the detection. This status is used for guidance of the document placement. Giving instructions to
+     * the user on how to position the document in the frame.
      */
     detectionStatus: DetectionStatus;
 
@@ -110,28 +97,24 @@ export type InputImageAnalysisResult = {
 };
 
 export type ResultCompleteness = {
-  /**
-   * The current phase of the scanning state machine, driving the progression
-   * toward session completion.
-   */
+  /** The current phase of the scanning state machine, driving the progression toward session completion. */
   scanningStatus: ScanningStatus;
 };
 
 /**
- * Represents the analysis and processing results of an input frame. Provides
- * real-time feedback on the document's state, identifying any obstacles
- * preventing successful processing. It also contains extracted data used to
- * determine the next steps in the scanning workflow.
+ * Represents the analysis and processing results of an input frame. Provides real-time feedback on the document's
+ * state, identifying any obstacles preventing successful processing. It also contains extracted data used to determine
+ * the next steps in the scanning workflow.
  */
 export type BlinkIdVerifyProcessResult = {
   /**
-   * The result of analyzing the frame. Indicating any issues with the currently
-   * processed frame as well as giving some information about the document
+   * The result of analyzing the frame. Indicating any issues with the currently processed frame as well as giving some
+   * information about the document
    */
   inputImageAnalysisResult: InputImageAnalysisResult;
   /**
-   * Tracking information for the scanning lifecycle. Indicates when the session
-   * has gathered enough data to produce a final result.
+   * Tracking information for the scanning lifecycle. Indicates when the session has gathered enough data to produce a
+   * final result.
    */
   resultCompleteness: ResultCompleteness;
 };

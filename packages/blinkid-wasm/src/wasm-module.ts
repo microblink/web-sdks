@@ -1,22 +1,18 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { EmscriptenModule, WasmBindings } from "@microblink/wasm-common";
+
+import { DocumentClassInfo } from "./result";
 import { BlinkIdScanningSession, BlinkIdSessionSettingsInput } from "./session";
 import { RedactionSettings } from "./settings/RedactionSettings";
-import { DocumentClassInfo } from "./result";
 
 /**
  * The BlinkID Wasm module.
  *
  * @ignore
  */
-export interface BlinkIdWasmModule
-  extends BlinkIdBindings, EmscriptenModule, MemFSModule {
-  getDefaultRedactionSettings: (
-    documentType: DocumentClassInfo,
-  ) => RedactionSettings;
+export interface BlinkIdWasmModule extends BlinkIdBindings, EmscriptenModule, MemFSModule {
+  getDefaultRedactionSettings: (documentType: DocumentClassInfo) => RedactionSettings;
   getRecognizerVersion: () => string;
 }
 
@@ -25,10 +21,7 @@ export interface BlinkIdWasmModule
  *
  * @ignore
  */
-export interface BlinkIdBindings extends WasmBindings<
-  BlinkIdSessionSettingsInput,
-  BlinkIdScanningSession
-> {}
+export type BlinkIdBindings = WasmBindings<BlinkIdSessionSettingsInput, BlinkIdScanningSession>;
 
 export interface MemFSModule {
   FS?: {
@@ -40,12 +33,7 @@ export interface MemFSModule {
       size: number;
     };
   };
-  FS_createPath?: (
-    parent: string,
-    path: string,
-    canRead: boolean,
-    canWrite: boolean,
-  ) => void;
+  FS_createPath?: (parent: string, path: string, canRead: boolean, canWrite: boolean) => void;
   FS_createDataFile?: (
     parent: string,
     name: string,

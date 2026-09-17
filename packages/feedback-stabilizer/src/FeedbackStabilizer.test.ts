@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
+
 import { FeedbackStabilizer, UiStateMap } from "./FeedbackStabilizer";
 
 const DEFAULT_TICK = 500;
@@ -28,11 +27,7 @@ const uiStateMap = {
   },
 } satisfies UiStateMap;
 
-type strictKeyof<T> = keyof T extends infer K
-  ? K extends number
-    ? `${K}`
-    : K
-  : never;
+type strictKeyof<T> = keyof T extends infer K ? (K extends number ? `${K}` : K) : never;
 
 let stabilizer: FeedbackStabilizer<typeof uiStateMap>;
 
@@ -48,21 +43,13 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-const getStateWithClockTick = (
-  key: strictKeyof<typeof uiStateMap>,
-  timeSkip?: number | string,
-) => {
+const getStateWithClockTick = (key: strictKeyof<typeof uiStateMap>, timeSkip?: number | string) => {
   vi.advanceTimersByTime(Number(timeSkip ?? DEFAULT_TICK));
   return stabilizer.getNewUiState(key);
 };
 
-/**
- * Feeds events with a 500ms delay between each event by default
- */
-const feedEvents = (
-  keys: strictKeyof<typeof uiStateMap>[],
-  timeSkip?: number | string,
-) => {
+/** Feeds events with a 500ms delay between each event by default */
+const feedEvents = (keys: strictKeyof<typeof uiStateMap>[], timeSkip?: number | string) => {
   if (keys.length === 0) {
     vi.advanceTimersByTime(Number(timeSkip ?? DEFAULT_TICK));
   }
@@ -145,13 +132,7 @@ describe("Minimum duration", () => {
   test("Minimum duration is respected", () => {
     // A is the initial state
     feedEvents(["B", "C", "C", "C", "B"], 100); // shorten the time between events
-    expect(stabilizer.getEventQueue().map((event) => event.key)).toEqual([
-      "B",
-      "C",
-      "C",
-      "C",
-      "B",
-    ]); // nothing is discarded
+    expect(stabilizer.getEventQueue().map((event) => event.key)).toEqual(["B", "C", "C", "C", "B"]); // nothing is discarded
     expect(stabilizer.currentState.key).toEqual("A");
     vi.advanceTimersByTime(1000);
     expect(stabilizer.canShowNewUiState()).toBe(true);

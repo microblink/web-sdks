@@ -1,18 +1,11 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { BlinkIdVerifyUiStateKey } from "../core/blinkid-verify-ui-state";
 import { LocalizationStrings } from "./LocalizationContext";
 
-/**
- * The feedback messages.
- */
+/** The feedback messages. */
 export const feedbackMessages: Partial<
-  Record<
-    BlinkIdVerifyUiStateKey,
-    (isDesktop?: boolean) => keyof LocalizationStrings["feedback_messages"]
-  >
+  Record<BlinkIdVerifyUiStateKey, (isDesktop?: boolean) => keyof LocalizationStrings["feedback_messages"]>
 > = {
   // intro states
   INTRO_DATA_PAGE: () => "scan_data_page",
@@ -40,8 +33,7 @@ export const feedbackMessages: Partial<
   WRONG_LAST_PAGE: () => "scan_last_page_barcode",
 
   // occlusion
-  BLUR_DETECTED: (isDesktop?: boolean) =>
-    isDesktop ? "keep_document_still" : "blur_detected",
+  BLUR_DETECTED: (isDesktop?: boolean) => (isDesktop ? "keep_document_still" : "blur_detected"),
   GLARE_DETECTED: () => "glare_detected",
   OCCLUDED: () => "occluded",
   // image

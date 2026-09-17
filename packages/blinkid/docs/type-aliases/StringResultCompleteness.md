@@ -6,4 +6,4 @@
 
 # Type Alias: StringResultCompleteness
 
-> **StringResultCompleteness** = `{ [key in AlphabetType]?: StringCompleteness }`
+> **StringResultCompleteness** = `Partial`\<`Record`\<[`AlphabetType`](AlphabetType.md), [`StringCompleteness`](StringCompleteness.md)\>\>

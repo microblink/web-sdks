@@ -1,5 +1,24 @@
 # @microblink/camera-manager
 
+## 8.0.0
+
+### Major Changes
+
+- Adds separate `/core` and `/ui` entrypoints. The `solid-js`, `@ark-ui/solid`, `solid-zustand`, and
+  `@solid-primitives/keyed` UI peers are no longer installed automatically, and each entrypoint publishes one rolled-up
+  declaration file.
+- Install the UI peer dependencies when you use the root or `/ui` entrypoint. Consumers that do not need the provided UI can migrate from the root entrypoint to `/core` without installing them.
+
+### Minor Changes
+
+- Adds the `showCameraSelector` UI option and documents the supported Camera Manager customization seams.
+
+### Patch Changes
+
+- Updated package dependencies.
+- Improves keyboard focus visibility for controls shown over light and dark backgrounds.
+- Upgrade to TypeScript 7
+
 ## 7.3.5
 
 ### Patch Changes

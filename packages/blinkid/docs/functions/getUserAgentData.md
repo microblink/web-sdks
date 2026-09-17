@@ -6,13 +6,13 @@
 
 # Function: getUserAgentData()
 
-> **getUserAgentData**(): `Promise`\<`undefined` \| [`UADataValues`](../interfaces/UADataValues.md)\>
+> **getUserAgentData**(): `Promise`\<[`UADataValues`](../interfaces/UADataValues.md) \| `undefined`\>
 
 Get granular device info from `navigator.userAgentData.getHighEntropyValues`
 
 ## Returns
 
-`Promise`\<`undefined` \| [`UADataValues`](../interfaces/UADataValues.md)\>
+`Promise`\<[`UADataValues`](../interfaces/UADataValues.md) \| `undefined`\>
 
 ## See
 

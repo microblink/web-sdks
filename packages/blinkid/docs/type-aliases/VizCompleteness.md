@@ -18,4 +18,4 @@
 
 ### fields?
 
-> `optional` **fields**: [`VizFieldsCompleteness`](VizFieldsCompleteness.md)
+> `optional` **fields?**: [`VizFieldsCompleteness`](VizFieldsCompleteness.md)

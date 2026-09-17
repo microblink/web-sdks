@@ -22,7 +22,7 @@ The type of the string result.
 
 ### effectiveDate?
 
-> `optional` **effectiveDate**: [`DateResult`](DateResult.md)\<`S`\>
+> `optional` **effectiveDate?**: [`DateResult`](DateResult.md)\<`S`\>
 
 The date since licence is effective.
 
@@ -30,7 +30,7 @@ The date since licence is effective.
 
 ### expiryDate?
 
-> `optional` **expiryDate**: [`DateResult`](DateResult.md)\<`S`\>
+> `optional` **expiryDate?**: [`DateResult`](DateResult.md)\<`S`\>
 
 The date of expiry of licence.
 
@@ -38,7 +38,7 @@ The date of expiry of licence.
 
 ### licenceType?
 
-> `optional` **licenceType**: `S`
+> `optional` **licenceType?**: `S`
 
 The type of driver licence.
 
@@ -46,6 +46,6 @@ The type of driver licence.
 
 ### vehicleClass?
 
-> `optional` **vehicleClass**: `S`
+> `optional` **vehicleClass?**: `S`
 
 The type of vehicle the driver license owner has privilege to drive.

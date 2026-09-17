@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { nanoid } from "nanoid";
 
@@ -10,7 +8,7 @@ import { nanoid } from "nanoid";
  * This is a workaround for the lack of a user id in the worker scope.
  *
  * @param storageKey - The localStorage key to use for persisting the user id.
- * @returns a unique user id
+ * @returns A unique user id
  */
 export function getUserId(storageKey: string): string {
   // Users can block localStorage or other storage mechanisms
@@ -30,9 +28,7 @@ export function getUserId(storageKey: string): string {
   return randomId;
 }
 
-/**
- * Tests if local storage is available in the browser
- */
+/** Tests if local storage is available in the browser */
 export function testLocalStorage(): boolean {
   try {
     localStorage.setItem("test", "test");

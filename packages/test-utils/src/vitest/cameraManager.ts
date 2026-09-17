@@ -1,12 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import type { Mock } from "vitest";
 import { vi } from "vitest";
 
-type FrameCaptureCallback = (
-  frame: ImageData,
-) => Promise<ArrayBufferLike | void> | ArrayBufferLike | void;
+type FrameCaptureCallback = (frame: ImageData) => Promise<ArrayBufferLike | void> | ArrayBufferLike | void;
 type ErrorCallback = (error: Error) => void;
 type PlaybackState = "idle" | "playback" | "capturing";
 
@@ -27,6 +24,7 @@ export type FakeCameraManagerState = {
   videoResolution?: { width: number; height: number };
   extractionArea?: { x: number; y: number; width: number; height: number };
   cameraPermission?: CameraPermission;
+  errorState?: Error;
 };
 
 export type CreateFakeCameraManagerOptions = {
@@ -53,10 +51,7 @@ type SelectorSubscription = {
   previousSelectedState: unknown;
 };
 
-type RootSubscription = (
-  selectedState: FakeCameraManagerState,
-  previousSelectedState: FakeCameraManagerState,
-) => void;
+type RootSubscription = (selectedState: FakeCameraManagerState, previousSelectedState: FakeCameraManagerState) => void;
 
 const defaultState: FakeCameraManagerState = {
   playbackState: "idle",
@@ -69,6 +64,7 @@ const defaultState: FakeCameraManagerState = {
   videoResolution: undefined,
   extractionArea: undefined,
   cameraPermission: undefined,
+  errorState: undefined,
 };
 
 export class FakeCameraManager {
@@ -79,9 +75,9 @@ export class FakeCameraManager {
   #rootSubscriptions = new Set<RootSubscription>();
   #selectorSubscriptions = new Set<SelectorSubscription>();
 
-  readonly stopFrameCapture = vi.fn();
-  readonly startFrameCapture = vi.fn().mockResolvedValue(undefined);
-  readonly startCameraStream = vi.fn().mockResolvedValue(undefined);
+  readonly stopFrameCapture: Mock<() => void> = vi.fn();
+  readonly startFrameCapture: Mock<() => Promise<void>> = vi.fn().mockResolvedValue(undefined);
+  readonly startCameraStream: Mock<() => Promise<void>> = vi.fn().mockResolvedValue(undefined);
   readonly getState = vi.fn(() => this.#state);
 
   constructor(options: CreateFakeCameraManagerOptions = {}) {
@@ -116,44 +112,34 @@ export class FakeCameraManager {
     return () => this.#errorCallbacks.delete(callback);
   });
 
-  subscribe = vi.fn(
-    (selectorOrListener: unknown, listener?: unknown, optionsArg?: unknown) => {
-      if (typeof listener === "function") {
-        const selector = selectorOrListener as (
-          currentState: FakeCameraManagerState,
-        ) => unknown;
-        const typedOptions = (optionsArg ?? {}) as {
-          equalityFn?: (a: unknown, b: unknown) => boolean;
-          fireImmediately?: boolean;
-        };
-        const entry: SelectorSubscription = {
-          selector,
-          listener: listener as (
-            selectedState: unknown,
-            previousSelectedState: unknown,
-          ) => void,
-          equalityFn: typedOptions.equalityFn ?? Object.is,
-          previousSelectedState: selector(this.#state),
-        };
-        this.#selectorSubscriptions.add(entry);
-        if (typedOptions.fireImmediately) {
-          entry.listener(
-            entry.previousSelectedState,
-            entry.previousSelectedState,
-          );
-        }
-        return () => {
-          this.#selectorSubscriptions.delete(entry);
-        };
-      }
-
-      const rootListener = selectorOrListener as RootSubscription;
-      this.#rootSubscriptions.add(rootListener);
-      return () => {
-        this.#rootSubscriptions.delete(rootListener);
+  subscribe = vi.fn((selectorOrListener: unknown, listener?: unknown, optionsArg?: unknown) => {
+    if (typeof listener === "function") {
+      const selector = selectorOrListener as (currentState: FakeCameraManagerState) => unknown;
+      const typedOptions = (optionsArg ?? {}) as {
+        equalityFn?: (a: unknown, b: unknown) => boolean;
+        fireImmediately?: boolean;
       };
-    },
-  );
+      const entry: SelectorSubscription = {
+        selector,
+        listener: listener as (selectedState: unknown, previousSelectedState: unknown) => void,
+        equalityFn: typedOptions.equalityFn ?? Object.is,
+        previousSelectedState: selector(this.#state),
+      };
+      this.#selectorSubscriptions.add(entry);
+      if (typedOptions.fireImmediately) {
+        entry.listener(entry.previousSelectedState, entry.previousSelectedState);
+      }
+      return () => {
+        this.#selectorSubscriptions.delete(entry);
+      };
+    }
+
+    const rootListener = selectorOrListener as RootSubscription;
+    this.#rootSubscriptions.add(rootListener);
+    return () => {
+      this.#rootSubscriptions.delete(rootListener);
+    };
+  });
 
   emitState(patch: Partial<FakeCameraManagerState>) {
     const previousState = this.#state;
@@ -200,8 +186,7 @@ export const createFakeCameraHarness = <TCameraManager = FakeCameraManager>(
   return {
     cameraManager: fakeCameraManager as unknown as TCameraManager,
     fakeCameraManager,
-    emitPlaybackState: (playbackState) =>
-      fakeCameraManager.emitPlaybackState(playbackState),
+    emitPlaybackState: (playbackState) => fakeCameraManager.emitPlaybackState(playbackState),
     emitFrame: (imageData) => fakeCameraManager.emitFrame(imageData),
     emitCameraState: (nextState) => fakeCameraManager.emitState(nextState),
     setIsActive: (value) => {

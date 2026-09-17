@@ -1,10 +1,14 @@
 # @microblink/blinkid-verify-wasm
 
-## 3.22.0-next
+## 4000.0.0-next.0
 
 ### Minor Changes
 
 - Renamed shipped Wasm build directories: `advanced` → `simd` and `advanced-threads` → `simd-threads`.
+
+### Patch Changes
+
+- Speeds up BlinkID Verify initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
 
 ## 3.21.1
 

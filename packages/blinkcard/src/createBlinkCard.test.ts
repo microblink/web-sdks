@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -10,9 +8,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 /** Ref to the FakeCameraManager instance created when CameraManager is constructed (set by mock). */
 const fakeCameraManagerRef = vi.hoisted(() => ({
-  current: null as InstanceType<
-    typeof import("@microblink/test-utils").FakeCameraManager
-  > | null,
+  current: null as InstanceType<typeof import("@microblink/test-utils").FakeCameraManager> | null,
 }));
 
 const {
@@ -73,16 +69,19 @@ vi.mock("@microblink/blinkcard-core", () => {
   };
 });
 
-vi.mock("@microblink/blinkcard-ux-manager", () => ({
+vi.mock("@microblink/blinkcard-ux-manager/core", () => ({
   get createBlinkCardUxManager() {
     return mockCreateBlinkCardUxManager;
   },
+}));
+
+vi.mock("@microblink/blinkcard-ux-manager/ui", () => ({
   get createBlinkCardFeedbackUi() {
     return mockCreateBlinkCardFeedbackUi;
   },
 }));
 
-vi.mock("@microblink/camera-manager", async () => {
+vi.mock("@microblink/camera-manager/core", async () => {
   const { FakeCameraManager } = await import("@microblink/test-utils");
   return {
     CameraManager: function (this: unknown) {
@@ -90,18 +89,20 @@ vi.mock("@microblink/camera-manager", async () => {
       fakeCameraManagerRef.current = instance;
       return instance;
     },
-    createCameraManagerUi: mockCreateCameraManagerUi,
   };
 });
 
+vi.mock("@microblink/camera-manager/ui", () => ({
+  createCameraManagerUi: mockCreateCameraManagerUi,
+}));
+
 import { createFakeScanningSession } from "@microblink/test-utils";
-import {
-  createBlinkCard,
-  type BlinkCardComponentOptions,
-} from "./createBlinkCard";
+
+import { createBlinkCard, type BlinkCardComponentOptions } from "./createBlinkCard";
 
 /**
  * Test file role:
+ *
  * - Verifies that createBlinkCard correctly initializes and wires all SDK components.
  * - Uses FakeCameraManager and createFakeScanningSession from @microblink/test-utils.
  * - Covers option forwarding, playback subscription, destroy lifecycle, and callback delegation.
@@ -188,8 +189,7 @@ describe("createBlinkCard", () => {
     await createBlinkCard({ licenseKey: "test-key" });
 
     expect(mockCreateBlinkCardUxManager).toHaveBeenCalledTimes(1);
-    const [cameraManagerArg, sessionArg] =
-      mockCreateBlinkCardUxManager.mock.calls[0];
+    const [cameraManagerArg, sessionArg] = mockCreateBlinkCardUxManager.mock.calls[0];
     expect(cameraManagerArg).toBe(fakeCameraManagerRef.current);
     expect(sessionArg).toBeDefined();
     expect(sessionArg).toHaveProperty("process");
@@ -202,11 +202,7 @@ describe("createBlinkCard", () => {
     });
 
     expect(mockCreateCameraManagerUi).toHaveBeenCalledTimes(1);
-    expect(mockCreateCameraManagerUi).toHaveBeenCalledWith(
-      fakeCameraManagerRef.current,
-      undefined,
-      undefined,
-    );
+    expect(mockCreateCameraManagerUi).toHaveBeenCalledWith(fakeCameraManagerRef.current, undefined, undefined);
   });
 
   test("passes custom targetNode and cameraManagerUiOptions to createCameraManagerUi", async () => {
@@ -240,11 +236,9 @@ describe("createBlinkCard", () => {
     fakeCameraManagerRef.current!.emitPlaybackState("playback");
 
     expect(mockCreateBlinkCardFeedbackUi).toHaveBeenCalledTimes(1);
-    expect(mockCreateBlinkCardFeedbackUi).toHaveBeenCalledWith(
-      await mockCreateBlinkCardUxManager(),
-      mockCameraUi,
-      { showOnboardingGuide: false },
-    );
+    expect(mockCreateBlinkCardFeedbackUi).toHaveBeenCalledWith(await mockCreateBlinkCardUxManager(), mockCameraUi, {
+      showOnboardingGuide: false,
+    });
   });
 
   test("passes empty object to createBlinkCardFeedbackUi when feedbackUiOptions is undefined", async () => {
@@ -252,11 +246,7 @@ describe("createBlinkCard", () => {
 
     fakeCameraManagerRef.current!.emitPlaybackState("playback");
 
-    expect(mockCreateBlinkCardFeedbackUi).toHaveBeenCalledWith(
-      expect.any(Object),
-      mockCameraUi,
-      {},
-    );
+    expect(mockCreateBlinkCardFeedbackUi).toHaveBeenCalledWith(expect.any(Object), mockCameraUi, {});
   });
 
   test("calls startFrameCapture when feedbackUiOptions.showOnboardingGuide is false and playback fires", async () => {
@@ -265,15 +255,11 @@ describe("createBlinkCard", () => {
       feedbackUiOptions: { showOnboardingGuide: false },
     });
 
-    expect(
-      fakeCameraManagerRef.current!.startFrameCapture,
-    ).not.toHaveBeenCalled();
+    expect(fakeCameraManagerRef.current!.startFrameCapture).not.toHaveBeenCalled();
 
     fakeCameraManagerRef.current!.emitPlaybackState("playback");
 
-    expect(
-      fakeCameraManagerRef.current!.startFrameCapture,
-    ).toHaveBeenCalledTimes(1);
+    expect(fakeCameraManagerRef.current!.startFrameCapture).toHaveBeenCalledTimes(1);
   });
 
   test("does not call startFrameCapture when showOnboardingGuide is true or omitted", async () => {
@@ -284,25 +270,19 @@ describe("createBlinkCard", () => {
 
     fakeCameraManagerRef.current!.emitPlaybackState("playback");
 
-    expect(
-      fakeCameraManagerRef.current!.startFrameCapture,
-    ).not.toHaveBeenCalled();
+    expect(fakeCameraManagerRef.current!.startFrameCapture).not.toHaveBeenCalled();
   });
 
   test("calls startCameraStream after setup", async () => {
     await createBlinkCard({ licenseKey: "test-key" });
 
-    expect(
-      fakeCameraManagerRef.current!.startCameraStream,
-    ).toHaveBeenCalledTimes(1);
+    expect(fakeCameraManagerRef.current!.startCameraStream).toHaveBeenCalledTimes(1);
   });
 
   test("best-effort reports crashes through the core before a session exists", async () => {
     mockCreateSession.mockRejectedValueOnce(new Error("session failed"));
 
-    await expect(createBlinkCard({ licenseKey: "test-key" })).rejects.toThrow(
-      "session failed",
-    );
+    await expect(createBlinkCard({ licenseKey: "test-key" })).rejects.toThrow("session failed");
 
     expect(mockReportPinglet).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -322,9 +302,7 @@ describe("createBlinkCard", () => {
     mockCreateSession.mockResolvedValueOnce(scanningSession);
     mockCreateBlinkCardUxManager.mockRejectedValueOnce(new Error("ux failed"));
 
-    await expect(createBlinkCard({ licenseKey: "test-key" })).rejects.toThrow(
-      "ux failed",
-    );
+    await expect(createBlinkCard({ licenseKey: "test-key" })).rejects.toThrow("ux failed");
 
     expect(mockReportPinglet).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -361,9 +339,7 @@ describe("createBlinkCard", () => {
 
   test("destroy() does not throw when terminate() rejects", async () => {
     mockTerminate.mockRejectedValueOnce(new Error("terminate failed"));
-    const consoleWarnSpy = vi
-      .spyOn(console, "warn")
-      .mockImplementation(() => undefined);
+    const consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
 
     const component = await createBlinkCard({ licenseKey: "test-key" });
 

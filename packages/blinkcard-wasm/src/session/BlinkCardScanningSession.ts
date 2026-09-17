@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { EmbindObject } from "@microblink/wasm-common";
+
 import type { BlinkCardProcessResult } from "./result/process-result";
 import type { BlinkCardScanningResult } from "./result/scanning-result";
 import { BlinkCardSessionSettings } from "./session-settings";
@@ -17,8 +16,7 @@ export type BlinkCardScanningSession = EmbindObject<{
   reset: () => void;
 
   /**
-   * Performs the processing of the input image and returns the
-   * `BlinkCardProcessResult`.
+   * Performs the processing of the input image and returns the `BlinkCardProcessResult`.
    *
    * @throws {Error} Throws an error if the card has already been scanned.
    */

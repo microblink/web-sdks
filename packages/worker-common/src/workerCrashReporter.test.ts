@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { describe, expect, it, vi } from "vitest";
+
 import { installWorkerCrashReporter } from "./workerCrashReporter";
 
 function makeScope() {
@@ -25,7 +24,11 @@ describe("installWorkerCrashReporter", () => {
     const { listeners, workerScope } = makeScope();
     const onError = vi.fn();
 
-    installWorkerCrashReporter({ workerScope, getSessionNumber: () => 4, onError });
+    installWorkerCrashReporter({
+      workerScope,
+      getSessionNumber: () => 4,
+      onError,
+    });
 
     listeners.get("error")!({
       error: new Error("boom"),
@@ -45,7 +48,9 @@ describe("installWorkerCrashReporter", () => {
 
     installWorkerCrashReporter({ workerScope, onError });
 
-    listeners.get("unhandledrejection")!({ reason: "rejected" } as unknown as Event);
+    listeners.get("unhandledrejection")!({
+      reason: "rejected",
+    } as unknown as Event);
 
     expect(onError).toHaveBeenCalledWith({
       origin: "worker.unhandledrejection",
@@ -60,10 +65,15 @@ describe("installWorkerCrashReporter", () => {
 
     installWorkerCrashReporter({ workerScope, onError });
 
-    listeners.get("error")!({ message: "something went wrong" } as unknown as Event);
+    listeners.get("error")!({
+      message: "something went wrong",
+    } as unknown as Event);
 
     expect(onError).toHaveBeenCalledWith(
-      expect.objectContaining({ origin: "worker.onerror", error: "something went wrong" }),
+      expect.objectContaining({
+        origin: "worker.onerror",
+        error: "something went wrong",
+      }),
     );
   });
 
@@ -76,7 +86,10 @@ describe("installWorkerCrashReporter", () => {
     listeners.get("error")!({} as unknown as Event);
 
     expect(onError).toHaveBeenCalledWith(
-      expect.objectContaining({ origin: "worker.onerror", error: "Unknown worker error" }),
+      expect.objectContaining({
+        origin: "worker.onerror",
+        error: "Unknown worker error",
+      }),
     );
   });
 
@@ -89,14 +102,20 @@ describe("installWorkerCrashReporter", () => {
     listeners.get("unhandledrejection")!({} as unknown as Event);
 
     expect(onError).toHaveBeenCalledWith(
-      expect.objectContaining({ origin: "worker.unhandledrejection", error: "Unhandled worker rejection" }),
+      expect.objectContaining({
+        origin: "worker.unhandledrejection",
+        error: "Unhandled worker rejection",
+      }),
     );
   });
 
   it("removes the same listener references on teardown", () => {
     const { listeners, workerScope } = makeScope();
 
-    const uninstall = installWorkerCrashReporter({ workerScope, onError: vi.fn() });
+    const uninstall = installWorkerCrashReporter({
+      workerScope,
+      onError: vi.fn(),
+    });
     uninstall();
 
     expect(listeners.get("removed:error")).toBe(listeners.get("error"));
@@ -106,16 +125,22 @@ describe("installWorkerCrashReporter", () => {
   it("suppresses reentrant errors fired during the onError callback", () => {
     const { listeners, workerScope } = makeScope();
     const onError = vi.fn(() => {
-      listeners.get("error")!({ error: new Error("reentrant") } as unknown as Event);
+      listeners.get("error")!({
+        error: new Error("reentrant"),
+      } as unknown as Event);
     });
 
     installWorkerCrashReporter({ workerScope, onError });
 
-    listeners.get("error")!({ error: new Error("original") } as unknown as Event);
+    listeners.get("error")!({
+      error: new Error("original"),
+    } as unknown as Event);
 
     expect(onError).toHaveBeenCalledOnce();
     expect(onError).toHaveBeenCalledWith(
-      expect.objectContaining({ error: expect.objectContaining({ message: "original" }) }),
+      expect.objectContaining({
+        error: expect.objectContaining({ message: "original" }),
+      }),
     );
   });
 
@@ -130,14 +155,18 @@ describe("installWorkerCrashReporter", () => {
     installWorkerCrashReporter({ workerScope, onError });
 
     expect(() =>
-      listeners.get("error")!({ error: new Error("first") } as unknown as Event),
+      listeners.get("error")!({
+        error: new Error("first"),
+      } as unknown as Event),
     ).toThrow("callback failure");
 
     listeners.get("error")!({ error: new Error("second") } as unknown as Event);
 
     expect(onError).toHaveBeenCalledTimes(2);
     expect(onError).toHaveBeenLastCalledWith(
-      expect.objectContaining({ error: expect.objectContaining({ message: "second" }) }),
+      expect.objectContaining({
+        error: expect.objectContaining({ message: "second" }),
+      }),
     );
   });
 });

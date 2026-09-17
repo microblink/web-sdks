@@ -10,7 +10,7 @@
 
 Default redaction settings used when
 
-## Type declaration
+## Type Declaration
 
 ### fields
 

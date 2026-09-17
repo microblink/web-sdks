@@ -1,5 +1,14 @@
 # @microblink/blinkid-verify-worker
 
+## 4000.0.0-next.0
+
+### Patch Changes
+
+- Speeds up BlinkID Verify initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
+- Updated dependencies
+  - @microblink/analytics@2.1.0
+  - @microblink/blinkid-verify-wasm@4000.0.0-next.0
+
 ## 3.22.0-next
 
 ### Patch Changes

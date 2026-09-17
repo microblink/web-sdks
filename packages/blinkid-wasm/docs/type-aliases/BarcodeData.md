@@ -40,5 +40,4 @@ String representation of data inside barcode.
 
 > **uncertain**: `boolean`
 
-True if returned result is uncertain, i.e. if scanned barcode was
-incomplete (has parts of it missing).
+True if returned result is uncertain, i.e. if scanned barcode was incomplete (has parts of it missing).

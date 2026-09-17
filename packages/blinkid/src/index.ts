@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * @packageDocumentation
@@ -10,6 +8,8 @@
  */
 
 export * from "@microblink/blinkid-core";
-export * from "@microblink/blinkid-ux-manager";
-export * from "@microblink/camera-manager";
+export * from "@microblink/blinkid-ux-manager/core";
+export * from "@microblink/blinkid-ux-manager/ui";
+export * from "@microblink/camera-manager/core";
+export * from "@microblink/camera-manager/ui";
 export * from "./createBlinkId";

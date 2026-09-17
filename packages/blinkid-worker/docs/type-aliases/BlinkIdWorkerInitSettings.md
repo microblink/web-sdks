@@ -10,17 +10,17 @@
 
 Initialization settings for the BlinkID worker.
 
-These settings control how the BlinkID worker is initialized and configured,
-including resource locations, memory allocation, and build variants.
+These settings control how the BlinkID worker is initialized and configured, including resource locations, memory
+allocation, and build variants.
 
 ## Properties
 
 ### initialMemory?
 
-> `optional` **initialMemory**: `number`
+> `optional` **initialMemory?**: `number`
 
-The initial memory allocation for the Wasm module, in megabytes.
-Larger values may improve performance but increase memory usage.
+The initial memory allocation for the Wasm module, in megabytes. Larger values may improve performance but increase
+memory usage.
 
 ***
 
@@ -28,51 +28,67 @@ Larger values may improve performance but increase memory usage.
 
 > **licenseKey**: `string`
 
-The license key required to unlock and use the BlinkID SDK.
-This must be a valid license key obtained from Microblink.
+The license key required to unlock and use the BlinkID SDK. This must be a valid license key obtained from
+Microblink.
 
 ***
 
 ### microblinkProxyUrl?
 
-> `optional` **microblinkProxyUrl**: `string`
+> `optional` **microblinkProxyUrl?**: `string`
 
 The URL of the Microblink proxy server. This proxy handles requests to Microblink's Baltazar and Ping servers.
 
 **Requirements:**
+
 - Must be a valid HTTPS URL
 - The proxy server must implement the expected Microblink API endpoints
 - This feature is only available if explicitly permitted by your license
 
 **Endpoints:**
+
 - Ping: `{proxyUrl}/ping`
 - Baltazar: `{proxyUrl}/api/v2/status/check`
 
 #### Example
 
 ```ts
-"https://your-proxy.example.com"
+"https://your-proxy.example.com";
 ```
 
 ***
 
 ### otaResources?
 
-> `optional` **otaResources**: [`BlinkIdOtaResourceSettings`](BlinkIdOtaResourceSettings.md)
+> `optional` **otaResources?**: [`BlinkIdOtaResourceSettings`](BlinkIdOtaResourceSettings.md)
 
 Optional browser-only OTA resource settings.
 
-Hosted baseline resources are always loaded. Provider update checks are
-enabled by default; set `checkForUpdates` to `false` to skip the provider.
+Hosted baseline resources are always loaded. Provider update checks are enabled by default; set `checkForUpdates`
+to `false` to skip the provider.
+
+***
+
+### resourceDownloadTimeoutMs?
+
+> `optional` **resourceDownloadTimeoutMs?**: `number`
+
+Maximum time, in milliseconds, without receiving response headers or body data for each Wasm, data, or OTA request.
+
+The timer resets whenever data arrives, so this does not limit the total duration of a slow download.
+
+#### Default Value
+
+`60_000`
 
 ***
 
 ### resourcesLocation?
 
-> `optional` **resourcesLocation**: `string`
+> `optional` **resourcesLocation?**: `string`
 
-The parent directory where the `/resources` directory is hosted.
-Defaults to `window.location.href`, at the root of the current page.
+The parent directory where the `/resources` directory is hosted. Defaults to `window.location.href`, at the root of
+the current page.
 
 ***
 
@@ -80,8 +96,8 @@ Defaults to `window.location.href`, at the root of the current page.
 
 > **useLightweightBuild**: `boolean`
 
-Whether to use the lightweight build of the SDK.
-Lightweight builds have reduced size but may have limited functionality.
+Whether to use the lightweight build of the SDK. Lightweight builds have reduced size but may have limited
+functionality.
 
 ***
 
@@ -89,14 +105,12 @@ Lightweight builds have reduced size but may have limited functionality.
 
 > **userId**: `string`
 
-A unique identifier for the user/session.
-Used for analytics and tracking purposes.
+A unique identifier for the user/session. Used for analytics and tracking purposes.
 
 ***
 
 ### wasmVariant?
 
-> `optional` **wasmVariant**: `WasmVariant`
+> `optional` **wasmVariant?**: `WasmVariant`
 
-The WebAssembly module variant to use.
-Different variants may offer different performance/size tradeoffs.
+The WebAssembly module variant to use. Different variants may offer different performance/size tradeoffs.

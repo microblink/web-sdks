@@ -1,9 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
+
+import dns from "dns";
 
 import { moveResources } from "@microblink/repo-utils";
-import dns from "dns";
 import { defineConfig, Plugin, ServerOptions } from "vite";
 import mkcert from "vite-plugin-mkcert";
 
@@ -46,12 +45,12 @@ export default defineConfig((config) => {
       // symlink wasm resources to public/resources
       {
         name: "move-resources",
-        buildStart: async () => {
+        buildStart() {
           if (ranOnce) {
             return;
           }
-          moveResources("@microblink/blinkid", "public/resources");
           ranOnce = true;
+          return moveResources("@microblink/blinkid", "public/resources");
         },
       },
       // Add resource-specific headers

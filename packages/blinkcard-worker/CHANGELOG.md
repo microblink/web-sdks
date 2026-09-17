@@ -1,12 +1,16 @@
 # @microblink/blinkcard-worker
 
-## 3000.1.0-next
+## 3001.0.0-next.0
+
+### Patch Changes
+
+- Speeds up BlinkCard initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
 
 ### Patch Changes
 
 - Updated dependencies
-  - @microblink/blinkcard-wasm@3000.1.0-next
-  - @microblink/analytics@2.0.2
+  - @microblink/blinkcard-wasm@3001.0.0-next.0
+  - @microblink/analytics@2.1.0
   - @microblink/worker-common@1.0.5
 
 ## 3000.0.8

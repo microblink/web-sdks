@@ -1,15 +1,14 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import type { LicenseUnlockResult } from "@microblink/wasm-common";
 import { describe, it, expect, test } from "vitest";
+
 import {
   validateLicenseProxyPermissions,
   sanitizeProxyUrls,
   ProxyUrlValidationError,
   getMicroblinkProxyPingFlags,
 } from "./proxy-url-validator";
-import type { LicenseUnlockResult } from "@microblink/wasm-common";
 
 describe("Proxy URL Validator", () => {
   describe("validateLicenseProxyPermissions", () => {
@@ -54,32 +53,25 @@ describe("Proxy URL Validator", () => {
           allowBaltazarProxy: true,
           hasPing: true,
           unlockResult: "valid",
-          description:
-            "offline license with ping enabled and both proxies allowed",
+          description: "offline license with ping enabled and both proxies allowed",
         },
         {
           allowPingProxy: true,
           allowBaltazarProxy: false,
           hasPing: true,
           unlockResult: "valid",
-          description:
-            "offline license with ping enabled and only ping proxy allowed",
+          description: "offline license with ping enabled and only ping proxy allowed",
         },
-      ])(
-        "should pass when $description",
-        ({ allowPingProxy, allowBaltazarProxy, hasPing, unlockResult }) => {
-          const licenseUnlockResult = {
-            allowPingProxy,
-            allowBaltazarProxy,
-            hasPing,
-            unlockResult,
-          } as LicenseUnlockResult;
+      ])("should pass when $description", ({ allowPingProxy, allowBaltazarProxy, hasPing, unlockResult }) => {
+        const licenseUnlockResult = {
+          allowPingProxy,
+          allowBaltazarProxy,
+          hasPing,
+          unlockResult,
+        } as LicenseUnlockResult;
 
-          expect(() =>
-            validateLicenseProxyPermissions(licenseUnlockResult),
-          ).not.toThrow();
-        },
-      );
+        expect(() => validateLicenseProxyPermissions(licenseUnlockResult)).not.toThrow();
+      });
     });
 
     describe("Invalid configurations", () => {
@@ -120,21 +112,16 @@ describe("Proxy URL Validator", () => {
           description:
             "online license with inconsistent proxy permissions (no ping, ping proxy allowed, baltazar not allowed)",
         },
-      ])(
-        "should throw when $description",
-        ({ allowPingProxy, allowBaltazarProxy, hasPing, unlockResult }) => {
-          const licenseUnlockResult = {
-            allowPingProxy,
-            allowBaltazarProxy,
-            hasPing,
-            unlockResult,
-          } as LicenseUnlockResult;
+      ])("should throw when $description", ({ allowPingProxy, allowBaltazarProxy, hasPing, unlockResult }) => {
+        const licenseUnlockResult = {
+          allowPingProxy,
+          allowBaltazarProxy,
+          hasPing,
+          unlockResult,
+        } as LicenseUnlockResult;
 
-          expect(() =>
-            validateLicenseProxyPermissions(licenseUnlockResult),
-          ).toThrow(/doesn't permit proxy usage/);
-        },
-      );
+        expect(() => validateLicenseProxyPermissions(licenseUnlockResult)).toThrow(/doesn't permit proxy usage/);
+      });
     });
   });
 
@@ -155,8 +142,7 @@ describe("Proxy URL Validator", () => {
         {
           input: "https://proxy.example.com:8443",
           expectedPing: "https://proxy.example.com:8443",
-          expectedBaltazar:
-            "https://proxy.example.com:8443/api/v2/status/check",
+          expectedBaltazar: "https://proxy.example.com:8443/api/v2/status/check",
           description: "HTTPS proxy URL with port",
         },
         {
@@ -168,21 +154,17 @@ describe("Proxy URL Validator", () => {
         {
           input: "https://proxy.example.com/api/proxy",
           expectedPing: "https://proxy.example.com/api/proxy",
-          expectedBaltazar:
-            "https://proxy.example.com/api/proxy/api/v2/status/check",
+          expectedBaltazar: "https://proxy.example.com/api/proxy/api/v2/status/check",
           description: "HTTPS proxy URL with path (path is ignored)",
         },
-      ])(
-        "should create correct URLs for $description",
-        ({ input, expectedPing, expectedBaltazar }) => {
-          const result = sanitizeProxyUrls(input);
+      ])("should create correct URLs for $description", ({ input, expectedPing, expectedBaltazar }) => {
+        const result = sanitizeProxyUrls(input);
 
-          expect(result).toEqual({
-            ping: expectedPing,
-            baltazar: expectedBaltazar,
-          });
-        },
-      );
+        expect(result).toEqual({
+          ping: expectedPing,
+          baltazar: expectedBaltazar,
+        });
+      });
     });
 
     describe("Invalid URLs", () => {
@@ -211,23 +193,18 @@ describe("Proxy URL Validator", () => {
           expectedCode: "HTTPS_REQUIRED",
           description: "FTP protocol (HTTPS required)",
         },
-      ])(
-        "should throw ProxyUrlValidationError for $description",
-        ({ input, expectedCode }) => {
-          expect(() => sanitizeProxyUrls(input)).toThrow(
-            ProxyUrlValidationError,
-          );
+      ])("should throw ProxyUrlValidationError for $description", ({ input, expectedCode }) => {
+        expect(() => sanitizeProxyUrls(input)).toThrow(ProxyUrlValidationError);
 
-          try {
-            sanitizeProxyUrls(input);
-          } catch (error) {
-            const proxyError = error as ProxyUrlValidationError;
-            expect(proxyError.code).toBe(expectedCode);
-            expect(proxyError.url).toBe(input);
-            expect(proxyError.message).toContain(input);
-          }
-        },
-      );
+        try {
+          sanitizeProxyUrls(input);
+        } catch (error) {
+          const proxyError = error as ProxyUrlValidationError;
+          expect(proxyError.code).toBe(expectedCode);
+          expect(proxyError.url).toBe(input);
+          expect(proxyError.message).toContain(input);
+        }
+      });
     });
 
     it("includes original URL in error message and properties", () => {
@@ -248,18 +225,13 @@ describe("Proxy URL Validator", () => {
   });
 
   describe("getMicroblinkProxyPingFlags", () => {
-    const baseLicense: Pick<
-      LicenseUnlockResult,
-      | "allowPingProxy"
-      | "allowBaltazarProxy"
-      | "hasPing"
-      | "unlockResult"
-    > = {
-      allowPingProxy: true,
-      allowBaltazarProxy: true,
-      hasPing: true,
-      unlockResult: "valid",
-    };
+    const baseLicense: Pick<LicenseUnlockResult, "allowPingProxy" | "allowBaltazarProxy" | "hasPing" | "unlockResult"> =
+      {
+        allowPingProxy: true,
+        allowBaltazarProxy: true,
+        hasPing: true,
+        unlockResult: "valid",
+      };
 
     it("returns false for both when proxy URL is absent", () => {
       expect(getMicroblinkProxyPingFlags(undefined, baseLicense)).toEqual({

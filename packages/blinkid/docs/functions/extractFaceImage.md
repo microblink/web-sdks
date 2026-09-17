@@ -6,7 +6,7 @@
 
 # Function: extractFaceImage()
 
-> **extractFaceImage**(`blinkIdScanningResult`): `null` \| `ImageData`
+> **extractFaceImage**(`blinkIdScanningResult`): `ImageData` \| `null`
 
 Extracts the face image from the scanning result.
 
@@ -20,6 +20,6 @@ The scanning result.
 
 ## Returns
 
-`null` \| `ImageData`
+`ImageData` \| `null`
 
 The face image.

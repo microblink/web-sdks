@@ -1,5 +1,63 @@
 # @microblink/blinkid
 
+## 8002.0.0
+
+### Major Changes
+
+- Fixes initialization download progress to include OTA resources, weighted by resource byte lengths, and report completion only after all OTA resources are available.
+- Selected OTA resources now download in parallel with Wasm and data resources.
+- All Wasm, data, and OTA requests now use one configurable inactivity timeout. The timer resets whenever response data
+  arrives, allowing slow downloads to complete while still failing stalled requests with resource-specific errors.
+- This release contains two breaking configuration changes:
+- - Replace `otaResources.timeoutMilis` with the top-level `resourceDownloadTimeoutMs`. The new timeout applies to Wasm,
+    data, and OTA requests and resets whenever response data arrives.
+  - If you manually maintain a custom `ota-resources.json`, add a positive integer `contentLength` to every resource
+    entry. Manifests bundled with BlinkID already include these values and require no migration.
+- ```diff
+   createBlinkId({
+  +  resourceDownloadTimeoutMs: 60_000,
+     otaResources: {
+  -    timeoutMilis: 60_000,
+     },
+   });
+  ```
+- For a manually maintained custom OTA manifest, add each resource file's byte length:
+- ```diff
+   {
+     "filename": "template-database.zzip",
+     "version": "1.0.1",
+  -  "url": "template-database.zzip"
+  +  "url": "template-database.zzip",
+  +  "contentLength": 761242
+   }
+  ```
+
+### Minor Changes
+
+- Adds the `simd-relaxed` and `simd-relaxed-threads` WebAssembly variants. Browsers that support relaxed SIMD now load these faster builds automatically, while other browsers keep using `simd` or `simd-threads`. The `wasmVariant` setting accepts the new variant names, and the shipped `resources/` tree contains the new variant directories.
+
+### Patch Changes
+
+- Fixes the `document-with-mrz` scanning UI appearing when VIZ or barcode extraction is also enabled. That guidance now shows only when MRZ is the sole selected extraction module, matching Android and iOS.
+- Updated package dependencies.
+- Fixed an issue where frame processing wouldnt stop if showTimeoutModal was configured to false
+- Added a new TimeoutHandler for BlinkIdUxManager
+- Speeds up BlinkID initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
+- Updates English localization strings.
+  Added: none
+  Updated:
+  - `error_modal.cancel_btn` from "Cancel" to "Cancel Scanning"
+  - `feedback_messages.blur_detected` from "Keep document and phone still" to "Keep the document and phone still"
+  - `feedback_messages.camera_angle_too_steep` from "Keep document parallel to phone" to "Keep the document parallel to the phone"
+  - `feedback_messages.face_photo_not_fully_visible` from "Keep face photo fully visible" to "Keep the face photo fully visible"
+  - `feedback_messages.glare_detected` from "Tilt or move document to remove reflection" to "Tilt or move the document to remove reflection"
+  - `feedback_messages.keep_document_parallel` from "Keep document parallel with screen" to "Keep the document parallel to the screen"
+    Removed: none
+- Upgrade to TypeScript 7
+- Updated dependencies
+  - @microblink/blinkid-ux-manager@8002.0.0
+  - @microblink/blinkid-core@8002.0.0
+
 ## 8001.0.1
 
 ### Patch Changes

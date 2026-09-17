@@ -10,7 +10,7 @@
 
 Available video resolutions for the camera stream.
 
-## Type declaration
+## Type Declaration
 
 ### 1080p
 

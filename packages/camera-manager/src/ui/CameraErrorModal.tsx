@@ -1,23 +1,19 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import { Dialog } from "@ark-ui/solid";
 import { AlertModal } from "@microblink/shared-components/AlertModal";
 import { Component } from "solid-js";
-import { CameraError } from "../core/cameraError";
+
+import { CameraError } from "../core";
 import { useCameraUiStore } from "./CameraUiStoreContext";
 import { useLocalization } from "./LocalizationContext";
 import { cameraUiRefSignalStore } from "./zustandRefStore";
-import { Dialog } from "@ark-ui/solid";
 
-/**
- * The CameraErrorModal component.
- */
+/** The CameraErrorModal component. */
 const CameraErrorModal: Component = () => {
   const { t } = useLocalization();
 
-  const { cameraManagerSolidStore, cameraManager, dismountCameraUi } =
-    useCameraUiStore();
+  const { cameraManagerSolidStore, cameraManager, dismountCameraUi } = useCameraUiStore();
   const errorState = cameraManagerSolidStore((x) => x.errorState);
   const overlayLayer = cameraUiRefSignalStore((x) => x.overlayLayer);
 

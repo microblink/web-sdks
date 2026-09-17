@@ -1,38 +1,22 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { renderWithOwner } from "@microblink/shared-components/renderWithOwner";
 import { getOwner, JSX, ParentComponent, Show, splitProps } from "solid-js";
 
-/**
- * The SolidShadowRoot props.
- */
+/** The SolidShadowRoot props. */
 type SolidShadowRootProps = {
-  /**
-   * Disables shadow root, mostly useful for debugging.
-   */
+  /** Disables shadow root, mostly useful for debugging. */
   disableShadowRoot?: boolean;
-  /**
-   * A ref to the div element.
-   */
+  /** A ref to the div element. */
   getRef?: (el: HTMLDivElement) => void;
 } & JSX.HTMLAttributes<HTMLDivElement>;
 
-/**
- * The SolidShadowRoot component.
- */
-export const SolidShadowRoot: ParentComponent<SolidShadowRootProps> = (
-  props,
-) => {
+/** The SolidShadowRoot component. */
+export const SolidShadowRoot: ParentComponent<SolidShadowRootProps> = (props) => {
   // We use `getOwner` in case of async rendering, for instance, it was used to
   // test rendering after a timeout.
   const owner = getOwner();
-  const [local, others] = splitProps(props, [
-    "children",
-    "disableShadowRoot",
-    "getRef",
-  ]);
+  const [local, others] = splitProps(props, ["children", "disableShadowRoot", "getRef"]);
 
   return (
     <div

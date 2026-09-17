@@ -3,17 +3,20 @@
     {
       "filename": "serialized-embedder-database.bin",
       "version": "1.0.14",
-      "url": "serialized-embedder-database.bin"
+      "url": "serialized-embedder-database.bin",
+      "contentLength": 3831312
     },
     {
       "filename": "template-database.zzip",
       "version": "1.0.1",
-      "url": "template-database.zzip"
+      "url": "template-database.zzip",
+      "contentLength": 761242
     },
     {
       "filename": "knowledge-database.zzip",
       "version": "2.0.1",
-      "url": "knowledge-database.zzip"
+      "url": "knowledge-database.zzip",
+      "contentLength": 93004
     }
   ]
 }

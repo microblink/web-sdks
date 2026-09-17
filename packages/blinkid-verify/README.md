@@ -2,6 +2,21 @@
 
 The all-in-one BlinkID Verify browser SDK package. It provides a high-level, easy-to-use API for identity document scanning and recognition in web applications, bundling all required components and resources for a seamless integration experience.
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/blinkid-verify`:
+
+| Entrypoint | Minified  | Gzip      |
+| ---------- | --------- | --------- |
+| `root`     | 520.41 kB | 144.50 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Overview
 
 - Combines the BlinkID Verify engine, camera management, user experience (UX) management, and all required resources.

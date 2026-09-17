@@ -1,0 +1,39 @@
+{
+  "name": "@microblink/blinkid-ui-overrides-example",
+  "private": true,
+  "description": "An example demonstrating BlinkID provided UI overrides",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build:js-dev": "vite build --mode development",
+    "clean": "rimraf dist public .turbo types tsconfig.tsbuildinfo",
+    "dev": "vite --host",
+    "preview": "vite preview",
+    "watch": "vite build --watch --mode development",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "dependencies": {
+    "@microblink/blinkid-core": "workspace:^",
+    "@microblink/blinkid-ux-manager": "workspace:^",
+    "@microblink/camera-manager": "workspace:^",
+    "@microblink/feedback-stabilizer": "workspace:^",
+    "solid-js": "catalog:ui"
+  },
+  "devDependencies": {
+    "@microblink/repo-utils": "workspace:*",
+    "@microblink/tsconfig": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "sass": "catalog:ui",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vite-plugin-mkcert": "catalog:vite",
+    "vite-plugin-qrcode": "catalog:vite",
+    "vite-plugin-solid": "catalog:vite",
+    "zx": "catalog:utils"
+  }
+}

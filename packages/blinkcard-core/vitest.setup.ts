@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 class MockImageData implements ImageData {
   readonly data: Uint8ClampedArray;
@@ -18,6 +16,7 @@ class MockImageData implements ImageData {
       // new ImageData(data, width, height?)
       this.data = widthOrData;
       this.width = height || 1;
+      // oxlint-disable-next-line prefer-rest-params
       this.height = arguments[2] || 1;
     }
     this.colorSpace = "srgb";

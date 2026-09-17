@@ -12,4 +12,6 @@ Extended UI state for BlinkID.
 
 ## Template
 
+**K**
+
 The key of the UI state.

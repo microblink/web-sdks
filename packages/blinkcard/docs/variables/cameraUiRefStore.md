@@ -10,9 +10,9 @@
 
 The camera UI ref store.
 
-## Type declaration
+## Type Declaration
 
-### subscribe()
+### subscribe
 
 > **subscribe**: \{(`listener`): () => `void`; \<`U`\>(`selector`, `listener`, `options?`): () => `void`; \}
 
@@ -28,11 +28,7 @@ The camera UI ref store.
 
 ##### Returns
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`
 
 #### Call Signature
 
@@ -66,8 +62,4 @@ The camera UI ref store.
 
 ##### Returns
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`

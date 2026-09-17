@@ -72,8 +72,7 @@ The blood type of the document owner
 
 > **cardAccessNumber**: [`StringResult`](StringResult.md) \| `undefined`
 
-Numeric code used to establish secure electronic access to the embedded
-contactless chip.
+Numeric code used to establish secure electronic access to the embedded contactless chip.
 
 ***
 
@@ -159,12 +158,12 @@ The additional number of the document
 
 ### documentClassInfo?
 
-> `optional` **documentClassInfo**: [`DocumentClassInfo`](DocumentClassInfo.md)
+> `optional` **documentClassInfo?**: [`DocumentClassInfo`](DocumentClassInfo.md)
 
 The document class information.
 
-Absent when the document could not be classified (for example, for
-unsupported documents without any extracted class info).
+Absent when the document could not be classified (for example, for unsupported documents without any extracted
+class info).
 
 ***
 

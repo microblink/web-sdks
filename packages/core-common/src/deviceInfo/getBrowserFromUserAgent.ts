@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 export type BrowserName =
   // In-App Browsers
@@ -29,19 +27,14 @@ export interface BrowserInfo {
   version: string;
 }
 
-/**
- * A rule for detecting a browser from a user agent string.
- */
+/** A rule for detecting a browser from a user agent string. */
 interface BrowserRule {
   name: BrowserName;
   regex: RegExp;
   getVersion: (match: RegExpMatchArray, ua: string) => string;
 }
 
-/**
- * An ordered list of rules to detect browsers.
- * The order is critical: from most specific to most general.
- */
+/** An ordered list of rules to detect browsers. The order is critical: from most specific to most general. */
 const browserRules: readonly BrowserRule[] = [
   // 1. In-App Browsers
   {
@@ -118,8 +111,8 @@ const browserRules: readonly BrowserRule[] = [
 ];
 
 /**
- * Detects the user's browser, brand, and version from the user agent string.
- * This is a simplified version focused on common global browsers.
+ * Detects the user's browser, brand, and version from the user agent string. This is a simplified version focused on
+ * common global browsers.
  *
  * The order of checks is critical for accuracy.
  *
@@ -139,7 +132,7 @@ export function detectBrowser(): BrowserInfo {
   }
 
   // iOS WebView is a special case that requires feature detection, not just UA parsing.
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // oxlint-disable-next-line typescript/ban-ts-comment
   // @ts-ignore
   if (window.webkit?.messageHandlers) {
     const osVersionMatch = ua.match(/OS ([\d_]+)/);

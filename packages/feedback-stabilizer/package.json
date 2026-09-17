@@ -1,15 +1,11 @@
 {
   "name": "@microblink/feedback-stabilizer",
+  "version": "7.1.5",
   "private": true,
-  "version": "7.1.4",
-  "scripts": {
-    "build": "tsc",
-    "build:publish": "tsc",
-    "clean": "rimraf .turbo types dist *.tgz",
-    "docs:api": "typedoc",
-    "test": "vitest --run",
-    "test:watch": "vitest --watch"
-  },
+  "files": [
+    "dist",
+    "types"
+  ],
   "type": "module",
   "exports": {
     ".": {
@@ -18,17 +14,27 @@
     },
     "./package.json": "./package.json"
   },
-  "files": [
-    "dist",
-    "types"
-  ],
+  "scripts": {
+    "build": "tsc",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types dist *.tgz",
+    "docs:api": "typedoc",
+    "test": "vitest --run",
+    "test:watch": "vitest --watch",
+    "typecheck": "tsc --noEmit --skipLibCheck"
+  },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
-    "rimraf": "^6.0.1",
-    "type-fest": "^4.35.0",
-    "typedoc": "^0.28.7",
-    "typedoc-plugin-markdown": "^4.7.0",
-    "typescript": "5.8.3",
-    "vitest": "^3.0.8"
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "type-fest": "catalog:",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "vitest": "catalog:test"
   }
 }

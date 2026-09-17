@@ -6,7 +6,7 @@
 
 # Function: extractSideInputImage()
 
-> **extractSideInputImage**(`blinkIdScanningResult`, `side`): `null` \| `ImageData`
+> **extractSideInputImage**(`blinkIdScanningResult`, `side`): `ImageData` \| `null`
 
 Extracts the input image for a given side from the scanning result.
 
@@ -26,6 +26,6 @@ The side to extract the input image for.
 
 ## Returns
 
-`null` \| `ImageData`
+`ImageData` \| `null`
 
 The input image for the given side.

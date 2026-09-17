@@ -14,7 +14,7 @@ Represents a string result for a specific alphabet
 
 ### location?
 
-> `optional` **location**: [`Rectangle`](Rectangle.md)
+> `optional` **location?**: [`Rectangle`](Rectangle.md)
 
 The location of the string result.
 
@@ -22,7 +22,7 @@ The location of the string result.
 
 ### side?
 
-> `optional` **side**: [`ScanningSide`](ScanningSide.md)
+> `optional` **side?**: [`ScanningSide`](ScanningSide.md)
 
 The side of the string result.
 

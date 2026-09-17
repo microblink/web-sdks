@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkIdScanningResult,
@@ -10,7 +8,7 @@ import type {
   ScanningSettings,
   ScanningStatus,
 } from "@microblink/blinkid-core";
-import type { CameraManager } from "@microblink/camera-manager";
+import type { CameraManager } from "@microblink/camera-manager/core";
 import {
   createFakeCameraHarness,
   createFakeScanningSession,
@@ -18,15 +16,14 @@ import {
   type FakeCameraHarness,
   type FakeScanningSession,
 } from "@microblink/test-utils";
-import type { BlinkIdUxManager } from "./BlinkIdUxManager";
+
 import { createProcessResult } from "./__testdata/blinkidTestFixtures";
+import type { BlinkIdUxManager } from "./BlinkIdUxManager";
 import { createBlinkIdUxManager } from "./createBlinkIdUxManager";
 
 export type BlinkIdCameraHarness = FakeCameraHarness<CameraManager>;
 
-export const createBlinkIdCameraHarness = (
-  fakeCameraOptions?: CreateFakeCameraManagerOptions,
-): BlinkIdCameraHarness =>
+export const createBlinkIdCameraHarness = (fakeCameraOptions?: CreateFakeCameraManagerOptions): BlinkIdCameraHarness =>
   createFakeCameraHarness<CameraManager>(fakeCameraOptions);
 
 type BlinkIdSessionMock = FakeScanningSession<
@@ -49,16 +46,14 @@ export type CreateBlinkIdIntegrationContextOptions = {
   sessionOverrides?: Partial<BlinkIdSessionMock>;
 };
 
-export const createBlinkIdUnitSessionMock = (
-  overrideSettings?: PartialScanningSettingsInput,
-): BlinkIdUnitSessionMock =>
+export const createBlinkIdUnitSessionMock = (overrideSettings?: PartialScanningSettingsInput): BlinkIdUnitSessionMock =>
   createFakeScanningSession<
     ReturnType<typeof createProcessResult>,
-    { scanningSettings: PartialScanningSettingsInput },
+    { scanningSettings: Partial<ScanningSettings> },
     unknown
   >({
-    settings: { scanningSettings: overrideSettings ?? {} },
-    resolvedSettings: { scanningSettings: overrideSettings ?? {} },
+    settings: { scanningSettings: (overrideSettings ?? {}) as Partial<ScanningSettings> },
+    resolvedSettings: { scanningSettings: (overrideSettings ?? {}) as Partial<ScanningSettings> },
     showDemoOverlay: false,
     showProductionOverlay: false,
   });
@@ -73,11 +68,11 @@ export const createBlinkIdIntegrationContext = async (
   const cameraHarness = createBlinkIdCameraHarness(options.fakeCameraOptions);
   const scanningSession = createFakeScanningSession<
     ReturnType<typeof createProcessResult>,
-    BlinkIdSessionSettingsInput,
+    BlinkIdSessionSettings,
     BlinkIdScanningResult
   >({
-    settings: options.sessionSettings ?? {},
-    resolvedSettings: options.sessionSettings ?? {},
+    settings: (options.sessionSettings ?? {}) as BlinkIdSessionSettings,
+    resolvedSettings: (options.sessionSettings ?? {}) as BlinkIdSessionSettings,
     showDemoOverlay: options.showDemoOverlay ?? false,
     showProductionOverlay: options.showProductionOverlay ?? false,
     overrides: options.sessionOverrides,

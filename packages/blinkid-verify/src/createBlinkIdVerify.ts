@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import {
   loadBlinkIdVerifyCore,
@@ -8,45 +6,41 @@ import {
   type BlinkIdVerifySessionSettings,
   type BlinkIdVerifyCore,
 } from "@microblink/blinkid-verify-core";
+import { type BlinkIdVerifyUxManager, createBlinkIdVerifyUxManager } from "@microblink/blinkid-verify-ux-manager/core";
 import {
   createBlinkIdVerifyFeedbackUi,
   type FeedbackUiOptions,
   type LocalizationStrings,
-  BlinkIdVerifyUxManager,
-  createBlinkIdVerifyUxManager,
-} from "@microblink/blinkid-verify-ux-manager";
+} from "@microblink/blinkid-verify-ux-manager/ui";
+import { CameraManager } from "@microblink/camera-manager/core";
 import {
-  CameraManager,
   type CameraManagerComponent,
   type CameraManagerUiOptions,
   createCameraManagerUi,
-} from "@microblink/camera-manager";
+} from "@microblink/camera-manager/ui";
 import { Simplify } from "type-fest";
 
 /**
  * Configuration options for creating a BlinkIdVerify component.
  *
- * This type combines options with core initialization and session settings.
- * It allows customization of the UI elements, localization, and scanning behavior.
+ * This type combines options with core initialization and session settings. It allows customization of the UI elements,
+ * localization, and scanning behavior.
  */
 export type BlinkIdVerifyComponentOptions = Simplify<
   {
     /**
-     * The HTML element where the BlinkIdVerify UI will be mounted.
-     * If not provided, the UI will be mounted to the document body.
+     * The HTML element where the BlinkIdVerify UI will be mounted. If not provided, the UI will be mounted to the
+     * document body.
      */
     targetNode?: HTMLElement;
 
     /**
-     * Customization options for the camera manager UI.
-     * Controls camera-related UI elements like the video feed container and camera selection.
+     * Customization options for the camera manager UI. Controls camera-related UI elements like the video feed
+     * container and camera selection.
      */
     cameraManagerUiOptions?: Partial<CameraManagerUiOptions>;
 
-    /**
-     * Customization options for the feedback UI.
-     * Controls the appearance and behavior of scanning feedback elements.
-     */
+    /** Customization options for the feedback UI. Controls the appearance and behavior of scanning feedback elements. */
     feedbackUiOptions?: Partial<FeedbackUiOptions>;
   } & BlinkIdVerifyInitSettings &
     Partial<Omit<BlinkIdVerifySessionSettings, "inputImageSource">>
@@ -54,6 +48,7 @@ export type BlinkIdVerifyComponentOptions = Simplify<
 
 /**
  * Represents the BlinkIdVerify component with all SDK instances and UI elements.
+ *
  * @public
  */
 export type BlinkIdVerifyComponent = {
@@ -65,22 +60,14 @@ export type BlinkIdVerifyComponent = {
   blinkIdVerifyUxManager: BlinkIdVerifyUxManager;
   /** The Camera Manager UI instance. */
   cameraUi: CameraManagerComponent;
-  /**
-   * Destroys the BlinkIdVerify component and releases all resources.
-   */
+  /** Destroys the BlinkIdVerify component and releases all resources. */
   destroy: () => Promise<void>;
-  /**
-   * Adds a callback function to be called when a result is obtained.
-   */
+  /** Adds a callback function to be called when a result is obtained. */
   addOnResultCallback: BlinkIdVerifyUxManager["addOnResultCallback"];
-  /**
-   * Adds a callback function to be called when an error occurs.
-   */
+  /** Adds a callback function to be called when an error occurs. */
   addOnErrorCallback: BlinkIdVerifyUxManager["addOnErrorCallback"];
 
-  /**
-   * Adds a callback function to be called on each processed frame.
-   */
+  /** Adds a callback function to be called on each processed frame. */
   addOnFrameProcessCallback: BlinkIdVerifyUxManager["addOnFrameProcessCallback"];
 };
 
@@ -88,36 +75,37 @@ export type BlinkIdVerifyComponent = {
  * Creates a BlinkIdVerify component with all necessary SDK instances and UI elements.
  *
  * This function initializes the complete BlinkIdVerify scanning system including:
+ *
  * - BlinkIdVerify Core SDK for document processing
  * - Camera Manager for video capture and camera control
  * - UX Manager for coordinating scanning workflow
  * - Camera UI for video display and camera controls
  * - Feedback UI for scanning guidance and status
  *
- * The function sets up the entire scanning pipeline and returns a component
- * object that provides access to all SDK instances and destruction capabilities.
+ * The function sets up the entire scanning pipeline and returns a component object that provides access to all SDK
+ * instances and destruction capabilities.
+ *
+ * @example
+ *   ```typescript
+ *   const blinkIdVerify = await createBlinkIdVerify({
+ *     licenseKey: "your-license-key",
+ *     targetNode: document.getElementById("blinkid-verify-container"),
+ *     feedbackUiOptions: {
+ *       showOnboardingGuide: false,
+ *     },
+ *   });
+ *
+ *   // Add result callback
+ *   blinkIdVerify.addOnResultCallback((result) => {
+ *     console.log("Scanning result:", result);
+ *   });
+ *
+ *   // Clean up when done
+ *   await blinkIdVerify.destroy();
+ *   ```;
  *
  * @param options - Configuration options for the BlinkIdVerify component
  * @returns Promise that resolves to a BlinkIdVerifyComponent with all SDK instances and UI elements
- *
- * @example
- * ```typescript
- * const blinkIdVerify = await createBlinkIdVerify({
- *   licenseKey: "your-license-key",
- *   targetNode: document.getElementById("blinkid-verify-container"),
- *   feedbackUiOptions: {
- *     showOnboardingGuide: false
- *   }
- * });
- *
- * // Add result callback
- * blinkIdVerify.addOnResultCallback((result) => {
- *   console.log("Scanning result:", result);
- * });
- *
- * // Clean up when done
- * await blinkIdVerify.destroy();
- * ```
  */
 export const createBlinkIdVerify = async ({
   licenseKey,
@@ -131,9 +119,7 @@ export const createBlinkIdVerify = async ({
   feedbackUiOptions,
 }: BlinkIdVerifyComponentOptions): Promise<BlinkIdVerifyComponent> => {
   let blinkIdVerifyCore: BlinkIdVerifyCore | undefined;
-  let scanningSession:
-    | Awaited<ReturnType<BlinkIdVerifyCore["createScanningSession"]>>
-    | undefined;
+  let scanningSession: Awaited<ReturnType<BlinkIdVerifyCore["createScanningSession"]>> | undefined;
   try {
     // we first initialize the direct API. This loads the WASM module and initializes the engine
     blinkIdVerifyCore = await loadBlinkIdVerifyCore({
@@ -152,28 +138,17 @@ export const createBlinkIdVerify = async ({
     const cameraManager = new CameraManager();
 
     // we create the UX manager
-    const blinkIdVerifyUxManager = await createBlinkIdVerifyUxManager(
-      cameraManager,
-      scanningSession,
-    );
+    const blinkIdVerifyUxManager = await createBlinkIdVerifyUxManager(cameraManager, scanningSession);
 
     // this creates the UI and attaches it to the DOM
-    const cameraUi = await createCameraManagerUi(
-      cameraManager,
-      targetNode,
-      cameraManagerUiOptions,
-    );
+    const cameraUi = await createCameraManagerUi(cameraManager, targetNode, cameraManagerUiOptions);
 
     const unsub = cameraManager.subscribe(
       (s) => s.playbackState,
       (state) => {
         if (state === "playback") {
           // this creates the feedback UI and attaches it to the camera UI
-          createBlinkIdVerifyFeedbackUi(
-            blinkIdVerifyUxManager,
-            cameraUi,
-            feedbackUiOptions ?? {},
-          );
+          createBlinkIdVerifyFeedbackUi(blinkIdVerifyUxManager, cameraUi, feedbackUiOptions ?? {});
 
           if (feedbackUiOptions?.showOnboardingGuide === false) {
             void cameraManager.startFrameCapture();
@@ -208,24 +183,15 @@ export const createBlinkIdVerify = async ({
       blinkIdVerifyUxManager,
       cameraUi,
       destroy,
-      addOnErrorCallback: blinkIdVerifyUxManager.addOnErrorCallback.bind(
-        blinkIdVerifyUxManager,
-      ),
-      addOnResultCallback: blinkIdVerifyUxManager.addOnResultCallback.bind(
-        blinkIdVerifyUxManager,
-      ),
-      addOnFrameProcessCallback:
-        blinkIdVerifyUxManager.addOnFrameProcessCallback.bind(
-          blinkIdVerifyUxManager,
-        ),
+      addOnErrorCallback: blinkIdVerifyUxManager.addOnErrorCallback.bind(blinkIdVerifyUxManager),
+      addOnResultCallback: blinkIdVerifyUxManager.addOnResultCallback.bind(blinkIdVerifyUxManager),
+      addOnFrameProcessCallback: blinkIdVerifyUxManager.addOnFrameProcessCallback.bind(blinkIdVerifyUxManager),
     };
   } catch (error) {
     if (blinkIdVerifyCore) {
       const data = {
         errorType: "Crash" as const,
-        errorMessage:
-          "sdk.createBlinkIdVerify: " +
-          (error instanceof Error ? error.message : String(error)),
+        errorMessage: "sdk.createBlinkIdVerify: " + (error instanceof Error ? error.message : String(error)),
         stackTrace: error instanceof Error ? error.stack : undefined,
       };
 
@@ -238,10 +204,7 @@ export const createBlinkIdVerify = async ({
         });
         await blinkIdVerifyCore.sendPinglets();
       } catch (reportError) {
-        console.warn(
-          "Failed to report BlinkID Verify SDK crash pinglet:",
-          reportError,
-        );
+        console.warn("Failed to report BlinkID Verify SDK crash pinglet:", reportError);
       }
     }
 

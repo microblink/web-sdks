@@ -1,10 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { Remote } from "comlink";
 import { proxy as comlinkProxy, releaseProxy, transfer, wrap } from "comlink";
 import { oneLineTrim } from "common-tags";
+
 import { getCrossOriginWorkerURL } from "./getCrossOriginWorkerURL";
 
 export const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
@@ -17,8 +16,7 @@ export class FrameTransferError extends Error {
 }
 
 const createFrameTransferError = (message: string, error: unknown) => {
-  const causeMessage =
-    error instanceof Error && error.message ? `: ${error.message}` : "";
+  const causeMessage = error instanceof Error && error.message ? `: ${error.message}` : "";
 
   if (error instanceof Error) {
     return new FrameTransferError(`${message}${causeMessage}`, {
@@ -31,6 +29,7 @@ const createFrameTransferError = (message: string, error: unknown) => {
 
 /**
  * Proxies an object with function properties to a Comlink proxy.
+ *
  * @param value Object to proxy
  * @returns Proxied object
  */
@@ -40,9 +39,7 @@ const proxyObjectWithFunctionProperties = <T>(value: T): T => {
   }
 
   const entries = Object.entries(value as Record<string, unknown>);
-  const hasFunctionProperty = entries.some(
-    ([, entryValue]) => typeof entryValue === "function",
-  );
+  const hasFunctionProperty = entries.some(([, entryValue]) => typeof entryValue === "function");
 
   if (!hasFunctionProperty) {
     return value;
@@ -53,8 +50,9 @@ const proxyObjectWithFunctionProperties = <T>(value: T): T => {
 
 /**
  * Checks if a URL is a data URL
+ *
  * @param url URL to check
- * @returns boolean indicating if it's a data URL
+ * @returns Boolean indicating if it's a data URL
  */
 const isDataUrl = (url: string): boolean => {
   return url.startsWith("data:");
@@ -62,8 +60,9 @@ const isDataUrl = (url: string): boolean => {
 
 /**
  * Checks if a URL is a blob URL
+ *
  * @param url URL to check
- * @returns boolean indicating if it's a blob URL
+ * @returns Boolean indicating if it's a blob URL
  */
 const isBlobUrl = (url: string): boolean => {
   return url.startsWith("blob:");
@@ -71,8 +70,9 @@ const isBlobUrl = (url: string): boolean => {
 
 /**
  * Checks if a URL needs HTTP validation
+ *
  * @param url URL to check
- * @returns boolean indicating if HTTP validation is needed
+ * @returns Boolean indicating if HTTP validation is needed
  */
 const needsHttpValidation = (url: string): boolean => {
   return !isDataUrl(url) && !isBlobUrl(url);
@@ -80,6 +80,7 @@ const needsHttpValidation = (url: string): boolean => {
 
 /**
  * Validates a worker file via HTTP request
+ *
  * @param workerUrl URL of the worker file
  * @throws Error if the worker file is not valid
  */
@@ -103,19 +104,18 @@ const validateHttpWorkerFile = async (workerUrl: string): Promise<void> => {
   }
 
   if (!response.ok) {
-    throw new Error(
-      `Worker file not found or inaccessible: ${response.status} ${response.statusText}`,
-    );
+    throw new Error(`Worker file not found or inaccessible: ${response.status} ${response.statusText}`);
   }
 };
 
 /**
- * Base interface for a scanning session.
- * All SDK scanning sessions must implement this interface to work with the proxy worker.
+ * Base interface for a scanning session. All SDK scanning sessions must implement this interface to work with the proxy
+ * worker.
  */
 export interface BaseScanningSession {
   /**
    * Processes an image frame and returns a result.
+   *
    * @param image - The image data to process
    * @returns The processing result (type varies by SDK)
    */
@@ -123,39 +123,33 @@ export interface BaseScanningSession {
 }
 
 /**
- * Base interface for an SDK worker proxy.
- * All SDK worker proxies must implement this interface to work with the auto-transfer wrapper.
+ * Base interface for an SDK worker proxy. All SDK worker proxies must implement this interface to work with the
+ * auto-transfer wrapper.
  *
- * Note: The return type can be sync or async (Promise) because Comlink wraps synchronous
- * methods as async when accessed remotely.
+ * Note: The return type can be sync or async (Promise) because Comlink wraps synchronous methods as async when accessed
+ * remotely.
  */
 export interface BaseSdkWorkerProxy {
   /**
    * Creates a new scanning session.
+   *
    * @param args - Session configuration arguments (varies by SDK)
    * @returns A scanning session (sync or Promise-wrapped)
    */
-  createScanningSession: (
-    ...args: never[]
-  ) => BaseScanningSession | Promise<BaseScanningSession>;
+  createScanningSession: (...args: never[]) => BaseScanningSession | Promise<BaseScanningSession>;
 }
 
-/**
- * Extracts the session type from an SDK worker proxy type.
- * Unwraps Promise if present.
- */
-type ExtractSession<T extends BaseSdkWorkerProxy> = Awaited<
-  ReturnType<T["createScanningSession"]>
->;
+/** Extracts the session type from an SDK worker proxy type. Unwraps Promise if present. */
+type ExtractSession<T extends BaseSdkWorkerProxy> = Awaited<ReturnType<T["createScanningSession"]>>;
 
 /**
  * Creates a Comlink-proxied Web Worker (generic) with automatic ImageData buffer transfer.
  *
- * This function wraps the worker proxy to automatically transfer ImageData buffers when calling
- * `session.process()`, eliminating ~8MB copy per frame during scanning.
+ * This function wraps the worker proxy to automatically transfer ImageData buffers when calling `session.process()`,
+ * eliminating ~8MB copy per frame during scanning.
  *
- * The wrapper intercepts `createScanningSession` and wraps the returned session to auto-transfer
- * ImageData buffers when `process()` is called. This pattern is common across all Microblink SDKs.
+ * The wrapper intercepts `createScanningSession` and wraps the returned session to auto-transfer ImageData buffers when
+ * `process()` is called. This pattern is common across all Microblink SDKs.
  *
  * @param resourcesLocation - Where the "resources" directory is placed.
  * @param workerScriptName - The worker script filename.
@@ -190,15 +184,9 @@ export async function createProxyWorker<T extends BaseSdkWorkerProxy>(
   const wrappedProxyWorker = new Proxy(proxyWorker, {
     get(target, prop, receiver) {
       if (prop === "createScanningSession") {
-        return async (
-          ...args: Parameters<T["createScanningSession"]>
-        ): Promise<ExtractSession<T>> => {
-          const proxiedArgs = args.map(
-            proxyObjectWithFunctionProperties,
-          ) as Parameters<T["createScanningSession"]>;
-          const session = (await target.createScanningSession(
-            ...proxiedArgs,
-          )) as ExtractSession<T>;
+        return async (...args: Parameters<T["createScanningSession"]>): Promise<ExtractSession<T>> => {
+          const proxiedArgs = args.map(proxyObjectWithFunctionProperties) as Parameters<T["createScanningSession"]>;
+          const session = (await target.createScanningSession(...proxiedArgs)) as ExtractSession<T>;
 
           // Wrap the session to auto-transfer on process()
           // Type assertion needed because Proxy returns `any` for generic targets
@@ -217,25 +205,18 @@ export async function createProxyWorker<T extends BaseSdkWorkerProxy>(
                   let transferredImageData: ImageData;
 
                   try {
-                    transferredImageData = transfer(imageDataLike, [
-                      imageData.data.buffer,
-                    ]);
+                    transferredImageData = transfer(imageDataLike, [imageData.data.buffer]);
                   } catch (error) {
-                    throw createFrameTransferError(
-                      "Failed to transfer frame to worker",
-                      error,
-                    );
+                    throw createFrameTransferError("Failed to transfer frame to worker", error);
                   }
 
-                  return (sessionTarget as BaseScanningSession).process(
-                    transferredImageData,
-                  );
+                  return (sessionTarget as BaseScanningSession).process(transferredImageData);
                 };
               }
               return Reflect.get(sessionTarget, sessionProp, sessionReceiver);
             },
           });
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          // oxlint-disable-next-line typescript/no-unsafe-return
           return wrappedSession;
         };
       }
@@ -249,9 +230,7 @@ export async function createProxyWorker<T extends BaseSdkWorkerProxy>(
 /**
  * Represents a remote worker instance.
  *
- * This type is the return type of the createProxyWorker function, which creates a Comlink-proxied Web Worker.
- * It simplifies the type to remove unnecessary complexity.
+ * This type is the return type of the createProxyWorker function, which creates a Comlink-proxied Web Worker. It
+ * simplifies the type to remove unnecessary complexity.
  */
-export type RemoteWorker<T extends BaseSdkWorkerProxy> = ReturnType<
-  typeof createProxyWorker<T>
->;
+export type RemoteWorker<T extends BaseSdkWorkerProxy> = ReturnType<typeof createProxyWorker<T>>;

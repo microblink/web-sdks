@@ -1,13 +1,11 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 // augment global types
 declare global {
   interface MediaTrackCapabilities {
     /**
-     * A boolean value defining whether the fill light is continuously
-     * connected, meaning it stays on as long as the track is active.
+     * A boolean value defining whether the fill light is continuously connected, meaning it stays on as long as the
+     * track is active.
      */
     torch?: boolean;
     // TODO: check if this is always an array
@@ -16,8 +14,8 @@ declare global {
 
   interface MediaTrackSettings {
     /**
-     * A boolean value defining whether the fill light is continuously
-     * connected, meaning it stays on as long as the track is active.
+     * A boolean value defining whether the fill light is continuously connected, meaning it stays on as long as the
+     * track is active.
      */
     torch?: boolean;
     // TODO: check if this is always an array

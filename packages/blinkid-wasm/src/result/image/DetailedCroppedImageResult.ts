@@ -1,14 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { Rectangle } from "../../utils";
 import { ScanningSide } from "../ScanningSide";
 
-/**
- * Represents the result of the image crop transformation with additional
- * details.
- */
+/** Represents the result of the image crop transformation with additional details. */
 export type DetailedCroppedImageResult = {
   /** The image data. */
   image: ImageData;

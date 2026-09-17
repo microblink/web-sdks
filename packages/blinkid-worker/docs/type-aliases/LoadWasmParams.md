@@ -20,7 +20,13 @@ The load Wasm params.
 
 ### initialMemory?
 
-> `optional` **initialMemory**: `number`
+> `optional` **initialMemory?**: `number`
+
+***
+
+### resourceDownloadTimeoutMs
+
+> **resourceDownloadTimeoutMs**: `number`
 
 ***
 

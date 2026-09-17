@@ -124,6 +124,8 @@
 - [PingScanningConditionsData](type-aliases/PingScanningConditionsData.md)
 - [PingSdkInitStart](type-aliases/PingSdkInitStart.md)
 - [PingSdkInitStartData](type-aliases/PingSdkInitStartData.md)
+- [PingUpload](type-aliases/PingUpload.md)
+- [PingUploadData](type-aliases/PingUploadData.md)
 - [PingUxEvent](type-aliases/PingUxEvent.md)
 - [PingUxEventData](type-aliases/PingUxEventData.md)
 - [PingWrapperProductInfo](type-aliases/PingWrapperProductInfo.md)
@@ -167,6 +169,7 @@
 ## Variables
 
 - [DEFAULT\_BLINK\_ID\_OTA\_RESOURCE\_PROVIDER\_URL](variables/DEFAULT_BLINK_ID_OTA_RESOURCE_PROVIDER_URL.md)
+- [DEFAULT\_BLINK\_ID\_RESOURCE\_DOWNLOAD\_TIMEOUT\_MS](variables/DEFAULT_BLINK_ID_RESOURCE_DOWNLOAD_TIMEOUT_MS.md)
 - [DEFAULT\_REDACTION\_SETTINGS](variables/DEFAULT_REDACTION_SETTINGS.md)
 - [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [resourceFileTypes](variables/resourceFileTypes.md)

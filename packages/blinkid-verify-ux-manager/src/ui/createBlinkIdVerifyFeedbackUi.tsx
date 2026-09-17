@@ -1,31 +1,18 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { BlinkIdVerifyUxManager } from "../core/BlinkIdVerifyUxManager";
-
-import { CameraManagerComponent } from "@microblink/camera-manager";
+import type { BlinkIdVerifyUxManager } from "@microblink/blinkid-verify-ux-manager/core";
+import type { CameraManagerComponent } from "@microblink/camera-manager/ui";
 import { renderWithOwner } from "@microblink/shared-components/renderWithOwner";
 import { merge } from "merge-anything";
+
 import { BlinkIdVerifyFeedbackUi } from "./BlinkIdVerifyFeedbackUi";
 import { BlinkIdVerifyUiStoreProvider } from "./BlinkIdVerifyUiStoreContext";
 import { PartialLocalizationStrings } from "./LocalizationContext";
 
-/**
- * The options for the createBlinkIdVerifyFeedbackUi function.
- */
+/** The options for the createBlinkIdVerifyFeedbackUi function. */
 export type FeedbackUiOptions = {
-  /**
-   * The localization strings.
-   */
+  /** The localization strings. */
   localizationStrings?: PartialLocalizationStrings;
-  /**
-   * If set to `true`, the BlinkID Verify instance will not be terminated when the
-   * feedback UI is unmounted.
-   *
-   * @defaultValue false
-   */
-  preserveSdkInstance?: boolean;
   /**
    * If set to `true`, the onboarding guide will be shown.
    *
@@ -74,7 +61,6 @@ type DefaultFeedbackUiOptions = Required<FeedbackUiOptions>;
 
 const defaultFeedbackUiOptions: DefaultFeedbackUiOptions = {
   localizationStrings: {},
-  preserveSdkInstance: false,
   showOnboardingGuide: true,
   showHelpButton: true,
   helpTooltipShowDelay: 5000,
@@ -90,7 +76,6 @@ const defaultFeedbackUiOptions: DefaultFeedbackUiOptions = {
  * @param blinkIdVerifyUxManager - The BlinkID Verify Ux Manager.
  * @param cameraManagerComponent - The Camera Manager Component.
  * @param options - The feedback UI options for the createBlinkIdVerifyFeedbackUi function
- *
  * @returns The function to unmount the feedback UI.
  */
 export function createBlinkIdVerifyFeedbackUi(
@@ -100,7 +85,6 @@ export function createBlinkIdVerifyFeedbackUi(
 ) {
   const {
     localizationStrings,
-    preserveSdkInstance,
     showOnboardingGuide = true,
     showHelpButton = true,
     helpTooltipShowDelay = 5000,
@@ -137,9 +121,7 @@ export function createBlinkIdVerifyFeedbackUi(
         showUnsupportedDocumentModal={showUnsupportedDocumentModal}
         dismountFeedbackUi={() => dismountFeedbackUiRef.current()}
       >
-        <BlinkIdVerifyFeedbackUi
-          localization={mergedUiOptions.localizationStrings}
-        />
+        <BlinkIdVerifyFeedbackUi localization={mergedUiOptions.localizationStrings} />
       </BlinkIdVerifyUiStoreProvider>
     ),
     cameraManagerComponent.feedbackLayerNode,

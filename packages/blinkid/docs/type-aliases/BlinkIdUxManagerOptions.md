@@ -14,15 +14,14 @@ Options for the BlinkIdUxManager.
 
 ### initialUiStateKey?
 
-> `optional` **initialUiStateKey**: [`BlinkIdUiStateKey`](BlinkIdUiStateKey.md)
+> `optional` **initialUiStateKey?**: [`BlinkIdUiStateKey`](BlinkIdUiStateKey.md)
 
-Initial UI state key used by the manager/stabilizer reset flow.
-Defaults to `INTRO_FRONT_PAGE`.
+Initial UI state key used by the manager/stabilizer reset flow. Defaults to `INTRO_FRONT_PAGE`.
 
 ***
 
 ### timeoutConfiguration?
 
-> `optional` **timeoutConfiguration**: `Partial`\<[`BlinkIdTimeoutConfiguration`](BlinkIdTimeoutConfiguration.md)\>
+> `optional` **timeoutConfiguration?**: `Partial`\<[`BlinkIdTimeoutConfiguration`](BlinkIdTimeoutConfiguration.md)\>
 
 Configures BlinkID scanning timeout behavior.

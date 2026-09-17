@@ -20,15 +20,15 @@ Configuration for BlinkID initialization including license key and resources loc
 
 `number`
 
-The initial memory allocation for the Wasm module, in megabytes.
-Larger values may improve performance but increase memory usage.
+The initial memory allocation for the Wasm module, in megabytes. Larger values may improve performance but increase
+memory usage.
 
 #### licenseKey
 
 `string`
 
-The license key required to unlock and use the BlinkID SDK.
-This must be a valid license key obtained from Microblink.
+The license key required to unlock and use the BlinkID SDK. This must be a valid license key obtained from
+Microblink.
 
 #### microblinkProxyUrl?
 
@@ -37,18 +37,20 @@ This must be a valid license key obtained from Microblink.
 The URL of the Microblink proxy server. This proxy handles requests to Microblink's Baltazar and Ping servers.
 
 **Requirements:**
+
 - Must be a valid HTTPS URL
 - The proxy server must implement the expected Microblink API endpoints
 - This feature is only available if explicitly permitted by your license
 
 **Endpoints:**
+
 - Ping: `{proxyUrl}/ping`
 - Baltazar: `{proxyUrl}/api/v2/status/check`
 
 **Example**
 
 ```ts
-"https://your-proxy.example.com"
+"https://your-proxy.example.com";
 ```
 
 #### otaResources?
@@ -57,42 +59,54 @@ The URL of the Microblink proxy server. This proxy handles requests to Microblin
 
 Optional browser-only OTA resource settings.
 
-Hosted baseline resources are always loaded. Provider update checks are
-enabled by default; set `checkForUpdates` to `false` to skip the provider.
+Hosted baseline resources are always loaded. Provider update checks are enabled by default; set `checkForUpdates`
+to `false` to skip the provider.
+
+#### resourceDownloadTimeoutMs?
+
+`number`
+
+Maximum time, in milliseconds, without receiving response headers or body data for each Wasm, data, or OTA request.
+
+The timer resets whenever data arrives, so this does not limit the total duration of a slow download.
+
+**Default Value**
+
+`60_000`
 
 #### resourcesLocation?
 
 `string`
 
-The parent directory where the `/resources` directory is hosted.
-Defaults to `window.location.href`, at the root of the current page.
+The parent directory where the `/resources` directory is hosted. Defaults to `window.location.href`, at the root of
+the current page.
 
 #### useLightweightBuild?
 
 `boolean`
 
-Whether to use the lightweight build of the SDK.
-Lightweight builds have reduced size but may have limited functionality.
+Whether to use the lightweight build of the SDK. Lightweight builds have reduced size but may have limited
+functionality.
 
 #### userId?
 
 `string`
 
-A unique identifier for the user/session.
-Used for analytics and tracking purposes.
+A unique identifier for the user/session. Used for analytics and tracking purposes.
 
 #### wasmVariant?
 
-`"simd"` \| `"simd-threads"`
+`"simd"` \| `"simd-threads"` \| `"simd-relaxed"` \| `"simd-relaxed-threads"`
 
-The WebAssembly module variant to use.
-Different variants may offer different performance/size tradeoffs.
+The WebAssembly module variant to use. Different variants may offer different performance/size tradeoffs.
 
 ### progressCallback?
 
 [`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)
 
-Optional callback for tracking resource download progress (WASM, data files)
+Optional callback for tracking resource downloads across Wasm, data, and OTA files. Use
+  `progress` as the monotonic display value because byte totals can change or reset during resource retries. The
+  terminal event is emitted only after all selected OTA files have been persisted to MEMFS.
 
 ## Returns
 

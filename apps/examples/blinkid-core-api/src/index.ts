@@ -1,11 +1,6 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  loadBlinkIdCore,
-  ProgressStatusCallback,
-} from "@microblink/blinkid-core";
+import { loadBlinkIdCore, ProgressStatusCallback } from "@microblink/blinkid-core";
 
 // Create a progress element to visualize the loading
 const progressElement = document.createElement("div");

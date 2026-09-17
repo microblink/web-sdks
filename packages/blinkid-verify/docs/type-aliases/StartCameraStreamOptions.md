@@ -10,20 +10,26 @@
 
 Options for starting a camera stream.
 
-## Type declaration
+## Type Declaration
 
 ### autoplay?
 
-> `optional` **autoplay**: `boolean`
+> `optional` **autoplay?**: `boolean`
 
 ## Param
+
+**autoplay**
 
 If true, the camera stream will be started automatically.
 
 ## Param
 
+**preferredCamera**
+
 The camera to start the stream with.
 
 ## Param
+
+**preferredFacing**
 
 The facing mode to start the stream with.

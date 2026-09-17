@@ -12,13 +12,13 @@
 
 ### deviceOrientation?
 
-> `optional` **deviceOrientation**: `DeviceOrientation`
+> `optional` **deviceOrientation?**: `DeviceOrientation`
 
 ***
 
 ### flashlightOn?
 
-> `optional` **flashlightOn**: `boolean`
+> `optional` **flashlightOn?**: `boolean`
 
 ***
 

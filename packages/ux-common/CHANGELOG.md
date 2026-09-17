@@ -1,5 +1,9 @@
 # @microblink/ux-common
 
+## 1.1.0
+
+- Added a UXTimeoutHandler class for managing UI timeouts
+
 ## 1.0.1
 
 ### Patch Changes

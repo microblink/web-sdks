@@ -1,27 +1,24 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { BlinkCardScanningSession } from "@microblink/blinkcard-wasm";
-import {
-  LicenseError,
-  ServerPermissionError,
-} from "@microblink/worker-common/errors";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import * as Comlink from "comlink";
+import { BlinkCardWasmModule } from "@microblink/blinkcard-wasm";
+import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
+import { createLicenseUnlockResult } from "@microblink/test-utils/mocks/licensing";
+import { createScanningSessionMock } from "@microblink/test-utils/mocks/scanningSession";
 import {
   createWasmModuleMock,
   getLastModuleOverrides,
   resetLastModuleOverrides,
   setWasmModuleMock,
 } from "@microblink/test-utils/mocks/wasmModuleFactory";
-import { createFakeImageData } from "@microblink/test-utils/mocks/imageData";
-import { createLicenseUnlockResult } from "@microblink/test-utils/mocks/licensing";
-import { createScanningSessionMock } from "@microblink/test-utils/mocks/scanningSession";
-import { BlinkCardWasmModule } from "@microblink/blinkcard-wasm";
+import { LicenseError, ServerPermissionError } from "@microblink/worker-common/errors";
+import * as Comlink from "comlink";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const getCrossOriginWorkerURLMock = vi.fn();
 const downloadResourceBufferMock = vi.fn();
+const downloadAndCompileWasmMock = vi.fn();
+const createWasmInstantiatorMock = vi.fn();
 const detectWasmFeaturesMock = vi.fn();
 const validateLicenseProxyPermissionsMock = vi.fn();
 const sanitizeProxyUrlsMock = vi.fn();
@@ -32,6 +29,8 @@ let workerEventListeners = new Map<string, EventListener[]>();
 const hostName = "example.com" as const;
 const userId = "test-user" as const;
 const wasmVariant = "simd-threads" as const;
+const compiledWasm = {} as WebAssembly.Module;
+const wasmInstantiator = vi.fn();
 
 vi.mock("comlink", () => {
   const finalizer = Symbol("finalizer");
@@ -44,6 +43,13 @@ vi.mock("comlink", () => {
   };
 });
 
+vi.mock("@microblink/blinkcard-wasm/size-manifest.json", () => ({
+  default: {
+    wasm: { simd: 100, "simd-threads": 100, "simd-relaxed": 100, "simd-relaxed-threads": 100 },
+    data: { simd: 100, "simd-threads": 100, "simd-relaxed": 100, "simd-relaxed-threads": 100 },
+  },
+}));
+
 vi.mock("@microblink/worker-common/getCrossOriginWorkerURL", () => ({
   getCrossOriginWorkerURL: getCrossOriginWorkerURLMock,
 }));
@@ -52,23 +58,22 @@ vi.mock("@microblink/worker-common/downloadResourceBuffer", () => ({
   downloadResourceBuffer: downloadResourceBufferMock,
 }));
 
+vi.mock("@microblink/worker-common/compileWasm", () => ({
+  createWasmInstantiator: createWasmInstantiatorMock,
+  downloadAndCompileWasm: downloadAndCompileWasmMock,
+}));
+
 vi.mock("@microblink/worker-common/wasm-feature-detect", () => ({
   detectWasmFeatures: detectWasmFeaturesMock,
 }));
-vi.mock(
-  "@microblink/worker-common/proxy-url-validator",
-  async (importOriginal) => {
-    const actual =
-      await importOriginal<
-        typeof import("@microblink/worker-common/proxy-url-validator")
-      >();
-    return {
-      ...actual,
-      validateLicenseProxyPermissions: validateLicenseProxyPermissionsMock,
-      sanitizeProxyUrls: sanitizeProxyUrlsMock,
-    };
-  },
-);
+vi.mock("@microblink/worker-common/proxy-url-validator", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("@microblink/worker-common/proxy-url-validator")>();
+  return {
+    ...actual,
+    validateLicenseProxyPermissions: validateLicenseProxyPermissionsMock,
+    sanitizeProxyUrls: sanitizeProxyUrlsMock,
+  };
+});
 
 vi.mock("@microblink/worker-common/licencing", () => ({
   obtainNewServerPermission: obtainNewServerPermissionMock,
@@ -87,16 +92,12 @@ const getLatestWorkerListener = (type: string) => {
 };
 
 const getLastQueuedPinglet = (queuePingletMock: ReturnType<typeof vi.fn>) => {
-  const serializedPinglet = queuePingletMock.mock.calls[
-    queuePingletMock.mock.calls.length - 1
-  ]?.[0] as string;
+  const serializedPinglet = queuePingletMock.mock.calls[queuePingletMock.mock.calls.length - 1]?.[0] as string;
 
   return JSON.parse(serializedPinglet) as Record<string, unknown>;
 };
 
-const getLastQueuedPingletSessionNumber = (
-  queuePingletMock: ReturnType<typeof vi.fn>,
-): unknown =>
+const getLastQueuedPingletSessionNumber = (queuePingletMock: ReturnType<typeof vi.fn>): unknown =>
   queuePingletMock.mock.calls[queuePingletMock.mock.calls.length - 1]?.[3];
 
 describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
@@ -109,6 +110,8 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
   beforeEach(async () => {
     getCrossOriginWorkerURLMock.mockReset();
     downloadResourceBufferMock.mockReset();
+    downloadAndCompileWasmMock.mockReset();
+    createWasmInstantiatorMock.mockReset();
     detectWasmFeaturesMock.mockReset();
     validateLicenseProxyPermissionsMock.mockReset();
     sanitizeProxyUrlsMock.mockReset();
@@ -122,33 +125,28 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
       close: vi.fn(),
       location: { hostname: hostName },
       navigator: { userAgent: "Chrome" },
-      addEventListener: vi.fn(
-        (type: string, listener: EventListenerOrEventListenerObject) => {
-          const listeners = workerEventListeners.get(type) ?? [];
-          listeners.push(listener as EventListener);
-          workerEventListeners.set(type, listeners);
-        },
-      ),
-      removeEventListener: vi.fn(
-        (type: string, listener: EventListenerOrEventListenerObject) => {
-          const listeners = workerEventListeners.get(type) ?? [];
-          workerEventListeners.set(
-            type,
-            listeners.filter((entry) => entry !== listener),
-          );
-        },
-      ),
+      addEventListener: vi.fn((type: string, listener: EventListenerOrEventListenerObject) => {
+        const listeners = workerEventListeners.get(type) ?? [];
+        listeners.push(listener as EventListener);
+        workerEventListeners.set(type, listeners);
+      }),
+      removeEventListener: vi.fn((type: string, listener: EventListenerOrEventListenerObject) => {
+        const listeners = workerEventListeners.get(type) ?? [];
+        workerEventListeners.set(
+          type,
+          listeners.filter((entry) => entry !== listener),
+        );
+      }),
     });
 
     // Worker loads wasm from this URL; mock factory serves the seeded module.
-    const factoryUrl = new URL(
-      "../../test-utils/src/mocks/wasmModuleFactory.ts",
-      import.meta.url,
-    ).href;
+    const factoryUrl = new URL("../../test-utils/src/mocks/wasmModuleFactory.ts", import.meta.url).href;
 
     getCrossOriginWorkerURLMock.mockResolvedValue(factoryUrl);
     detectWasmFeaturesMock.mockResolvedValue(wasmVariant);
     downloadResourceBufferMock.mockResolvedValue(new ArrayBuffer(0));
+    downloadAndCompileWasmMock.mockResolvedValue(compiledWasm);
+    createWasmInstantiatorMock.mockReturnValue(wasmInstantiator);
     sanitizeProxyUrlsMock.mockReturnValue({
       ping: "https://proxy.example.com/ping",
       baltazar: "https://proxy.example.com/api/v2/status/check",
@@ -162,6 +160,42 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     resetLastModuleOverrides();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
+  });
+
+  it("hands the stream-compiled wasm module to Emscripten", async () => {
+    const { module } = createWasmModuleMock<BlinkCardWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+
+    const worker = new BlinkCardWorker();
+    await worker.initBlinkCard(baseInitSettings);
+
+    expect(downloadAndCompileWasmMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: "https://example.com/resources/simd-threads/BlinkCardModule.wasm",
+        fileType: "wasm",
+        variant: wasmVariant,
+      }),
+      expect.any(Function),
+    );
+    expect(createWasmInstantiatorMock).toHaveBeenCalledWith(compiledWasm);
+    expect(getLastModuleOverrides()?.wasmBinary).toBeUndefined();
+    expect(getLastModuleOverrides()?.instantiateWasm).toBe(wasmInstantiator);
+  });
+
+  it("fails initialization when the wasm binary cannot be downloaded", async () => {
+    const { module, spies } = createWasmModuleMock<BlinkCardWasmModule>({
+      initializeWithLicenseKey: vi.fn(() => createLicenseUnlockResult()),
+    });
+    setWasmModuleMock(module);
+    downloadAndCompileWasmMock.mockRejectedValue(new TypeError("Failed to fetch"));
+
+    const worker = new BlinkCardWorker();
+    await expect(worker.initBlinkCard(baseInitSettings)).rejects.toThrow("Failed to fetch");
+
+    expect(getLastModuleOverrides()).toBeUndefined();
+    expect(spies.initializeWithLicenseKey).not.toHaveBeenCalled();
   });
 
   it("does not flush pinglets after successful server permission flow", async () => {
@@ -189,15 +223,15 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     expect(spies.queuePinglet.mock.invocationCallOrder[0]).toBeLessThan(
       obtainNewServerPermissionMock.mock.invocationCallOrder[0],
     );
-    expect(
-      spies.submitServerPermission.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      obtainNewServerPermissionMock.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+    expect(spies.submitServerPermission.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(obtainNewServerPermissionMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
     expect(spies.queuePinglet.mock.invocationCallOrder[0]).toBeLessThan(
       spies.initializeSdk.mock.invocationCallOrder[0],
     );
@@ -236,15 +270,15 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     expect(spies.setPingProxyUrl.mock.invocationCallOrder[0]).toBeLessThan(
       spies.initializeSdk.mock.invocationCallOrder[0],
     );
-    expect(
-      obtainNewServerPermissionMock.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.submitServerPermission.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+    expect(obtainNewServerPermissionMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.submitServerPermission.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
     expect(spies.setPingProxyUrl.mock.invocationCallOrder[0]).toBeLessThan(
       spies.submitServerPermission.mock.invocationCallOrder[0],
     );
@@ -263,17 +297,15 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
 
     const worker = new BlinkCardWorker();
 
-    await expect(worker.initBlinkCard(baseInitSettings)).rejects.toThrow(
-      LicenseError,
-    );
+    await expect(worker.initBlinkCard(baseInitSettings)).rejects.toThrow(LicenseError);
     expect(spies.initializeWithLicenseKey).toHaveBeenCalledOnce();
     expect(spies.queuePinglet).toHaveBeenCalledOnce();
     expect(spies.sendPinglets).not.toHaveBeenCalled();
     expect(spies.submitServerPermission).not.toHaveBeenCalled();
     expect(spies.initializeSdk).not.toHaveBeenCalled();
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.queuePinglet.mock.invocationCallOrder[0]);
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.queuePinglet.mock.invocationCallOrder[0],
+    );
   });
 
   it("uses ping and baltazar proxies without flushing pinglets on successful init", async () => {
@@ -299,10 +331,7 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     expect(sanitizeProxyUrlsMock).toHaveBeenCalledWith(proxyUrl);
     expect(spies.setPingProxyUrl).toHaveBeenCalledWith(`${proxyUrl}/ping`);
     const sanitizedBaltazar = "https://proxy.example.com/api/v2/status/check";
-    expect(obtainNewServerPermissionMock).toHaveBeenCalledWith(
-      licenseUnlockResult,
-      sanitizedBaltazar,
-    );
+    expect(obtainNewServerPermissionMock).toHaveBeenCalledWith(licenseUnlockResult, sanitizedBaltazar);
     expect(spies.queuePinglet).toHaveBeenCalledOnce();
     expect(obtainNewServerPermissionMock).toHaveBeenCalledOnce();
     expect(spies.submitServerPermission).toHaveBeenCalledOnce();
@@ -313,15 +342,15 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     expect(spies.setPingProxyUrl.mock.invocationCallOrder[0]).toBeLessThan(
       spies.initializeSdk.mock.invocationCallOrder[0],
     );
-    expect(
-      obtainNewServerPermissionMock.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.submitServerPermission.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+    expect(obtainNewServerPermissionMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.submitServerPermission.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
   });
 
   it("throws Error and does not send pinglets when server permission request fails", async () => {
@@ -343,9 +372,9 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     expect(spies.sendPinglets).not.toHaveBeenCalled();
     expect(spies.submitServerPermission).not.toHaveBeenCalled();
     expect(spies.initializeSdk).not.toHaveBeenCalled();
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.queuePinglet.mock.invocationCallOrder[0]);
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.queuePinglet.mock.invocationCallOrder[0],
+    );
   });
 
   it("throws ServerPermissionError and does not send pinglets when submitServerPermission returns an error", async () => {
@@ -364,21 +393,17 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
       lease: 0,
     });
 
-    await expect(worker.initBlinkCard(baseInitSettings)).rejects.toThrow(
-      ServerPermissionError,
-    );
+    await expect(worker.initBlinkCard(baseInitSettings)).rejects.toThrow(ServerPermissionError);
 
     expect(spies.initializeWithLicenseKey).toHaveBeenCalledOnce();
     expect(spies.queuePinglet).toHaveBeenCalledOnce();
     expect(obtainNewServerPermissionMock).toHaveBeenCalledOnce();
-    expect(spies.submitServerPermission).toHaveBeenCalledWith(
-      "server-permission",
-    );
+    expect(spies.submitServerPermission).toHaveBeenCalledWith("server-permission");
     expect(spies.sendPinglets).not.toHaveBeenCalled();
     expect(spies.initializeSdk).not.toHaveBeenCalled();
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.queuePinglet.mock.invocationCallOrder[0]);
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.queuePinglet.mock.invocationCallOrder[0],
+    );
   });
 
   it("queues crash pinglet and flushes when initializeSdk fails", async () => {
@@ -404,12 +429,10 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     expect(spies.sendPinglets).toHaveBeenCalledOnce();
     expect(spies.submitServerPermission).toHaveBeenCalledOnce();
     expect(spies.initializeSdk).toHaveBeenCalledOnce();
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.queuePinglet.mock.invocationCallOrder[0]);
-    expect(spies.initializeSdk.mock.invocationCallOrder[0]).greaterThan(
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
       spies.queuePinglet.mock.invocationCallOrder[0],
     );
+    expect(spies.initializeSdk.mock.invocationCallOrder[0]).greaterThan(spies.queuePinglet.mock.invocationCallOrder[0]);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
       errorType: "Crash",
       errorMessage: "initializeSdk-error",
@@ -480,7 +503,7 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     const moduleOverrides = getLastModuleOverrides();
     expect(moduleOverrides?.onAbort).toEqual(expect.any(Function));
 
-    (moduleOverrides?.onAbort as (what: unknown) => void)("fatal abort");
+    (moduleOverrides?.onAbort as (what: unknown) => void)?.("fatal abort");
 
     expect(spies.queuePinglet).toHaveBeenCalledTimes(1);
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
@@ -503,11 +526,10 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
 
     // These properties are dead-stripped unless listed in INCOMING_MODULE_JS_API
     // in the Emscripten 6 build, so the worker must keep passing them.
-    expect(moduleOverrides?.wasmBinary).toBeInstanceOf(ArrayBuffer);
+    expect(moduleOverrides?.instantiateWasm).toBe(wasmInstantiator);
+    expect(moduleOverrides?.wasmBinary).toBeUndefined();
     expect(moduleOverrides?.wasmMemory).toBeInstanceOf(WebAssembly.Memory);
-    expect(moduleOverrides?.mainScriptUrlOrBlob).toEqual(
-      expect.stringContaining("wasmModuleFactory"),
-    );
+    expect(moduleOverrides?.mainScriptUrlOrBlob).toEqual(expect.stringContaining("wasmModuleFactory"));
     expect(moduleOverrides?.noExitRuntime).toBe(true);
   });
 
@@ -527,9 +549,7 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
       `https://${hostName}/resources/${wasmVariant}/BlinkCardModule.wasm`,
     );
     // Regression guard: the variant segment must not appear twice.
-    expect(locateFile("BlinkCardModule.wasm")).not.toContain(
-      `${wasmVariant}/${wasmVariant}`,
-    );
+    expect(locateFile("BlinkCardModule.wasm")).not.toContain(`${wasmVariant}/${wasmVariant}`);
   });
 
   it("reports scanning session creation failures as crash pinglets", async () => {
@@ -547,9 +567,7 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     spies.queuePinglet.mockClear();
     spies.sendPinglets.mockClear();
 
-    expect(() => worker.createScanningSession()).toThrow(
-      "session-create-failed",
-    );
+    expect(() => worker.createScanningSession()).toThrow("session-create-failed");
     expect(spies.queuePinglet).toHaveBeenCalledTimes(1);
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
@@ -578,9 +596,7 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     spies.queuePinglet.mockClear();
     spies.sendPinglets.mockClear();
 
-    expect(() => proxySession.process(createFakeImageData())).toThrow(
-      "process-failed",
-    );
+    expect(() => proxySession.process(createFakeImageData())).toThrow("process-failed");
     expect(spies.queuePinglet).toHaveBeenCalledTimes(1);
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
@@ -610,9 +626,7 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     spies.queuePinglet.mockClear();
     spies.sendPinglets.mockClear();
 
-    expect(() => proxySession.process(createFakeImageData())).toThrow(
-      "table index is out of bounds RuntimeError",
-    );
+    expect(() => proxySession.process(createFakeImageData())).toThrow("table index is out of bounds RuntimeError");
     expect(spies.queuePinglet).toHaveBeenCalledTimes(1);
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
@@ -623,11 +637,9 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
   });
 
   it("reports frame return transfer failures as crash pinglets", async () => {
-    const transferSpy = vi
-      .spyOn(Comlink, "transfer")
-      .mockImplementationOnce(() => {
-        throw new Error("buffer-transfer-failed");
-      });
+    const transferSpy = vi.spyOn(Comlink, "transfer").mockImplementationOnce(() => {
+      throw new Error("buffer-transfer-failed");
+    });
     const session = createScanningSessionMock<BlinkCardScanningSession>({
       process: vi.fn(() => ({ cardNumber: "4111111111111111" }) as never),
       getSessionNumber: vi.fn(() => 1),
@@ -652,8 +664,7 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     expect(spies.sendPinglets).toHaveBeenCalledTimes(1);
     expect(getLastQueuedPinglet(spies.queuePinglet)).toMatchObject({
       errorType: "Crash",
-      errorMessage:
-        "Failed to transfer frame from worker: buffer-transfer-failed",
+      errorMessage: "Failed to transfer frame from worker: buffer-transfer-failed",
     });
   });
 
@@ -750,14 +761,14 @@ describe("BlinkCardWorker initBlinkCard ping flush and proxy ordering", () => {
     expect(spies.sendPinglets).not.toHaveBeenCalled();
 
     // allowPingProxy is false so ping proxy is not set; permission flow order unchanged.
-    expect(
-      obtainNewServerPermissionMock.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.submitServerPermission.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
-    expect(
-      spies.initializeWithLicenseKey.mock.invocationCallOrder[0],
-    ).toBeLessThan(spies.initializeSdk.mock.invocationCallOrder[0]);
+    expect(obtainNewServerPermissionMock.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.submitServerPermission.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
+    expect(spies.initializeWithLicenseKey.mock.invocationCallOrder[0]).toBeLessThan(
+      spies.initializeSdk.mock.invocationCallOrder[0],
+    );
   });
 });

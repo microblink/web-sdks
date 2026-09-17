@@ -1,55 +1,12 @@
 {
   "name": "@microblink/blinkid-verify-wasm",
+  "version": "4000.0.0-next.0",
   "private": true,
-  "version": "3.22.0-next",
-  "scripts": {
-    "build": "tsc",
-    "build:publish": "tsc",
-    "clean": "rimraf .turbo types",
-    "docs:api": "typedoc",
-    "lint": "pnpm run lint:types",
-    "lint:types": "tsc --emitDeclarationOnly false --noEmit"
-  },
-  "type": "module",
-  "main": "src/index.ts",
-  "module": "./dist/index.js",
-  "types": "src/index.ts",
-  "exports": {
-    ".": {
-      "types": "./types/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./size-manifest.json": "./dist/size-manifest.json",
-    "./package.json": "./package.json"
-  },
-  "imports": {
-    "#BlinkIdVerifyModule": "./dist/simd/BlinkIdVerifyModule.js",
-    "#BlinkIdVerifyModuleTest": "./dist_test/simd/BlinkIdVerifyModule_Test.js"
-  },
-  "files": [
-    "dist",
-    "types"
-  ],
-  "devDependencies": {
-    "@microblink/tsconfig": "workspace:*",
-    "@microblink/wasm-common": "workspace:*",
-    "@vitest/browser-playwright": "^4.0.8",
-    "arktype": "^2.2.0",
-    "dotenv-cli": "^8.0.0",
-    "prettier-plugin-jsdoc": "^1.3.3",
-    "rimraf": "^6.0.1",
-    "tsx": "^4.21.0",
-    "typedoc": "^0.28.7",
-    "typedoc-plugin-markdown": "^4.7.0",
-    "typescript": "5.8.3",
-    "vite": "^6.2.1",
-    "vitest": "^4.0.8",
-    "zx": "^8.8.5"
-  },
+  "description": "BlinkIdVerify Wasm runtime",
   "keywords": [
     "aml",
-    "blinkid-verify",
     "blinkid",
+    "blinkid-verify",
     "compliance",
     "computer-vision",
     "document-authentification",
@@ -72,5 +29,53 @@
     "wasm",
     "webassembly"
   ],
-  "description": "BlinkIdVerify Wasm runtime"
+  "files": [
+    "dist",
+    "types"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "module": "./dist/index.js",
+  "types": "src/index.ts",
+  "imports": {
+    "#BlinkIdVerifyModule": "./dist/simd/BlinkIdVerifyModule.js",
+    "#BlinkIdVerifyModuleTest": "./dist_test/simd/BlinkIdVerifyModule_Test.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./size-manifest.json": {
+      "types": "./src/size-manifest.d.ts",
+      "default": "./dist/size-manifest.json"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types",
+    "docs:api": "typedoc",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/wasm-common": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "@vitest/browser-playwright": "catalog:test",
+    "arktype": "^2.2.0",
+    "dotenv-cli": "catalog:utils",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "tsx": "catalog:typescript",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vitest": "catalog:test",
+    "zx": "catalog:utils"
+  }
 }

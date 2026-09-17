@@ -16,8 +16,8 @@ Represents the document number redaction settings.
 
 > **prefixDigitsVisible**: `number`
 
-Defines how many digits at the beginning of the document number remain
-visible after redaction. Allowed values are `0` to `255`.
+Defines how many digits at the beginning of the document number remain visible after redaction. Allowed values are
+`0` to `255`.
 
 #### Default
 
@@ -31,8 +31,8 @@ visible after redaction. Allowed values are `0` to `255`.
 
 > **suffixDigitsVisible**: `number`
 
-Defines how many digits at the end of the document number remain visible
-after redaction. Allowed values are `0` to `255`.
+Defines how many digits at the end of the document number remain visible after redaction. Allowed values are `0` to
+`255`.
 
 #### Default
 

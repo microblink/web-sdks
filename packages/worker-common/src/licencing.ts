@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { LicenseRequest, LicenseUnlockResult } from "@microblink/wasm-common";
 
@@ -10,9 +8,7 @@ import { LicenseRequest, LicenseUnlockResult } from "@microblink/wasm-common";
  * @param unlockResult - The license unlock result.
  * @returns The license request.
  */
-function constructLicenseRequest(
-  unlockResult: LicenseUnlockResult,
-): LicenseRequest {
+function constructLicenseRequest(unlockResult: LicenseUnlockResult): LicenseRequest {
   return {
     licenseId: unlockResult.licenseId,
     licensee: unlockResult.licensee,
@@ -27,22 +23,22 @@ function constructLicenseRequest(
 /**
  * Obtains a new server permission from Microblink's Baltazar service.
  *
- * @param unlockResult - The license unlock result containing license information.
- * @param baltazarUrl - The Baltazar server URL. Can be a proxy URL if configured.
- *                      Defaults to the official Microblink Baltazar server.
- * @returns Promise resolving to the server permission response.
- *
  * @example
- * ```typescript
- * // Using default Microblink server
- * const permission = await obtainNewServerPermission(unlockResult);
+ *   ```typescript
+ *   // Using default Microblink server
+ *   const permission = await obtainNewServerPermission(unlockResult);
  *
- * // Using custom proxy server
- * const permission = await obtainNewServerPermission(
- *   unlockResult,
- *   "https://your-proxy.example.com/api/v2/status/check"
- * );
- * ```
+ *   // Using custom proxy server
+ *   const permission = await obtainNewServerPermission(
+ *     unlockResult,
+ *     "https://your-proxy.example.com/api/v2/status/check",
+ *   );
+ *   ```;
+ *
+ * @param unlockResult - The license unlock result containing license information.
+ * @param baltazarUrl - The Baltazar server URL. Can be a proxy URL if configured. Defaults to the official Microblink
+ *   Baltazar server.
+ * @returns Promise resolving to the server permission response.
  */
 export async function obtainNewServerPermission(
   unlockResult: LicenseUnlockResult,
@@ -71,9 +67,7 @@ export async function obtainNewServerPermission(
     });
 
     if (!response.ok) {
-      throw new Error(
-        `Server returned error: ${response.status} ${response.statusText}`,
-      );
+      throw new Error(`Server returned error: ${response.status} ${response.statusText}`);
     }
 
     const serverPermission = await response.text();

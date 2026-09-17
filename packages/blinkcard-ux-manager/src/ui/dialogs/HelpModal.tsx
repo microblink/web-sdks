@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { Tooltip } from "@ark-ui/solid";
 import { Modal } from "@microblink/shared-components/Modal";
@@ -15,7 +13,7 @@ import {
   onCleanup,
   ParentComponent,
 } from "solid-js";
-import { useBlinkCardUiStore } from "../BlinkCardUiStoreContext";
+import { Dynamic } from "solid-js/web";
 
 import HelpBlur from "../assets/help/help_blur.svg?component-solid";
 import HelpCameraLens from "../assets/help/help_camera_lens.svg?component-solid";
@@ -23,9 +21,7 @@ import HelpCardNumber from "../assets/help/help_card_number.svg?component-solid"
 import HelpLighting from "../assets/help/help_lighting.svg?component-solid";
 import HelpOcclusion from "../assets/help/help_occlusion.svg?component-solid";
 import QuestionIcon from "../assets/icons/icon-question.svg?component-solid";
-
-import { Dynamic } from "solid-js/web";
-
+import { useBlinkCardUiStore } from "../BlinkCardUiStoreContext";
 import { useLocalization } from "../LocalizationContext";
 
 /**
@@ -43,9 +39,7 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
   const modalVisible = () => store.showHelpModal;
 
   const closeModal = () => updateStore({ showHelpModal: false });
-  /**
-   * Fix for timing issue, array is created before `t` is updated.
-   */
+  /** Fix for timing issue, array is created before `t` is updated. */
   const steps = createMemo(() => {
     const stepsArray: {
       title: () => string;
@@ -79,10 +73,7 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
       {
         title: () => t.help_modal.blur.title,
         img: HelpBlur,
-        text: () =>
-          props.isDesktop
-            ? t.help_modal.blur.details_desktop
-            : t.help_modal.blur.details,
+        text: () => (props.isDesktop ? t.help_modal.blur.details_desktop : t.help_modal.blur.details),
       },
     ];
     return stepsArray;
@@ -112,8 +103,7 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
   });
 
   const firstHeadingId = createUniqueId();
-  const [nextButtonRef, setNextButtonRef] =
-    createSignal<HTMLButtonElement | null>(null);
+  const [nextButtonRef, setNextButtonRef] = createSignal<HTMLButtonElement | null>(null);
 
   return (
     <Modal
@@ -127,12 +117,9 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
       scrollable={false}
       actions={{
         primary: {
-          "aria-label": isLastStep()
-            ? t.help_modal.done_btn_aria
-            : t.help_modal.next_btn,
+          "aria-label": isLastStep() ? t.help_modal.done_btn_aria : t.help_modal.next_btn,
           label: isLastStep() ? t.help_modal.done_btn : t.help_modal.next_btn,
-          onClick: () =>
-            isLastStep() ? closeModal() : setCurrentStep(currentStep() + 1),
+          onClick: () => (isLastStep() ? closeModal() : setCurrentStep(currentStep() + 1)),
           ref: setNextButtonRef,
         },
         secondary: {
@@ -149,26 +136,16 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
       >
         {/* Content Area */}
         <div class="min-h-0 overflow-y-auto compact:overflow-hidden">
-          <div
-            aria-live="polite"
-            aria-atomic="true"
-            class="grid h-full min-h-0"
-          >
+          <div aria-live="polite" aria-atomic="true" class="grid h-full min-h-0">
             <Index each={steps()}>
               {(stepItem, index) => (
-                <div
-                  class="grid-area-[1/1] min-h-0 compact:h-full"
-                  classList={{ invisible: currentStep() !== index }}
-                >
+                <div class="grid-area-[1/1] min-h-0 compact:h-full" classList={{ invisible: currentStep() !== index }}>
                   <article
                     class="grid grid-cols-1 gap-2 min-h-0 compact:h-full
                       compact:grid-cols-[minmax(7rem,11.25rem)_minmax(0,1fr)]
                       compact:grid-rows-[minmax(0,1fr)]"
                   >
-                    <div
-                      aria-hidden="true"
-                      class="compact:col-start-1 compact:self-start"
-                    >
+                    <div aria-hidden="true" class="compact:col-start-1 compact:self-start">
                       <Dynamic
                         component={stepItem().img}
                         class="w-full max-w-[17.5rem] m-x-auto
@@ -188,9 +165,7 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
                       >
                         {stepItem().title()}
                       </h2>
-                      <p class="dialog-description compact:!text-left">
-                        {stepItem().text()}
-                      </p>
+                      <p class="dialog-description compact:!text-left">{stepItem().text()}</p>
                     </div>
                   </article>
                 </div>
@@ -228,9 +203,7 @@ export const HelpModal: Component<{ isDesktop: boolean }> = (props) => {
  * @param props - The props for the HelpButton component.
  * @returns The HelpButton component.
  */
-export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
-  props,
-) => {
+export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (props) => {
   const { t } = useLocalization();
   const { store, updateStore } = useBlinkCardUiStore();
 
@@ -306,7 +279,7 @@ export const HelpButton: ParentComponent<{ isProcessing: boolean }> = (
       <Tooltip.Trigger
         part="help-button-part"
         aria-label={t.help_button.aria_label}
-        class="btn-focus rounded-full bg-white grid place-items-center size-9
+        class="control-focus rounded-full bg-white grid place-items-center size-9
           appearance-none border-none hover:bg-gray-100 active:bg-gray-200
           pos-absolute bottom-4 right-4 [&_svg]:size-7"
         onClick={() => updateStore({ showHelpModal: true })}

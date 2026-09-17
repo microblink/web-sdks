@@ -1,12 +1,12 @@
 {
   "name": "@microblink/unocss-config",
-  "private": "true",
   "version": "0.1.1",
+  "private": "true",
   "type": "module",
   "exports": {
     ".": "./uno.config.ts"
   },
   "devDependencies": {
-    "unocss": "^66.6.5"
+    "unocss": "catalog:ui"
   }
 }

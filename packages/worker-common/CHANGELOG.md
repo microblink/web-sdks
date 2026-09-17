@@ -1,5 +1,12 @@
 # @microblink/worker-common
 
+## 1.1.0
+
+###
+
+- Added support for `simd-relaxed` and `simd-relaxed-threads`
+- Added support for streamed wasm compilation
+
 ## 1.0.5
 
 ### Patch Changes

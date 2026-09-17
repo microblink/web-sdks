@@ -1,8 +1,10 @@
 /// <reference types="vitest/config" />
-/// <reference types="@vitest/browser/providers/playwright" />
 
+import { fileURLToPath } from "node:url";
+
+import { collapseClassWhitespace, getBrowserslistEsbuildTarget } from "@microblink/repo-utils";
+import { playwright } from "@vitest/browser-playwright";
 import UnoCSS from "unocss/vite";
-import { getBrowserslistEsbuildTarget } from "@microblink/repo-utils";
 import { defineConfig, type PluginOption } from "vite";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 import externalize from "vite-plugin-externalize-dependencies";
@@ -12,133 +14,78 @@ import solidSvg from "vite-plugin-solid-svg";
 const externals = [
   /^solid-js/,
   /^@ark-ui/,
+  "@solid-primitives/keyed",
   "solid-zustand",
-  "@microblink/camera-manager",
+  /^@microblink\/camera-manager(?:\/.*)?$/,
   "@microblink/blinkid-core",
 ];
 
-export default defineConfig((config) => ({
-  build: {
-    sourcemap: config.mode === "development",
-    minify: config.mode === "production",
-    target: getBrowserslistEsbuildTarget(),
-    lib: {
-      formats: ["es"],
-      entry: "./src/index.ts",
-      fileName: "blinkid-ux-manager",
-    },
-    rollupOptions: {
-      external: externals,
-    },
-  },
-  test: {
-    silent: true,
-    browser: {
-      enabled: true,
-      provider: "playwright",
-      screenshotFailures: false,
-      headless: true,
-      instances: [
-        {
-          browser: "chromium",
-        },
-      ],
-    },
-  },
-  plugins: [
-    collapseClassWhitespace(),
-    UnoCSS({
-      configFile: "./uno.config.ts",
-      envMode: config.mode === "production" ? "build" : "dev",
-    }),
-    cssInjectedByJsPlugin({
-      useStrictCSP: true,
-      injectCodeFunction: (cssCode) => {
-        window.__blinkidUxManagerCssCode! = cssCode;
-      },
-    }),
-    externalize({
-      externals: config.mode === "production" ? externals : [],
-    }),
-    solidPlugin(),
-    solidSvg(),
-  ] as PluginOption[],
-}));
+const uiEntry = fileURLToPath(new URL("./src/ui.ts", import.meta.url));
 
-/**
- * Collapses whitespace in class attributes to ensure a clean DOM output
- * while maintaining multi-line readability in source code.
- *
- * TODO: Extract to utils after TS conversion PR
- */
-
-function collapseClassWhitespace(): PluginOption {
+export default defineConfig((config) => {
   return {
-    name: "collapse-class-whitespace",
-    enforce: "pre",
-    transform(code: string, id: string) {
-      if (!/\.[jt]sx?$/.test(id)) return null;
-
-      let result = code;
-      // 1. Handle standard quoted strings (No nested logic, easy regex)
-      result = result.replace(
-        /\b(class(?:Name)?)\s*=\s*(["'])([\s\S]*?)\2/g,
-        (match, attr, quote, content) => {
-          return `${attr}=${quote}${content.replace(/\s+/g, " ").trim()}${quote}`;
+    build: {
+      sourcemap: config.mode === "development",
+      minify: config.mode === "production",
+      // One build serves every entry, so transpile for the lowest baseline any of them declares.
+      target: getBrowserslistEsbuildTarget({
+        environments: ["core", "ui"],
+        packageRoot: fileURLToPath(new URL(".", import.meta.url)),
+      }),
+      lib: {
+        formats: ["es"],
+        // Modules shared by several entries land in `chunks/`, so each module exists exactly once and `/core`
+        // consumers never load UI code.
+        entry: {
+          "blinkid-ux-manager": "./src/index.ts",
+          core: "./src/core.ts",
+          ui: "./src/ui.ts",
         },
-      );
-
-      // 2. Handle braced expressions class={...} or classList={...}
-      // We search for the start and then balance the braces
-      const bracedAttrRegex = /\b(class(?:Name|List)?)\s*=\s*\{/g;
-      let match;
-
-      // We work backwards or carefully to avoid index shifts,
-      // but simple string replacement is fine if we are precise.
-      while ((match = bracedAttrRegex.exec(result)) !== null) {
-        const startIdx = match.index;
-        const attrName = match[1];
-        const openingBraceIdx = startIdx + match[0].length - 1;
-
-        // Find matching closing brace
-        let depth = 1;
-        let endIdx = -1;
-        for (let i = openingBraceIdx + 1; i < result.length; i++) {
-          if (result[i] === "{") depth++;
-          if (result[i] === "}") depth--;
-          if (depth === 0) {
-            endIdx = i;
-            break;
-          }
-        }
-
-        if (endIdx !== -1) {
-          const rawContent = result.slice(openingBraceIdx + 1, endIdx);
-
-          // Collapse whitespace but PROTECT interpolations ${...}
-          const parts = rawContent.split(/(\$\{[\s\S]*?\})/g);
-          const cleanedContent = parts
-            .map((part, i) => (i % 2 === 0 ? part.replace(/\s+/g, " ") : part))
-            .join("");
-
-          const before = result.slice(0, startIdx);
-          const after = result.slice(endIdx + 1);
-          const replacement = `${attrName}={${cleanedContent.trim()}}`;
-
-          result = before + replacement + after;
-
-          // Adjust regex index to account for string length change
-          bracedAttrRegex.lastIndex = before.length + replacement.length;
-        }
-      }
-
-      return {
-        code: result,
-        map: null,
-      };
+        fileName: (_format, entryName) => `${entryName}.js`,
+      },
+      rollupOptions: {
+        external: externals,
+        output: {
+          chunkFileNames: "chunks/[name]-[hash].js",
+        },
+      },
     },
+    test: {
+      silent: true,
+      browser: {
+        enabled: true,
+        provider: playwright(),
+        screenshotFailures: false,
+        headless: true,
+        instances: [
+          {
+            browser: "chromium",
+          },
+        ],
+      },
+    },
+    plugins: [
+      collapseClassWhitespace(),
+      UnoCSS({
+        configFile: fileURLToPath(new URL("./uno.config.ts", import.meta.url)),
+        envMode: config.mode === "production" ? "build" : "dev",
+      }),
+      cssInjectedByJsPlugin({
+        useStrictCSP: true,
+        // Inject styles into the chunk that carries the UI entry code so both `/ui` and root consumers load it.
+        jsAssetsFilterFunction: (outputChunk) => outputChunk.moduleIds.includes(uiEntry),
+        injectCodeFunction: (cssCode) => {
+          window.__blinkidUxManagerCssCode! = cssCode;
+        },
+      }),
+      externalize({
+        externals: config.mode === "production" ? externals : [],
+      }),
+      solidPlugin(),
+      solidSvg(),
+    ] as PluginOption[],
   };
-}
+});
 
 declare global {
   interface Window {

@@ -6,6 +6,6 @@
 
 # Type Alias: StringResult
 
-> **StringResult** = `{ [key in AlphabetType]: AlphabetStringResult }`
+> **StringResult** = `Record`\<[`AlphabetType`](AlphabetType.md), [`AlphabetStringResult`](AlphabetStringResult.md)\>
 
 Represents multi string results with mandatory entries for all alphabets

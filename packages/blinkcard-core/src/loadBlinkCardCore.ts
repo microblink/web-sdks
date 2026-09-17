@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkCardWorkerInitSettings,
@@ -15,8 +13,8 @@ import type { SetOptional, Simplify } from "type-fest";
 /**
  * Configuration options for initializing the BlinkCard core.
  *
- * This type extends the BlinkCardWorkerInitSettings type by making the userId property optional.
- * It allows for partial configuration of the initialization settings.
+ * This type extends the BlinkCardWorkerInitSettings type by making the userId property optional. It allows for partial
+ * configuration of the initialization settings.
  */
 export type BlinkCardInitSettings = SetOptional<
   BlinkCardWorkerInitSettings,
@@ -27,8 +25,8 @@ export type BlinkCardInitSettings = SetOptional<
 /**
  * Represents the BlinkCard core instance.
  *
- * This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkCard worker.
- * It simplifies the type to remove unnecessary complexity.
+ * This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkCard worker. It simplifies
+ * the type to remove unnecessary complexity.
  */
 export type BlinkCardCore = Simplify<Remote<BlinkCardWorkerProxy>>;
 
@@ -51,24 +49,19 @@ export async function loadBlinkCardCore(
     "blinkcard-worker.js",
   );
 
-  if (!settings.userId) {
+  if (Boolean(settings.userId) === false) {
     settings.userId = getUserId(STORAGE_KEY);
   }
 
-  if (!settings.resourcesLocation) {
+  if (Boolean(settings.resourcesLocation) === false) {
     settings.resourcesLocation = window.location.href;
   }
 
-  const proxyProgressCallback = progressCallback
-    ? proxy(progressCallback)
-    : undefined;
+  const proxyProgressCallback = progressCallback ? proxy(progressCallback) : undefined;
 
   try {
     // we added the `userid` to the settings if not provided, so this assertion is safe
-    await remoteWorker.initBlinkCard(
-      settings as BlinkCardWorkerInitSettings,
-      proxyProgressCallback,
-    );
+    await remoteWorker.initBlinkCard(settings as BlinkCardWorkerInitSettings, proxyProgressCallback);
 
     return remoteWorker;
   } catch (error) {

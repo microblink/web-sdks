@@ -1,28 +1,27 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { RemoteScanningSession } from "@microblink/blinkcard-core";
 import { getDeviceInfo } from "@microblink/blinkcard-core";
-import type { CameraManager } from "@microblink/camera-manager";
+import type { CameraManager } from "@microblink/camera-manager/core";
 import { createFakeScanningSession } from "@microblink/test-utils";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+
 import { BlinkCardUxManager } from "./BlinkCardUxManager";
 import { createBlinkCardUxManager } from "./createBlinkCardUxManager";
 
 /**
  * Test file role:
+ *
  * - Verifies constructor wiring for createBlinkCardUxManager().
  * - Focuses on dependency forwarding/default setup, not scan flow behavior.
  */
 
 vi.mock("./BlinkCardUxManager", () => ({
-  BlinkCardUxManager: vi.fn(),
+  BlinkCardUxManager: vi.fn(class BlinkCardUxManagerMock {}),
 }));
 
 vi.mock("@microblink/blinkcard-core", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@microblink/blinkcard-core")>();
+  const actual = await importOriginal<typeof import("@microblink/blinkcard-core")>();
   return {
     ...actual,
     getDeviceInfo: vi.fn(),
@@ -46,17 +45,24 @@ describe("createBlinkCardUxManager", () => {
       showProductionOverlay: SHOW_PRODUCTION_OVERLAY,
     });
 
-    const deviceInfo = { userAgent: "ua" } as Awaited<
-      ReturnType<typeof getDeviceInfo>
-    >;
+    const deviceInfo = { userAgent: "ua" } as Awaited<ReturnType<typeof getDeviceInfo>>;
     vi.mocked(getDeviceInfo).mockResolvedValue(deviceInfo);
+    const options = {
+      timeoutConfiguration: {
+        inactivityTimeoutMs: 5_000,
+        scanStepTimeoutMs: null,
+      },
+    };
 
     const instance = {} as BlinkCardUxManager;
-    vi.mocked(BlinkCardUxManager).mockImplementation(() => instance);
+    vi.mocked(BlinkCardUxManager).mockImplementation(function BlinkCardUxManagerMock() {
+      return instance;
+    });
 
     const result = await createBlinkCardUxManager(
       cameraManager,
       scanningSession as unknown as RemoteScanningSession,
+      options,
     );
 
     expect(result).toBe(instance);
@@ -64,7 +70,7 @@ describe("createBlinkCardUxManager", () => {
     expect(BlinkCardUxManager).toHaveBeenCalledWith(
       cameraManager,
       scanningSession,
-      {},
+      options,
       sessionSettings,
       SHOW_DEMO_OVERLAY,
       SHOW_PRODUCTION_OVERLAY,
@@ -81,10 +87,7 @@ describe("createBlinkCardUxManager", () => {
     });
 
     await expect(
-      createBlinkCardUxManager(
-        cameraManager,
-        scanningSession as unknown as RemoteScanningSession,
-      ),
+      createBlinkCardUxManager(cameraManager, scanningSession as unknown as RemoteScanningSession),
     ).rejects.toThrow("rpc failed");
 
     expect(scanningSession.ping).toHaveBeenCalledWith(

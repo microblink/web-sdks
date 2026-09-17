@@ -1,13 +1,10 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * A stoppable `requestAnimationFrame` loop with built-in throttling.
  *
- * The callback fires at most once per {@link throttleMs} interval (default: every
- * frame). Calling {@link stop} is guaranteed to prevent any further invocations,
- * even if a frame was already queued by the browser.
+ * The callback fires at most once per {@link throttleMs} interval (default: every frame). Calling {@link stop} is
+ * guaranteed to prevent any further invocations, even if a frame was already queued by the browser.
  */
 export class RafLoop {
   #running = false;

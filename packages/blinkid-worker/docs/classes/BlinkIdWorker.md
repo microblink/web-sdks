@@ -22,9 +22,9 @@ The BlinkID worker.
 
 ### progressStatusCallback?
 
-> `optional` **progressStatusCallback**: [`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)
+> `optional` **progressStatusCallback?**: [`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)
 
-The progress status callback.
+Progress callback used during initialization.
 
 ## Methods
 
@@ -58,9 +58,8 @@ The options for the session.
 
 The type of image source for the scanning session.
 
-Defines whether the images are sourced from a video stream or a single
-photo, as defined by `InputImageSource`. The default is set to `video` for
-real-time scanning through a camera feed.
+Defines whether the images are sourced from a video stream or a single photo, as defined by `InputImageSource`. The
+default is set to `video` for real-time scanning through a camera feed.
 
 - `video` - Uses continuous camera feed for scanning
 - `photo` - Uses a single captured photo for scanning
@@ -75,10 +74,9 @@ real-time scanning through a camera feed.
 
 The scanning mode to be used during the scanning session.
 
-Specifies whether the scanning is for a single side of a document or
-multiple sides, as defined in `ScanningMode`. The default is set to
-`automatic`, which automatically determines the number of sides to scan
-based on the detected document type.
+Specifies whether the scanning is for a single side of a document or multiple sides, as defined in `ScanningMode`.
+The default is set to `automatic`, which automatically determines the number of sides to scan based on the detected
+document type.
 
 - `automatic` - Automatically determines required sides
 - `single` - Scans only one side
@@ -89,7 +87,7 @@ based on the detected document type.
 
 ###### scanningSettings?
 
-`Partial`\<\{ `barcodeModule`: `Partial`\<`null` \| `BarcodeModuleSettings`\>; `documentCaptureModule`: `Partial`\<`null` \| `DocumentCaptureModuleSettings`\>; `maxAllowedMismatchesPerField`: `number`; `mrzModule`: `Partial`\<`null` \| `MrzModuleSettings`\>; `vizModule`: `Partial`\<`null` \| `VizModuleSettings`\>; \}\>
+`Partial`\<\{ `barcodeModule`: `Partial`\<`BarcodeModuleSettings` \| `null`\>; `documentCaptureModule`: `Partial`\<`DocumentCaptureModuleSettings` \| `null`\>; `maxAllowedMismatchesPerField`: `number`; `mrzModule`: `Partial`\<`MrzModuleSettings` \| `null`\>; `vizModule`: `Partial`\<`VizModuleSettings` \| `null`\>; \}\>
 
 ##### options?
 

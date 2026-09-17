@@ -22,7 +22,7 @@ The type of the string result.
 
 ### conditions?
 
-> `optional` **conditions**: `S`
+> `optional` **conditions?**: `S`
 
 The driver license conditions
 
@@ -30,7 +30,7 @@ The driver license conditions
 
 ### endorsements?
 
-> `optional` **endorsements**: `S`
+> `optional` **endorsements?**: `S`
 
 The additional privileges granted to the US driver license owner
 
@@ -38,16 +38,15 @@ The additional privileges granted to the US driver license owner
 
 ### restrictions?
 
-> `optional` **restrictions**: `S`
+> `optional` **restrictions?**: `S`
 
-The restrictions to driving privileges for the United States driver license
-owner
+The restrictions to driving privileges for the United States driver license owner
 
 ***
 
 ### vehicleClass?
 
-> `optional` **vehicleClass**: `S`
+> `optional` **vehicleClass?**: `S`
 
 The type of vehicle the driver license owner has privilege to drive
 
@@ -55,6 +54,6 @@ The type of vehicle the driver license owner has privilege to drive
 
 ### vehicleClassesInfo?
 
-> `optional` **vehicleClassesInfo**: [`VehicleClassInfo`](VehicleClassInfo.md)\<`S`\>[]
+> `optional` **vehicleClassesInfo?**: [`VehicleClassInfo`](VehicleClassInfo.md)\<`S`\>[]
 
 The additional information on vehicle class

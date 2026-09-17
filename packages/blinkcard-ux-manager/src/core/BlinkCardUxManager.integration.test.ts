@@ -1,22 +1,17 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { beforeEach, describe, expect, test, vi } from "vitest";
-import {
-  createFakeImageData,
-  enableRafAwareFakeTimers,
-  setupDestroyableTeardown,
-} from "@microblink/test-utils";
+import { createFakeImageData, enableRafAwareFakeTimers, setupDestroyableTeardown } from "@microblink/test-utils";
 import { advanceAndFlushUi } from "@microblink/test-utils/vitest/timers";
-import { BlinkCardUxManager } from "./BlinkCardUxManager";
-import { blinkCardUiStateMap } from "./blinkcard-ui-state";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+
 import {
   createDeviceInfo,
   createProcessResult,
   createScanningResult,
   createSessionSettings,
 } from "./__testdata/blinkcardTestFixtures";
+import { blinkCardUiStateMap } from "./blinkcard-ui-state";
+import { BlinkCardUxManager } from "./BlinkCardUxManager";
 import {
   createBlinkCardIntegrationContext,
   type CreateBlinkCardIntegrationContextOptions,
@@ -24,6 +19,7 @@ import {
 
 /**
  * Test file role:
+ *
  * - Smoke-tests public BlinkCard scanning flow end-to-end with behavioral fakes.
  * - Covers frame processing, UI progression, timeout lifecycle, and result/error callbacks.
  * - Keeps mocking light and avoids internal-state forcing.
@@ -32,8 +28,7 @@ import {
 const mockSleep = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
 
 vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@microblink/ux-common/utils")>();
+  const actual = await importOriginal<typeof import("@microblink/ux-common/utils")>();
   return { ...actual, sleep: mockSleep };
 });
 
@@ -123,35 +118,28 @@ describe("BlinkCardUxManager integration smoke", () => {
     expect(uiStates).toContain("INTRO_BACK");
   });
 
-  test("timeout lifecycle starts on capture and clears on idle", async () => {
+  test("timeout lifecycle reports inactivity and stops capture", async () => {
     const context = createBlinkCardIntegrationContext({
       ...defaultContextOptions,
     });
     const manager = trackManager(context.manager);
-    manager.setTimeoutDuration(100);
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: 100, scanStepTimeoutMs: 1000 });
 
     const errorSpy = vi.fn();
     manager.addOnErrorCallback(errorSpy);
 
     context.fakeCameraManager.emitPlaybackState("capturing");
     await vi.advanceTimersByTimeAsync(100);
-    expect(errorSpy).toHaveBeenCalledWith("timeout");
+    expect(errorSpy).toHaveBeenCalledWith("inactivity_timeout");
     expect(context.fakeCameraManager.stopFrameCapture).toHaveBeenCalled();
-
-    errorSpy.mockClear();
-    context.fakeCameraManager.emitPlaybackState("capturing");
-    context.fakeCameraManager.emitPlaybackState("idle");
-    await vi.advanceTimersByTimeAsync(100);
-    expect(errorSpy).not.toHaveBeenCalled();
+    expect(context.scanningSession.reset).toHaveBeenCalled();
   });
 
   test("busy guard drops overlapping frames during processing", async () => {
     let resolveFirst!: (value: ReturnType<typeof createProcessResult>) => void;
-    const pendingProcess = new Promise<ReturnType<typeof createProcessResult>>(
-      (resolve) => {
-        resolveFirst = resolve;
-      },
-    );
+    const pendingProcess = new Promise<ReturnType<typeof createProcessResult>>((resolve) => {
+      resolveFirst = resolve;
+    });
     const context = createBlinkCardIntegrationContext({
       ...defaultContextOptions,
       sessionOverrides: {
@@ -160,12 +148,8 @@ describe("BlinkCardUxManager integration smoke", () => {
     });
     const manager = trackManager(context.manager);
 
-    const firstFramePromise = context.fakeCameraManager.emitFrame(
-      createFakeImageData(),
-    );
-    const secondFrameResult = await context.fakeCameraManager.emitFrame(
-      createFakeImageData(),
-    );
+    const firstFramePromise = context.fakeCameraManager.emitFrame(createFakeImageData());
+    const secondFrameResult = await context.fakeCameraManager.emitFrame(createFakeImageData());
 
     expect(secondFrameResult).toBeUndefined();
     expect(context.scanningSession.process).toHaveBeenCalledTimes(1);
@@ -187,9 +171,7 @@ describe("BlinkCardUxManager integration smoke", () => {
       ...defaultContextOptions,
       sessionOverrides: {
         process: vi.fn().mockResolvedValue(processResult),
-        getResult: vi
-          .fn()
-          .mockRejectedValue(new Error("Mocked worker RPC failure")),
+        getResult: vi.fn().mockRejectedValue(new Error("Mocked worker RPC failure")),
       },
     });
     const manager = trackManager(context.manager);

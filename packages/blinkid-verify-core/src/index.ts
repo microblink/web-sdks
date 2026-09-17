@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * @packageDocumentation
@@ -43,13 +41,11 @@ export type RemoteScanningSession = Remote<WorkerScanningSession>;
 const testSymbol = Symbol();
 
 declare global {
-  /* eslint-disable no-var */
+  /* oxlint-disable no-var */
   var __BLINKID_VERIFY_CORE__: typeof testSymbol;
 }
 
 globalThis.__BLINKID_VERIFY_CORE__ ||= testSymbol;
 if (globalThis.__BLINKID_VERIFY_CORE__ !== testSymbol) {
-  console.warn(
-    "Detected multiple instances of @microblink/blinkid-core. This can lead to unexpected behavior.",
-  );
+  console.warn("Detected multiple instances of @microblink/blinkid-core. This can lead to unexpected behavior.");
 }

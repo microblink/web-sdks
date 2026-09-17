@@ -1,30 +1,14 @@
 {
   "name": "@microblink/camera-manager",
+  "version": "8.0.0",
   "description": "Manages cameras and stream, provides both a headless component and a UI component",
-  "version": "7.3.5",
+  "keywords": [],
+  "license": "ISC",
   "author": "Microblink",
-  "scripts": {
-    "build": "concurrently pnpm:build:js pnpm:build:types",
-    "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
-    "build:js-dev": "vite build --mode development",
-    "build:publish": "pnpm build && pnpm type-rollup",
-    "build:types": "tsc",
-    "clean": "rimraf .turbo types dist publish public/resources/* *.tgz",
-    "docs:api": "typedoc",
-    "lint": "concurrently pnpm:lint:types pnpm:lint:eslint",
-    "lint:eslint": "eslint ./src --max-warnings 0",
-    "lint:types": "tsc --emitDeclarationOnly false --noEmit",
-    "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
-    "prepack": "pnpm prepare-publish",
-    "prepare-publish": "tsx scripts/prepare-publish.mts",
-    "publish-test": "pnpm prepare-publish && pnpm pack-check",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "type-rollup": "api-extractor run --local",
-    "watch": "concurrently pnpm:watch:js pnpm:watch:types",
-    "watch:js": "pnpm run build:js --watch --mode development",
-    "watch:types": "pnpm run build:types --watch"
-  },
+  "files": [
+    "dist",
+    "types"
+  ],
   "type": "module",
   "main": "./dist/camera-manager.js",
   "module": "./dist/camera-manager.js",
@@ -34,28 +18,54 @@
       "types": "./types/index.d.ts",
       "import": "./dist/camera-manager.js"
     },
+    "./core": {
+      "types": "./types/core.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./ui": {
+      "types": "./types/ui.d.ts",
+      "import": "./dist/ui.js"
+    },
     "./package.json": "./package.json"
   },
   "publishConfig": {
     "directory": "publish",
     "linkDirectory": false
   },
-  "files": [
-    "dist",
-    "types"
-  ],
+  "scripts": {
+    "build": "pnpm run --no-bail \"/^build:(js|types)$/\"",
+    "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
+    "build:js-dev": "vite build --mode development",
+    "build:publish": "pnpm build && pnpm type-rollup",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist publish public/resources/* *.tgz",
+    "docs:api": "typedoc",
+    "lint:browser-entrypoints": "BROWSERSLIST_ENV=core oxlint src/core.ts src/core && BROWSERSLIST_ENV=ui oxlint src/ui.ts src/ui",
+    "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
+    "prepack": "pnpm prepare-publish",
+    "prepare-publish": "tsx scripts/prepare-publish.mts",
+    "publish-test": "pnpm prepare-publish && pnpm pack-check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-rollup": "api-extractor run --local --config api-extractor.core.json && api-extractor run --local --config api-extractor.ui.json && tsx ../repo-utils/write-compatibility-declaration-rollup.mts",
+    "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
+    "watch:js": "pnpm run build:js --watch --mode development",
+    "watch:types": "pnpm run build:types --watch",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
   "dependencies": {
     "@csstools/normalize.css": "^12.1.1",
-    "@solid-primitives/resize-observer": "^2.1.1",
+    "@solid-primitives/resize-observer": "catalog:ui",
     "@wessberg/connection-observer": "^1.0.5",
-    "common-tags": "^1.8.2",
-    "perfect-debounce": "^2.1.0",
+    "common-tags": "catalog:utils",
+    "perfect-debounce": "catalog:",
     "rad-event-listener": "^0.2.4",
     "rvfc-polyfill": "^1.0.7",
-    "type-fest": "^4.35.0"
+    "type-fest": "catalog:",
+    "zustand": "catalog:ui"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "0.18.3",
+    "@arethetypeswrong/cli": "catalog:publish",
     "@iconify-json/material-symbols": "^1.2.14",
     "@iconify-json/mdi": "^1.2.3",
     "@microblink/repo-utils": "workspace:*",
@@ -63,53 +73,79 @@
     "@microblink/test-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",
     "@microblink/unocss-config": "workspace:*",
-    "@microsoft/api-extractor": "^7.52.4",
-    "@solid-primitives/scheduled": "^1.5.0",
-    "@solidjs/testing-library": "^0.8.10",
-    "@types/common-tags": "^1.8.3",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
-    "@vitest/browser": "^3.0.8",
-    "concurrently": "^9.1.2",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "10.1.8",
-    "eslint-define-config": "^1.24.1",
-    "eslint-plugin-solid": "0.14.5",
-    "playwright": "^1.51.0",
-    "prettier-plugin-classnames": "0.9.0",
-    "publint": "^0.3.12",
-    "rimraf": "^6.0.1",
-    "sass": "^1.85.0",
-    "tsx": "^4.21.0",
-    "typedoc": "^0.28.7",
-    "typedoc-plugin-markdown": "^4.7.0",
-    "typescript": "5.8.3",
-    "unocss": "^66.6.5",
+    "@microsoft/api-extractor": "catalog:typescript",
+    "@types/common-tags": "catalog:",
+    "@typescript/native": "catalog:typescript",
+    "@vitest/browser-playwright": "catalog:test",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "playwright": "catalog:test",
+    "publint": "catalog:publish",
+    "rimraf": "catalog:utils",
+    "sass": "catalog:ui",
+    "tsx": "catalog:typescript",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "unocss": "catalog:ui",
     "unplugin-icons": "^22.0.0",
-    "vite": "^6.2.1",
-    "vite-plugin-css-injected-by-js": "^3.5.2",
-    "vite-plugin-externalize-dependencies": "1.0.1",
-    "vite-plugin-solid": "^2.11.10",
-    "vite-plugin-solid-svg": "0.8.1",
-    "vitest": "^3.0.8",
-    "write-package": "^7.1.0",
-    "zx": "^8.8.5"
+    "vite": "catalog:vite",
+    "vite-plugin-css-injected-by-js": "catalog:vite",
+    "vite-plugin-externalize-dependencies": "catalog:vite",
+    "vite-plugin-solid": "catalog:vite",
+    "vite-plugin-solid-svg": "catalog:vite",
+    "vitest": "catalog:test",
+    "write-package": "catalog:publish",
+    "zx": "catalog:utils"
   },
   "peerDependencies": {
-    "@ark-ui/solid": "^5.30.0",
-    "solid-js": "^1.9.11",
-    "solid-zustand": "^1.8.1",
-    "zustand": "^4.5.5"
+    "@ark-ui/solid": "catalog:ui",
+    "@solid-primitives/keyed": "catalog:ui",
+    "solid-js": "catalog:ui",
+    "solid-zustand": "catalog:ui"
   },
-  "keywords": [],
-  "license": "ISC",
-  "browserslist": [
-    "Chrome >= 91",
-    "ChromeAndroid >= 91",
-    "Edge >= 91",
-    "Opera >= 84",
-    "Firefox >= 132",
-    "Safari >= 15.4",
-    "iOS >= 15.4"
-  ]
+  "peerDependenciesMeta": {
+    "@ark-ui/solid": {
+      "optional": true
+    },
+    "@solid-primitives/keyed": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    },
+    "solid-zustand": {
+      "optional": true
+    }
+  },
+  "browserslist": {
+    "production": [
+      "Chrome >= 91",
+      "ChromeAndroid >= 91",
+      "Edge >= 91",
+      "Opera >= 84",
+      "Firefox >= 132",
+      "Safari >= 15.4",
+      "iOS >= 15.4"
+    ],
+    "core": [
+      "Chrome >= 91",
+      "ChromeAndroid >= 91",
+      "Edge >= 91",
+      "Opera >= 84",
+      "Firefox >= 132",
+      "Safari >= 15.4",
+      "iOS >= 15.4"
+    ],
+    "ui": [
+      "Chrome >= 91",
+      "ChromeAndroid >= 91",
+      "Edge >= 91",
+      "Opera >= 84",
+      "Firefox >= 132",
+      "Safari >= 15.4",
+      "iOS >= 15.4"
+    ]
+  }
 }

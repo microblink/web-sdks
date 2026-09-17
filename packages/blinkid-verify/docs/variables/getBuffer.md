@@ -4,12 +4,11 @@
 
 [@microblink/blinkid-verify](../README.md) / getBuffer
 
-# Variable: getBuffer()
+# Variable: getBuffer
 
 > `const` **getBuffer**: (`buffer`) => `ArrayBufferLike`
 
-Converts a view to a buffer, since both match the type signature of
-`ArrayBufferLike`.
+Converts a view to a buffer, since both match the type signature of `ArrayBufferLike`.
 
 ## Parameters
 

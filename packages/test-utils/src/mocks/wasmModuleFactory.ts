@@ -1,20 +1,16 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
- * This is a runtime default factory for the WASM module.
- * It is used when `getCrossOriginWorkerURL` is stubbed to return this module's URL.
+ * This is a runtime default factory for the WASM module. It is used when `getCrossOriginWorkerURL` is stubbed to return
+ * this module's URL.
  */
 import type { WasmModule } from "@microblink/wasm-common";
 import { vi } from "vitest";
 
-let wasmModuleMock: WasmModule<any, any> | null = null;
+let wasmModuleMock: WasmModule<never, unknown> | null = null;
 let lastModuleOverrides: Record<string, unknown> | undefined;
 
-export function setWasmModuleMock<T extends WasmModule<any, any>>(
-  module: T | null,
-): void {
+export function setWasmModuleMock<T extends WasmModule<never, unknown>>(module: T | null): void {
   wasmModuleMock = module;
 }
 
@@ -26,11 +22,11 @@ export function resetLastModuleOverrides() {
   lastModuleOverrides = undefined;
 }
 
-type WasmModuleSpies<T extends WasmModule<any, any>> = {
+type WasmModuleSpies<T extends WasmModule<never, unknown>> = {
   [K in keyof T]: ReturnType<typeof vi.fn>;
 };
 
-export function createWasmModuleMock<T extends WasmModule<any, any>>(
+export function createWasmModuleMock<T extends WasmModule<never, unknown>>(
   overrides?: Partial<T>,
 ): {
   spies: WasmModuleSpies<T>;
@@ -63,27 +59,23 @@ export function createWasmModuleMock<T extends WasmModule<any, any>>(
   };
 }
 
-export function getWasmModuleMock(): Promise<WasmModule<any, any>> {
+export function getWasmModuleMock(): Promise<WasmModule<never, unknown>> {
   if (!wasmModuleMock) {
-    throw new Error(
-      "Mock WASM module not set. Call setWasmModuleMock in test.",
-    );
+    throw new Error("Mock WASM module not set. Call setWasmModuleMock in test.");
   }
   return Promise.resolve(wasmModuleMock);
 }
 
 /**
- * Default runtime factory for dynamic worker imports in tests.
- * Extra arguments are ignored (worker code passes Emscripten module options).
+ * Default runtime factory for dynamic worker imports in tests. Extra arguments are ignored (worker code passes
+ * Emscripten module options).
  */
 export default function createMockModule(
   moduleOverrides?: Record<string, unknown>,
-): Promise<WasmModule<any, any>> {
+): Promise<WasmModule<never, unknown>> {
   lastModuleOverrides = moduleOverrides;
   if (!wasmModuleMock) {
-    throw new Error(
-      "Mock WASM module not set. Call setWasmModuleMock in test.",
-    );
+    throw new Error("Mock WASM module not set. Call setWasmModuleMock in test.");
   }
   return Promise.resolve(wasmModuleMock);
 }

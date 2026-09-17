@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 // emscripten-types.ts
 
@@ -9,7 +7,7 @@
  *
  * @ignore
  */
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// oxlint-disable-next-line typescript/no-empty-interface
 export interface WebAssemblyModule {}
 
 /**
@@ -29,10 +27,9 @@ export interface CCallOpts {
 }
 
 /**
- * Specifies an abstract object placed on the WebAssembly heap. Objects placed
- * on the WebAssembly heap are not cleaned up by the garbage collector of the
- * JavaScript engine. The memory used by the object must be cleaned up manually
- * by calling the delete() method.
+ * Specifies an abstract object placed on the WebAssembly heap. Objects placed on the WebAssembly heap are not cleaned
+ * up by the garbage collector of the JavaScript engine. The memory used by the object must be cleaned up manually by
+ * calling the delete() method.
  *
  * @see https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html#memory-management for more details.
  */
@@ -59,10 +56,7 @@ export type EmbindObject<T extends NonNullable<unknown>> = T & {
  * @param T - The type of the object to remove the internals from.
  * @returns The object with the internals removed.
  */
-export type RemoveEmbindInternals<T> = Omit<
-  T,
-  "delete" | "isDeleted" | "deleteLater" | "isAliasOf"
->;
+export type RemoveEmbindInternals<T> = Omit<T, "delete" | "isDeleted" | "deleteLater" | "isAliasOf">;
 
 /**
  * The main EmscriptenModule interface.
@@ -74,11 +68,11 @@ export interface EmscriptenModule {
   printErr(str: string): void;
   arguments: string[];
   environment: EnvironmentType;
-  preInit: Array<{ (): void }>;
-  preRun: Array<{ (): void }>;
-  postRun: Array<{ (): void }>;
-  onAbort: { (what: any): void };
-  onRuntimeInitialized: { (): void };
+  preInit: { (): void }[];
+  preRun: { (): void }[];
+  postRun: { (): void }[];
+  onAbort: (what: unknown) => void;
+  onRuntimeInitialized: () => void;
   preinitializedWebGLContext: WebGLRenderingContext;
   noInitialRun: boolean;
   noExitRuntime: boolean;
@@ -94,19 +88,15 @@ export interface EmscriptenModule {
   setStatus: (text: string) => void;
 
   /**
-   * Allows you to provide your own WebAssembly.Memory to use as the memory. The
-   * properties used to initialize the memory should match the compiler options.
-   * For example, if you set INITIAL_MEMORY to 8MB without memory growth, then
-   * the wasmMemory you provide (if any) should have both the 'initial' and
-   * 'maximum' set to 128 (due to WASM page sizes being 64KB).
+   * Allows you to provide your own WebAssembly.Memory to use as the memory. The properties used to initialize the
+   * memory should match the compiler options. For example, if you set INITIAL_MEMORY to 8MB without memory growth, then
+   * the wasmMemory you provide (if any) should have both the 'initial' and 'maximum' set to 128 (due to WASM page sizes
+   * being 64KB).
    */
   wasmMemory: WebAssembly.Memory;
 
   destroy(object: object): void;
-  getPreloadedPackage(
-    remotePackageName: string,
-    remotePackageSize: number,
-  ): ArrayBuffer;
+  getPreloadedPackage(remotePackageName: string, remotePackageSize: number): ArrayBuffer;
   instantiateWasm(
     imports: WebAssembly.Imports,
     successCallback: (module: WebAssembly.Instance) => void,
@@ -135,34 +125,31 @@ export interface EmscriptenModule {
   TOTAL_MEMORY: number;
   FAST_MEMORY: number;
 
-  addOnPreRun(cb: () => any): void;
-  addOnInit(cb: () => any): void;
-  addOnPreMain(cb: () => any): void;
-  addOnExit(cb: () => any): void;
-  addOnPostRun(cb: () => any): void;
+  addOnPreRun(cb: () => unknown): void;
+  addOnInit(cb: () => unknown): void;
+  addOnPreMain(cb: () => unknown): void;
+  addOnExit(cb: () => unknown): void;
+  addOnPostRun(cb: () => unknown): void;
 
-  preloadedImages: any;
-  preloadedAudios: any;
+  preloadedImages: unknown;
+  preloadedAudios: unknown;
 
   _malloc(size: number): number;
   _free(ptr: number): void;
 }
 
 /**
- * A factory function is generated when setting the `MODULARIZE` build option to
- * `1` in your Emscripten build. It return a Promise that resolves to an
- * initialized, ready-to-call `EmscriptenModule` instance.
+ * A factory function is generated when setting the `MODULARIZE` build option to `1` in your Emscripten build. It return
+ * a Promise that resolves to an initialized, ready-to-call `EmscriptenModule` instance.
  *
- * By default, the factory function will be named `Module`. It's recommended to
- * use the `EXPORT_ES6` option, in which the factory function will be the
- * default export. If used without `EXPORT_ES6`, the factory function will be a
- * global variable. You can rename the variable using the `EXPORT_NAME` build
- * option. It's left to you to declare any global variables as needed in your
- * application's types.
+ * By default, the factory function will be named `Module`. It's recommended to use the `EXPORT_ES6` option, in which
+ * the factory function will be the default export. If used without `EXPORT_ES6`, the factory function will be a global
+ * variable. You can rename the variable using the `EXPORT_NAME` build option. It's left to you to declare any global
+ * variables as needed in your application's types.
  *
  * @ignore
  * @param moduleOverrides Default properties for the initialized module.
  */
-export type EmscriptenModuleFactory<
-  T extends EmscriptenModule = EmscriptenModule,
-> = (moduleOverrides?: Partial<T>) => Promise<T>;
+export type EmscriptenModuleFactory<T extends EmscriptenModule = EmscriptenModule> = (
+  moduleOverrides?: Partial<T>,
+) => Promise<T>;

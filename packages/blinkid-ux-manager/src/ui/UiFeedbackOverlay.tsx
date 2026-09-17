@@ -1,16 +1,12 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { Rerun } from "@solid-primitives/keyed";
+import { clsx } from "clsx";
 import { Component, Match, ParentComponent, Show, Switch } from "solid-js";
 import { Motion, Presence } from "solid-motionone";
 
-import { clsx } from "clsx";
 import { BlinkIdUiState, blinkIdUiStateMap } from "../core/blinkid-ui-state";
-import { LocalizationStrings, useLocalization } from "./LocalizationContext";
-import { feedbackMessages } from "./feedbackMessages";
-
+import type { BlinkIdExtractionMode } from "../core/extractionMode";
 // icons
 import CardIconBack from "./assets/reticles/card-back.svg?component-solid";
 import CardIconFront from "./assets/reticles/card-front.svg?component-solid";
@@ -21,7 +17,8 @@ import PassportHighlight from "./assets/reticles/passport-highlight.svg?componen
 import PassportTop from "./assets/reticles/passport-top.svg?component-solid";
 import SearchIcon from "./assets/reticles/searching.svg?component-solid";
 import ScanIcon from "./assets/reticles/spin.svg?component-solid";
-import type { BlinkIdExtractionMode } from "../core/extractionMode";
+import { feedbackMessages } from "./feedbackMessages";
+import { LocalizationStrings, useLocalization } from "./LocalizationContext";
 
 /**
  * The UiFeedbackOverlay component.
@@ -35,16 +32,10 @@ export const UiFeedbackOverlay: Component<{
   blinkIdExtractionMode?: BlinkIdExtractionMode;
 }> = (props) => {
   const isPassportCaptureState = () => {
-    return (
-      props.uiState.key === "MOVE_TOP" ||
-      props.uiState.key === "MOVE_LEFT" ||
-      props.uiState.key === "MOVE_RIGHT"
-    );
+    return props.uiState.key === "MOVE_TOP" || props.uiState.key === "MOVE_LEFT" || props.uiState.key === "MOVE_RIGHT";
   };
 
-  const isSuccess = () =>
-    props.uiState.key === "DOCUMENT_CAPTURED" ||
-    props.uiState.key === "PAGE_CAPTURED";
+  const isSuccess = () => props.uiState.key === "DOCUMENT_CAPTURED" || props.uiState.key === "PAGE_CAPTURED";
 
   const getDirection = () => {
     switch (props.uiState.key) {
@@ -73,10 +64,7 @@ export const UiFeedbackOverlay: Component<{
           message positioning is consistent.
            */}
           <div class="size-24">
-            <div
-              class="relative size-full grid place-items-center"
-              aria-hidden="true"
-            >
+            <div class="relative size-full grid place-items-center" aria-hidden="true">
               {/* default spinners */}
               <Switch>
                 <Match when={props.uiState.reticleType === "searching"}>
@@ -123,8 +111,7 @@ export const UiFeedbackOverlay: Component<{
 };
 
 /**
- * The SuccessFeedback component. This is the component that displays the
- * feedback for the success state.
+ * The SuccessFeedback component. This is the component that displays the feedback for the success state.
  *
  * @returns The SuccessFeedback component.
  */
@@ -148,8 +135,7 @@ const SuccessFeedback: Component = () => {
 };
 
 /**
- * The FlipCardFeedback component. This is the component that displays the
- * feedback for the flip card state.
+ * The FlipCardFeedback component. This is the component that displays the feedback for the flip card state.
  *
  * @returns The FlipCardFeedback component.
  */
@@ -177,20 +163,14 @@ const FlipCardFeedback: Component = () => {
       >
         {/* we don't set the dimensions, so that the ratio is naturally preserved */}
         <CardIconFront class={cardSideStyles} />
-        <CardIconBack
-          class={clsx(
-            cardSideStyles,
-            "absolute top-0 left-0 w-full transform rotate-y-180",
-          )}
-        />
+        <CardIconBack class={clsx(cardSideStyles, "absolute top-0 left-0 w-full transform rotate-y-180")} />
       </Motion>
     </div>
   );
 };
 
 /**
- * The PassportAnimation component. This is the component that displays the
- * feedback for the passport animation state.
+ * The PassportAnimation component. This is the component that displays the feedback for the passport animation state.
  *
  * @param props - The props for the PassportAnimation component.
  * @returns The PassportAnimation component.
@@ -268,8 +248,7 @@ const PassportAnimation: Component<{
 };
 
 /**
- * The ReticleContainer component. This is the component that displays the
- * reticle container.
+ * The ReticleContainer component. This is the component that displays the reticle container.
  *
  * @param props - The props for the ReticleContainer component.
  * @returns The ReticleContainer component.
@@ -297,8 +276,7 @@ const ReticleContainer: ParentComponent<{
 };
 
 /**
- * The SearchReticle component. This is the component that displays the
- * feedback for the search state.
+ * The SearchReticle component. This is the component that displays the feedback for the search state.
  *
  * @returns The SearchReticle component.
  */
@@ -321,8 +299,7 @@ const SearchReticle: Component = () => (
 );
 
 /**
- * The ErrorReticle component. This is the component that displays the
- * feedback for the error state.
+ * The ErrorReticle component. This is the component that displays the feedback for the error state.
  *
  * @returns The ErrorReticle component.
  */
@@ -333,8 +310,7 @@ const ErrorReticle: Component = () => (
 );
 
 /**
- * The ScanningReticle component. This is the component that displays the
- * feedback for the scanning state.
+ * The ScanningReticle component. This is the component that displays the feedback for the scanning state.
  *
  * @returns The ScanningReticle component.
  */
@@ -356,8 +332,8 @@ const ScanningReticle: Component = () => (
 );
 
 /**
- * The UiFeedbackMessage component. This is the component that displays the
- * feedback message to the user. It is shown below the reticle.
+ * The UiFeedbackMessage component. This is the component that displays the feedback message to the user. It is shown
+ * below the reticle.
  *
  * @param props - The props for the UiFeedbackMessage component.
  * @returns The UiFeedbackMessage component.
@@ -369,23 +345,16 @@ const UiFeedbackMessage: Component<{
 }> = (props) => {
   const { t } = useLocalization();
 
-  const feedbackMessageKey = ():
-    | keyof LocalizationStrings["feedback_messages"]
-    | undefined => {
+  const feedbackMessageKey = (): keyof LocalizationStrings["feedback_messages"] | undefined => {
     const key = props.uiState.key;
     if (key in feedbackMessages) {
-      return feedbackMessages[key]?.(
-        props.isDesktop,
-        props.blinkIdExtractionMode,
-      );
+      return feedbackMessages[key]?.(props.isDesktop, props.blinkIdExtractionMode);
     }
 
     return;
   };
 
-  const isSuccess = () =>
-    props.uiState.key === "DOCUMENT_CAPTURED" ||
-    props.uiState.key === "PAGE_CAPTURED";
+  const isSuccess = () => props.uiState.key === "DOCUMENT_CAPTURED" || props.uiState.key === "PAGE_CAPTURED";
 
   return (
     <div
@@ -414,9 +383,7 @@ const UiFeedbackMessage: Component<{
                 isSuccess() && "sr-only",
               )}
             >
-              <div role="alert">
-                {t.feedback_messages[feedbackMessageKey()!]}
-              </div>
+              <div role="alert">{t.feedback_messages[feedbackMessageKey()!]}</div>
             </Motion.div>
           </Show>
         </Rerun>

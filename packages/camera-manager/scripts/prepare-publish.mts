@@ -1,6 +1,7 @@
+import { addJsExtensionsToDeclarationImports } from "@microblink/repo-utils";
 import { Simplify } from "type-fest";
-import { writePackage } from "write-package";
 import "zx/globals";
+import { writePackage } from "write-package";
 
 import packageJson from "../package.json";
 
@@ -26,18 +27,26 @@ const corePackageJson = pickKeys([
   "main",
   "module",
   "description",
+  "keywords",
   "files",
   "peerDependencies",
+  "peerDependenciesMeta",
 ]);
 
 await fs.emptyDir(publishPath);
 
 await fs.copy("dist", path.join(publishPath, "dist"));
-await fs.copy("types", path.join(publishPath, "types"));
+for (const entrypoint of ["index", "core", "ui"]) {
+  await fs.copy(
+    path.join("types", `${entrypoint}.rollup.d.ts`),
+    path.join(publishPath, "types", `${entrypoint}.rollup.d.ts`),
+  );
+}
+await addJsExtensionsToDeclarationImports(path.join(publishPath, "types"));
 await fs.copy("README.md", path.join(publishPath, "README.md"));
 
-// add type-fest to dependencies
 const typeFestVersion = packageJson.dependencies["type-fest"];
+const zustandVersion = packageJson.dependencies.zustand;
 
 await writePackage(
   newPackagePath,
@@ -45,6 +54,7 @@ await writePackage(
     ...corePackageJson,
     dependencies: {
       "type-fest": typeFestVersion,
+      zustand: zustandVersion,
     },
     access: "public",
     registry: "https://registry.npmjs.org/",
@@ -58,6 +68,14 @@ await writePackage(
       ".": {
         types: "./types/index.rollup.d.ts",
         import: "./dist/camera-manager.js",
+      },
+      "./core": {
+        types: "./types/core.rollup.d.ts",
+        import: "./dist/core.js",
+      },
+      "./ui": {
+        types: "./types/ui.rollup.d.ts",
+        import: "./dist/ui.js",
       },
       "./package.json": "./package.json",
     },

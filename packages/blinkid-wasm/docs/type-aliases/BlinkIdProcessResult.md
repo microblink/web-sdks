@@ -10,9 +10,8 @@
 
 Represents the overall result of the document processing pipeline.
 
-This structure combines the results of input image analysis and processing,
-including detection, document image quality analysis, along with information
-about the completeness of the extraction process for the document.
+This structure combines the results of input image analysis and processing, including detection, document image
+quality analysis, along with information about the completeness of the extraction process for the document.
 
 ## Properties
 

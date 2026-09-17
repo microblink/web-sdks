@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import {
   BlinkIdSessionSettingsInput,
@@ -9,49 +7,42 @@ import {
   type BlinkIdInitSettings,
   type RedactionSettingsResolver,
 } from "@microblink/blinkid-core";
+import { createBlinkIdUxManager, type BlinkIdUxManagerOptions } from "@microblink/blinkid-ux-manager/core";
+import { createBlinkIdFeedbackUi, type FeedbackUiOptions } from "@microblink/blinkid-ux-manager/ui";
+import { CameraManager } from "@microblink/camera-manager/core";
 import {
-  createBlinkIdUxManager,
-  createBlinkIdFeedbackUi,
-  type BlinkIdUxManagerOptions,
-  type FeedbackUiOptions,
-} from "@microblink/blinkid-ux-manager";
-import {
-  CameraManager,
-  CameraManagerComponent,
+  type CameraManagerComponent,
   type CameraManagerUiOptions,
   createCameraManagerUi,
-} from "@microblink/camera-manager";
+} from "@microblink/camera-manager/ui";
 import { Simplify } from "type-fest";
 
 /**
  * Configuration options for creating a BlinkID component.
  *
- * This type combines options with core initialization and session settings.
- * It allows customization of the UI elements, localization, and scanning behavior.
+ * This type combines options with core initialization and session settings. It allows customization of the UI elements,
+ * localization, and scanning behavior.
  */
 export type BlinkIdComponentOptions = Simplify<
   {
     /**
-     * The HTML element where the BlinkID UI will be mounted.
-     * If not provided, the UI will be mounted to the document body.
+     * The HTML element where the BlinkID UI will be mounted. If not provided, the UI will be mounted to the document
+     * body.
      */
     targetNode?: HTMLElement;
 
     /**
-     * Customization options for the camera manager UI.
-     * Controls camera-related UI elements like the video feed container and camera selection.
+     * Customization options for the camera manager UI. Controls camera-related UI elements like the video feed
+     * container and camera selection.
      */
     cameraManagerUiOptions?: Partial<CameraManagerUiOptions>;
 
-    /**
-     * Customization options for the feedback UI.
-     * Controls the appearance and behavior of scanning feedback elements.
-     */
+    /** Customization options for the feedback UI. Controls the appearance and behavior of scanning feedback elements. */
     feedbackUiOptions?: Partial<FeedbackUiOptions>;
 
     /**
-     * Customization options for BlinkID UX manager behavior.
-     * Controls headless UX flow details such as timeout configuration.
+     * Customization options for BlinkID UX manager behavior. Controls headless UX flow details such as timeout
+     * configuration.
      */
     uxManagerOptions?: Partial<BlinkIdUxManagerOptions>;
 
@@ -65,15 +56,12 @@ export type BlinkIdComponentOptions = Simplify<
     Partial<Omit<BlinkIdSessionSettingsInput, "inputImageSource">>
 >;
 
-/**
- * The BlinkId UX Manager type.
- */
-export type BlinkIdUxManagerType = Awaited<
-  ReturnType<typeof createBlinkIdUxManager>
->;
+/** The BlinkId UX Manager type. */
+export type BlinkIdUxManagerType = Awaited<ReturnType<typeof createBlinkIdUxManager>>;
 
 /**
  * Represents the BlinkID component with all SDK instances and UI elements.
+ *
  * @public
  */
 export type BlinkIdComponent = {
@@ -85,46 +73,32 @@ export type BlinkIdComponent = {
   blinkIdUxManager: BlinkIdUxManagerType;
   /** The Camera Manager UI instance. */
   cameraUi: CameraManagerComponent;
-  /**
-   * Destroys the BlinkID component and releases all resources.
-   */
+  /** Destroys the BlinkID component and releases all resources. */
   destroy: () => Promise<void>;
-  /**
-   * Adds a callback function to be called when a result is obtained.
-   */
+  /** Adds a callback function to be called when a result is obtained. */
   addOnResultCallback: BlinkIdUxManagerType["addOnResultCallback"];
-  /**
-   * Adds a callback function to be called when an error occurs.
-   */
+  /** Adds a callback function to be called when an error occurs. */
   addOnErrorCallback: BlinkIdUxManagerType["addOnErrorCallback"];
   /**
    * Adds a callback function to be called when a frame is processed.
    *
-   * The callback receives the current `BlinkIdProcessResult`,
-   * `advanceToNextStep()` for custom scan-step advancement or finishing once
-   * the frame contains all data your integration needs,
-   * `triggerStepTimeout()` for forcing the active step through the timeout path,
-   * and `getLastFrame()` for reading the raw frame `ArrayBuffer`.
+   * The callback receives the current `BlinkIdProcessResult`, `advanceToNextStep()` for custom scan-step advancement or
+   * finishing once the frame contains all data your integration needs, `triggerStepTimeout()` for forcing the active
+   * step through the timeout path, and `getLastFrame()` for reading the raw frame `ArrayBuffer`.
    */
   addOnFrameProcessCallback: BlinkIdUxManagerType["addOnFrameProcessCallback"];
   /**
    * Adds a callback function to be called when the UI state changes.
    *
-   * The callback receives the stabilized visible `BlinkIdUiState`, including
-   * the current `key` and reticle metadata used by the built-in feedback UI.
+   * The callback receives the stabilized visible `BlinkIdUiState`, including the current `key` and reticle metadata
+   * used by the built-in feedback UI.
    */
   addOnUiStateChangedCallback: BlinkIdUxManagerType["addOnUiStateChangedCallback"];
-  /**
-   * Adds a callback function to receive BlinkID progress snapshots.
-   */
+  /** Adds a callback function to receive BlinkID progress snapshots. */
   addOnProgressCallback: BlinkIdUxManagerType["addOnProgressCallback"];
-  /**
-   * Adds a document class filter function.
-   */
+  /** Adds a document class filter function. */
   addDocumentClassFilter: BlinkIdUxManagerType["addDocumentClassFilter"];
-  /**
-   * Adds a callback function to be called when a document is filtered.
-   */
+  /** Adds a callback function to be called when a document is filtered. */
   addOnDocumentFilteredCallback: BlinkIdUxManagerType["addOnDocumentFilteredCallback"];
 };
 
@@ -132,47 +106,48 @@ export type BlinkIdComponent = {
  * Creates a BlinkID component with all necessary SDK instances and UI elements.
  *
  * This function initializes the complete BlinkID scanning system including:
+ *
  * - BlinkID Core SDK for document processing
  * - Camera Manager for video capture and camera control
  * - UX Manager for coordinating scanning workflow
  * - Camera UI for video display and camera controls
  * - Feedback UI for scanning guidance and status
  *
- * The function sets up the entire scanning pipeline and returns a component
- * object that provides access to all SDK instances and destruction capabilities.
+ * The function sets up the entire scanning pipeline and returns a component object that provides access to all SDK
+ * instances and destruction capabilities.
+ *
+ * @example
+ *   ```typescript
+ *   const blinkId = await createBlinkId({
+ *     licenseKey: "your-license-key",
+ *     targetNode: document.getElementById("blinkid-container"),
+ *     uxManagerOptions: {
+ *       timeoutConfiguration: {
+ *         inactivityTimeoutMs: 15000,
+ *         scanStepTimeoutMs: 90000,
+ *         partiallySupportedBarcodeResolveTimeoutMs: 8000,
+ *       },
+ *     },
+ *     feedbackUiOptions: {
+ *       showOnboardingGuide: false,
+ *     },
+ *   });
+ *
+ *   // Add result callback
+ *   blinkId.addOnResultCallback((result) => {
+ *     console.log("Scanning result:", result);
+ *   });
+ *
+ *   blinkId.addOnProgressCallback((progress) => {
+ *     console.log("BlinkID progress:", progress.uiStateKey);
+ *   });
+ *
+ *   // Clean up when done
+ *   await blinkId.destroy();
+ *   ```;
  *
  * @param options - Configuration options for the BlinkID component
  * @returns Promise that resolves to a BlinkIdComponent with all SDK instances and UI elements
- *
- * @example
- * ```typescript
- * const blinkId = await createBlinkId({
- *   licenseKey: "your-license-key",
- *   targetNode: document.getElementById("blinkid-container"),
- *   uxManagerOptions: {
- *     timeoutConfiguration: {
- *       inactivityTimeoutMs: 15000,
- *       scanStepTimeoutMs: 90000,
- *       partiallySupportedBarcodeResolveTimeoutMs: 8000,
- *     },
- *   },
- *   feedbackUiOptions: {
- *     showOnboardingGuide: false
- *   }
- * });
- *
- * // Add result callback
- * blinkId.addOnResultCallback((result) => {
- *   console.log("Scanning result:", result);
- * });
- *
- * blinkId.addOnProgressCallback((progress) => {
- *   console.log("BlinkID progress:", progress.uiStateKey);
- * });
- *
- * // Clean up when done
- * await blinkId.destroy();
- * ```
  */
 export const createBlinkId = async ({
   licenseKey,
@@ -181,6 +156,7 @@ export const createBlinkId = async ({
   cameraManagerUiOptions,
   initialMemory,
   otaResources,
+  resourceDownloadTimeoutMs,
   resourcesLocation,
   scanningSettings,
   useLightweightBuild,
@@ -191,9 +167,7 @@ export const createBlinkId = async ({
   uxManagerOptions,
 }: BlinkIdComponentOptions) => {
   let blinkIdCore: BlinkIdCore | undefined;
-  let scanningSession:
-    | Awaited<ReturnType<BlinkIdCore["createScanningSession"]>>
-    | undefined;
+  let scanningSession: Awaited<ReturnType<BlinkIdCore["createScanningSession"]>> | undefined;
 
   try {
     // we first initialize the direct API. This loads the WASM module and initializes the engine
@@ -202,6 +176,7 @@ export const createBlinkId = async ({
       microblinkProxyUrl,
       initialMemory,
       otaResources,
+      resourceDownloadTimeoutMs,
       resourcesLocation,
       useLightweightBuild,
       wasmVariant,
@@ -224,29 +199,17 @@ export const createBlinkId = async ({
     const cameraManager = new CameraManager();
 
     // we create the UX manager
-    const blinkIdUxManager = await createBlinkIdUxManager(
-      cameraManager,
-      scanningSession,
-      uxManagerOptions,
-    );
+    const blinkIdUxManager = await createBlinkIdUxManager(cameraManager, scanningSession, uxManagerOptions);
 
     // this creates the UI and attaches it to the DOM
-    const cameraUi = await createCameraManagerUi(
-      cameraManager,
-      targetNode,
-      cameraManagerUiOptions,
-    );
+    const cameraUi = await createCameraManagerUi(cameraManager, targetNode, cameraManagerUiOptions);
 
     const unsub = cameraManager.subscribe(
       (s) => s.playbackState,
       (state) => {
         if (state === "playback") {
           // this creates the feedback UI and attaches it to the camera UI
-          createBlinkIdFeedbackUi(
-            blinkIdUxManager,
-            cameraUi,
-            feedbackUiOptions ?? {},
-          );
+          createBlinkIdFeedbackUi(blinkIdUxManager, cameraUi, feedbackUiOptions ?? {});
 
           if (feedbackUiOptions?.showOnboardingGuide === false) {
             void cameraManager.startFrameCapture();
@@ -281,20 +244,13 @@ export const createBlinkId = async ({
       blinkIdUxManager,
       cameraUi,
       destroy,
-      addOnErrorCallback:
-        blinkIdUxManager.addOnErrorCallback.bind(blinkIdUxManager),
-      addOnUiStateChangedCallback:
-        blinkIdUxManager.addOnUiStateChangedCallback.bind(blinkIdUxManager),
-      addOnFrameProcessCallback:
-        blinkIdUxManager.addOnFrameProcessCallback.bind(blinkIdUxManager),
-      addOnProgressCallback:
-        blinkIdUxManager.addOnProgressCallback.bind(blinkIdUxManager),
-      addOnResultCallback:
-        blinkIdUxManager.addOnResultCallback.bind(blinkIdUxManager),
-      addOnDocumentFilteredCallback:
-        blinkIdUxManager.addOnDocumentFilteredCallback.bind(blinkIdUxManager),
-      addDocumentClassFilter:
-        blinkIdUxManager.addDocumentClassFilter.bind(blinkIdUxManager),
+      addOnErrorCallback: blinkIdUxManager.addOnErrorCallback.bind(blinkIdUxManager),
+      addOnUiStateChangedCallback: blinkIdUxManager.addOnUiStateChangedCallback.bind(blinkIdUxManager),
+      addOnFrameProcessCallback: blinkIdUxManager.addOnFrameProcessCallback.bind(blinkIdUxManager),
+      addOnProgressCallback: blinkIdUxManager.addOnProgressCallback.bind(blinkIdUxManager),
+      addOnResultCallback: blinkIdUxManager.addOnResultCallback.bind(blinkIdUxManager),
+      addOnDocumentFilteredCallback: blinkIdUxManager.addOnDocumentFilteredCallback.bind(blinkIdUxManager),
+      addDocumentClassFilter: blinkIdUxManager.addDocumentClassFilter.bind(blinkIdUxManager),
     };
 
     return returnObject;
@@ -302,9 +258,7 @@ export const createBlinkId = async ({
     if (blinkIdCore) {
       const data = {
         errorType: "Crash" as const,
-        errorMessage:
-          "sdk.createBlinkId: " +
-          (error instanceof Error ? error.message : String(error)),
+        errorMessage: "sdk.createBlinkId: " + (error instanceof Error ? error.message : String(error)),
         stackTrace: error instanceof Error ? error.stack : undefined,
       };
 
@@ -317,10 +271,7 @@ export const createBlinkId = async ({
         });
         await blinkIdCore.sendPinglets();
       } catch (reportError) {
-        console.warn(
-          "Failed to report BlinkID SDK crash pinglet:",
-          reportError,
-        );
+        console.warn("Failed to report BlinkID SDK crash pinglet:", reportError);
       }
     }
 

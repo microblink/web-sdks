@@ -2,6 +2,23 @@
 
 This package provides user experience management and feedback UI for the BlinkID browser SDK. It parses results from [`@microblink/blinkid-core`](https://www.npmjs.com/package/@microblink/blinkid-core) and guides the user through the scanning process, controlling [`@microblink/camera-manager`](https://www.npmjs.com/package/@microblink/camera-manager) as needed.
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/blinkid-ux-manager`:
+
+| Entrypoint | Minified  | Gzip     |
+| ---------- | --------- | -------- |
+| `root`     | 331.63 kB | 84.10 kB |
+| `/core`    | 59.88 kB  | 13.69 kB |
+| `/ui`      | 282.20 kB | 73.22 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Features
 
 - **Smart UI State Management:** Provides both headless and UI components for user feedback during scanning
@@ -16,6 +33,8 @@ This package provides user experience management and feedback UI for the BlinkID
 
 ## Overview
 
+See the [custom UI example](../../apps/examples/blinkid-custom-ui/) for an application-owned interface built with the `/core` entrypoint.
+
 - Provides both headless and UI components for user feedback during scanning.
 - Integrates with BlinkID Core and Camera Manager.
 - Includes haptic feedback system for mobile devices.
@@ -23,14 +42,17 @@ This package provides user experience management and feedback UI for the BlinkID
 
 ## Browser Support
 
-This package supports these browser versions and newer:
+The package exports support these browser versions and newer:
 
-- Chrome / Chromium 96 (desktop and Android)
-- Edge 96
-- Opera 84
-- Firefox 132 (desktop)
-- Safari 16.4 (macOS)
-- iOS Safari 16.4
+| Browser                     | Root | `/core` | `/ui` |
+| --------------------------- | ---- | ------- | ----- |
+| Chrome / Chromium (desktop) | 96   | 96      | 96    |
+| Chrome / Chromium (Android) | 96   | 96      | 96    |
+| Edge                        | 96   | 96      | 96    |
+| Opera                       | 84   | 84      | 84    |
+| Firefox (desktop)           | 132  | 132     | 132   |
+| Safari (macOS)              | 16.4 | 16.4    | 16.4  |
+| iOS Safari                  | 16.4 | 16.4    | 16.4  |
 
 This package depends on `@microblink/camera-manager` and `@microblink/blinkid-core`.
 For the full SDK with camera capture, see `@microblink/blinkid`.
@@ -55,6 +77,20 @@ yarn add @microblink/blinkid-ux-manager
 pnpm add @microblink/blinkid-ux-manager
 ```
 
+## Entrypoints
+
+Use `@microblink/blinkid-ux-manager/core` for scanning orchestration without the packaged UI. Use
+`@microblink/blinkid-ux-manager/ui` for the feedback UI and localization APIs. The root entry remains available for
+compatibility until the next major release and includes both.
+
+The `/ui` entry requires `solid-js`, `@ark-ui/solid`, `solid-zustand`, and `@solid-primitives/keyed` as peer
+dependencies. Install them explicitly when using the root or `/ui` entry; they are optional package peers only so
+`/core` consumers do not install a Solid runtime:
+
+```sh
+npm install solid-js @ark-ui/solid solid-zustand @solid-primitives/keyed
+```
+
 ## Haptic Feedback
 
 The UX Manager includes a comprehensive haptic feedback system that provides tactile responses during the document scanning process. **This feature is primarily designed for Android devices using Chrome browser**, where it works reliably to enhance the scanning experience.
@@ -73,10 +109,7 @@ The UX Manager includes a comprehensive haptic feedback system that provides tac
 ### Haptic Feedback Usage
 
 ```javascript
-import {
-  createBlinkIdUxManager,
-  HapticFeedbackManager,
-} from "@microblink/blinkid-ux-manager";
+import { createBlinkIdUxManager, HapticFeedbackManager } from "@microblink/blinkid-ux-manager/core";
 
 // Create UX Manager (haptic feedback enabled by default)
 const uxManager = await createBlinkIdUxManager(cameraManager, scanningSession);
@@ -119,7 +152,7 @@ You can use `@microblink/blinkid-ux-manager` directly in your project for advanc
 Use the async `createBlinkIdUxManager` factory — direct constructor instantiation is not supported:
 
 ```javascript
-import { createBlinkIdUxManager } from "@microblink/blinkid-ux-manager";
+import { createBlinkIdUxManager } from "@microblink/blinkid-ux-manager/core";
 
 const uxManager = await createBlinkIdUxManager(cameraManager, scanningSession);
 
@@ -268,6 +301,8 @@ Two getters provide visibility into the current UI state:
 Tooltip delays can be configured via `FeedbackUiOptions` when creating the feedback UI:
 
 ```javascript
+import { createBlinkIdFeedbackUi } from "@microblink/blinkid-ux-manager/ui";
+
 createBlinkIdFeedbackUi(uxManager, cameraUi, {
   showHelpTooltipTimeout: 15000, // ms before tooltip appears
 });
@@ -312,6 +347,8 @@ Older releases used **flat** top-level keys (for example `scan_the_barcode`, `he
 Example override with nested keys:
 
 ```typescript
+import { createBlinkIdFeedbackUi } from "@microblink/blinkid-ux-manager/ui";
+
 createBlinkIdFeedbackUi(uxManager, cameraUi, {
   localizationStrings: {
     feedback_messages: {
@@ -349,8 +386,10 @@ Top-level groups in `en.ts`:
 | `barcode-only`          | `barcode_only`                          |
 
 The `document-with-mrz` mode is selected for single-side scanning when document
-capture is enabled and `mrzModule.presenceMandatory` is `true`. It provides
-MRZ-specific help, onboarding, illustrations, and scanning guidance.
+capture is enabled, `mrzModule.presenceMandatory` is `true`, and both
+`barcodeModule` and `vizModule` are disabled. It provides MRZ-specific help,
+onboarding, illustrations, and scanning guidance. Mixed extraction with VIZ or
+barcode uses the standard full-document guidance instead.
 
 Feedback strings that depend on extraction mode (for example front, barcode,
 or MRZ side) are selected in code via

@@ -12,4 +12,4 @@
 
 ### parentsInfo?
 
-> `optional` **parentsInfo**: [`ParentInfoCompleteness`](ParentInfoCompleteness.md)[]
+> `optional` **parentsInfo?**: [`ParentInfoCompleteness`](ParentInfoCompleteness.md)[]

@@ -46,9 +46,8 @@ Clean up resources.
 
 > **getCurrentImageData**(): `ImageData`
 
-Used to get the current ImageData object with the current buffer. Useful
-when you need to get the same `ImageData` object multiple times after the
-original `ImageData` buffer has been detached
+Used to get the current ImageData object with the current buffer. Useful when you need to get the same `ImageData`
+object multiple times after the original `ImageData` buffer has been detached
 
 #### Returns
 
@@ -96,7 +95,7 @@ Used to check if the processor owns the buffer.
 
 `boolean`
 
-true if the processor owns the buffer, false otherwise.
+True if the processor owns the buffer, false otherwise.
 
 ***
 
@@ -106,8 +105,8 @@ true if the processor owns the buffer, false otherwise.
 
 Returns ownership of an ArrayBuffer to the processor for reuse.
 
-This should only be called with ArrayBuffers that were originally from this processor.
-Typically used after transferring the buffer to/from a worker.
+This should only be called with ArrayBuffers that were originally from this processor. Typically used after
+transferring the buffer to/from a worker.
 
 #### Parameters
 

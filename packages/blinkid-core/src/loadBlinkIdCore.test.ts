@@ -1,42 +1,34 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type {
-  BlinkIdWorkerInitSettings,
-  ProgressStatusCallback,
-} from "@microblink/blinkid-worker";
+import type { BlinkIdWorkerInitSettings, ProgressStatusCallback } from "@microblink/blinkid-worker";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import type { BlinkIdInitSettings } from "./loadBlinkIdCore";
 
-const {
-  createProxyWorkerMock,
-  getUserIdMock,
-  proxyMock,
-  remoteWorker,
-  shouldUseLightweightBuildMock,
-} = vi.hoisted(() => {
-  const initBlinkId = vi.fn();
-  const sendPinglets = vi.fn();
-  const createProxyWorkerMock = vi.fn().mockResolvedValue({
-    initBlinkId,
-    sendPinglets,
-  });
-  const getUserIdMock = vi.fn(() => "user-123");
-  const proxyMock = vi.fn((callback: ProgressStatusCallback) => callback);
-  const shouldUseLightweightBuildMock = vi.fn().mockResolvedValue(false);
-
-  return {
-    createProxyWorkerMock,
-    getUserIdMock,
-    proxyMock,
-    remoteWorker: {
+const { createProxyWorkerMock, getUserIdMock, proxyMock, remoteWorker, shouldUseLightweightBuildMock } = vi.hoisted(
+  () => {
+    const initBlinkId = vi.fn();
+    const sendPinglets = vi.fn();
+    const createProxyWorkerMock = vi.fn().mockResolvedValue({
       initBlinkId,
       sendPinglets,
-    },
-    shouldUseLightweightBuildMock,
-  };
-});
+    });
+    const getUserIdMock = vi.fn(() => "user-123");
+    const proxyMock = vi.fn((callback: ProgressStatusCallback) => callback);
+    const shouldUseLightweightBuildMock = vi.fn().mockResolvedValue(false);
+
+    return {
+      createProxyWorkerMock,
+      getUserIdMock,
+      proxyMock,
+      remoteWorker: {
+        initBlinkId,
+        sendPinglets,
+      },
+      shouldUseLightweightBuildMock,
+    };
+  },
+);
 
 vi.mock("@microblink/core-common/createProxyWorker", () => ({
   createProxyWorker: createProxyWorkerMock,
@@ -71,19 +63,13 @@ describe("loadBlinkIdCore", () => {
     const result = await loadBlinkIdCore(settings);
 
     expect(result).toBe(remoteWorker);
-    expect(createProxyWorkerMock).toHaveBeenCalledWith(
-      expectedLocation,
-      "blinkid-worker.js",
-    );
+    expect(createProxyWorkerMock).toHaveBeenCalledWith(expectedLocation, "blinkid-worker.js");
     expect(getUserIdMock).toHaveBeenCalledWith("blinkid-userid");
     expect(shouldUseLightweightBuildMock).toHaveBeenCalledOnce();
     expect(settings.userId).toBe("user-123");
     expect(settings.resourcesLocation).toBe(expectedLocation);
     expect(settings.useLightweightBuild).toBe(false);
-    expect(remoteWorker.initBlinkId).toHaveBeenCalledWith(
-      settings as BlinkIdWorkerInitSettings,
-      undefined,
-    );
+    expect(remoteWorker.initBlinkId).toHaveBeenCalledWith(settings as BlinkIdWorkerInitSettings, undefined);
   });
 
   it("proxies progress callback and passes OTA resource settings to init", async () => {
@@ -104,9 +90,6 @@ describe("loadBlinkIdCore", () => {
 
     expect(shouldUseLightweightBuildMock).not.toHaveBeenCalled();
     expect(proxyMock).toHaveBeenCalledWith(progressCallback);
-    expect(remoteWorker.initBlinkId).toHaveBeenCalledWith(
-      settings as BlinkIdWorkerInitSettings,
-      progressCallback,
-    );
+    expect(remoteWorker.initBlinkId).toHaveBeenCalledWith(settings as BlinkIdWorkerInitSettings, progressCallback);
   });
 });

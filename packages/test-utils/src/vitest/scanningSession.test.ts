@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { describe, expect, test, vi } from "vitest";
+
 import { createFakeScanningSession } from "./scanningSession";
 
 describe("createFakeScanningSession", () => {

@@ -1,5 +1,5 @@
 {
   "name": "@microblink/tsconfig",
-  "private": true,
-  "version": "0.0.1"
+  "version": "0.0.1",
+  "private": true
 }

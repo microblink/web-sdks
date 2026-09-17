@@ -1,35 +1,24 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  createContext,
-  onCleanup,
-  ParentComponent,
-  useContext,
-} from "solid-js";
+import type { CameraManager } from "@microblink/camera-manager/core";
+import { createContext, onCleanup, ParentComponent, useContext } from "solid-js";
 import { MountableElement } from "solid-js/web";
-import { createWithSignal } from "solid-zustand";
-import { CameraManager } from "../core/CameraManager";
-import { cameraManagerStore } from "../core/cameraManagerStore";
-import { DismountCallback } from "./createCameraManagerUi";
+import { create } from "solid-zustand";
 
-/**
- * The CameraUiStoreContext.
- */
+import { cameraManagerStore } from "../core";
+import type { DismountCallback } from "./createCameraManagerUi";
+
+/** The CameraUiStoreContext. */
 const CameraUiStoreContext = createContext<CameraUiStore>();
 
-/**
- * Creates a camera manager solid store.
- */
+/** Creates a camera manager solid store. */
 function createCameraManagerSolidStore() {
-  return createWithSignal(cameraManagerStore);
+  return create(cameraManagerStore);
 }
 
 /**
- * !IMPORTANT: this is not a reactive store. It's just a plain javascript object exposed
- * as a context. The store is `cameraManagerSolidStore`, and it doesn't have anything
- * related to the Camera Manager UI component
+ * !IMPORTANT: this is not a reactive store. It's just a plain javascript object exposed as a context. The store is
+ * `cameraManagerSolidStore`, and it doesn't have anything related to the Camera Manager UI component
  */
 type CameraUiStore = {
   /** Function which will dismount the component */
@@ -46,6 +35,8 @@ type CameraUiStore = {
 
   /** Whether to show the mirror camera button */
   showMirrorCameraButton: boolean;
+  /** Whether to show the camera selector */
+  showCameraSelector: boolean;
   /** Whether to show the torch button */
   showTorchButton: boolean;
   /** Whether to show the close button */
@@ -54,20 +45,20 @@ type CameraUiStore = {
   showCameraErrorModal: boolean;
   /** The z-index of the camera UI */
   zIndex?: number;
-  /** Sets a callback to be called when the component is unmounted.
-   * Returns a cleanup function that removes the callback when called.
+  /**
+   * Sets a callback to be called when the component is unmounted. Returns a cleanup function that removes the callback
+   * when called.
    */
   addOnDismountCallback: (fn: DismountCallback) => () => void;
 };
 
-/**
- * The CameraUiStoreProvider component.
- */
+/** The CameraUiStoreProvider component. */
 export const CameraUiStoreProvider: ParentComponent<{
   dismountCameraUi: () => void;
   cameraManager: CameraManager;
   mountTarget: MountableElement;
   showMirrorCameraButton: boolean;
+  showCameraSelector: boolean;
   showTorchButton: boolean;
   showCloseButton: boolean;
   showCameraErrorModal: boolean;
@@ -77,26 +68,28 @@ export const CameraUiStoreProvider: ParentComponent<{
   // initial context value
   const contextValue: CameraUiStore = {
     cameraManagerSolidStore: createCameraManagerSolidStore(),
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
     cameraManager: props.cameraManager,
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
     dismountCameraUi: () => {
       props.cameraManager.userInitiatedAbort = true;
       props.dismountCameraUi();
     },
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
     addOnDismountCallback: props.addOnDismountCallback,
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
     mountTarget: props.mountTarget,
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
     showMirrorCameraButton: props.showMirrorCameraButton,
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
+    showCameraSelector: props.showCameraSelector,
+    // oxlint-disable-next-line solid/reactivity
     showTorchButton: props.showTorchButton,
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
     showCloseButton: props.showCloseButton,
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
     showCameraErrorModal: props.showCameraErrorModal,
-    // eslint-disable-next-line solid/reactivity
+    // oxlint-disable-next-line solid/reactivity
     zIndex: props.zIndex,
   };
 
@@ -105,16 +98,10 @@ export const CameraUiStoreProvider: ParentComponent<{
     // props.dismount();  // this is recursive!!!
   });
 
-  return (
-    <CameraUiStoreContext.Provider value={contextValue}>
-      {props.children}
-    </CameraUiStoreContext.Provider>
-  );
+  return <CameraUiStoreContext.Provider value={contextValue}>{props.children}</CameraUiStoreContext.Provider>;
 };
 
-/**
- * The useCameraUiStore hook.
- */
+/** The useCameraUiStore hook. */
 export function useCameraUiStore() {
   const ctx = useContext(CameraUiStoreContext);
   if (!ctx) {

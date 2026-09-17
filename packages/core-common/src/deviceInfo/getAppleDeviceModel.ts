@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 export type AppleDeviceModel = "iPhone" | "iPad" | "Mac";
 
@@ -17,10 +15,7 @@ export function getAppleDeviceModel(): AppleDeviceModel | undefined {
   // Check for iPad first. Modern iPads report as 'Macintosh' but have
   // multi-touch capabilities. A Mac returns `maxTouchPoints` of 0.
   // We check for > 1 to be specific to multi-touch devices like iPad.
-  if (
-    /iPad/.test(ua) ||
-    (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)
-  ) {
+  if (/iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) {
     return "iPad";
   }
 

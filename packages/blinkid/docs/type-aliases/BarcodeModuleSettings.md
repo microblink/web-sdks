@@ -10,18 +10,16 @@
 
 Settings for the barcode extraction module.
 
-This module manages the detection and data extraction from various 1D and 2D
-barcode formats (such as PDF417, QR codes, and various retail codes).
+This module manages the detection and data extraction from various 1D and 2D barcode formats (such as PDF417, QR
+codes, and various retail codes).
 
-If barcode is present on the document, an extraction becomes mandatory if
-supported.
+If barcode is present on the document, an extraction becomes mandatory if supported.
 
-For supported documents, the requirement for its presence is determined by
-document rules. For unsupported documents, presence is optional.
+For supported documents, the requirement for its presence is determined by document rules. For unsupported documents,
+presence is optional.
 
-This setting can function independently of document capture module. If
-enabled and document capture module is disabled session will be set to
-extract barcode immediately at the initialization.
+This setting can function independently of document capture module. If enabled and document capture module is
+disabled session will be set to extract barcode immediately at the initialization.
 
 ## Properties
 
@@ -47,8 +45,7 @@ false
 
 Indicates whether the barcode image should be returned in the result.
 
-The DPI setting and the extension factor do not affect returned barcode
-image.
+The DPI setting and the extension factor do not affect returned barcode image.
 
 #### Default
 
@@ -160,14 +157,11 @@ false
 
 Enables the scanning and processing of Pdf417 barcodes.
 
-The current analyzer model flags a barcode as "present" if either a
-`PDF417` or a `QR` code is detected. Because the model does not distinguish
-between the two types at this stage, a conflict can occur: if `PDF417` is
-enabled but `QR` is disabled, the analyzer may trigger for a `QR` code,
-causing the process to hang.
+The current analyzer model flags a barcode as "present" if either a `PDF417` or a `QR` code is detected. Because
+the model does not distinguish between the two types at this stage, a conflict can occur: if `PDF417` is enabled
+but `QR` is disabled, the analyzer may trigger for a `QR` code, causing the process to hang.
 
-To prevent this, `pdf417ScanningEnabled` and `qrScanningEnabled` must be
-enabled together.
+To prevent this, `pdf417ScanningEnabled` and `qrScanningEnabled` must be enabled together.
 
 #### Default
 
@@ -181,18 +175,14 @@ true
 
 > **presenceMandatory**: `boolean`
 
-If set to true, barcode presence becomes mandatory for the scanned
-document.
+If set to true, barcode presence becomes mandatory for the scanned document.
 
-For Single ScanningMode, the barcode must be present on the scanned side.
-For Automatic ScanningMode, the barcode must be present on one of the
-scanned sides.
+For Single ScanningMode, the barcode must be present on the scanned side. For Automatic ScanningMode, the barcode
+must be present on one of the scanned sides.
 
-In case of a timeout and advancement to the next step in the scanning flow,
-if a barcode is detected on the scanned side but cannot be extracted, the
-presence requirement is considered fulfilled. As a result, barcode
-extraction will no longer be a requirement to complete the scan on next
-side.
+In case of a timeout and advancement to the next step in the scanning flow, if a barcode is detected on the scanned
+side but cannot be extracted, the presence requirement is considered fulfilled. As a result, barcode extraction
+will no longer be a requirement to complete the scan on next side.
 
 #### Default
 
@@ -208,14 +198,11 @@ false
 
 Enables the scanning and processing of QR barcodes.
 
-The current analyzer model flags a barcode as "present" if either a
-`PDF417` or a `QR` code is detected. Because the model does not distinguish
-between the two types at this stage, a conflict can occur: if `PDF417` is
-enabled but `QR` is disabled, the analyzer may trigger for a `QR` code,
-causing the process to hang.
+The current analyzer model flags a barcode as "present" if either a `PDF417` or a `QR` code is detected. Because
+the model does not distinguish between the two types at this stage, a conflict can occur: if `PDF417` is enabled
+but `QR` is disabled, the analyzer may trigger for a `QR` code, causing the process to hang.
 
-To prevent this, `qrScanningEnabled` and `pdf417ScanningEnabled` must be
-enabled together.
+To prevent this, `qrScanningEnabled` and `pdf417ScanningEnabled` must be enabled together.
 
 #### Default
 

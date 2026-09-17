@@ -1,25 +1,19 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 // TODO: use https://github.com/hexagon/proper-tags
 
 import { stripIndents } from "common-tags";
-import {
-  Camera,
-  FacingMode,
-  VideoResolutionName,
-  videoResolutions,
-} from "./Camera";
+
+import { Camera, FacingMode, VideoResolutionName, videoResolutions } from "./Camera";
+import { CameraError } from "./cameraError";
 import { isBackCameraName, isFrontCameraName } from "./cameraNames";
 import { backDualWideCameraLocalizations } from "./iosCameraNames";
 import { asError, isIOS } from "./utils";
-import { CameraError } from "./cameraError";
 
 /**
  * Trigger camera permission dialog.
  *
- * @returns resolves when the camera permission is granted
+ * @returns Resolves when the camera permission is granted
  */
 export const askForCameraPermission = async () => {
   try {
@@ -29,11 +23,7 @@ export const askForCameraPermission = async () => {
 
     closeStreamTracks(mediaStream);
   } catch (error) {
-    const newError = new CameraError(
-      "Camera permission not given",
-      "PERMISSION_DENIED",
-      asError(error),
-    );
+    const newError = new CameraError("Camera permission not given", "PERMISSION_DENIED", asError(error));
 
     throw newError;
   }
@@ -43,7 +33,6 @@ export const askForCameraPermission = async () => {
  * Returns available camera devices on the user's device.
  *
  * @returns An array of `InputDeviceInfo` objects representing the available camera devices.
- *
  * @see https://developer.mozilla.org/en-US/docs/Web/API/InputDeviceInfo for more details.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices for more details.
  */
@@ -96,9 +85,7 @@ export const createConstraints = (
       deviceId: id ? { exact: id } : undefined,
       frameRate: 30,
       aspectRatio: {
-        exact:
-          videoResolutions[resolution].width /
-          videoResolutions[resolution].height,
+        exact: videoResolutions[resolution].width / videoResolutions[resolution].height,
       },
       width: {
         ideal: videoResolutions[resolution].width,
@@ -115,8 +102,7 @@ export const createConstraints = (
 };
 
 /**
- * Scores a camera based on its capabilities.
- * Higher score means better camera.
+ * Scores a camera based on its capabilities. Higher score means better camera.
  *
  * @param camera - The camera to score.
  * @returns The score of the camera.
@@ -135,10 +121,7 @@ export function scoreCameraCapabilities(camera: Camera): number {
  * @param requestedFacing - The facing mode to filter by.
  * @returns The filtered cameras.
  */
-export function filterCamerasByFacing(
-  cameras: Camera[],
-  requestedFacing: FacingMode,
-): Camera[] {
+export function filterCamerasByFacing(cameras: Camera[], requestedFacing: FacingMode): Camera[] {
   return cameras.filter((camera) => {
     if (requestedFacing === "back") {
       return isBackCameraName(camera.name);
@@ -157,9 +140,8 @@ export function filterCamerasByFacing(
  *
  * @param cameras - Available `Camera`s on the device.
  * @param resolution - Ideal resolution for the camera stream, will fall back to the closest available resolution.
- * @param requestedFacing - Ideal facing mode for the camera stream. If not provided, will default to back camera.
- * If no facing mode is available, will return a best effort match.
- *
+ * @param requestedFacing - Ideal facing mode for the camera stream. If not provided, will default to back camera. If no
+ *   facing mode is available, will return a best effort match.
  * @returns A `Camera` instance that matches the provided constraints, with an active stream.
  */
 export const findIdealCamera = async (
@@ -197,9 +179,7 @@ export const findIdealCamera = async (
   // early exit for iPhone 12+
   // Dual wide camera is the best, if it exists and requested facing is back
   if (requestedFacing === "back") {
-    const dualWideCamera = cameraPool.find((camera) =>
-      backDualWideCameraLocalizations.includes(camera.name),
-    );
+    const dualWideCamera = cameraPool.find((camera) => backDualWideCameraLocalizations.includes(camera.name));
 
     if (dualWideCamera) {
       await dualWideCamera.startStream(resolution);

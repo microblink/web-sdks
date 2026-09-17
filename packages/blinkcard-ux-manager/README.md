@@ -2,6 +2,23 @@
 
 This package provides user experience management and feedback UI for the BlinkCard browser SDK. It parses results from [`@microblink/blinkcard-core`](https://www.npmjs.com/package/@microblink/blinkcard-core) and guides the user through the scanning process, controlling [`@microblink/camera-manager`](https://www.npmjs.com/package/@microblink/camera-manager) as needed.
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/blinkcard-ux-manager`:
+
+| Entrypoint | Minified  | Gzip     |
+| ---------- | --------- | -------- |
+| `root`     | 180.62 kB | 55.20 kB |
+| `/core`    | 38.35 kB  | 10.21 kB |
+| `/ui`      | 148.86 kB | 47.21 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Features
 
 - **Smart UI State Management:** Provides both headless and UI components for user feedback during scanning
@@ -13,6 +30,8 @@ This package provides user experience management and feedback UI for the BlinkCa
 
 ## Overview
 
+See the [custom UI example](../../apps/examples/blinkcard-custom-ui/) for an application-owned interface built with the `/core` entrypoint.
+
 - Provides both headless and UI components for user feedback during scanning.
 - Integrates with BlinkCard Core and Camera Manager.
 - Includes haptic feedback system for mobile devices.
@@ -20,14 +39,17 @@ This package provides user experience management and feedback UI for the BlinkCa
 
 ## Browser Support
 
-This package supports these browser versions and newer:
+The package exports support these browser versions and newer:
 
-- Chrome / Chromium 96 (desktop and Android)
-- Edge 96
-- Opera 84
-- Firefox 132 (desktop)
-- Safari 16.4 (macOS)
-- iOS Safari 16.4
+| Browser                     | Root | `/core` | `/ui` |
+| --------------------------- | ---- | ------- | ----- |
+| Chrome / Chromium (desktop) | 96   | 96      | 96    |
+| Chrome / Chromium (Android) | 96   | 96      | 96    |
+| Edge                        | 96   | 96      | 96    |
+| Opera                       | 84   | 84      | 84    |
+| Firefox (desktop)           | 132  | 132     | 132   |
+| Safari (macOS)              | 16.4 | 16.4    | 16.4  |
+| iOS Safari                  | 16.4 | 16.4    | 16.4  |
 
 This package depends on `@microblink/camera-manager` and `@microblink/blinkcard-core`.
 For the full SDK with camera capture, see `@microblink/blinkcard`.
@@ -48,6 +70,20 @@ yarn add @microblink/blinkcard-ux-manager
 pnpm add @microblink/blinkcard-ux-manager
 ```
 
+## Entrypoints
+
+Use `@microblink/blinkcard-ux-manager/core` for scanning orchestration without the packaged UI. Use
+`@microblink/blinkcard-ux-manager/ui` for the feedback UI and localization APIs. The root entry remains available for
+compatibility until the next major release and includes both.
+
+The `/ui` entry requires `solid-js`, `@ark-ui/solid`, `solid-zustand`, and `@solid-primitives/keyed` as peer
+dependencies. Install them explicitly when using the root or `/ui` entry; they are optional package peers only so
+`/core` consumers do not install a Solid runtime:
+
+```sh
+npm install solid-js @ark-ui/solid solid-zustand @solid-primitives/keyed
+```
+
 ## Haptic Feedback
 
 The UX Manager includes a comprehensive haptic feedback system that provides tactile responses during the card scanning process. **This feature is primarily designed for Android devices using Chrome browser**, where it works reliably to enhance the scanning experience.
@@ -66,16 +102,10 @@ The UX Manager includes a comprehensive haptic feedback system that provides tac
 ### Haptic Feedback Usage
 
 ```javascript
-import {
-  createBlinkCardUxManager,
-  HapticFeedbackManager,
-} from "@microblink/blinkcard-ux-manager";
+import { createBlinkCardUxManager, HapticFeedbackManager } from "@microblink/blinkcard-ux-manager/core";
 
 // Create UX Manager (haptic feedback enabled by default)
-const uxManager = await createBlinkCardUxManager(
-  cameraManager,
-  scanningSession,
-);
+const uxManager = await createBlinkCardUxManager(cameraManager, scanningSession);
 
 // Check if haptic feedback is supported
 if (uxManager.isHapticFeedbackSupported()) {
@@ -102,6 +132,30 @@ hapticManager.stop(); // Stop all vibration
 You can use `@microblink/blinkcard-ux-manager` directly in your project for advanced or custom integrations. For most use cases, use [`@microblink/blinkcard`](https://www.npmjs.com/package/@microblink/blinkcard) for a simpler setup.
 
 See the example apps in the `apps/examples` directory in the GitHub repository for usage details.
+
+### Timeout configuration
+
+BlinkCard uses two independent capture timers: a 10-second inactivity timeout that restarts after each stabilized UI-state
+change, and a 60-second timeout for the current card side. Configure them when creating the UX manager:
+
+```typescript
+const uxManager = await createBlinkCardUxManager(cameraManager, scanningSession, {
+  timeoutConfiguration: {
+    inactivityTimeoutMs: 15_000,
+    scanStepTimeoutMs: 90_000,
+  },
+});
+```
+
+Set either value to `null` to disable that timer independently. The active configuration can be read or updated at
+runtime:
+
+```typescript
+uxManager.getTimeoutConfiguration();
+uxManager.setTimeoutConfiguration({ inactivityTimeoutMs: null });
+```
+
+Timeouts are reported through `addOnErrorCallback` as `"inactivity_timeout"` or `"scan_step_timeout"`.
 
 ## Development
 
@@ -132,6 +186,8 @@ The output files will be available in the `dist/` and `types/` directories.
 You can customize UI strings when creating the feedback UI:
 
 ```typescript
+import { createBlinkCardFeedbackUi } from "@microblink/blinkcard-ux-manager/ui";
+
 createBlinkCardFeedbackUi(uxManager, cameraUi, {
   localizationStrings: {
     scan_the_barcode: "Please scan the barcode",

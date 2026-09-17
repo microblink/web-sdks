@@ -1,22 +1,10 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /* @refresh reload */
 
-import {
-  BlinkIdScanningResult,
-  loadBlinkIdCore,
-} from "@microblink/blinkid-core";
-import {
-  createBlinkIdFeedbackUi,
-  createBlinkIdUxManager,
-} from "@microblink/blinkid-ux-manager";
-import {
-  CameraManager,
-  createCameraManagerUi,
-} from "@microblink/camera-manager";
-
+import { BlinkIdScanningResult, loadBlinkIdCore } from "@microblink/blinkid-core";
+import { createBlinkIdFeedbackUi, createBlinkIdUxManager } from "@microblink/blinkid-ux-manager";
+import { CameraManager, createCameraManagerUi } from "@microblink/camera-manager";
 import { Component, createSignal, onMount, Show } from "solid-js";
 
 /**
@@ -25,27 +13,20 @@ import { Component, createSignal, onMount, Show } from "solid-js";
  */
 const USE_PORTAL = true;
 
-/**
- * If the onboarding guide should be shown.
- */
+/** If the onboarding guide should be shown. */
 const SHOW_ONBOARDING = true;
 
-/**
- * This is the target node for the UI.
- */
+/** This is the target node for the UI. */
 const targetNode = !USE_PORTAL ? document.getElementById("root")! : undefined;
 
-/**
- * This is the main component of the application.
- */
+/** This is the main component of the application. */
 export const App: Component = () => {
   const [result, setResult] = createSignal<BlinkIdScanningResult>();
-  const [loadState, setLoadState] = createSignal<
-    "not-loaded" | "loading" | "ready"
-  >("not-loaded");
+  const [loadState, setLoadState] = createSignal<"not-loaded" | "loading" | "ready">("not-loaded");
 
   /**
-   * This function removes the images from the result object. This is done only so we don't display raw images data in the UI.
+   * This function removes the images from the result object. This is done only so we don't display raw images data in
+   * the UI.
    */
   const resultWithoutImages = () => {
     const resultCopy = structuredClone(result());
@@ -190,9 +171,7 @@ export const App: Component = () => {
        * In this case, we are setting the preferred camera to the first camera that contains "obs" in the name.
        */
       preferredCamera: (cameras) => {
-        return cameras.find((camera) =>
-          camera.name.toLowerCase().includes("face"),
-        );
+        return cameras.find((camera) => camera.name.toLowerCase().includes("face"));
       },
     });
   }
@@ -204,19 +183,14 @@ export const App: Component = () => {
   return (
     <div>
       <Show when={loadState() !== "ready"}>
-        <button
-          disabled={loadState() === "loading"}
-          onClick={() => void init()}
-        >
+        <button disabled={loadState() === "loading"} onClick={() => void init()}>
           Load
         </button>
       </Show>
 
       {/* Results */}
       <Show when={resultWithoutImages()}>
-        {(trimmedResult) => (
-          <pre>{JSON.stringify(trimmedResult(), null, 2)}</pre>
-        )}
+        {(trimmedResult) => <pre>{JSON.stringify(trimmedResult(), null, 2)}</pre>}
       </Show>
     </div>
   );

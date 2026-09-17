@@ -1,10 +1,6 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-/**
- * Generic keywords for back camera.
- */
+/** Generic keywords for back camera. */
 const backCameraKeywords = [
   // English
   "back",
@@ -78,9 +74,7 @@ const backCameraKeywords = [
   "posterior",
 ] as const satisfies string[];
 
-/**
- * Generic keywords for front camera.
- */
+/** Generic keywords for front camera. */
 const frontCameraKeywords = [
   // English
   "front",
@@ -150,9 +144,7 @@ const frontCameraKeywords = [
   "frontal",
 ] as const satisfies string[];
 
-/**
- * Localizations for iOS back camera.
- */
+/** Localizations for iOS back camera. */
 const backCameraLocalizations = [
   "후면 카메라",
   "後置相機",
@@ -201,9 +193,7 @@ const backCameraLocalizations = [
   "Câmera de Trás",
 ] as const satisfies string[];
 
-/**
- * Localizations for iOS back dual wide camera.
- */
+/** Localizations for iOS back dual wide camera. */
 const backDualWideCameraLocalizations = [
   "Cameră dublă cu obiectiv superangular spate",
   "מצלמה כפולה רחבה אחורית",
@@ -249,7 +239,7 @@ const backDualWideCameraLocalizations = [
  *
  * @param string - The string to check.
  * @param keywords - The keywords to check.
- * @returns true if the string contains any of the keywords.
+ * @returns True if the string contains any of the keywords.
  */
 const containsKeyword = (string: string, keywords: string[]) => {
   return keywords.some((keyword) => string.toLowerCase().includes(keyword));
@@ -259,16 +249,14 @@ const containsKeyword = (string: string, keywords: string[]) => {
  * Checks if a string is a back camera name.
  *
  * @param string - The string to check.
- * @returns true if the string is a back camera name.
+ * @returns True if the string is a back camera name.
  */
-export const isBackCameraName = (string: string) =>
-  containsKeyword(string, backCameraKeywords);
+export const isBackCameraName = (string: string) => containsKeyword(string, backCameraKeywords);
 
 /**
  * Checks if a string is a front camera name.
  *
  * @param string - The string to check.
- * @returns true if the string is a front camera name.
+ * @returns True if the string is a front camera name.
  */
-export const isFrontCameraName = (string: string) =>
-  containsKeyword(string, frontCameraKeywords);
+export const isFrontCameraName = (string: string) => containsKeyword(string, frontCameraKeywords);

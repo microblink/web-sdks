@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
+
 import { createDerivedDeviceInfo } from "./createDerivedDeviceInfo";
 import { DerivedDeviceInfo } from "./deviceInfo";
 import { UADataValues } from "./navigator-types";

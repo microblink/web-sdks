@@ -10,9 +10,8 @@
 
 Represents the results of processing and analyzing an input image.
 
-This structure contains the status of the processing, along with detailed
-results from detection, and information about the card analysis performed on
-the input image.
+This structure contains the status of the processing, along with detailed results from detection, and information
+about the card analysis performed on the input image.
 
 ## Properties
 

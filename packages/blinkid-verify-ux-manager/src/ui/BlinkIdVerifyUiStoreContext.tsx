@@ -1,89 +1,50 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type { CameraManagerComponent } from "@microblink/camera-manager";
-import {
-  createContext,
-  onCleanup,
-  type ParentComponent,
-  useContext,
-} from "solid-js";
+import type { BlinkIdVerifyUxManager } from "@microblink/blinkid-verify-ux-manager/core";
+import type { CameraManagerComponent } from "@microblink/camera-manager/ui";
+import { createContext, onCleanup, type ParentComponent, useContext } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
-import type { BlinkIdVerifyProcessingError } from "../core/BlinkIdVerifyProcessingError";
-import type { BlinkIdVerifyUxManager } from "../core/BlinkIdVerifyUxManager";
 
-/**
- * The BlinkIdVerifyUiStore type.
- */
+import type { BlinkIdVerifyProcessingError } from "../core/BlinkIdVerifyProcessingError";
+
+/** The BlinkIdVerifyUiStore type. */
 type BlinkIdVerifyUiStore = {
-  /**
-   * The BlinkIdVerifyUxManager instance.
-   */
+  /** The BlinkIdVerifyUxManager instance. */
   blinkIdVerifyUxManager: BlinkIdVerifyUxManager;
-  /**
-   * The CameraManagerComponent instance.
-   */
+  /** The CameraManagerComponent instance. */
   cameraManagerComponent: CameraManagerComponent;
-  /**
-   * The error state.
-   */
+  /** The error state. */
   errorState?: BlinkIdVerifyProcessingError; // TODO: should this be part of `BlinkIdVerifyUxManager`?
-  /**
-   * Whether the document has been filtered.
-   */
+  /** Whether the document has been filtered. */
   documentFiltered: boolean;
-  /**
-   * Whether the onboarding guide should be shown.
-   */
+  /** Whether the onboarding guide should be shown. */
   showOnboardingGuide?: boolean;
-  /**
-   * Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown.
-   */
+  /** Time in ms before the help tooltip is shown. If null, tooltip won't be auto shown. */
   helpTooltipShowDelay?: number | null;
-  /**
-   * Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden.
-   */
+  /** Time in ms before the help tooltip is hidden. If null, tooltip won't be auto hidden. */
   helpTooltipHideDelay?: number | null;
-  /**
-   * Whether the help modal should be shown.
-   */
+  /** Whether the help modal should be shown. */
   showHelpModal?: boolean;
-  /**
-   * Whether the help button should be shown.
-   */
+  /** Whether the help button should be shown. */
   showHelpButton?: boolean;
-  /**
-   * Whether the document filtered modal should be shown.
-   */
+  /** Whether the document filtered modal should be shown. */
   showDocumentFilteredModal?: boolean;
-  /**
-   * Whether the timeout modal should be shown.
-   */
+  /** Whether the timeout modal should be shown. */
   showTimeoutModal?: boolean;
-  /**
-   * Whether the document unsupported modal should be shown.
-   */
+  /** Whether the document unsupported modal should be shown. */
   showUnsupportedDocumentModal?: boolean;
-  /**
-   * The function to dismount the feedback UI.
-   */
+  /** The function to dismount the feedback UI. */
   dismountFeedbackUi: () => void;
 };
 
-/**
- * The BlinkIdVerifyUiStoreContextValue type.
- */
+/** The BlinkIdVerifyUiStoreContextValue type. */
 type BlinkIdVerifyUiStoreContextValue = {
   store: BlinkIdVerifyUiStore;
   updateStore: SetStoreFunction<BlinkIdVerifyUiStore>;
 };
 
-/**
- * The BlinkIdVerifyUiStoreContext.
- */
-const BlinkIdVerifyUiStoreContext =
-  createContext<BlinkIdVerifyUiStoreContextValue>();
+/** The BlinkIdVerifyUiStoreContext. */
+const BlinkIdVerifyUiStoreContext = createContext<BlinkIdVerifyUiStoreContextValue>();
 
 /**
  * The BlinkIdVerifyUiStoreProvider component.
@@ -103,14 +64,12 @@ export const BlinkIdVerifyUiStoreProvider: ParentComponent<{
   showUnsupportedDocumentModal: boolean;
   dismountFeedbackUi: () => void;
 }> = (props) => {
-  const [store, updateStore] = createStore<BlinkIdVerifyUiStore>(
-    {} as BlinkIdVerifyUiStore,
-  );
+  const [store, updateStore] = createStore<BlinkIdVerifyUiStore>({} as BlinkIdVerifyUiStore);
 
   // This needs to be created outside of `useEffect` since we
   // need it immediately on mount
   updateStore({
-    /* eslint-disable solid/reactivity */
+    /* oxlint-disable solid/reactivity */
     blinkIdVerifyUxManager: props.blinkIdVerifyUxManager,
     cameraManagerComponent: props.cameraManagerComponent,
     showOnboardingGuide: props.showOnboardingGuide,
@@ -121,7 +80,7 @@ export const BlinkIdVerifyUiStoreProvider: ParentComponent<{
     showTimeoutModal: props.showTimeoutModal,
     showUnsupportedDocumentModal: props.showUnsupportedDocumentModal,
     dismountFeedbackUi: props.dismountFeedbackUi,
-    /* eslint-enable solid/reactivity */
+    /* oxlint-enable solid/reactivity */
   });
 
   const contextValue = {
@@ -134,9 +93,7 @@ export const BlinkIdVerifyUiStoreProvider: ParentComponent<{
   });
 
   return (
-    <BlinkIdVerifyUiStoreContext.Provider value={contextValue}>
-      {props.children}
-    </BlinkIdVerifyUiStoreContext.Provider>
+    <BlinkIdVerifyUiStoreContext.Provider value={contextValue}>{props.children}</BlinkIdVerifyUiStoreContext.Provider>
   );
 };
 

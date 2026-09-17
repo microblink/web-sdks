@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import {
   BlinkIdCore,
@@ -11,18 +9,12 @@ import {
 } from "@microblink/blinkid-core";
 import { Component, createSignal, onCleanup, onMount, Show } from "solid-js";
 
-type BlinkIdSession = Awaited<
-  ReturnType<
-    Awaited<ReturnType<typeof loadBlinkIdCore>>["createScanningSession"]
-  >
->;
+type BlinkIdSession = Awaited<ReturnType<Awaited<ReturnType<typeof loadBlinkIdCore>>["createScanningSession"]>>;
 
 // Status check utilities
-const isErrorStatus = (status: ProcessingStatus) =>
-  status !== "success" && status !== "awaiting-other-side";
+const isErrorStatus = (status: ProcessingStatus) => status !== "success" && status !== "awaiting-other-side";
 
-const isBarcodeError = (status: ProcessingStatus) =>
-  status === "barcode-recognition-failed";
+const isBarcodeError = (status: ProcessingStatus) => status === "barcode-recognition-failed";
 
 // Image processing utilities
 const createImageData = async (file: File): Promise<ImageData> => {
@@ -49,16 +41,12 @@ const createImageData = async (file: File): Promise<ImageData> => {
 };
 
 const App: Component = () => {
-  const [scanningResult, setScanningResult] =
-    createSignal<BlinkIdScanningResult>();
+  const [scanningResult, setScanningResult] = createSignal<BlinkIdScanningResult>();
 
   // Process result signals
-  const [frontProcessResult, setFrontProcessResult] =
-    createSignal<BlinkIdProcessResult>();
-  const [backProcessResult, setBackProcessResult] =
-    createSignal<BlinkIdProcessResult>();
-  const [barcodeProcessResult, setBarcodeProcessResult] =
-    createSignal<BlinkIdProcessResult>();
+  const [frontProcessResult, setFrontProcessResult] = createSignal<BlinkIdProcessResult>();
+  const [backProcessResult, setBackProcessResult] = createSignal<BlinkIdProcessResult>();
+  const [barcodeProcessResult, setBarcodeProcessResult] = createSignal<BlinkIdProcessResult>();
 
   // Loading, error, success signals
   const [isLoading, setIsLoading] = createSignal(false);
@@ -110,11 +98,7 @@ const App: Component = () => {
       setIsSessionReady(true);
     } catch (err) {
       setIsSessionReady(false);
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to initialize BlinkID scanning session",
-      );
+      setError(err instanceof Error ? err.message : "Failed to initialize BlinkID scanning session");
     } finally {
       setIsInitializingSession(false);
     }
@@ -196,10 +180,7 @@ const App: Component = () => {
     }
   };
 
-  const handleFileUpload = async (
-    event: Event,
-    side: "front" | "back" | "barcode",
-  ) => {
+  const handleFileUpload = async (event: Event, side: "front" | "back" | "barcode") => {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
@@ -214,9 +195,7 @@ const App: Component = () => {
       setSuccess(undefined);
 
       if (!session) {
-        setError(
-          "Scanning session is not ready. Wait for initialization or tap Retry.",
-        );
+        setError("Scanning session is not ready. Wait for initialization or tap Retry.");
         return;
       }
 
@@ -243,10 +222,7 @@ const App: Component = () => {
       const status = processResult.inputImageAnalysisResult.processingStatus;
 
       // Check for error status but allow barcode-recognition-failed only for non-barcode steps
-      if (
-        isErrorStatus(status) &&
-        (!isBarcodeError(status) || side === "barcode")
-      ) {
+      if (isErrorStatus(status) && (!isBarcodeError(status) || side === "barcode")) {
         throw new Error(`Processing failed: ${status}`);
       }
 
@@ -317,8 +293,7 @@ const App: Component = () => {
     }
   };
 
-  const uploadsDisabled = () =>
-    isLoading() || isInitializingSession() || !isSessionReady();
+  const uploadsDisabled = () => isLoading() || isInitializingSession() || !isSessionReady();
 
   return (
     <div class="container">
@@ -357,11 +332,7 @@ const App: Component = () => {
             <Show when={frontProcessResult()}>
               <details class="process-details">
                 <summary>
-                  Front Side Process Result -{" "}
-                  {
-                    frontProcessResult()?.inputImageAnalysisResult
-                      .processingStatus
-                  }
+                  Front Side Process Result - {frontProcessResult()?.inputImageAnalysisResult.processingStatus}
                 </summary>
                 <pre>{JSON.stringify(frontProcessResult(), null, 2)}</pre>
               </details>
@@ -387,11 +358,7 @@ const App: Component = () => {
               <Show when={backProcessResult()}>
                 <details class="process-details">
                   <summary>
-                    Back Side Process Result -{" "}
-                    {
-                      backProcessResult()?.inputImageAnalysisResult
-                        .processingStatus
-                    }
+                    Back Side Process Result - {backProcessResult()?.inputImageAnalysisResult.processingStatus}
                   </summary>
                   <pre>{JSON.stringify(backProcessResult(), null, 2)}</pre>
                 </details>
@@ -418,11 +385,7 @@ const App: Component = () => {
               <Show when={barcodeProcessResult()}>
                 <details class="process-details">
                   <summary>
-                    Barcode Process Result -{" "}
-                    {
-                      barcodeProcessResult()?.inputImageAnalysisResult
-                        .processingStatus
-                    }
+                    Barcode Process Result - {barcodeProcessResult()?.inputImageAnalysisResult.processingStatus}
                   </summary>
                   <pre>{JSON.stringify(barcodeProcessResult(), null, 2)}</pre>
                 </details>

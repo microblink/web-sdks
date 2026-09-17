@@ -1,5 +1,14 @@
 # @microblink/blinkid-worker
 
+## 8002.0.0
+
+### Patch Changes
+
+- Speeds up BlinkID initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
+- Updated dependencies
+  - @microblink/blinkid-wasm@8002.0.0
+  - @microblink/analytics@2.1.0
+
 ## 8001.0.1
 
 ### Patch Changes

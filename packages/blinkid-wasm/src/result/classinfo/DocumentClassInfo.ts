@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { Country } from "./Country";
 import { DocumentType } from "./DocumentType";
@@ -9,9 +7,8 @@ import { Region } from "./Region";
 /**
  * A single document classification component.
  *
- * `id` is present when the classification maps to a value known at build time.
- * `rawValue` always carries the raw classification token from the document
- * knowledge database, including OTA-delivered classes unknown at build time.
+ * `id` is present when the classification maps to a value known at build time. `rawValue` always carries the raw
+ * classification token from the document knowledge database, including OTA-delivered classes unknown at build time.
  */
 export type DocumentClassComponent<TId extends string> = {
   /** Strongly-typed identifier, when known at build time. */

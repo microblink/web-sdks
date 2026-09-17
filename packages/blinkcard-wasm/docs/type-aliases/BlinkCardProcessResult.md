@@ -10,9 +10,8 @@
 
 Represents the overall result of the card processing pipeline.
 
-This structure combines the results of input image analysis and processing,
-including detection, card image quality analysis, along with information
-about the completeness of the extraction process for the card.
+This structure combines the results of input image analysis and processing, including detection, card image quality
+analysis, along with information about the completeness of the extraction process for the card.
 
 ## Properties
 

@@ -1,12 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { PingScanningConditionsData } from "@microblink/analytics/ping";
 
-type DeviceOrientation = NonNullable<
-  PingScanningConditionsData["deviceOrientation"]
->;
+type DeviceOrientation = NonNullable<PingScanningConditionsData["deviceOrientation"]>;
 
 type WindowWithOrientation = Window & {
   orientation?: number;
@@ -18,12 +14,8 @@ const DEVICE_ORIENTATION_UNAVAILABLE_LOG_MESSAGE =
 const DEVICE_ORIENTATION_SUBSCRIPTION_FAILED_LOG_MESSAGE =
   "Device orientation analytics unavailable: failed to subscribe to orientation changes.";
 
-/**
- * Maps Screen Orientation API values to analytics device orientation values.
- */
-export function mapScreenOrientationType(
-  type: ScreenOrientation["type"],
-): DeviceOrientation | undefined {
+/** Maps Screen Orientation API values to analytics device orientation values. */
+export function mapScreenOrientationType(type: ScreenOrientation["type"]): DeviceOrientation | undefined {
   switch (type) {
     case "portrait-primary":
       return "Portrait";
@@ -34,13 +26,9 @@ export function mapScreenOrientationType(
     case "landscape-secondary":
       return "LandscapeRight";
   }
-
-  return undefined;
 }
 
-function mapWindowOrientation(
-  orientation: number,
-): DeviceOrientation | undefined {
+function mapWindowOrientation(orientation: number): DeviceOrientation | undefined {
   switch (orientation) {
     case 0:
       return "Portrait";
@@ -84,20 +72,14 @@ function subscribeToScreenOrientation(
 ): (() => void) | undefined {
   try {
     screenOrientation.addEventListener("change", orientationChangeHandler);
-    reportOrientation(
-      mapScreenOrientationType(screenOrientation.type),
-      onOrientation,
-    );
+    reportOrientation(mapScreenOrientationType(screenOrientation.type), onOrientation);
   } catch {
     return undefined;
   }
 
   function orientationChangeHandler(event: Event) {
     const target = event.target as ScreenOrientation | null;
-    reportOrientation(
-      mapScreenOrientationType(target?.type ?? screenOrientation.type),
-      onOrientation,
-    );
+    reportOrientation(mapScreenOrientationType(target?.type ?? screenOrientation.type), onOrientation);
   }
 
   return () => {
@@ -135,10 +117,7 @@ function subscribeToWindowOrientation(
     }
 
     const orientationChangeHandler = () => {
-      reportOrientation(
-        mapWindowOrientation(getWindowOrientation() ?? NaN),
-        onOrientation,
-      );
+      reportOrientation(mapWindowOrientation(getWindowOrientation() ?? NaN), onOrientation);
     };
 
     window.addEventListener("orientationchange", orientationChangeHandler);
@@ -146,10 +125,7 @@ function subscribeToWindowOrientation(
 
     return () => {
       try {
-        window.removeEventListener(
-          "orientationchange",
-          orientationChangeHandler,
-        );
+        window.removeEventListener("orientationchange", orientationChangeHandler);
       } catch {
         // Orientation analytics must never interfere with UX manager cleanup.
       }
@@ -159,10 +135,7 @@ function subscribeToWindowOrientation(
   }
 }
 
-function reportFailure(
-  logMessage: string,
-  onFailure?: (logMessage: string) => void,
-) {
+function reportFailure(logMessage: string, onFailure?: (logMessage: string) => void) {
   try {
     onFailure?.(logMessage);
   } catch {
@@ -173,8 +146,8 @@ function reportFailure(
 /**
  * Subscribes to device orientation analytics changes when supported.
  *
- * Returns a cleanup callback. Unsupported or partially implemented browser
- * APIs are treated as a no-op so analytics cannot block UX manager creation.
+ * Returns a cleanup callback. Unsupported or partially implemented browser APIs are treated as a no-op so analytics
+ * cannot block UX manager creation.
  */
 export function subscribeToDeviceOrientation(
   onOrientation: (orientation: DeviceOrientation) => void,
@@ -183,18 +156,14 @@ export function subscribeToDeviceOrientation(
   const screenOrientation = getScreenOrientation();
 
   if (screenOrientation !== undefined) {
-    const unsubscribe = subscribeToScreenOrientation(
-      screenOrientation,
-      onOrientation,
-    );
+    const unsubscribe = subscribeToScreenOrientation(screenOrientation, onOrientation);
 
     if (unsubscribe !== undefined) {
       return unsubscribe;
     }
   }
 
-  const unsubscribeFromWindowOrientation =
-    subscribeToWindowOrientation(onOrientation);
+  const unsubscribeFromWindowOrientation = subscribeToWindowOrientation(onOrientation);
   if (unsubscribeFromWindowOrientation !== undefined) {
     return unsubscribeFromWindowOrientation;
   }
@@ -206,5 +175,7 @@ export function subscribeToDeviceOrientation(
     onFailure,
   );
 
-  return () => {};
+  return () => {
+    // Noop
+  };
 }

@@ -1,21 +1,17 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  getDeviceInfo,
-  type RemoteScanningSession,
-} from "@microblink/blinkcard-core";
-import { CameraManager } from "@microblink/camera-manager";
+import { getDeviceInfo, type RemoteScanningSession } from "@microblink/blinkcard-core";
+import { CameraManager } from "@microblink/camera-manager/core";
+
+import type { BlinkCardUiStateKey } from "./blinkcard-ui-state";
+import type { BlinkCardTimeoutConfiguration } from "./BlinkCardTimeoutConfiguration";
 import { BlinkCardUxManager } from "./BlinkCardUxManager";
-import { BlinkCardUiStateKey } from "./blinkcard-ui-state";
 
 export type BlinkCardUxManagerOptions = {
-  /**
-   * Initial UI state key used by the manager/stabilizer.
-   * Defaults to `INTRO_FRONT`.
-   */
+  /** Initial UI state key used by the manager/stabilizer. Defaults to `INTRO_FRONT`. */
   initialUiStateKey?: BlinkCardUiStateKey;
+  /** Configures BlinkCard scanning timeout behavior. */
+  timeoutConfiguration?: Partial<BlinkCardTimeoutConfiguration>;
 };
 
 /**
@@ -32,12 +28,7 @@ export const createBlinkCardUxManager = async (
   options: BlinkCardUxManagerOptions = {},
 ): Promise<BlinkCardUxManager> => {
   try {
-    const [
-      sessionSettings,
-      showDemoOverlay,
-      showProductionOverlay,
-      deviceInfo,
-    ] = await Promise.all([
+    const [sessionSettings, showDemoOverlay, showProductionOverlay, deviceInfo] = await Promise.all([
       scanningSession.getSettings(),
       scanningSession.showDemoOverlay(),
       scanningSession.showProductionOverlay(),
@@ -60,9 +51,7 @@ export const createBlinkCardUxManager = async (
         schemaVersion: "1.0.0",
         data: {
           errorType: "Crash",
-          errorMessage: `ux.createBlinkCardUxManager: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          errorMessage: `ux.createBlinkCardUxManager: ${error instanceof Error ? error.message : String(error)}`,
           stackTrace: error instanceof Error ? error.stack : undefined,
         },
       });

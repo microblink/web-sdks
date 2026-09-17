@@ -1,8 +1,6 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-/* eslint-disable solid/reactivity */
+/* oxlint-disable solid/reactivity */
 
 import {
   AnalyticService,
@@ -15,10 +13,7 @@ import {
   type ProcessResultWithBuffer,
   type RemoteScanningSession,
 } from "@microblink/blinkid-verify-core";
-import type {
-  CameraManager,
-  CameraPermission,
-} from "@microblink/camera-manager";
+import type { CameraManager, CameraPermission } from "@microblink/camera-manager/core";
 import { FeedbackStabilizer } from "@microblink/feedback-stabilizer";
 import {
   buildCameraAnalyticsKey,
@@ -31,6 +26,7 @@ import { HapticFeedbackManager } from "@microblink/ux-common/hapticFeedback";
 import { RafLoop } from "@microblink/ux-common/RafLoop";
 import { invokeCallbacks, sleep } from "@microblink/ux-common/utils";
 import { debounce } from "perfect-debounce";
+
 import {
   BlinkIdVerifyUiErrorStateKey,
   blinkIdVerifyUiErrorStateKeys,
@@ -44,26 +40,15 @@ import {
 } from "./blinkid-verify-ui-state";
 import { BlinkIdVerifyProcessingError } from "./BlinkIdVerifyProcessingError";
 import { BlinkIdVerifyUxManagerOptions } from "./createBlinkIdVerifyUxManager";
-import {
-  ChainedUiStateProps,
-  getChainedUiStateKey,
-} from "./getChainedUiStateKey";
-import {
-  DocumentPagination,
-  getDocumentPaginationType,
-  getDocumentRotation,
-} from "./ui-state-utils";
-import {
-  mapErrorStateKeyToAnalyticsType,
-  type PingableErrorUiStateKey,
-} from "./uxAnalyticsMappers";
+import { ChainedUiStateProps, getChainedUiStateKey } from "./getChainedUiStateKey";
+import { DocumentPagination, getDocumentPaginationType, getDocumentRotation } from "./ui-state-utils";
+import { mapErrorStateKeyToAnalyticsType, type PingableErrorUiStateKey } from "./uxAnalyticsMappers";
 
 type ProcessingLifecycleState = "ready" | "busy" | "terminal";
 
 /**
- * The BlinkIdVerifyUxManager class. This is the main class that manages the UX of
- * the BlinkID Verify SDK. It is responsible for handling the UI state, the timeout,
- * the help tooltip, and the document class filter.
+ * The BlinkIdVerifyUxManager class. This is the main class that manages the UX of the BlinkID Verify SDK. It is
+ * responsible for handling the UI state, the timeout, the help tooltip, and the document class filter.
  */
 export class BlinkIdVerifyUxManager {
   /** The camera manager. */
@@ -74,9 +59,8 @@ export class BlinkIdVerifyUxManager {
   #uiState: BlinkIdVerifyUiState;
 
   /**
-   * The current UI state. Updated internally by the RAF update loop.
-   * Read externally once at UI mount to seed the initial Solid signal value;
-   * subsequent updates are delivered via `addOnUiStateChangedCallback`.
+   * The current UI state. Updated internally by the RAF update loop. Read externally once at UI mount to seed the
+   * initial Solid signal value; subsequent updates are delivered via `addOnUiStateChangedCallback`.
    */
   get uiState(): BlinkIdVerifyUiState {
     return this.#uiState;
@@ -85,8 +69,8 @@ export class BlinkIdVerifyUxManager {
   /** Latest mapped candidate key before stabilizer applies it to the UI. */
   #mappedUiStateKey: BlinkIdVerifyUiStateKey;
   /**
-   * The feedback stabilizer. Public to allow UI components to read scores,
-   * event queues, and call restartCurrentStateTimer() for help-tooltip resets.
+   * The feedback stabilizer. Public to allow UI components to read scores, event queues, and call
+   * restartCurrentStateTimer() for help-tooltip resets.
    */
   readonly feedbackStabilizer: FeedbackStabilizer<BlinkIdVerifyUiStateMap>;
   /** The session settings. Populated asynchronously from the scanning session. */
@@ -116,19 +100,13 @@ export class BlinkIdVerifyUxManager {
   #timeoutDuration: number | null = 10000; // 10s
 
   /** The callbacks for when the UI state changes. */
-  #onUiStateChangedCallbacks = new Set<
-    (uiState: BlinkIdVerifyUiState) => void
-  >();
+  #onUiStateChangedCallbacks = new Set<(uiState: BlinkIdVerifyUiState) => void>();
   /** The callbacks for when a scan result is available. */
   #onResultCallbacks = new Set<(result: BlinkIdVerifyScanningResult) => void>();
   /** The callbacks for when a frame is processed. */
-  #onFrameProcessCallbacks = new Set<
-    (frameResult: ProcessResultWithBuffer) => void
-  >();
+  #onFrameProcessCallbacks = new Set<(frameResult: ProcessResultWithBuffer) => void>();
   /** The callbacks for when an error occurs during processing. */
-  #onErrorCallbacks = new Set<
-    (errorState: BlinkIdVerifyProcessingError) => void
-  >();
+  #onErrorCallbacks = new Set<(errorState: BlinkIdVerifyProcessingError) => void>();
 
   /** Clean up observers, store subscriptions and event listeners. */
   #cleanupCallbacks = new Set<() => void>();
@@ -177,10 +155,7 @@ export class BlinkIdVerifyUxManager {
       this.#initialUiStateKey = options.initialUiStateKey;
     }
 
-    this.feedbackStabilizer = new FeedbackStabilizer(
-      blinkIdVerifyUiStateMap,
-      this.#initialUiStateKey,
-    );
+    this.feedbackStabilizer = new FeedbackStabilizer(blinkIdVerifyUiStateMap, this.#initialUiStateKey);
 
     this.#uiState = this.feedbackStabilizer.currentState;
 
@@ -197,11 +172,9 @@ export class BlinkIdVerifyUxManager {
 
     this.#setupObservers();
 
-    const removeFrameCaptureCallback =
-      this.cameraManager.addFrameCaptureCallback(this.#frameCaptureCallback);
+    const removeFrameCaptureCallback = this.cameraManager.addFrameCaptureCallback(this.#frameCaptureCallback);
 
-    const removeCameraManagerErrorCallback =
-      this.cameraManager.addErrorCallback(this.#handleCameraManagerError);
+    const removeCameraManagerErrorCallback = this.cameraManager.addErrorCallback(this.#handleCameraManagerError);
 
     this.#cleanupCallbacks.add(removeFrameCaptureCallback);
     this.#cleanupCallbacks.add(removeCameraManagerErrorCallback);
@@ -235,13 +208,9 @@ export class BlinkIdVerifyUxManager {
       (s) => s.playbackState,
       (playbackState) => {
         console.debug(`⏯️ ${playbackState}`);
-        const wasActive =
-          previousPlaybackState !== undefined &&
-          previousPlaybackState !== "idle";
+        const wasActive = previousPlaybackState !== undefined && previousPlaybackState !== "idle";
         const isActive = playbackState !== "idle";
-        const isCaptureTransition =
-          playbackState === "capturing" &&
-          previousPlaybackState !== "capturing";
+        const isCaptureTransition = playbackState === "capturing" && previousPlaybackState !== "capturing";
 
         if (!wasActive && isActive) {
           void this.#analytics.logCameraStartedEvent();
@@ -251,10 +220,7 @@ export class BlinkIdVerifyUxManager {
           void this.#analytics.sendPinglets();
         }
 
-        if (
-          isCaptureTransition &&
-          this.#pendingIntroAnchorKey === this.uiState.key
-        ) {
+        if (isCaptureTransition && this.#pendingIntroAnchorKey === this.uiState.key) {
           this.feedbackStabilizer.restartCurrentStateTimer();
           this.#pendingIntroAnchorKey = undefined;
         }
@@ -275,9 +241,7 @@ export class BlinkIdVerifyUxManager {
     const unsubscribeCameras = this.cameraManager.subscribe(
       (s) => s.cameras,
       (cameras) => {
-        const nextCameraKeys = new Set(
-          cameras.map((camera) => buildCameraAnalyticsKey(camera)),
-        );
+        const nextCameraKeys = new Set(cameras.map((camera) => buildCameraAnalyticsKey(camera)));
 
         const state = this.cameraManager.getState();
         if (cameras.length === 0 && !state.videoElement) {
@@ -291,9 +255,7 @@ export class BlinkIdVerifyUxManager {
         }
 
         this.#reportedCameraKeys = nextCameraKeys;
-        const pingCameras = cameras.map((camera) =>
-          convertCameraToPingCamera(camera),
-        );
+        const pingCameras = cameras.map((camera) => convertCameraToPingCamera(camera));
         void this.#analytics.logHardwareCameraInfo(pingCameras);
       },
     );
@@ -310,10 +272,7 @@ export class BlinkIdVerifyUxManager {
     document.addEventListener("visibilitychange", visibilityChangeCallback);
 
     this.#cleanupCallbacks.add(() => {
-      document.removeEventListener(
-        "visibilitychange",
-        visibilityChangeCallback,
-      );
+      document.removeEventListener("visibilitychange", visibilityChangeCallback);
     });
 
     const unsubscribeSelectedCamera = this.cameraManager.subscribe(
@@ -393,10 +352,7 @@ export class BlinkIdVerifyUxManager {
     );
   }
 
-  #handleCameraPermissionChange = (
-    curr: CameraPermission,
-    prev: CameraPermission,
-  ) => {
+  #handleCameraPermissionChange = (curr: CameraPermission, prev: CameraPermission) => {
     if (prev === undefined) {
       // startup
       if (curr === "granted") {
@@ -466,16 +422,10 @@ export class BlinkIdVerifyUxManager {
     if (!state.selectedCamera || !state.videoResolution) {
       return undefined;
     }
-    return convertCameraInputToPingData(
-      state.selectedCamera,
-      state.videoResolution,
-      state.extractionArea,
-    );
+    return convertCameraInputToPingData(state.selectedCamera, state.videoResolution, state.extractionArea);
   }
 
-  /**
-   * Returns the timeout duration in ms. Null if timeout won't be triggered ever.
-   */
+  /** Returns the timeout duration in ms. Null if timeout won't be triggered ever. */
   getTimeoutDuration(): number | null {
     return this.#timeoutDuration;
   }
@@ -501,7 +451,7 @@ export class BlinkIdVerifyUxManager {
   /**
    * Check if haptic feedback is currently enabled.
    *
-   * @returns true if haptic feedback is enabled
+   * @returns True if haptic feedback is enabled
    */
   isHapticFeedbackEnabled(): boolean {
     return this.#hapticFeedbackManager.isEnabled();
@@ -510,7 +460,7 @@ export class BlinkIdVerifyUxManager {
   /**
    * Check if haptic feedback is supported by the current browser/device.
    *
-   * @returns true if haptic feedback is supported
+   * @returns True if haptic feedback is supported
    */
   isHapticFeedbackSupported(): boolean {
     return this.#hapticFeedbackManager.isSupported();
@@ -528,20 +478,17 @@ export class BlinkIdVerifyUxManager {
   /**
    * Adds a callback function to be executed when the UI state changes.
    *
-   * @param callback - Function to be called when UI state changes. Receives the
-   * new UI state as parameter.
-   * @returns A cleanup function that removes the callback when called.
-   *
    * @example
-   * const cleanup = manager.addOnUiStateChangedCallback((newState) => {
-   *   console.log('UI state changed to:', newState);
-   * });
+   *   const cleanup = manager.addOnUiStateChangedCallback((newState) => {
+   *     console.log("UI state changed to:", newState);
+   *   });
    *
-   * cleanup();
+   *   cleanup();
+   *
+   * @param callback - Function to be called when UI state changes. Receives the new UI state as parameter.
+   * @returns A cleanup function that removes the callback when called.
    */
-  addOnUiStateChangedCallback(
-    callback: (uiState: BlinkIdVerifyUiState) => void,
-  ) {
+  addOnUiStateChangedCallback(callback: (uiState: BlinkIdVerifyUiState) => void) {
     this.#onUiStateChangedCallbacks.add(callback);
     return () => {
       this.#onUiStateChangedCallbacks.delete(callback);
@@ -551,18 +498,17 @@ export class BlinkIdVerifyUxManager {
   /**
    * Registers a callback function to be called when a scan result is available.
    *
+   * @example
+   *   const cleanup = manager.addOnResultCallback((result) => {
+   *     console.log("Scan result:", result);
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
+   *
    * @param callback - A function that will be called with the scan result.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   *
-   * const cleanup = manager.addOnResultCallback((result) => {
-   *   console.log('Scan result:', result);
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
   addOnResultCallback(callback: (result: BlinkIdVerifyScanningResult) => void) {
     this.#onResultCallbacks.add(callback);
@@ -574,22 +520,19 @@ export class BlinkIdVerifyUxManager {
   /**
    * Registers a callback function to be called when a frame is processed.
    *
-   * @param callback - A function that will be called with the frame analysis
-   * result.
+   * @example
+   *   const cleanup = manager.addOnFrameProcessCallback((frameResult) => {
+   *     console.log("Frame processed:", frameResult);
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
+   *
+   * @param callback - A function that will be called with the frame analysis result.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   * const cleanup = manager.addOnFrameProcessCallback((frameResult) => {
-   *   console.log('Frame processed:', frameResult);
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
-  addOnFrameProcessCallback(
-    callback: (frameResult: ProcessResultWithBuffer) => void,
-  ) {
+  addOnFrameProcessCallback(callback: (frameResult: ProcessResultWithBuffer) => void) {
     this.#onFrameProcessCallbacks.add(callback);
     return () => {
       this.#onFrameProcessCallbacks.delete(callback);
@@ -597,24 +540,21 @@ export class BlinkIdVerifyUxManager {
   }
 
   /**
-   * Registers a callback function to be called when an error occurs during
-   * processing.
+   * Registers a callback function to be called when an error occurs during processing.
+   *
+   * @example
+   *   const cleanup = manager.addOnErrorCallback((error) => {
+   *     console.error("Processing error:", error);
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
    *
    * @param callback - A function that will be called with the error state.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   * const cleanup = manager.addOnErrorCallback((error) => {
-   *   console.error('Processing error:', error);
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
-  addOnErrorCallback(
-    callback: (errorState: BlinkIdVerifyProcessingError) => void,
-  ) {
+  addOnErrorCallback(callback: (errorState: BlinkIdVerifyProcessingError) => void) {
     this.#onErrorCallbacks.add(callback);
     return () => {
       this.#onErrorCallbacks.delete(callback);
@@ -646,11 +586,7 @@ export class BlinkIdVerifyUxManager {
    * @param frameResult - The frame result.
    */
   #invokeOnFrameProcessCallbacks = (frameResult: ProcessResultWithBuffer) => {
-    invokeCallbacks(
-      this.#onFrameProcessCallbacks,
-      frameResult,
-      "onFrameProcess",
-    );
+    invokeCallbacks(this.#onFrameProcessCallbacks, frameResult, "onFrameProcess");
   };
 
   /**
@@ -659,20 +595,14 @@ export class BlinkIdVerifyUxManager {
    * @param uiState - The UI state.
    */
   #invokeOnUiStateChangedCallbacks = (uiState: BlinkIdVerifyUiState) => {
-    invokeCallbacks(
-      this.#onUiStateChangedCallbacks,
-      uiState,
-      "onUiStateChanged",
-    );
+    invokeCallbacks(this.#onUiStateChangedCallbacks, uiState, "onUiStateChanged");
   };
 
   /**
-   * Sets the duration after which the scanning session will timeout. The
-   * timeout can occur in various scenarios and may be restarted by different
-   * scanning events.
+   * Sets the duration after which the scanning session will timeout. The timeout can occur in various scenarios and may
+   * be restarted by different scanning events.
    *
-   * @param duration The timeout duration in milliseconds. If null, timeout won't
-   * be triggered ever.
+   * @param duration The timeout duration in milliseconds. If null, timeout won't be triggered ever.
    * @throws {Error} Throws an error if duration is less than or equal to 0 when not null.
    */
   setTimeoutDuration(duration: number | null) {
@@ -731,9 +661,7 @@ export class BlinkIdVerifyUxManager {
     // Error states (excluding unsupported document which is handled separately)
     if (
       uiStateKey !== "UNSUPPORTED_DOCUMENT" &&
-      blinkIdVerifyUiErrorStateKeys.includes(
-        uiStateKey as BlinkIdVerifyUiErrorStateKey,
-      )
+      blinkIdVerifyUiErrorStateKeys.includes(uiStateKey as BlinkIdVerifyUiErrorStateKey)
     ) {
       this.#hapticFeedbackManager.triggerShort();
       return;
@@ -741,16 +669,13 @@ export class BlinkIdVerifyUxManager {
   };
 
   /**
-   * The frame capture callback. This is the main function that is called when a
-   * new frame is captured. It is responsible for processing the frame and
-   * updating the UI state.
+   * The frame capture callback. This is the main function that is called when a new frame is captured. It is
+   * responsible for processing the frame and updating the UI state.
    *
    * @param imageData - The image data.
    * @returns The processed frame's ArrayBuffer, or undefined if not applicable.
    */
-  #frameCaptureCallback = async (
-    imageData: ImageData,
-  ): Promise<ArrayBuffer | void> => {
+  #frameCaptureCallback = async (imageData: ImageData): Promise<ArrayBuffer | void> => {
     if (this.#processingLifecycleState === "terminal") {
       return;
     }
@@ -766,14 +691,13 @@ export class BlinkIdVerifyUxManager {
       const processResult = await this.scanningSession.process(imageData);
 
       if (processResult.arrayBuffer.byteLength === 0) {
-        console.warn(
-          "scanningSession.process did not return ownership of the array buffer!",
-        );
+        console.warn("scanningSession.process did not return ownership of the array buffer!");
       }
 
       /**
-       * This should not happen. The processing should stop after the document has been
-       * captured, or after the result has been retrieved.
+       * This should not happen. The processing should stop after the document has been captured, or after the result
+       * has been retrieved.
+       *
        * @see BlinkIdVerifySessionErrorType
        */
       if ("error" in processResult) {
@@ -820,9 +744,7 @@ export class BlinkIdVerifyUxManager {
     }
   };
 
-  #handleProcessResultSideEffects = (
-    mappedUiStateKey?: BlinkIdVerifyUiStateKey,
-  ): void => {
+  #handleProcessResultSideEffects = (mappedUiStateKey?: BlinkIdVerifyUiStateKey): void => {
     if (!mappedUiStateKey) {
       return;
     }
@@ -831,11 +753,7 @@ export class BlinkIdVerifyUxManager {
       void this.scanningSession.allowBarcodeStep();
     }
 
-    if (
-      (
-        blinkIdVerifyUiStepSuccessKeys as readonly BlinkIdVerifyUiStateKey[]
-      ).includes(mappedUiStateKey)
-    ) {
+    if ((blinkIdVerifyUiStepSuccessKeys as readonly BlinkIdVerifyUiStateKey[]).includes(mappedUiStateKey)) {
       // stop frame processing on success states
       console.debug("🛑 stop processing", mappedUiStateKey);
       this.cameraManager.stopFrameCapture();
@@ -863,9 +781,7 @@ export class BlinkIdVerifyUxManager {
     return getUiStateKey(processResult);
   };
 
-  /**
-   * Updates the UI state from the uiStateKey
-   */
+  /** Updates the UI state from the uiStateKey */
   #updateUiState = async (uiStateKey: BlinkIdVerifyUiStateKey) => {
     // Skip UI update if the state is the same
     if (uiStateKey === this.uiState.key) {
@@ -889,15 +805,9 @@ export class BlinkIdVerifyUxManager {
     }
 
     // Log error analytics when UI state changes to an error state (not in processing loop)
-    if (
-      blinkIdVerifyUiErrorStateKeys.includes(
-        uiStateKey as BlinkIdVerifyUiErrorStateKey,
-      )
-    ) {
+    if (blinkIdVerifyUiErrorStateKeys.includes(uiStateKey as BlinkIdVerifyUiErrorStateKey)) {
       const errorKey = uiStateKey as PingableErrorUiStateKey;
-      void this.#analytics.logErrorMessageEvent(
-        mapErrorStateKeyToAnalyticsType(errorKey),
-      );
+      void this.#analytics.logErrorMessageEvent(mapErrorStateKeyToAnalyticsType(errorKey));
     }
 
     // Trigger haptic feedback based on UI state changes
@@ -929,9 +839,8 @@ export class BlinkIdVerifyUxManager {
   };
 
   /**
-   * Handles side effects triggered by a UI state transition: restarts the
-   * scan timeout, resumes frame capture on intro states, and orchestrates
-   * result retrieval on DOCUMENT_CAPTURED.
+   * Handles side effects triggered by a UI state transition: restarts the scan timeout, resumes frame capture on intro
+   * states, and orchestrates result retrieval on DOCUMENT_CAPTURED.
    *
    * @param uiState - The UI state.
    */
@@ -941,19 +850,12 @@ export class BlinkIdVerifyUxManager {
     }
 
     // handle resuming processing on intro states
-    if (
-      (
-        blinkIdVerifyUiIntroStateKeys as readonly BlinkIdVerifyUiStateKey[]
-      ).includes(uiState.key)
-    ) {
+    if ((blinkIdVerifyUiIntroStateKeys as readonly BlinkIdVerifyUiStateKey[]).includes(uiState.key)) {
       this.#pendingIntroAnchorKey = uiState.key;
       void this.cameraManager.startFrameCapture();
     }
 
-    if (
-      uiState.key === "FLIP_CARD" &&
-      this.#barcodeOnlyTimeoutId === undefined
-    ) {
+    if (uiState.key === "FLIP_CARD" && this.#barcodeOnlyTimeoutId === undefined) {
       this.#barcodeOnlyTimeoutId = window.setTimeout(() => {
         this.#barcodeOnlyTimeoutExceeded = true;
       }, this.#barcodeOnlyTimeoutDuration);
@@ -961,9 +863,7 @@ export class BlinkIdVerifyUxManager {
 
     // handle DOCUMENT_CAPTURED
     if (uiState.key === "DOCUMENT_CAPTURED") {
-      console.debug(
-        "Handling DOCUMENT_CAPTURED state from #handleUiStateChange",
-      );
+      console.debug("Handling DOCUMENT_CAPTURED state from #handleUiStateChange");
       // Scanning is complete — cancel any running timeout before the animation sleep
       // to prevent it from firing and triggering a spurious reset during result retrieval.
       this.clearScanTimeout();
@@ -974,10 +874,7 @@ export class BlinkIdVerifyUxManager {
 
         this.#invokeOnResultCallbacks(result);
       } catch (err) {
-        console.error(
-          "Failed to retrieve scan result after document capture:",
-          err,
-        );
+        console.error("Failed to retrieve scan result after document capture:", err);
         this.#invokeOnErrorCallbacks("result_retrieval_failed");
 
         void this.#analytics.sendPinglets();
@@ -987,9 +884,7 @@ export class BlinkIdVerifyUxManager {
     }
   };
 
-  /**
-   * Returns the initial UI state key used when resetting UX state.
-   */
+  /** Returns the initial UI state key used when resetting UX state. */
   getInitialUiStateKey() {
     return this.#initialUiStateKey;
   }
@@ -1000,22 +895,15 @@ export class BlinkIdVerifyUxManager {
    * @param uiStateKey - The UI state key to use as manager initial state.
    * @param applyImmediately - If true, immediately applies and emits this state.
    */
-  setInitialUiStateKey(
-    uiStateKey: BlinkIdVerifyUiStateKey,
-    applyImmediately = false,
-  ) {
+  setInitialUiStateKey(uiStateKey: BlinkIdVerifyUiStateKey, applyImmediately = false) {
     this.#initialUiStateKey = uiStateKey;
     if (applyImmediately) {
       this.#resetUiState(uiStateKey);
     }
   }
 
-  /**
-   * Resets the feedback stabilizer and invokes the onUiStateChanged callbacks.
-   */
-  #resetUiState = (
-    uiStateKey: BlinkIdVerifyUiStateKey = this.#initialUiStateKey,
-  ) => {
+  /** Resets the feedback stabilizer and invokes the onUiStateChanged callbacks. */
+  #resetUiState = (uiStateKey: BlinkIdVerifyUiStateKey = this.#initialUiStateKey) => {
     this.feedbackStabilizer.reset(uiStateKey);
     this.#uiState = this.feedbackStabilizer.currentState;
     this.#mappedUiStateKey = this.uiState.key;
@@ -1025,9 +913,7 @@ export class BlinkIdVerifyUxManager {
     this.#invokeOnUiStateChangedCallbacks(this.uiState);
   };
 
-  /**
-   * Clears the scanning session timeout.
-   */
+  /** Clears the scanning session timeout. */
   clearScanTimeout() {
     if (!this.#timeoutId) {
       return;
@@ -1110,9 +996,9 @@ export class BlinkIdVerifyUxManager {
   }
 
   /**
-   * Fully tears down the BlinkIdVerifyUxManager. Stops frame processing, cancels the
-   * scan timeout, removes all subscriptions and the RAF loop, and clears all
-   * registered callbacks. Should be called when the manager is no longer needed.
+   * Fully tears down the BlinkIdVerifyUxManager. Stops frame processing, cancels the scan timeout, removes all
+   * subscriptions and the RAF loop, and clears all registered callbacks. Should be called when the manager is no longer
+   * needed.
    *
    * Does not stop the camera stream or delete the scanning session.
    */

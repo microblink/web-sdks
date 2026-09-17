@@ -1,11 +1,6 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  BlinkIdProcessResult,
-  DocumentClassInfo,
-} from "@microblink/blinkid-core";
+import { BlinkIdProcessResult, DocumentClassInfo } from "@microblink/blinkid-core";
 
 /**
  * Extracts the document class info from the process result.
@@ -26,10 +21,7 @@ export function extractDocumentClassInfo(processResult: BlinkIdProcessResult) {
 export function isDocumentClassified(
   documentClassInfo: DocumentClassInfo | undefined,
 ): documentClassInfo is DocumentClassInfo {
-  return (
-    documentClassInfo?.country !== undefined &&
-    documentClassInfo?.documentType !== undefined
-  );
+  return documentClassInfo?.country !== undefined && documentClassInfo?.documentType !== undefined;
 }
 
 export function getDocumentRotation(processResult: BlinkIdProcessResult) {
@@ -54,10 +46,7 @@ export function isPassport(docClass: DocumentClassInfo | undefined) {
  */
 
 export function isPassportWithBarcode(docClass: DocumentClassInfo | undefined) {
-  return (
-    isPassport(docClass) &&
-    (docClass?.country?.id === "usa" || docClass?.country?.id === "india")
-  );
+  return isPassport(docClass) && (docClass?.country?.id === "usa" || docClass?.country?.id === "india");
 }
 /**
  * Checks if the document is a passport without a barcode on the last page (not USA or India).
@@ -66,21 +55,12 @@ export function isPassportWithBarcode(docClass: DocumentClassInfo | undefined) {
  * @returns True if the document is a passport without a barcode on the last page (not USA or India), false otherwise.
  */
 
-export function isPassportWithoutBarcode(
-  docClass: DocumentClassInfo | undefined,
-) {
-  return (
-    isPassport(docClass) &&
-    docClass?.country?.id !== "usa" &&
-    docClass?.country?.id !== "india"
-  );
+export function isPassportWithoutBarcode(docClass: DocumentClassInfo | undefined) {
+  return isPassport(docClass) && docClass?.country?.id !== "usa" && docClass?.country?.id !== "india";
 }
 
-/**
- * Utility type for document pagination types.
- */
-export type DocumentPagination =
-  "passport-no-barcode" | "passport-with-barcode" | "other";
+/** Utility type for document pagination types. */
+export type DocumentPagination = "passport-no-barcode" | "passport-with-barcode" | "other";
 /**
  * Determines the document pagination type based on the document class info.
  *
@@ -88,9 +68,7 @@ export type DocumentPagination =
  * @returns The document pagination type.
  */
 
-export function getDocumentPaginationType(
-  docClass: DocumentClassInfo | undefined,
-): DocumentPagination {
+export function getDocumentPaginationType(docClass: DocumentClassInfo | undefined): DocumentPagination {
   if (isPassportWithBarcode(docClass)) {
     return "passport-with-barcode";
   } else if (isPassportWithoutBarcode(docClass)) {

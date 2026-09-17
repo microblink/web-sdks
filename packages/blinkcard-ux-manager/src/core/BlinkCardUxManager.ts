@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import {
   AnalyticService,
@@ -12,12 +10,8 @@ import {
   type ProcessResultWithBuffer,
   type RemoteScanningSession,
 } from "@microblink/blinkcard-core";
-import type {
-  CameraManager,
-  CameraPermission,
-} from "@microblink/camera-manager";
+import type { CameraManager, CameraPermission } from "@microblink/camera-manager/core";
 import { FeedbackStabilizer } from "@microblink/feedback-stabilizer";
-
 import {
   buildCameraAnalyticsKey,
   convertCameraInputToPingData,
@@ -28,8 +22,10 @@ import { subscribeToDeviceOrientation } from "@microblink/ux-common/deviceOrient
 import { HapticFeedbackManager } from "@microblink/ux-common/hapticFeedback";
 import { RafLoop } from "@microblink/ux-common/RafLoop";
 import { invokeCallbacks, sleep } from "@microblink/ux-common/utils";
+import { UxTimeoutHandler } from "@microblink/ux-common/UxTimeoutHandler";
 import { debounce } from "perfect-debounce";
 import { match } from "ts-pattern";
+
 import {
   blinkCardUiErrorStateKeys,
   blinkCardUiIntroStateKeys,
@@ -42,15 +38,17 @@ import {
   type BlinkCardUiStateKey,
 } from "./blinkcard-ui-state";
 import type { BlinkCardProcessingError } from "./BlinkCardProcessingError";
-import { BlinkCardUxManagerOptions } from "./createBlinkCardUxManager";
+import { defaultBlinkCardTimeoutConfiguration } from "./BlinkCardTimeoutConfiguration";
+import type { BlinkCardTimeoutConfiguration } from "./BlinkCardTimeoutConfiguration";
+import type { BlinkCardUxManagerOptions } from "./createBlinkCardUxManager";
 import { getBlinkCardChainedUiStateKey } from "./getBlinkCardChainedUiStateKey";
 
 type ProcessingLifecycleState = "ready" | "busy" | "terminal";
+type ScanTimeoutKind = "inactivity" | "scan-step";
 
 /**
- * The BlinkCardUxManager class. This is the main class that manages the UX of
- * the BlinkCard SDK. It is responsible for handling the UI state, the timeout,
- * and the haptic feedback.
+ * The BlinkCardUxManager class. This is the main class that manages the UX of the BlinkCard SDK. It is responsible for
+ * handling the UI state, the timeout, and the haptic feedback.
  */
 export class BlinkCardUxManager {
   /** The camera manager. */
@@ -61,9 +59,8 @@ export class BlinkCardUxManager {
   #uiState: BlinkCardUiState;
 
   /**
-   * The current UI state. Updated internally by the RAF update loop.
-   * Read externally once at UI mount to seed the initial Solid signal value;
-   * subsequent updates are delivered via `addOnUiStateChangedCallback`.
+   * The current UI state. Updated internally by the RAF update loop. Read externally once at UI mount to seed the
+   * initial Solid signal value; subsequent updates are delivered via `addOnUiStateChangedCallback`.
    */
   get uiState(): BlinkCardUiState {
     return this.#uiState;
@@ -77,16 +74,14 @@ export class BlinkCardUxManager {
     return this.#mappedUiStateKey;
   }
 
-  /**
-   * @deprecated Use `mappedUiStateKey` (internal/debug) or `uiStateKey` (displayed state).
-   */
+  /** @deprecated Use `mappedUiStateKey` (internal/debug) or `uiStateKey` (displayed state). */
   get rawUiStateKey(): BlinkCardUiStateKey {
     return this.#mappedUiStateKey;
   }
 
   /**
-   * The feedback stabilizer. Public to allow UI components to read scores,
-   * event queues, and call restartCurrentStateTimer() for help-tooltip resets.
+   * The feedback stabilizer. Public to allow UI components to read scores, event queues, and call
+   * restartCurrentStateTimer() for help-tooltip resets.
    */
   readonly feedbackStabilizer: FeedbackStabilizer<BlinkCardUiStateMap>;
 
@@ -107,19 +102,19 @@ export class BlinkCardUxManager {
   /** Whether analytics have been fired for the first processed frame. */
   #firstProcessedFrameAt?: number;
 
-  /** The scanning session timeout ID. */
-  #timeoutId?: number;
-  /** Timeout duration in ms for the scanning session. If null, timeout won't be triggered ever. */
-  #timeoutDuration: number | null = 10000; // 10s
+  /** Last stabilized UI state key that reset the inactivity timer. */
+  #inactivityResetUiStateKey?: BlinkCardUiStateKey;
+  /** Whether the current card side should be timing. */
+  #isTimingActiveScanStep = false;
+  /** Manages the independent inactivity and scan-step timers. */
+  #timeoutHandler: UxTimeoutHandler<BlinkCardTimeoutConfiguration>;
 
   /** The callbacks for when the UI state changes. */
   #onUiStateChangedCallbacks = new Set<(uiState: BlinkCardUiState) => void>();
   /** The callbacks for when a scan result is available. */
   #onResultCallbacks = new Set<(result: BlinkCardScanningResult) => void>();
   /** The callbacks for when a frame is processed. */
-  #onFrameProcessCallbacks = new Set<
-    (frameResult: ProcessResultWithBuffer) => void
-  >();
+  #onFrameProcessCallbacks = new Set<(frameResult: ProcessResultWithBuffer) => void>();
   /** The callbacks for when an error occurs during processing. */
   #onErrorCallbacks = new Set<(errorState: BlinkCardProcessingError) => void>();
   /** Clean up observers, store subscriptions and event listeners. */
@@ -173,10 +168,16 @@ export class BlinkCardUxManager {
       this.#initialUiStateKey = options.initialUiStateKey;
     }
 
-    this.feedbackStabilizer = new FeedbackStabilizer(
-      blinkCardUiStateMap,
-      this.#initialUiStateKey,
-    );
+    this.feedbackStabilizer = new FeedbackStabilizer(blinkCardUiStateMap, this.#initialUiStateKey);
+
+    this.#timeoutHandler = new UxTimeoutHandler({
+      defaults: defaultBlinkCardTimeoutConfiguration,
+      configuration: options.timeoutConfiguration,
+      onTimeout: {
+        onInactivityTimeout: () => this.#handleScanTimeout("inactivity"),
+        onScanStepTimeout: () => this.#handleScanTimeout("scan-step"),
+      },
+    });
 
     this.#uiState = this.feedbackStabilizer.currentState;
 
@@ -193,10 +194,8 @@ export class BlinkCardUxManager {
 
     this.#setupObservers();
 
-    const removeFrameCaptureCallback =
-      this.cameraManager.addFrameCaptureCallback(this.#frameCaptureCallback);
-    const removeCameraManagerErrorCallback =
-      this.cameraManager.addErrorCallback(this.#handleCameraManagerError);
+    const removeFrameCaptureCallback = this.cameraManager.addFrameCaptureCallback(this.#frameCaptureCallback);
+    const removeCameraManagerErrorCallback = this.cameraManager.addErrorCallback(this.#handleCameraManagerError);
 
     this.#cleanupCallbacks.add(removeFrameCaptureCallback);
     this.#cleanupCallbacks.add(removeCameraManagerErrorCallback);
@@ -225,13 +224,13 @@ export class BlinkCardUxManager {
       (s) => s.playbackState,
       (playbackState) => {
         console.debug(`⏯️ ${playbackState}`);
-        const wasActive =
-          previousPlaybackState !== undefined &&
-          previousPlaybackState !== "idle";
+        const wasActive = previousPlaybackState !== undefined && previousPlaybackState !== "idle";
         const isActive = playbackState !== "idle";
-        const isCaptureTransition =
-          playbackState === "capturing" &&
-          previousPlaybackState !== "capturing";
+        const isCaptureTransition = playbackState === "capturing" && previousPlaybackState !== "capturing";
+        const isPendingIntroAnchorTransition = isCaptureTransition && this.#pendingIntroAnchorKey === this.uiState.key;
+        const isIntroCaptureTransition =
+          isPendingIntroAnchorTransition &&
+          (blinkCardUiIntroStateKeys as readonly BlinkCardUiStateKey[]).includes(this.uiState.key);
 
         if (!wasActive && isActive) {
           void this.#analytics.logCameraStartedEvent();
@@ -241,23 +240,26 @@ export class BlinkCardUxManager {
           void this.#analytics.sendPinglets();
         }
 
-        if (
-          isCaptureTransition &&
-          this.#pendingIntroAnchorKey === this.uiState.key
-        ) {
+        if (isPendingIntroAnchorTransition) {
           this.feedbackStabilizer.restartCurrentStateTimer();
           this.#pendingIntroAnchorKey = undefined;
         }
 
         previousPlaybackState = playbackState;
-        if (this.#timeoutDuration === null) return;
-
         if (playbackState !== "capturing") {
-          this.clearScanTimeout();
-        } else {
-          console.debug("🔁 continuing timeout");
-          this.#setTimeout(this.uiState);
+          this.#restartInactivityTimeout();
+          this.#timeoutHandler.pause("scanStepTimeoutMs");
+          return;
         }
+
+        if (isIntroCaptureTransition || !this.#isTimingActiveScanStep) {
+          this.#resetScanTimeoutsForCurrentStep();
+          return;
+        }
+
+        console.debug("🔁 continuing timeout");
+        this.#restartInactivityTimeout();
+        this.#resumeScanStepTimeout();
       },
     );
     this.#cleanupCallbacks.add(unsubscribeCaptureState);
@@ -265,9 +267,7 @@ export class BlinkCardUxManager {
     const unsubscribeCameras = this.cameraManager.subscribe(
       (s) => s.cameras,
       (cameras) => {
-        const nextCameraKeys = new Set(
-          cameras.map((camera) => buildCameraAnalyticsKey(camera)),
-        );
+        const nextCameraKeys = new Set(cameras.map((camera) => buildCameraAnalyticsKey(camera)));
 
         const state = this.cameraManager.getState();
         if (cameras.length === 0 && !state.videoElement) {
@@ -281,9 +281,7 @@ export class BlinkCardUxManager {
         }
 
         this.#reportedCameraKeys = nextCameraKeys;
-        const pingCameras = cameras.map((camera) =>
-          convertCameraToPingCamera(camera),
-        );
+        const pingCameras = cameras.map((camera) => convertCameraToPingCamera(camera));
         void this.#analytics.logHardwareCameraInfo(pingCameras);
       },
     );
@@ -293,6 +291,8 @@ export class BlinkCardUxManager {
     const visibilityChangeCallback = () => {
       if (document.visibilityState === "hidden") {
         void this.#analytics.logAppMovedToBackgroundEvent();
+      } else if (this.#isTimingActiveScanStep) {
+        this.#resetScanTimeoutsForCurrentStep();
       }
       void this.#analytics.sendPinglets();
     };
@@ -300,10 +300,7 @@ export class BlinkCardUxManager {
     document.addEventListener("visibilitychange", visibilityChangeCallback);
 
     this.#cleanupCallbacks.add(() => {
-      document.removeEventListener(
-        "visibilitychange",
-        visibilityChangeCallback,
-      );
+      document.removeEventListener("visibilitychange", visibilityChangeCallback);
     });
 
     const unsubscribeSelectedCamera = this.cameraManager.subscribe(
@@ -382,10 +379,7 @@ export class BlinkCardUxManager {
     );
   }
 
-  #handleCameraPermissionChange = (
-    curr: CameraPermission,
-    prev: CameraPermission,
-  ) => {
+  #handleCameraPermissionChange = (curr: CameraPermission, prev: CameraPermission) => {
     if (prev === undefined) {
       // startup
       if (curr === "granted") {
@@ -455,34 +449,47 @@ export class BlinkCardUxManager {
     if (!state.selectedCamera || !state.videoResolution) {
       return undefined;
     }
-    return convertCameraInputToPingData(
-      state.selectedCamera,
-      state.videoResolution,
-      state.extractionArea,
-    );
+    return convertCameraInputToPingData(state.selectedCamera, state.videoResolution, state.extractionArea);
   }
 
-  /**
-   * Indicates whether the UI should display the demo overlay. Controlled by the
-   * license property.
-   */
+  /** Indicates whether the UI should display the demo overlay. Controlled by the license property. */
   getShowDemoOverlay(): boolean {
     return this.showDemoOverlay;
   }
 
-  /**
-   * Indicates whether the UI should display the production overlay. Controlled by
-   * the license property.
-   */
+  /** Indicates whether the UI should display the production overlay. Controlled by the license property. */
   getShowProductionOverlay(): boolean {
     return this.showProductionOverlay;
   }
 
-  /**
-   * Returns the timeout duration in ms. Null if timeout won't be triggered ever.
-   */
-  getTimeoutDuration(): number | null {
-    return this.#timeoutDuration;
+  /** Returns the active BlinkCard timeout configuration. */
+  getTimeoutConfiguration(): BlinkCardTimeoutConfiguration {
+    return this.#timeoutHandler.getConfiguration();
+  }
+
+  /** @internal Returns live timeout state for in-repository diagnostics. */
+  getTimeoutDebugState(): {
+    inactivity: {
+      configuredMs: number | null;
+      remainingMs: number | null;
+      status: "disabled" | "idle" | "running" | "paused";
+    };
+    perSide: {
+      configuredMs: number | null;
+      remainingMs: number | null;
+      status: "disabled" | "idle" | "running" | "paused";
+    };
+    isTimingActiveScanStep: boolean;
+    playbackState: "idle" | "playback" | "capturing";
+    inactivityResetUiStateKey: BlinkCardUiStateKey | undefined;
+  } {
+    return {
+      inactivity: this.#timeoutHandler.getTimerState("inactivityTimeoutMs"),
+      perSide: this.#timeoutHandler.getTimerState("scanStepTimeoutMs"),
+      isTimingActiveScanStep: this.#isTimingActiveScanStep,
+      playbackState: this.cameraManager.getState().playbackState,
+      inactivityResetUiStateKey: this.#inactivityResetUiStateKey,
+    };
   }
 
   /**
@@ -494,23 +501,17 @@ export class BlinkCardUxManager {
     void this.#analytics.logHelpClosedEvent(fullyViewed);
   }
 
-  /**
-   * Logs when the help modal is opened.
-   */
+  /** Logs when the help modal is opened. */
   logHelpOpened(): void {
     void this.#analytics.logHelpOpenedEvent();
   }
 
-  /**
-   * Logs when the help tooltip is displayed.
-   */
+  /** Logs when the help tooltip is displayed. */
   logHelpTooltipDisplayed(): void {
     void this.#analytics.logHelpTooltipDisplayedEvent();
   }
 
-  /**
-   * Logs when the close button is clicked.
-   */
+  /** Logs when the close button is clicked. */
   logCloseButtonClicked(): void {
     void this.#analytics.logCloseButtonClickedEvent();
   }
@@ -520,15 +521,11 @@ export class BlinkCardUxManager {
    *
    * @param alertType - The type of alert displayed.
    */
-  logAlertDisplayed(
-    alertType: NonNullable<PingUxEventData["alertType"]>,
-  ): void {
+  logAlertDisplayed(alertType: NonNullable<PingUxEventData["alertType"]>): void {
     void this.#analytics.logAlertDisplayedEvent(alertType);
   }
 
-  /**
-   * Logs when the onboarding guide is displayed.
-   */
+  /** Logs when the onboarding guide is displayed. */
   logOnboardingDisplayed(): void {
     void this.#analytics.logOnboardingDisplayedEvent();
   }
@@ -554,7 +551,7 @@ export class BlinkCardUxManager {
   /**
    * Check if haptic feedback is currently enabled.
    *
-   * @returns true if haptic feedback is enabled
+   * @returns True if haptic feedback is enabled
    */
   isHapticFeedbackEnabled(): boolean {
     return this.#hapticFeedbackManager.isEnabled();
@@ -563,15 +560,13 @@ export class BlinkCardUxManager {
   /**
    * Check if haptic feedback is supported by the current browser/device.
    *
-   * @returns true if haptic feedback is supported
+   * @returns True if haptic feedback is supported
    */
   isHapticFeedbackSupported(): boolean {
     return this.#hapticFeedbackManager.isSupported();
   }
 
-  /**
-   * Gets the analytics service for tracking UX events.
-   */
+  /** Gets the analytics service for tracking UX events. */
   get analytics(): AnalyticService {
     return this.#analytics;
   }
@@ -579,8 +574,7 @@ export class BlinkCardUxManager {
   /**
    * Adds a callback function to be executed when the UI state changes.
    *
-   * @param callback - Function to be called when UI state changes. Receives the
-   * new UI state as parameter.
+   * @param callback - Function to be called when UI state changes. Receives the new UI state as parameter.
    * @returns A cleanup function that removes the callback when called.
    */
   addOnUiStateChangedCallback(callback: (uiState: BlinkCardUiState) => void) {
@@ -607,14 +601,11 @@ export class BlinkCardUxManager {
   /**
    * Registers a callback function to be called when a frame is processed.
    *
-   * @param callback - A function that will be called with the frame analysis
-   * result.
+   * @param callback - A function that will be called with the frame analysis result.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
    */
-  addOnFrameProcessCallback(
-    callback: (frameResult: ProcessResultWithBuffer) => void,
-  ) {
+  addOnFrameProcessCallback(callback: (frameResult: ProcessResultWithBuffer) => void) {
     this.#onFrameProcessCallbacks.add(callback);
     return () => {
       this.#onFrameProcessCallbacks.delete(callback);
@@ -622,8 +613,7 @@ export class BlinkCardUxManager {
   }
 
   /**
-   * Registers a callback function to be called when an error occurs during
-   * processing.
+   * Registers a callback function to be called when an error occurs during processing.
    *
    * @param callback - A function that will be called with the error state.
    * @returns A cleanup function that, when called, will remove the registered
@@ -637,15 +627,13 @@ export class BlinkCardUxManager {
   }
 
   /**
-   * The frame capture callback. Only processes the frame and ingests the
-   * mapped state into the stabilizer; all UI updates are driven by the RAF loop.
+   * The frame capture callback. Only processes the frame and ingests the mapped state into the stabilizer; all UI
+   * updates are driven by the RAF loop.
    *
    * @param imageData - The image data.
    * @returns The processed frame's ArrayBuffer, or undefined if not applicable.
    */
-  #frameCaptureCallback = async (
-    imageData: ImageData,
-  ): Promise<ArrayBuffer | void> => {
+  #frameCaptureCallback = async (imageData: ImageData): Promise<ArrayBuffer | void> => {
     if (this.#processingLifecycleState === "terminal") {
       return;
     }
@@ -665,20 +653,13 @@ export class BlinkCardUxManager {
         void this.#analytics.sendPinglets();
       }
 
-      const mappedUiStateKey = getUiStateKey(
-        processResult,
-        this.sessionSettings.scanningSettings,
-      );
+      const mappedUiStateKey = getUiStateKey(processResult, this.sessionSettings.scanningSettings);
 
       // Invoke frame-level side effects (analytics, stop-processing, terminal flag)
       this.#handleProcessResultSideEffects(mappedUiStateKey);
 
       // Notify frame process subscribers
-      invokeCallbacks(
-        this.#onFrameProcessCallbacks,
-        processResult,
-        "onFrameProcess",
-      );
+      invokeCallbacks(this.#onFrameProcessCallbacks, processResult, "onFrameProcess");
 
       // Feed the stabilizer — RAF loop will apply the state on next tick
       if (mappedUiStateKey) {
@@ -712,41 +693,31 @@ export class BlinkCardUxManager {
   };
 
   /**
-   * Handles frame-level side effects without touching the UI directly:
-   * queues analytics pings and stops frame capture on success.
+   * Handles frame-level side effects without touching the UI directly: queues analytics pings and stops frame capture
+   * on success.
    */
-  #handleProcessResultSideEffects = (
-    mappedUiStateKey: ReturnType<typeof getUiStateKey>,
-  ): void => {
+  #handleProcessResultSideEffects = (mappedUiStateKey: ReturnType<typeof getUiStateKey>): void => {
     if (!mappedUiStateKey) {
       return;
     }
 
     // Stop frame capture on any success state
-    if (
-      (blinkCardUiSuccessKeys as readonly string[]).includes(mappedUiStateKey)
-    ) {
+    if ((blinkCardUiSuccessKeys as readonly string[]).includes(mappedUiStateKey)) {
       console.debug("🛑 stop processing", mappedUiStateKey);
       this.cameraManager.stopFrameCapture();
       void this.#analytics.sendPinglets();
 
       // Terminal: no more frames needed after full card capture
       if (mappedUiStateKey === "CARD_CAPTURED") {
+        this.clearScanTimeout();
         this.#processingLifecycleState = "terminal";
       }
     }
   };
 
-  /**
-   * Maps a BlinkCard error UI state key to its analytics error message type.
-   */
-  #getErrorAnalyticsType = (
-    errorKey: BlinkCardUiErrorStateKey,
-  ): NonNullable<PingUxEventData["errorMessageType"]> => {
-    return match<
-      BlinkCardUiErrorStateKey,
-      NonNullable<PingUxEventData["errorMessageType"]>
-    >(errorKey)
+  /** Maps a BlinkCard error UI state key to its analytics error message type. */
+  #getErrorAnalyticsType = (errorKey: BlinkCardUiErrorStateKey): NonNullable<PingUxEventData["errorMessageType"]> => {
+    return match<BlinkCardUiErrorStateKey, NonNullable<PingUxEventData["errorMessageType"]>>(errorKey)
       .with("CARD_NOT_IN_FRAME_FRONT", () => "KeepVisible")
       .with("CARD_NOT_IN_FRAME_BACK", () => "KeepVisible")
       .with("BLUR_DETECTED", () => "EliminateBlur")
@@ -759,9 +730,7 @@ export class BlinkCardUxManager {
       .exhaustive();
   };
 
-  /**
-   * Updates the UI state from the current stabilizer key. Called by the RAF loop.
-   */
+  /** Updates the UI state from the current stabilizer key. Called by the RAF loop. */
   #updateUiState = async (uiStateKey: BlinkCardUiStateKey) => {
     if (uiStateKey === this.#uiState.key) {
       return;
@@ -773,9 +742,7 @@ export class BlinkCardUxManager {
     this.#uiState = newUiState;
 
     // Log error analytics when UI state changes to an error state (not in processing loop)
-    if (
-      (blinkCardUiErrorStateKeys as readonly string[]).includes(newUiState.key)
-    ) {
+    if ((blinkCardUiErrorStateKeys as readonly string[]).includes(newUiState.key)) {
       const errorKey = newUiState.key as BlinkCardUiErrorStateKey;
       const pingErrorMessageType = this.#getErrorAnalyticsType(errorKey);
       void this.#analytics.logErrorMessageEvent(pingErrorMessageType);
@@ -783,19 +750,13 @@ export class BlinkCardUxManager {
 
     this.#handleHapticFeedback(newUiState.key);
 
-    invokeCallbacks(
-      this.#onUiStateChangedCallbacks,
-      newUiState,
-      "onUiStateChanged",
-    );
+    invokeCallbacks(this.#onUiStateChangedCallbacks, newUiState, "onUiStateChanged");
 
     await this.#handleUiStateUpdates(newUiState);
     this.#queueNextChainedUiState(newUiState.key);
   };
 
-  /**
-   * Queues the next chained UI state into the stabilizer after a transition.
-   */
+  /** Queues the next chained UI state into the stabilizer after a transition. */
   #queueNextChainedUiState = (previousUiStateKey: BlinkCardUiStateKey) => {
     const chainedUiStateKey = getBlinkCardChainedUiStateKey({
       previousUiStateKey,
@@ -809,20 +770,15 @@ export class BlinkCardUxManager {
   };
 
   /**
-   * Handles UI-level side effects triggered by a state transition:
-   * restarts the scan timeout, resumes frame capture on intro states, and
-   * orchestrates result retrieval on CARD_CAPTURED.
+   * Handles UI-level side effects triggered by a state transition: restarts inactivity tracking, resumes frame capture
+   * on intro states, and orchestrates result retrieval on CARD_CAPTURED.
    */
   #handleUiStateUpdates = async (uiState: BlinkCardUiState) => {
-    if (this.#timeoutDuration !== null && uiState.key !== "CARD_CAPTURED") {
-      this.#setTimeout(uiState);
+    if (uiState.key !== "CARD_CAPTURED") {
+      this.#restartInactivityTimeoutForUiState(uiState.key);
     }
 
-    if (
-      (blinkCardUiIntroStateKeys as readonly BlinkCardUiStateKey[]).includes(
-        uiState.key,
-      )
-    ) {
+    if ((blinkCardUiIntroStateKeys as readonly BlinkCardUiStateKey[]).includes(uiState.key)) {
       this.#pendingIntroAnchorKey = uiState.key;
       void this.cameraManager.startFrameCapture();
     }
@@ -837,22 +793,13 @@ export class BlinkCardUxManager {
 
         invokeCallbacks(this.#onResultCallbacks, result, "onResult");
       } catch (err) {
-        console.error(
-          "Failed to retrieve scan result after card capture:",
-          err,
-        );
-        invokeCallbacks(
-          this.#onErrorCallbacks,
-          "result_retrieval_failed",
-          "onError",
-        );
+        console.error("Failed to retrieve scan result after card capture:", err);
+        invokeCallbacks(this.#onErrorCallbacks, "result_retrieval_failed", "onError");
       }
     }
   };
 
-  /**
-   * Handles haptic feedback based on UI state changes.
-   */
+  /** Handles haptic feedback based on UI state changes. */
   #handleHapticFeedback = (uiStateKey: BlinkCardUiStateKey) => {
     if (uiStateKey === "FIRST_SIDE_CAPTURED") {
       this.#hapticFeedbackManager.triggerShort();
@@ -869,77 +816,108 @@ export class BlinkCardUxManager {
     }
   };
 
-  /**
-   * Sets the timeout for the scanning session.
-   */
-  #setTimeout = (uiState: BlinkCardUiState) => {
-    if (this.#timeoutDuration === null) {
-      console.debug("⏳🟢 timeout duration is null, not starting timeout");
+  /** Updates the BlinkCard timeout configuration and restarts active timing with the new durations. */
+  setTimeoutConfiguration(timeoutConfiguration: Partial<BlinkCardTimeoutConfiguration>) {
+    this.#timeoutHandler.setConfiguration(timeoutConfiguration);
+
+    if (this.#isTimingActiveScanStep) {
+      this.#resetScanTimeoutsForCurrentStep();
       return;
     }
 
-    this.clearScanTimeout();
-    console.debug(`⏳🟢 starting timeout for ${uiState.key}`);
+    this.#clearScanTimeoutState();
+  }
 
-    this.#timeoutId = window.setTimeout(() => {
-      console.debug("⏳🟢 timeout triggered");
-      this.cameraManager.stopFrameCapture();
-
-      invokeCallbacks(this.#onErrorCallbacks, "timeout", "onError");
-
-      void this.#analytics.logStepTimeoutEvent();
-      void this.#analytics.sendPinglets();
-
-      this.#resetUiState();
-    }, this.#timeoutDuration);
+  #clearScanTimeoutState = () => {
+    this.#timeoutHandler.resetAll();
+    this.#inactivityResetUiStateKey = undefined;
+    this.#isTimingActiveScanStep = false;
   };
 
-  /**
-   * Resets the feedback stabilizer and invokes the onUiStateChanged callbacks.
-   */
-  #resetUiState = (
-    uiStateKey: BlinkCardUiStateKey = this.#initialUiStateKey,
-  ) => {
+  #resetScanTimeoutsForCurrentStep = (uiStateKey: BlinkCardUiStateKey = this.uiState.key) => {
+    this.#timeoutHandler.resetAll();
+    this.#inactivityResetUiStateKey = uiStateKey;
+    this.#isTimingActiveScanStep = true;
+
+    if (this.cameraManager.getState().playbackState === "capturing") {
+      this.#timeoutHandler.start("inactivityTimeoutMs");
+      this.#timeoutHandler.start("scanStepTimeoutMs");
+    }
+  };
+
+  #restartInactivityTimeout = (uiStateKey: BlinkCardUiStateKey = this.uiState.key) => {
+    if (!this.#isTimingActiveScanStep) {
+      return;
+    }
+
+    this.#inactivityResetUiStateKey = uiStateKey;
+
+    if (this.cameraManager.getState().playbackState === "capturing") {
+      this.#timeoutHandler.start("inactivityTimeoutMs");
+    } else {
+      this.#timeoutHandler.reset("inactivityTimeoutMs");
+    }
+  };
+
+  #restartInactivityTimeoutForUiState = (uiStateKey: BlinkCardUiStateKey) => {
+    if (!this.#isTimingActiveScanStep || this.#inactivityResetUiStateKey === uiStateKey) {
+      return;
+    }
+
+    this.#restartInactivityTimeout(uiStateKey);
+  };
+
+  #resumeScanStepTimeout = () => {
+    const timerState = this.#timeoutHandler.getTimerState("scanStepTimeoutMs");
+
+    if (timerState.status === "idle") {
+      this.#timeoutHandler.start("scanStepTimeoutMs");
+    } else {
+      this.#timeoutHandler.resume("scanStepTimeoutMs");
+    }
+  };
+
+  #handleScanTimeout = (timeoutKind: ScanTimeoutKind) => {
+    if (this.#processingLifecycleState === "terminal") {
+      return;
+    }
+
+    const processingTimeoutError: BlinkCardProcessingError = match<ScanTimeoutKind, BlinkCardProcessingError>(
+      timeoutKind,
+    )
+      .with("inactivity", () => {
+        void this.#analytics.logInactivityTimeoutEvent();
+        return "inactivity_timeout";
+      })
+      .with("scan-step", () => {
+        void this.#analytics.logStepTimeoutEvent();
+        return "scan_step_timeout";
+      })
+      .exhaustive();
+
+    console.debug(`⏳🟢 ${timeoutKind} timeout triggered`);
+    this.clearScanTimeout();
+    this.cameraManager.stopFrameCapture();
+    invokeCallbacks(this.#onErrorCallbacks, processingTimeoutError, "onError");
+    void this.#analytics.sendPinglets();
+    void this.resetScanningSession(false);
+  };
+
+  /** Resets the feedback stabilizer and invokes the onUiStateChanged callbacks. */
+  #resetUiState = (uiStateKey: BlinkCardUiStateKey = this.#initialUiStateKey) => {
     this.feedbackStabilizer.reset(uiStateKey);
     this.#uiState = this.feedbackStabilizer.currentState;
     this.#mappedUiStateKey = this.uiState.key;
     this.#processingLifecycleState = "ready";
     this.#pendingIntroAnchorKey = uiStateKey;
     this.#firstProcessedFrameAt = undefined;
-    invokeCallbacks(
-      this.#onUiStateChangedCallbacks,
-      this.uiState,
-      "onUiStateChanged",
-    );
+    invokeCallbacks(this.#onUiStateChangedCallbacks, this.uiState, "onUiStateChanged");
   };
 
-  /**
-   * Clears the scanning session timeout.
-   */
+  /** Clears all scanning-session timeouts. */
   clearScanTimeout = () => {
-    if (!this.#timeoutId) {
-      return;
-    }
-
-    console.debug("⏳🔴 clearing timeout");
-    window.clearTimeout(this.#timeoutId);
-    this.#timeoutId = undefined;
+    this.#clearScanTimeoutState();
   };
-
-  /**
-   * Sets the duration after which the scanning session will timeout.
-   *
-   * @param duration The timeout duration in milliseconds. If null, timeout won't
-   * be triggered ever.
-   * @throws {Error} Throws an error if duration is less than or equal to 0 when not null.
-   */
-  setTimeoutDuration(duration: number | null) {
-    if (duration !== null && duration <= 0) {
-      throw new Error("Timeout duration must be greater than 0");
-    }
-
-    this.#timeoutDuration = duration;
-  }
 
   /**
    * Gets the result from the scanning session.
@@ -1010,9 +988,9 @@ export class BlinkCardUxManager {
   }
 
   /**
-   * Fully tears down the BlinkCardUxManager. Stops frame processing, cancels the
-   * scan timeout, removes all subscriptions and the RAF loop, and clears all
-   * registered callbacks. Should be called when the manager is no longer needed.
+   * Fully tears down the BlinkCardUxManager. Stops frame processing, cancels the scan timeout, removes all
+   * subscriptions and the RAF loop, and clears all registered callbacks. Should be called when the manager is no longer
+   * needed.
    *
    * Does not stop the camera stream or delete the scanning session.
    */

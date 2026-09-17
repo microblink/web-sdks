@@ -1,13 +1,10 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * Represents the different states of a scanning process.
  *
- * This type defines the possible statuses that can occur during the scanning
- * operation, specifically for managing the progress of scanning sides and the
- * entire document.
+ * This type defines the possible statuses that can occur during the scanning operation, specifically for managing the
+ * progress of scanning sides and the entire document.
  */
 export type ScanningStatus =
   | "scanning-side-in-progress"

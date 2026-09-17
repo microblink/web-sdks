@@ -10,8 +10,8 @@
 
 Contains data extracted from the barcode
 
-- In case of uncertain results, some of the properties may not be available.
-  Their values will be set to `BARCODE_FIELD_UNREADABLE`
+- In case of uncertain results, some of the properties may not be available. Their values will be set to
+  `BARCODE_FIELD_UNREADABLE`
 
 ## Properties
 
@@ -171,8 +171,7 @@ The nationality of the document owner.
 
 > **parsed**: `boolean`
 
-Whether the raw barcode data was successfully parsed into structured
-information.
+Whether the raw barcode data was successfully parsed into structured information.
 
 ***
 

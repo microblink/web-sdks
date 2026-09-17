@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { EmbindObject } from "../emscripten";
 import type { BlinkIdVerifyProcessResult } from "./blink-id-verify-process-result";
@@ -31,9 +29,8 @@ export type BlinkIdVerifyScanningSession = EmbindObject<{
   getSessionId(): string;
 
   /**
-   * Allows the barcode step to be performed during scanning. If during the
-   * scanning process the barcode is unreadable BlinkIdVerifyProcessResult will
-   * return a Scanning status for barcode scanning only.
+   * Allows the barcode step to be performed during scanning. If during the scanning process the barcode is unreadable
+   * BlinkIdVerifyProcessResult will return a Scanning status for barcode scanning only.
    */
   allowBarcodeStep(): void;
 

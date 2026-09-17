@@ -10,9 +10,8 @@
 
 Represents the results of processing and analyzing an input image.
 
-This structure contains the status of the processing, along with detailed
-results from detection, document quality, and information about the document
-analysis performed on the input image.
+This structure contains the status of the processing, along with detailed results from detection, document quality,
+and information about the document analysis performed on the input image.
 
 ## Properties
 
@@ -34,12 +33,12 @@ The status of blur detection
 
 ### documentClassInfo?
 
-> `optional` **documentClassInfo**: [`DocumentClassInfo`](DocumentClassInfo.md)
+> `optional` **documentClassInfo?**: [`DocumentClassInfo`](DocumentClassInfo.md)
 
 Information about the document class.
 
-Absent when the document could not be classified (for example, for
-unsupported documents without any extracted class info).
+Absent when the document could not be classified (for example, for unsupported documents without any extracted
+class info).
 
 ***
 
@@ -77,7 +76,7 @@ The status of lighting conditions in the document image
 
 ### documentLocation?
 
-> `optional` **documentLocation**: [`Quadrilateral`](Quadrilateral.md)
+> `optional` **documentLocation?**: [`Quadrilateral`](Quadrilateral.md)
 
 The location of the detected document within an image
 
@@ -151,12 +150,10 @@ List of failed image extractions
 
 > **inputImageCropAnalysis**: [`InputImageCropAnalysis`](InputImageCropAnalysis.md)
 
-Records the conclusion drawn about whether the input image was already
-cropped and perspective-corrected.
+Records the conclusion drawn about whether the input image was already cropped and perspective-corrected.
 
-Only meaningful when the document capture module `cropType` was set to
-`"unknown"` and the input source is `Photo`; otherwise always
-`"not-available"`.
+Only meaningful when the document capture module `cropType` was set to `"unknown"` and the input source is `Photo`;
+otherwise always `"not-available"`.
 
 ***
 
@@ -164,8 +161,7 @@ Only meaningful when the document capture module `cropType` was set to
 
 > **invalidCharacterFields**: [`FieldType`](FieldType.md)[]
 
-List of fields that contained characters which were not expected in that
-field
+List of fields that contained characters which were not expected in that field
 
 ***
 

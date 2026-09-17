@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * Represents the rotation of the document.
@@ -11,9 +9,4 @@
  * - `counter-clockwise-90` The rotation is counter clockwise 90 degrees.
  * - `upside-down` The rotation is upside down.
  */
-export type DocumentRotation =
-  | "not-available"
-  | "zero"
-  | "clockwise-90"
-  | "counter-clockwise-90"
-  | "upside-down";
+export type DocumentRotation = "not-available" | "zero" | "clockwise-90" | "counter-clockwise-90" | "upside-down";

@@ -24,4 +24,4 @@ The localStorage key to use for persisting the user id.
 
 `string`
 
-a unique user id
+A unique user id

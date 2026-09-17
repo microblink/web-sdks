@@ -1,7 +1,7 @@
 {
   "wasm": {
-    "simd": 5944324,
-    "simd-threads": 6020823
+    "simd": 5944328,
+    "simd-threads": 6020831
   },
   "data": {
     "simd": 20519559,

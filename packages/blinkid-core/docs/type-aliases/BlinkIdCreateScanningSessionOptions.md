@@ -14,7 +14,7 @@ Options applied by BlinkID Worker when creating a scanning session.
 
 ### redactionSettingsResolver?
 
-> `optional` **redactionSettingsResolver**: [`RedactionSettingsResolver`](RedactionSettingsResolver.md)
+> `optional` **redactionSettingsResolver?**: [`RedactionSettingsResolver`](RedactionSettingsResolver.md)
 
 Resolves custom result redaction settings for the classified document.
 

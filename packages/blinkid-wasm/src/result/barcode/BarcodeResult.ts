@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { DateResult, DriverLicenceDetailedInfo } from "../../utils";
 import { BarcodeData } from "./BarcodeData";
@@ -24,17 +22,14 @@ export type AddressDetailedInfo = {
 /**
  * Contains data extracted from the barcode
  *
- * - In case of uncertain results, some of the properties may not be available.
- *   Their values will be set to `BARCODE_FIELD_UNREADABLE`
+ * - In case of uncertain results, some of the properties may not be available. Their values will be set to
+ *   `BARCODE_FIELD_UNREADABLE`
  */
 export type BarcodeResult = {
   /** The raw, unparsed barcode data. */
   barcodeData: BarcodeData;
 
-  /**
-   * Whether the raw barcode data was successfully parsed into structured
-   * information.
-   */
+  /** Whether the raw barcode data was successfully parsed into structured information. */
   parsed: boolean;
 
   /** The first name of the document owner. */
@@ -93,5 +88,5 @@ export type BarcodeResult = {
   driverLicenseDetailedInfo: DriverLicenceDetailedInfo<string>;
 
   /** Document specific extended elements that contain all barcode fields */
-  extendedElements: Array<BarcodeElement>;
+  extendedElements: BarcodeElement[];
 };

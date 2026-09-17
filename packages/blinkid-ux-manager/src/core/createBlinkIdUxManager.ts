@@ -1,31 +1,17 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  getDeviceInfo,
-  type RemoteScanningSession,
-} from "@microblink/blinkid-core";
-import { CameraManager } from "@microblink/camera-manager";
-import { BlinkIdUxManager } from "./BlinkIdUxManager";
-import {
-  BlinkIdUiStateKey,
-  getUiStateKeyFromScanningStatus,
-} from "./blinkid-ui-state";
+import { getDeviceInfo, type RemoteScanningSession } from "@microblink/blinkid-core";
+import { CameraManager } from "@microblink/camera-manager/core";
+
+import { BlinkIdUiStateKey, getUiStateKeyFromScanningStatus } from "./blinkid-ui-state";
 import type { BlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
+import { BlinkIdUxManager } from "./BlinkIdUxManager";
 
-/**
- * Options for the BlinkIdUxManager.
- */
+/** Options for the BlinkIdUxManager. */
 export type BlinkIdUxManagerOptions = {
-  /**
-   * Initial UI state key used by the manager/stabilizer reset flow.
-   * Defaults to `INTRO_FRONT_PAGE`.
-   */
+  /** Initial UI state key used by the manager/stabilizer reset flow. Defaults to `INTRO_FRONT_PAGE`. */
   initialUiStateKey?: BlinkIdUiStateKey;
-  /**
-   * Configures BlinkID scanning timeout behavior.
-   */
+  /** Configures BlinkID scanning timeout behavior. */
   timeoutConfiguration?: Partial<BlinkIdTimeoutConfiguration>;
 };
 
@@ -42,23 +28,16 @@ export const createBlinkIdUxManager = async (
   options: BlinkIdUxManagerOptions = {},
 ): Promise<BlinkIdUxManager> => {
   try {
-    const [
-      resolvedSessionSettings,
-      showDemoOverlay,
-      showProductionOverlay,
-      deviceInfo,
-      scanningStatus,
-    ] = await Promise.all([
-      scanningSession.getResolvedSessionSettings(),
-      scanningSession.showDemoOverlay(),
-      scanningSession.showProductionOverlay(),
-      getDeviceInfo(),
-      scanningSession.getScanningStatus(),
-    ]);
+    const [resolvedSessionSettings, showDemoOverlay, showProductionOverlay, deviceInfo, scanningStatus] =
+      await Promise.all([
+        scanningSession.getResolvedSessionSettings(),
+        scanningSession.showDemoOverlay(),
+        scanningSession.showProductionOverlay(),
+        getDeviceInfo(),
+        scanningSession.getScanningStatus(),
+      ]);
 
-    const initialUiStateKey =
-      getUiStateKeyFromScanningStatus(scanningStatus) ??
-      options.initialUiStateKey;
+    const initialUiStateKey = getUiStateKeyFromScanningStatus(scanningStatus) ?? options.initialUiStateKey;
     const managerOptions =
       initialUiStateKey == null
         ? options
@@ -83,9 +62,7 @@ export const createBlinkIdUxManager = async (
         schemaVersion: "1.0.0",
         data: {
           errorType: "Crash",
-          errorMessage: `ux.createBlinkIdUxManager: ${
-            error instanceof Error ? error.message : String(error)
-          }`,
+          errorMessage: `ux.createBlinkIdUxManager: ${error instanceof Error ? error.message : String(error)}`,
           stackTrace: error instanceof Error ? error.stack : undefined,
         },
       });

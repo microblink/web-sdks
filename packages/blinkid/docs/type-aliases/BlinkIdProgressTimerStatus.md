@@ -6,4 +6,4 @@
 
 # Type Alias: BlinkIdProgressTimerStatus
 
-> **BlinkIdProgressTimerStatus** = `"disabled"` \| `"idle"` \| `"running"` \| `"paused"`
+> **BlinkIdProgressTimerStatus** = `ProgressTimerStatus`

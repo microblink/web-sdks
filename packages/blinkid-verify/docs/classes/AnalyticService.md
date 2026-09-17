@@ -7,6 +7,7 @@
 # Class: AnalyticService
 
 Analytic service
+
 Provides a clean interface for tracking user interactions and events
 
 ## Constructors
@@ -35,13 +36,13 @@ Provides a clean interface for tracking user interactions and events
 
 ### logAlertDisplayedEvent()
 
-> **logAlertDisplayedEvent**(`alertType`): `Promise`\<`void`\>
+> **logAlertDisplayedEvent**(`alertType?`): `Promise`\<`void`\>
 
 #### Parameters
 
-##### alertType
+##### alertType?
 
-`NonNullable`\<`undefined` \| `AlertType`\>
+`AlertType`
 
 #### Returns
 
@@ -61,7 +62,13 @@ Provides a clean interface for tracking user interactions and events
 
 ### logCameraClosedEvent()
 
-> **logCameraClosedEvent**(): `Promise`\<`void`\>
+> **logCameraClosedEvent**(`closeReason?`): `Promise`\<`void`\>
+
+#### Parameters
+
+##### closeReason?
+
+`CloseReason`
 
 #### Returns
 
@@ -78,6 +85,22 @@ Provides a clean interface for tracking user interactions and events
 ##### pingData
 
 [`PingCameraInputInfoData`](../type-aliases/PingCameraInputInfoData.md)
+
+#### Returns
+
+`Promise`\<`void`\>
+
+***
+
+### logCameraOpenFailedEvent()
+
+> **logCameraOpenFailedEvent**(`cameraFailureCategory`): `Promise`\<`void`\>
+
+#### Parameters
+
+##### cameraFailureCategory
+
+`string`
 
 #### Returns
 
@@ -171,7 +194,7 @@ Provides a clean interface for tracking user interactions and events
 
 ##### orientation
 
-`undefined` | `DeviceOrientation`
+`DeviceOrientation` \| `undefined`
 
 #### Returns
 
@@ -217,7 +240,7 @@ Provides a clean interface for tracking user interactions and events
 
 ##### errorMessageType
 
-`undefined` | `ErrorMessageType`
+`ErrorMessageType` \| `undefined`
 
 #### Returns
 
@@ -259,11 +282,11 @@ Provides a clean interface for tracking user interactions and events
 
 ### logHelpClosedEvent()
 
-> **logHelpClosedEvent**(`contentFullyViewed`): `Promise`\<`void`\>
+> **logHelpClosedEvent**(`contentFullyViewed?`): `Promise`\<`void`\>
 
 #### Parameters
 
-##### contentFullyViewed
+##### contentFullyViewed?
 
 `boolean`
 

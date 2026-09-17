@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
@@ -9,15 +7,12 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 // ============================================================================
 
 const mockSleep = vi.hoisted(() => vi.fn().mockResolvedValue(undefined));
-const mockSubscribeToDeviceOrientation = vi.hoisted(() =>
-  vi.fn(() => () => undefined),
-);
+const mockSubscribeToDeviceOrientation = vi.hoisted(() => vi.fn(() => () => undefined));
 
 // Mock the sleep utility to resolve immediately, preventing tests from hanging
 // when code awaits sleep() with fake timers enabled
 vi.mock("@microblink/ux-common/utils", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("@microblink/ux-common/utils")>();
+  const actual = await importOriginal<typeof import("@microblink/ux-common/utils")>();
   return {
     ...actual,
     sleep: mockSleep,
@@ -28,10 +23,7 @@ vi.mock("@microblink/ux-common/deviceOrientationAnalytics", () => ({
   subscribeToDeviceOrientation: mockSubscribeToDeviceOrientation,
 }));
 
-import type {
-  BlinkIdScanningResult,
-  DocumentClassInfo,
-} from "@microblink/blinkid-core";
+import type { BlinkIdScanningResult, DocumentClassInfo } from "@microblink/blinkid-core";
 import {
   createFakeImageData,
   enableRafAwareFakeTimers,
@@ -40,12 +32,11 @@ import {
   setupDestroyableTeardown,
   tickRaf,
 } from "@microblink/test-utils";
+
+import { createProcessResult } from "./__testdata/blinkidTestFixtures";
 import type { BlinkIdUiState, BlinkIdUiStateKey } from "./blinkid-ui-state";
 import { blinkIdUiStateMap } from "./blinkid-ui-state";
-import type {
-  BlinkIdFrameProcessCallback,
-  BlinkIdUxManager,
-} from "./BlinkIdUxManager";
+import type { BlinkIdFrameProcessCallback, BlinkIdUxManager } from "./BlinkIdUxManager";
 import {
   createBlinkIdUxManager as createBlinkIdUxManagerFactory,
   type BlinkIdUxManagerOptions,
@@ -55,16 +46,15 @@ import {
   createBlinkIdUnitSessionMock,
   type BlinkIdUnitSessionMock,
 } from "./test-helpers.integration";
-import { createProcessResult } from "./__testdata/blinkidTestFixtures";
 import { createDocumentClassInfo } from "./test-utils";
 
 /**
  * Test file role:
+ *
  * - Verifies BlinkIdUxManager callback/lifecycle contracts.
- * - Uses a small stabilizer seam helper when tests need to assert behavior
- *   after a chosen UI state is applied.
- * - Does not own processResult -> ui-state mapping coverage (see ui-state tests),
- *   and does not own end-to-end scan flow coverage (see integration tests).
+ * - Uses a small stabilizer seam helper when tests need to assert behavior after a chosen UI state is applied.
+ * - Does not own processResult -> ui-state mapping coverage (see ui-state tests), and does not own end-to-end scan flow
+ *   coverage (see integration tests).
  */
 
 type BlinkIdCameraHarness = ReturnType<typeof createBlinkIdCameraHarness>;
@@ -73,14 +63,10 @@ type MockScanningSession = BlinkIdUnitSessionMock;
 const trackManager = setupDestroyableTeardown<BlinkIdUxManager>();
 
 /**
- * Unit-test seam: tests that call this are validating manager callback/lifecycle
- * behavior after a chosen UI state is applied, not mapping from process results.
- * Mapping is covered in ui-state + integration suites.
+ * Unit-test seam: tests that call this are validating manager callback/lifecycle behavior after a chosen UI state is
+ * applied, not mapping from process results. Mapping is covered in ui-state + integration suites.
  */
-const applyStabilizedUiStateForContractTest = async (
-  manager: BlinkIdUxManager,
-  uiStateKey: BlinkIdUiStateKey,
-) => {
+const applyStabilizedUiStateForContractTest = async (manager: BlinkIdUxManager, uiStateKey: BlinkIdUiStateKey) => {
   manager.feedbackStabilizer.reset(uiStateKey);
   await flushUiRaf();
 };
@@ -93,9 +79,7 @@ const createManagedBlinkIdUxManager = async (
   trackManager(
     await createBlinkIdUxManagerFactory(
       cameraHarness.cameraManager,
-      mockScanningSession as unknown as Parameters<
-        typeof createBlinkIdUxManagerFactory
-      >[1],
+      mockScanningSession as unknown as Parameters<typeof createBlinkIdUxManagerFactory>[1],
       options,
     ),
   );
@@ -113,16 +97,10 @@ const createBlinkIdTestContext = async ({
 } = {}) => {
   const cameraHarness = createBlinkIdCameraHarness(
     fakeCameraOptions ??
-      (initialCameraPermission
-        ? { initialState: { cameraPermission: initialCameraPermission } }
-        : undefined),
+      (initialCameraPermission ? { initialState: { cameraPermission: initialCameraPermission } } : undefined),
   );
   const scanningSession = createBlinkIdUnitSessionMock(sessionSettings);
-  const manager = await createManagedBlinkIdUxManager(
-    cameraHarness,
-    scanningSession,
-    managerOptions,
-  );
+  const manager = await createManagedBlinkIdUxManager(cameraHarness, scanningSession, managerOptions);
 
   // Even already-resolved async setup uses microtasks before session data is visible.
   await Promise.resolve();
@@ -147,8 +125,7 @@ describe("BlinkIdUxManager - startup and camera analytics", () => {
   });
 
   test("logs device info and playback events", async () => {
-    const { cameraHarness, manager, scanningSession } =
-      await createBlinkIdTestContext();
+    const { cameraHarness, manager, scanningSession } = await createBlinkIdTestContext();
 
     expect(scanningSession.ping).toHaveBeenCalledWith({
       schemaName: "ping.browser.device.info",
@@ -156,14 +133,8 @@ describe("BlinkIdUxManager - startup and camera analytics", () => {
       data: manager.deviceInfo,
     });
 
-    const logCameraStartedEventSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraStartedEvent",
-    );
-    const logCameraClosedEventSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraClosedEvent",
-    );
+    const logCameraStartedEventSpy = vi.spyOn(manager.analytics, "logCameraStartedEvent");
+    const logCameraClosedEventSpy = vi.spyOn(manager.analytics, "logCameraClosedEvent");
     const sendPingletsSpy = vi.spyOn(manager.analytics, "sendPinglets");
 
     logCameraStartedEventSpy.mockClear();
@@ -225,14 +196,8 @@ describe("BlinkIdUxManager - package-specific: camera permission analytics", () 
     });
 
     const checkSpy = vi.spyOn(manager.analytics, "logCameraPermissionCheck");
-    const requestSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraPermissionRequest",
-    );
-    const responseSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraPermissionUserResponse",
-    );
+    const requestSpy = vi.spyOn(manager.analytics, "logCameraPermissionRequest");
+    const responseSpy = vi.spyOn(manager.analytics, "logCameraPermissionUserResponse");
     const sendSpy = vi.spyOn(manager.analytics, "sendPinglets");
 
     checkSpy.mockClear();
@@ -289,10 +254,7 @@ describe("BlinkIdUxManager - package-specific: camera input analytics", () => {
       fakeCameraOptions,
     });
 
-    const logCameraInputInfoSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraInputInfo",
-    );
+    const logCameraInputInfoSpy = vi.spyOn(manager.analytics, "logCameraInputInfo");
 
     logCameraInputInfoSpy.mockClear();
 
@@ -330,10 +292,7 @@ describe("BlinkIdUxManager - package-specific: camera input analytics", () => {
       fakeCameraOptions,
     });
 
-    const logCameraInputInfoSpy = vi.spyOn(
-      manager.analytics,
-      "logCameraInputInfo",
-    );
+    const logCameraInputInfoSpy = vi.spyOn(manager.analytics, "logCameraInputInfo");
 
     logCameraInputInfoSpy.mockClear();
 
@@ -353,10 +312,7 @@ describe("BlinkIdUxManager - package-specific: camera input analytics", () => {
 
   test("does not send delayed camera input ping after reset or observer cleanup", async () => {
     const resetContext = await createBlinkIdTestContext({ fakeCameraOptions });
-    const resetSpy = vi.spyOn(
-      resetContext.manager.analytics,
-      "logCameraInputInfo",
-    );
+    const resetSpy = vi.spyOn(resetContext.manager.analytics, "logCameraInputInfo");
 
     resetSpy.mockClear();
     resetContext.cameraHarness.emitCameraState({
@@ -369,10 +325,7 @@ describe("BlinkIdUxManager - package-specific: camera input analytics", () => {
     const cleanupContext = await createBlinkIdTestContext({
       fakeCameraOptions,
     });
-    const cleanupSpy = vi.spyOn(
-      cleanupContext.manager.analytics,
-      "logCameraInputInfo",
-    );
+    const cleanupSpy = vi.spyOn(cleanupContext.manager.analytics, "logCameraInputInfo");
 
     cleanupSpy.mockClear();
     cleanupContext.cameraHarness.emitCameraState({
@@ -387,9 +340,7 @@ describe("BlinkIdUxManager - package-specific: camera input analytics", () => {
 describe("BlinkIdUxManager - package-specific: camera frame-capture loop errors", () => {
   test("logs a non-fatal ping when camera manager reports a frame-loop error", async () => {
     const { cameraHarness, manager } = await createBlinkIdTestContext();
-    const error = new Error(
-      "Frame capture callback did not return an ArrayBuffer.",
-    );
+    const error = new Error("Frame capture callback did not return an ArrayBuffer.");
     const logErrorSpy = vi.spyOn(manager.analytics, "logErrorEvent");
     const sendPingletsSpy = vi.spyOn(manager.analytics, "sendPinglets");
 
@@ -416,10 +367,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
   beforeEach(async () => {
     cameraHarness = createBlinkIdCameraHarness();
     mockScanningSession = createBlinkIdUnitSessionMock();
-    manager = await createManagedBlinkIdUxManager(
-      cameraHarness,
-      mockScanningSession,
-    );
+    manager = await createManagedBlinkIdUxManager(cameraHarness, mockScanningSession);
     emitFrame = cameraHarness.emitFrame;
   });
 
@@ -444,8 +392,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     // Add a spy for the document filtered callback
     const documentFilteredSpy = vi.fn();
-    const cleanupFilteredCallback =
-      manager.addOnDocumentFilteredCallback(documentFilteredSpy);
+    const cleanupFilteredCallback = manager.addOnDocumentFilteredCallback(documentFilteredSpy);
 
     // Add filter that rejects USA documents
     const filterCleanup = manager.addDocumentClassFilter((docInfo) => {
@@ -455,9 +402,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     await emitFrame(createFakeImageData());
 
     // Verify callback was invoked with the document class info
-    expect(documentFilteredSpy).toHaveBeenCalledWith(
-      expect.objectContaining(mockDocumentClassInfo),
-    );
+    expect(documentFilteredSpy).toHaveBeenCalledWith(expect.objectContaining(mockDocumentClassInfo));
 
     cleanupFilteredCallback();
     filterCleanup();
@@ -480,8 +425,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     // Add a spy for the document filtered callback
     const documentFilteredSpy = vi.fn();
-    const cleanupFilteredCallback =
-      manager.addOnDocumentFilteredCallback(documentFilteredSpy);
+    const cleanupFilteredCallback = manager.addOnDocumentFilteredCallback(documentFilteredSpy);
 
     // Add filter that rejects USA documents
     const filterCleanup = manager.addDocumentClassFilter((docInfo) => {
@@ -518,9 +462,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     await emitFrame(createFakeImageData());
 
     // Filter shouldn't be applied because document info is incomplete
-    expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe(
-      "success",
-    );
+    expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe("success");
     filterCleanup();
   });
 
@@ -539,9 +481,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     await emitFrame(createFakeImageData());
 
     // Filter shouldn't be applied because document info is undefined
-    expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe(
-      "success",
-    );
+    expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe("success");
     filterCleanup();
   });
 
@@ -563,9 +503,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     // No filter added
     await emitFrame(createFakeImageData());
 
-    expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe(
-      "success",
-    );
+    expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe("success");
   });
 
   test("should remove filter and not invoke callback when cleanup function is called", async () => {
@@ -576,8 +514,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     // Add a spy for the document filtered callback
     const documentFilteredSpy = vi.fn();
-    const cleanupFilteredCallback =
-      manager.addOnDocumentFilteredCallback(documentFilteredSpy);
+    const cleanupFilteredCallback = manager.addOnDocumentFilteredCallback(documentFilteredSpy);
 
     // First run with active filter that would filter document
     const mockProcessResult = createProcessResult({
@@ -632,9 +569,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     await emitFrame(createFakeImageData());
 
     // Second filter should take precedence
-    expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe(
-      "success",
-    );
+    expect(mockProcessResult.inputImageAnalysisResult?.processingStatus).toBe("success");
 
     firstFilterCleanup();
     secondFilterCleanup();
@@ -661,8 +596,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     // Add a spy for the document filtered callback
     const documentFilteredSpy = vi.fn();
-    const cleanupFilteredCallback =
-      manager.addOnDocumentFilteredCallback(documentFilteredSpy);
+    const cleanupFilteredCallback = manager.addOnDocumentFilteredCallback(documentFilteredSpy);
 
     // Track results
     const resultsReceived: BlinkIdScanningResult[] = [];
@@ -673,9 +607,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     await emitFrame(createFakeImageData());
 
     // Verify document filtered callback was called
-    expect(documentFilteredSpy).toHaveBeenCalledWith(
-      expect.objectContaining(mockDocumentClassInfo),
-    );
+    expect(documentFilteredSpy).toHaveBeenCalledWith(expect.objectContaining(mockDocumentClassInfo));
 
     // Verify camera was stopped
     expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
@@ -711,15 +643,13 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     // Add frame process callback spy
     const frameProcessSpy = vi.fn();
-    const cleanupFrameProcessCallback =
-      manager.addOnFrameProcessCallback(frameProcessSpy);
+    const cleanupFrameProcessCallback = manager.addOnFrameProcessCallback(frameProcessSpy);
 
     await emitFrame(createFakeImageData());
 
     expect(frameProcessSpy).toHaveBeenCalledTimes(1);
-    const [frameResult, advanceToNextStep, triggerStepTimeout, getLastFrame] =
-      frameProcessSpy.mock
-        .calls[0]! as unknown as Parameters<BlinkIdFrameProcessCallback>;
+    const [frameResult, advanceToNextStep, triggerStepTimeout, getLastFrame] = frameProcessSpy.mock
+      .calls[0] as unknown as Parameters<BlinkIdFrameProcessCallback>;
 
     expect(frameResult).toEqual({
       inputImageAnalysisResult: mockProcessResult.inputImageAnalysisResult,
@@ -773,9 +703,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     });
     mockScanningSession.process.mockResolvedValue(mockProcessResult);
 
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => undefined);
+    const consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
 
     const first = vi.fn(() => {
       throw new Error("boom");
@@ -788,10 +716,7 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
 
     expect(first).toHaveBeenCalledTimes(1);
     expect(second).toHaveBeenCalledTimes(1);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "Error in onFrameProcess callback",
-      expect.any(Error),
-    );
+    expect(consoleErrorSpy).toHaveBeenCalledWith("Error in onFrameProcess callback", expect.any(Error));
 
     consoleErrorSpy.mockRestore();
   });
@@ -868,10 +793,7 @@ describe("BlinkIdUxManager - session lifecycle: reset behavior", () => {
 
     cameraHarness = createBlinkIdCameraHarness();
     mockScanningSession = createBlinkIdUnitSessionMock();
-    manager = await createManagedBlinkIdUxManager(
-      cameraHarness,
-      mockScanningSession,
-    );
+    manager = await createManagedBlinkIdUxManager(cameraHarness, mockScanningSession);
   });
 
   afterEach(() => {
@@ -923,13 +845,9 @@ describe("BlinkIdUxManager - session lifecycle: reset behavior", () => {
   });
 
   test("should use constructor initialUiStateKey override", async () => {
-    const customManager = await createManagedBlinkIdUxManager(
-      cameraHarness,
-      mockScanningSession,
-      {
-        initialUiStateKey: "INTRO_DATA_PAGE",
-      },
-    );
+    const customManager = await createManagedBlinkIdUxManager(cameraHarness, mockScanningSession, {
+      initialUiStateKey: "INTRO_DATA_PAGE",
+    });
 
     expect(customManager.getInitialUiStateKey()).toBe("INTRO_DATA_PAGE");
     expect(customManager.uiState.key).toBe("INTRO_DATA_PAGE");
@@ -1000,10 +918,7 @@ describe("BlinkIdUxManager - timeout behavior", () => {
 
     cameraHarness = createBlinkIdCameraHarness();
     mockScanningSession = createBlinkIdUnitSessionMock();
-    manager = await createManagedBlinkIdUxManager(
-      cameraHarness,
-      mockScanningSession,
-    );
+    manager = await createManagedBlinkIdUxManager(cameraHarness, mockScanningSession);
   });
 
   afterEach(() => {
@@ -1129,10 +1044,7 @@ describe("BlinkIdUxManager - state transitions: shared callback contracts", () =
 
   test("logs error message events when UI state changes to an error state", async () => {
     const { manager } = await createBlinkIdTestContext();
-    const logErrorMessageEventSpy = vi.spyOn(
-      manager.analytics,
-      "logErrorMessageEvent",
-    );
+    const logErrorMessageEventSpy = vi.spyOn(manager.analytics, "logErrorMessageEvent");
 
     logErrorMessageEventSpy.mockClear();
     await applyStabilizedUiStateForContractTest(manager, "BLUR_DETECTED");
@@ -1142,10 +1054,7 @@ describe("BlinkIdUxManager - state transitions: shared callback contracts", () =
 
   test("triggers short haptic feedback when the RAF loop transitions to an error state", async () => {
     const { manager } = await createBlinkIdTestContext();
-    const shortSpy = vi.spyOn(
-      manager.getHapticFeedbackManager(),
-      "triggerShort",
-    );
+    const shortSpy = vi.spyOn(manager.getHapticFeedbackManager(), "triggerShort");
 
     shortSpy.mockClear();
     await applyStabilizedUiStateForContractTest(manager, "BLUR_DETECTED");
@@ -1154,763 +1063,706 @@ describe("BlinkIdUxManager - state transitions: shared callback contracts", () =
   });
 });
 
-describe(
-  "BlinkIdUxManager - state transitions: intro timing",
-  { timeout: 8000 },
-  () => {
-    let manager: BlinkIdUxManager;
-    let cameraHarness: BlinkIdCameraHarness;
-    let mockScanningSession: MockScanningSession;
+describe("BlinkIdUxManager - state transitions: intro timing", { timeout: 8000 }, () => {
+  let manager: BlinkIdUxManager;
+  let cameraHarness: BlinkIdCameraHarness;
+  let mockScanningSession: MockScanningSession;
 
-    beforeEach(async () => {
-      vi.useFakeTimers();
+  beforeEach(async () => {
+    vi.useFakeTimers();
 
-      const context = await createBlinkIdTestContext({
-        sessionSettings: {
-          documentCaptureModule: {
-            imageWithBlurRejected: true,
-          },
+    const context = await createBlinkIdTestContext({
+      sessionSettings: {
+        documentCaptureModule: {
+          imageWithBlurRejected: true,
         },
-      });
-      cameraHarness = context.cameraHarness;
-      mockScanningSession = context.scanningSession;
-      manager = context.manager;
-    });
-
-    afterEach(() => {
-      manager.reset();
-      vi.useRealTimers();
-    });
-
-    test("should start with INTRO_FRONT_PAGE state", () => {
-      expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
-    });
-
-    test("should anchor INTRO_FRONT_PAGE duration to capture start", async () => {
-      const mockSuccessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-      mockScanningSession.process.mockResolvedValue(mockSuccessResult);
-      mockScanningSession.getScanningStatus
-        .mockResolvedValueOnce("scanning-side-in-progress")
-        .mockResolvedValue("side-scanned");
-
-      // Simulate long idle before capture starts without flushing RAF callbacks.
-      vi.setSystemTime(Date.now() + 10_000);
-
-      cameraHarness.emitPlaybackState("capturing");
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      // Intro should still be active immediately after first captured frame.
-      expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
-
-      await jumpTime(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-      expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
-    });
-
-    test("should maintain INTRO_FRONT_PAGE state during its minDuration even when frames are processed", async () => {
-      const uiStateChanges: BlinkIdUiStateKey[] = [];
-      const uiStateCallback = vi.fn((state: BlinkIdUiState) => {
-        uiStateChanges.push(state.key);
-      });
-
-      manager.addOnUiStateChangedCallback(uiStateCallback);
-
-      // Mock process result that would normally trigger a different state
-      const mockProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-      mockScanningSession.process.mockResolvedValue(mockProcessResult);
-
-      // Process first frame at 100ms
-      await jumpTime(100);
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      // UI state should still be INTRO_FRONT_PAGE
-      expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
-
-      // Process another frame at 500ms
-      await jumpTime(400);
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      // UI state should still be INTRO_FRONT_PAGE
-      expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
-
-      // Process another frame at 1500ms (still within intro duration)
-      await jumpTime(1000);
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      // UI state should still be INTRO_FRONT_PAGE
-      expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
-
-      // Verify no UI state change callbacks were triggered during intro
-      // (the intro state is the initial state, no change from it yet)
-      expect(uiStateChanges).not.toContain("BLUR_DETECTED");
-      expect(uiStateChanges).not.toContain("GLARE_DETECTED");
-    });
-
-    test("should transition to new state after intro duration elapses", async () => {
-      const mockProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-          blurDetectionStatus: "detected",
-        },
-      });
-      mockScanningSession.process.mockResolvedValue(mockProcessResult);
-
-      // Process first frame during intro period (before minDuration elapses)
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      // First frame is processed without asserting eventual mapped output timing.
-
-      // Advance time past intro duration
-      const introDuration = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration;
-      await jumpTime(introDuration + 100);
-
-      // Process another frame after intro duration
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      // Candidate state should now be mapped from process result.
-      expect(manager.mappedUiStateKey).toBe("BLUR_DETECTED");
-    });
-
-    test("should not switch away from intro state before minDuration even with success states", async () => {
-      const uiStateChanges: BlinkIdUiStateKey[] = [];
-      const uiStateCallback = vi.fn((state: BlinkIdUiState) => {
-        uiStateChanges.push(state.key);
-      });
-
-      manager.addOnUiStateChangedCallback(uiStateCallback);
-
-      // Mock process result that would trigger PAGE_CAPTURED if allowed
-      const mockSuccessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-      mockScanningSession.process.mockResolvedValue(mockSuccessResult);
-
-      // Process a frame during intro duration (before minDuration elapses)
-      // The FeedbackStabilizer should block state changes until minDuration passes
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      // Should still be INTRO_FRONT_PAGE because minDuration hasn't elapsed yet
-      // The FeedbackStabilizer's canShowNewUiState() returns false during intro
-      expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
-      expect(uiStateChanges).not.toContain("PAGE_CAPTURED");
-    });
-
-    test("should allow state transition after intro minDuration with success states", async () => {
-      const mockSuccessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-      mockScanningSession.process.mockResolvedValue(mockSuccessResult);
-      mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
-
-      // Process a frame after mapping produces PAGE_CAPTURED.
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      // PAGE_CAPTURED should be the mapped candidate
-      expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
-    });
-
-    test("should not re-anchor intro timer after pending anchor is consumed", async () => {
-      const restartStateTimerSpy = vi.spyOn(
-        manager.feedbackStabilizer,
-        "restartCurrentStateTimer",
-      );
-
-      const mockSuccessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-      mockScanningSession.process.mockResolvedValue(mockSuccessResult);
-
-      // First capture transition consumes pending intro anchor.
-      cameraHarness.emitPlaybackState("capturing");
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-      expect(restartStateTimerSpy).toHaveBeenCalledTimes(1);
-      expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
-
-      await jumpTime(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
-      await tickRaf();
-      expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
-
-      // Toggling capture again should not restart INTRO_FRONT_PAGE timing.
-      cameraHarness.emitPlaybackState("idle");
-      cameraHarness.emitPlaybackState("capturing");
-      await jumpTime(150);
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      expect(restartStateTimerSpy).toHaveBeenCalledTimes(1);
-      restartStateTimerSpy.mockRestore();
-    });
-
-    test("feedbackStabilizer canShowNewUiState should respect intro minDuration", () => {
-      // Initially, canShowNewUiState should return false (just started)
-      expect(manager.feedbackStabilizer.canShowNewUiState()).toBe(false);
-
-      const baseNow = performance.now();
-      const performanceNowSpy = vi
-        .spyOn(performance, "now")
-        .mockReturnValue(
-          baseNow + blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 1,
-        );
-
-      // After intro duration passes, new states can be shown.
-      expect(manager.feedbackStabilizer.canShowNewUiState()).toBe(true);
-      performanceNowSpy.mockRestore();
-    });
-  },
-);
-
-describe(
-  "BlinkIdUxManager - state transitions: capture flow integration",
-  { timeout: 8000 },
-  () => {
-    let manager: BlinkIdUxManager;
-    let cameraHarness: BlinkIdCameraHarness;
-    let mockScanningSession: MockScanningSession;
-
-    beforeEach(async () => {
-      enableRafAwareFakeTimers();
-
-      const context = await createBlinkIdTestContext();
-      cameraHarness = context.cameraHarness;
-      mockScanningSession = context.scanningSession;
-      manager = context.manager;
-    });
-
-    afterEach(() => {
-      manager.reset();
-      vi.useRealTimers();
-    });
-
-    test("should handle successful document capture flow", async () => {
-      const mockResult = { someData: "test" };
-      const resultCallback = vi.fn();
-      const uiStateCallback = vi.fn();
-
-      manager.addOnResultCallback(resultCallback);
-      manager.addOnUiStateChangedCallback(uiStateCallback);
-
-      // Mock successful document capture
-      const mockProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-
-      mockScanningSession.process.mockResolvedValue(mockProcessResult);
-      mockScanningSession.getResult.mockResolvedValue(mockResult);
-      mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
-
-      cameraHarness.emitPlaybackState("capturing");
-
-      // Simulate frame capture
-      await cameraHarness.emitFrame(createFakeImageData());
-
-      // Flush RAF-driven state update
-      await tickRaf();
-      await vi.advanceTimersByTimeAsync(
-        blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100,
-      );
-      await tickRaf();
-      // This describe does not fake `performance.now`, so advance to terminal UI
-      // deterministically to assert result lifecycle callbacks.
-      await applyStabilizedUiStateForContractTest(manager, "DOCUMENT_CAPTURED");
-
-      // Verify the complete flow
-      expect(manager.uiState.key).toBe("DOCUMENT_CAPTURED");
-      expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
-      await vi.waitFor(() => {
-        expect(mockScanningSession.getResult).toHaveBeenCalled();
-        expect(resultCallback).toHaveBeenCalledWith(mockResult);
-      });
-
-      // Verify UI state transition callback
-      expect(uiStateCallback).toHaveBeenCalledWith(
-        expect.objectContaining({ key: "DOCUMENT_CAPTURED" }),
-      );
-    });
-
-    test("should apply PAGE_CAPTURED to uiState and emit ui state callback", async () => {
-      const uiStateCallback = vi.fn();
-      manager.addOnUiStateChangedCallback(uiStateCallback);
-
-      await applyStabilizedUiStateForContractTest(manager, "PAGE_CAPTURED");
-
-      expect(manager.uiStateKey).toBe("PAGE_CAPTURED");
-      expect(manager.uiState.key).toBe("PAGE_CAPTURED");
-      expect(uiStateCallback).toHaveBeenCalledWith(
-        expect.objectContaining({ key: "PAGE_CAPTURED" }),
-      );
-    });
-
-    test("should apply DOCUMENT_CAPTURED to uiState and emit callbacks", async () => {
-      const mockResult = { someData: "test" };
-      const uiStateCallback = vi.fn();
-      const resultCallback = vi.fn();
-      manager.addOnUiStateChangedCallback(uiStateCallback);
-      manager.addOnResultCallback(resultCallback);
-      mockScanningSession.getResult.mockResolvedValue(mockResult);
-
-      await applyStabilizedUiStateForContractTest(manager, "DOCUMENT_CAPTURED");
-
-      expect(manager.uiStateKey).toBe("DOCUMENT_CAPTURED");
-      expect(manager.uiState.key).toBe("DOCUMENT_CAPTURED");
-      expect(uiStateCallback).toHaveBeenCalledWith(
-        expect.objectContaining({ key: "DOCUMENT_CAPTURED" }),
-      );
-      await vi.waitFor(() => {
-        expect(resultCallback).toHaveBeenCalledWith(mockResult);
-      });
-    });
-
-    test("UNSUPPORTED_DOCUMENT invokes error callback and does not notify uiStateChanged (modal only)", async () => {
-      const errorCallback = vi.fn();
-      const uiStateChangedCallback = vi.fn();
-      manager.addOnErrorCallback(errorCallback);
-      manager.addOnUiStateChangedCallback(uiStateChangedCallback);
-
-      await applyStabilizedUiStateForContractTest(
-        manager,
-        "UNSUPPORTED_DOCUMENT",
-      );
-
-      expect(manager.uiState.key).toBe("UNSUPPORTED_DOCUMENT");
-      expect(errorCallback).toHaveBeenCalledTimes(1);
-      expect(errorCallback).toHaveBeenCalledWith("unsupported_document");
-      // Spinner + user guidance are not updated; only the unsupported-document modal opens via error callback.
-      expect(uiStateChangedCallback).not.toHaveBeenCalled();
-    });
-
-    test(
-      "should handle chained states after a side has been captured",
-      { timeout: 5000 },
-      async () => {
-        // Mock process result for a captured side (not the full document)
-        const mockProcessResult = createProcessResult({
-          inputImageAnalysisResult: {
-            documentClassInfo: {
-              country: { id: "usa" },
-              documentType: { id: "dl" },
-            },
-            documentDetectionStatus: "success",
-          },
-        });
-
-        mockScanningSession.process.mockResolvedValue(mockProcessResult);
-        mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
-
-        // Simulate frame capture
-        await cameraHarness.emitFrame(createFakeImageData());
-
-        // Wait for PAGE_CAPTURED state (SUCCESS_DURATION = 800ms)
-        await jumpTime(blinkIdUiStateMap.PAGE_CAPTURED.minDuration + 100);
-
-        // Wait for FLIP_CARD state (TRANSITION_DURATION = 2000ms)
-        await jumpTime(blinkIdUiStateMap.FLIP_CARD.minDuration + 100);
-
-        // Wait for INTRO_BACK_PAGE state (INTRO_DURATION = 2000ms)
-        await jumpTime(blinkIdUiStateMap.INTRO_BACK_PAGE.minDuration + 100);
-
-        await tickRaf();
-
-        expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
-
-        // Verify camera capture was stopped when PAGE_CAPTURED state was reached
-        expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
       },
+    });
+    cameraHarness = context.cameraHarness;
+    mockScanningSession = context.scanningSession;
+    manager = context.manager;
+  });
+
+  afterEach(() => {
+    manager.reset();
+    vi.useRealTimers();
+  });
+
+  test("should start with INTRO_FRONT_PAGE state", () => {
+    expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
+  });
+
+  test("should anchor INTRO_FRONT_PAGE duration to capture start", async () => {
+    const mockSuccessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockSuccessResult);
+    mockScanningSession.getScanningStatus
+      .mockResolvedValueOnce("scanning-side-in-progress")
+      .mockResolvedValue("side-scanned");
+
+    // Simulate long idle before capture starts without flushing RAF callbacks.
+    vi.setSystemTime(Date.now() + 10_000);
+
+    cameraHarness.emitPlaybackState("capturing");
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    // Intro should still be active immediately after first captured frame.
+    expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
+
+    await jumpTime(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+    expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
+  });
+
+  test("should maintain INTRO_FRONT_PAGE state during its minDuration even when frames are processed", async () => {
+    const uiStateChanges: BlinkIdUiStateKey[] = [];
+    const uiStateCallback = vi.fn((state: BlinkIdUiState) => {
+      uiStateChanges.push(state.key);
+    });
+
+    manager.addOnUiStateChangedCallback(uiStateCallback);
+
+    // Mock process result that would normally trigger a different state
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+
+    // Process first frame at 100ms
+    await jumpTime(100);
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    // UI state should still be INTRO_FRONT_PAGE
+    expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
+
+    // Process another frame at 500ms
+    await jumpTime(400);
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    // UI state should still be INTRO_FRONT_PAGE
+    expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
+
+    // Process another frame at 1500ms (still within intro duration)
+    await jumpTime(1000);
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    // UI state should still be INTRO_FRONT_PAGE
+    expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
+
+    // Verify no UI state change callbacks were triggered during intro
+    // (the intro state is the initial state, no change from it yet)
+    expect(uiStateChanges).not.toContain("BLUR_DETECTED");
+    expect(uiStateChanges).not.toContain("GLARE_DETECTED");
+  });
+
+  test("should transition to new state after intro duration elapses", async () => {
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+        blurDetectionStatus: "detected",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+
+    // Process first frame during intro period (before minDuration elapses)
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    // First frame is processed without asserting eventual mapped output timing.
+
+    // Advance time past intro duration
+    const introDuration = blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration;
+    await jumpTime(introDuration + 100);
+
+    // Process another frame after intro duration
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    // Candidate state should now be mapped from process result.
+    expect(manager.mappedUiStateKey).toBe("BLUR_DETECTED");
+  });
+
+  test("should not switch away from intro state before minDuration even with success states", async () => {
+    const uiStateChanges: BlinkIdUiStateKey[] = [];
+    const uiStateCallback = vi.fn((state: BlinkIdUiState) => {
+      uiStateChanges.push(state.key);
+    });
+
+    manager.addOnUiStateChangedCallback(uiStateCallback);
+
+    // Mock process result that would trigger PAGE_CAPTURED if allowed
+    const mockSuccessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockSuccessResult);
+
+    // Process a frame during intro duration (before minDuration elapses)
+    // The FeedbackStabilizer should block state changes until minDuration passes
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    // Should still be INTRO_FRONT_PAGE because minDuration hasn't elapsed yet
+    // The FeedbackStabilizer's canShowNewUiState() returns false during intro
+    expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
+    expect(uiStateChanges).not.toContain("PAGE_CAPTURED");
+  });
+
+  test("should allow state transition after intro minDuration with success states", async () => {
+    const mockSuccessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockSuccessResult);
+    mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
+
+    // Process a frame after mapping produces PAGE_CAPTURED.
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    // PAGE_CAPTURED should be the mapped candidate
+    expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
+  });
+
+  test("should not re-anchor intro timer after pending anchor is consumed", async () => {
+    const restartStateTimerSpy = vi.spyOn(manager.feedbackStabilizer, "restartCurrentStateTimer");
+
+    const mockSuccessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockSuccessResult);
+
+    // First capture transition consumes pending intro anchor.
+    cameraHarness.emitPlaybackState("capturing");
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+    expect(restartStateTimerSpy).toHaveBeenCalledTimes(1);
+    expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
+
+    await jumpTime(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration - 100);
+    await tickRaf();
+    expect(manager.uiState.key).toBe("INTRO_FRONT_PAGE");
+
+    // Toggling capture again should not restart INTRO_FRONT_PAGE timing.
+    cameraHarness.emitPlaybackState("idle");
+    cameraHarness.emitPlaybackState("capturing");
+    await jumpTime(150);
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    expect(restartStateTimerSpy).toHaveBeenCalledTimes(1);
+    restartStateTimerSpy.mockRestore();
+  });
+
+  test("feedbackStabilizer canShowNewUiState should respect intro minDuration", () => {
+    // Initially, canShowNewUiState should return false (just started)
+    expect(manager.feedbackStabilizer.canShowNewUiState()).toBe(false);
+
+    const baseNow = performance.now();
+    const performanceNowSpy = vi
+      .spyOn(performance, "now")
+      .mockReturnValue(baseNow + blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 1);
+
+    // After intro duration passes, new states can be shown.
+    expect(manager.feedbackStabilizer.canShowNewUiState()).toBe(true);
+    performanceNowSpy.mockRestore();
+  });
+});
+
+describe("BlinkIdUxManager - state transitions: capture flow integration", { timeout: 8000 }, () => {
+  let manager: BlinkIdUxManager;
+  let cameraHarness: BlinkIdCameraHarness;
+  let mockScanningSession: MockScanningSession;
+
+  beforeEach(async () => {
+    enableRafAwareFakeTimers();
+
+    const context = await createBlinkIdTestContext();
+    cameraHarness = context.cameraHarness;
+    mockScanningSession = context.scanningSession;
+    manager = context.manager;
+  });
+
+  afterEach(() => {
+    manager.reset();
+    vi.useRealTimers();
+  });
+
+  test("should handle successful document capture flow", async () => {
+    const mockResult = { someData: "test" };
+    const resultCallback = vi.fn();
+    const uiStateCallback = vi.fn();
+
+    manager.addOnResultCallback(resultCallback);
+    manager.addOnUiStateChangedCallback(uiStateCallback);
+
+    // Mock successful document capture
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+    mockScanningSession.getResult.mockResolvedValue(mockResult);
+    mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
+
+    cameraHarness.emitPlaybackState("capturing");
+
+    // Simulate frame capture
+    await cameraHarness.emitFrame(createFakeImageData());
+
+    // Flush RAF-driven state update
+    await tickRaf();
+    await vi.advanceTimersByTimeAsync(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
+    await tickRaf();
+    // This describe does not fake `performance.now`, so advance to terminal UI
+    // deterministically to assert result lifecycle callbacks.
+    await applyStabilizedUiStateForContractTest(manager, "DOCUMENT_CAPTURED");
+
+    // Verify the complete flow
+    expect(manager.uiState.key).toBe("DOCUMENT_CAPTURED");
+    expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(mockScanningSession.getResult).toHaveBeenCalled();
+      expect(resultCallback).toHaveBeenCalledWith(mockResult);
+    });
+
+    // Verify UI state transition callback
+    expect(uiStateCallback).toHaveBeenCalledWith(expect.objectContaining({ key: "DOCUMENT_CAPTURED" }));
+  });
+
+  test("should apply PAGE_CAPTURED to uiState and emit ui state callback", async () => {
+    const uiStateCallback = vi.fn();
+    manager.addOnUiStateChangedCallback(uiStateCallback);
+
+    await applyStabilizedUiStateForContractTest(manager, "PAGE_CAPTURED");
+
+    expect(manager.uiStateKey).toBe("PAGE_CAPTURED");
+    expect(manager.uiState.key).toBe("PAGE_CAPTURED");
+    expect(uiStateCallback).toHaveBeenCalledWith(expect.objectContaining({ key: "PAGE_CAPTURED" }));
+  });
+
+  test("should apply DOCUMENT_CAPTURED to uiState and emit callbacks", async () => {
+    const mockResult = { someData: "test" };
+    const uiStateCallback = vi.fn();
+    const resultCallback = vi.fn();
+    manager.addOnUiStateChangedCallback(uiStateCallback);
+    manager.addOnResultCallback(resultCallback);
+    mockScanningSession.getResult.mockResolvedValue(mockResult);
+
+    await applyStabilizedUiStateForContractTest(manager, "DOCUMENT_CAPTURED");
+
+    expect(manager.uiStateKey).toBe("DOCUMENT_CAPTURED");
+    expect(manager.uiState.key).toBe("DOCUMENT_CAPTURED");
+    expect(uiStateCallback).toHaveBeenCalledWith(expect.objectContaining({ key: "DOCUMENT_CAPTURED" }));
+    await vi.waitFor(() => {
+      expect(resultCallback).toHaveBeenCalledWith(mockResult);
+    });
+  });
+
+  test("UNSUPPORTED_DOCUMENT invokes error callback and does not notify uiStateChanged (modal only)", async () => {
+    const errorCallback = vi.fn();
+    const uiStateChangedCallback = vi.fn();
+    manager.addOnErrorCallback(errorCallback);
+    manager.addOnUiStateChangedCallback(uiStateChangedCallback);
+
+    await applyStabilizedUiStateForContractTest(manager, "UNSUPPORTED_DOCUMENT");
+
+    expect(manager.uiState.key).toBe("UNSUPPORTED_DOCUMENT");
+    expect(errorCallback).toHaveBeenCalledTimes(1);
+    expect(errorCallback).toHaveBeenCalledWith("unsupported_document");
+    // Spinner + user guidance are not updated; only the unsupported-document modal opens via error callback.
+    expect(uiStateChangedCallback).not.toHaveBeenCalled();
+  });
+
+  test("should handle chained states after a side has been captured", { timeout: 5000 }, async () => {
+    // Mock process result for a captured side (not the full document)
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+    mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
+
+    // Simulate frame capture
+    await cameraHarness.emitFrame(createFakeImageData());
+
+    // Wait for PAGE_CAPTURED state (SUCCESS_DURATION = 800ms)
+    await jumpTime(blinkIdUiStateMap.PAGE_CAPTURED.minDuration + 100);
+
+    // Wait for FLIP_CARD state (TRANSITION_DURATION = 2000ms)
+    await jumpTime(blinkIdUiStateMap.FLIP_CARD.minDuration + 100);
+
+    // Wait for INTRO_BACK_PAGE state (INTRO_DURATION = 2000ms)
+    await jumpTime(blinkIdUiStateMap.INTRO_BACK_PAGE.minDuration + 100);
+
+    await tickRaf();
+
+    expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
+
+    // Verify camera capture was stopped when PAGE_CAPTURED state was reached
+    expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
+  });
+
+  test("should defer DOCUMENT_CAPTURED while INTRO_BACK_PAGE minDuration is active", async () => {
+    mockScanningSession.getScanningStatus.mockResolvedValue("document-scanned");
+    mockScanningSession.process.mockResolvedValue(
+      createProcessResult({
+        inputImageAnalysisResult: {
+          processingStatus: "success",
+          documentClassInfo: {
+            country: { id: "usa" },
+            documentType: { id: "dl" },
+          },
+          documentDetectionStatus: "success",
+        },
+      }),
+    );
+    mockScanningSession.getResult.mockResolvedValue({ someData: "done" });
+
+    // Put manager into INTRO_BACK_PAGE through the public API so all internal
+    // state (stabilizer, mappedUiStateKey, pendingIntroAnchorKey) is consistent.
+    manager.setInitialUiStateKey("INTRO_BACK_PAGE", true);
+
+    cameraHarness.emitPlaybackState("capturing");
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+    expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
+
+    // Even if document is already scannable, intro step should complete first.
+    expect(manager.uiState.key).toBe("INTRO_BACK_PAGE");
+
+    await jumpTime(blinkIdUiStateMap.INTRO_BACK_PAGE.minDuration - 100);
+    await tickRaf();
+    expect(manager.uiState.key).toBe("INTRO_BACK_PAGE");
+  });
+
+  test("scanningStatus 'document-scanned' should map to DOCUMENT_CAPTURED without side-capture chaining", async () => {
+    const uiStateChanges: BlinkIdUiStateKey[] = [];
+    manager.addOnUiStateChangedCallback((state) => {
+      uiStateChanges.push(state.key);
+    });
+
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+    mockScanningSession.getResult.mockResolvedValue({ someData: "test" });
+    mockScanningSession.getScanningStatus.mockResolvedValue("document-scanned");
+
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+    await jumpTime(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
+    await tickRaf();
+
+    expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
+    expect(uiStateChanges).not.toContain("PAGE_CAPTURED");
+    expect(uiStateChanges).not.toContain("FLIP_CARD");
+    expect(uiStateChanges).not.toContain("INTRO_BACK_PAGE");
+  });
+
+  test("should not chain states when full document is captured", async () => {
+    // Mock process result for a fully scanned document
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+    mockScanningSession.getResult.mockResolvedValue({ someData: "test" });
+    mockScanningSession.getScanningStatus.mockResolvedValue("document-scanned");
+
+    // Simulate frame capture
+    await cameraHarness.emitFrame(createFakeImageData());
+
+    expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
+
+    // Verify camera capture was stopped when DOCUMENT_CAPTURED state was reached
+    expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
+  });
+
+  test("should not trigger document capture flow for incomplete results", async () => {
+    const resultCallback = vi.fn();
+    manager.addOnResultCallback(resultCallback);
+
+    // Mock incomplete document detection
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "failed",
+      },
+    });
+
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+
+    // Simulate frame capture
+    await cameraHarness.emitFrame(createFakeImageData());
+
+    await tickRaf();
+
+    // Verify no result processing occurred
+    expect(mockScanningSession.getResult).not.toHaveBeenCalled();
+    expect(resultCallback).not.toHaveBeenCalled();
+    expect(mockScanningSession.delete).not.toHaveBeenCalled();
+  });
+
+  test("should dedupe PAGE_CAPTURED queue entries when multiple frames map to side-scanned", async () => {
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+    mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
+
+    await cameraHarness.emitFrame(createFakeImageData());
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+
+    const pageCapturedQueueEntries = manager.feedbackStabilizer
+      .getSingleEventQueue()
+      .filter((event) => event.key === "PAGE_CAPTURED");
+
+    // Two frames may map to PAGE_CAPTURED, but queue should dedupe to a single entry.
+    expect(vi.mocked(mockScanningSession.process).mock.calls.length).toBe(2);
+    expect(pageCapturedQueueEntries.length).toBe(1);
+    expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
+  });
+
+  test("should skip overlapping process calls while previous frame is still processing", async () => {
+    let resolveProcess!: (value: ReturnType<typeof createProcessResult>) => void;
+    const pendingProcessResult = new Promise<ReturnType<typeof createProcessResult>>((resolve) => {
+      resolveProcess = resolve;
+    });
+
+    const resolvedProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
+    });
+
+    mockScanningSession.process.mockImplementationOnce(async () => pendingProcessResult);
+
+    const firstFramePromise = cameraHarness.emitFrame(createFakeImageData());
+    const secondFrameResult = await cameraHarness.emitFrame(createFakeImageData());
+
+    // Second frame should be dropped by busy guard while first frame is in flight.
+    expect(secondFrameResult).toBeUndefined();
+    expect(mockScanningSession.process).toHaveBeenCalledTimes(1);
+
+    resolveProcess(resolvedProcessResult);
+    await firstFramePromise;
+    await tickRaf();
+
+    expect(mockScanningSession.process).toHaveBeenCalledTimes(1);
+  });
+
+  test("reports non-fatal pinglets when frame processing rejects with a recoverable error", async () => {
+    mockScanningSession.process.mockRejectedValue(new Error("Worker process failure"));
+
+    await expect(cameraHarness.emitFrame(createFakeImageData())).rejects.toThrow("Worker process failure");
+
+    expect(mockScanningSession.ping).toHaveBeenCalledWith(
+      expect.objectContaining({
+        schemaName: "ping.error",
+        data: expect.objectContaining({
+          errorType: "NonFatal",
+          errorMessage: "ux.frameCapture: Worker process failure",
+        }),
+      }),
+    );
+    expect(mockScanningSession.sendPinglets).toHaveBeenCalledTimes(1);
+  });
+
+  test("reports non-fatal pinglets when frame processing rejects with a WASM runtime error", async () => {
+    mockScanningSession.process.mockRejectedValue(new Error("RuntimeError: Out of bounds memory access"));
+
+    await expect(cameraHarness.emitFrame(createFakeImageData())).rejects.toThrow(
+      "RuntimeError: Out of bounds memory access",
     );
 
-    test("should defer DOCUMENT_CAPTURED while INTRO_BACK_PAGE minDuration is active", async () => {
-      mockScanningSession.getScanningStatus.mockResolvedValue(
-        "document-scanned",
-      );
-      mockScanningSession.process.mockResolvedValue(
-        createProcessResult({
-          inputImageAnalysisResult: {
-            processingStatus: "success",
-            documentClassInfo: {
-              country: { id: "usa" },
-              documentType: { id: "dl" },
-            },
-            documentDetectionStatus: "success",
-          },
+    expect(mockScanningSession.ping).toHaveBeenCalledWith(
+      expect.objectContaining({
+        schemaName: "ping.error",
+        data: expect.objectContaining({
+          errorType: "NonFatal",
+          errorMessage: "ux.frameCapture: RuntimeError: Out of bounds memory access",
         }),
-      );
-      mockScanningSession.getResult.mockResolvedValue({ someData: "done" });
+      }),
+    );
+    expect(mockScanningSession.sendPinglets).toHaveBeenCalledTimes(1);
+  });
 
-      // Put manager into INTRO_BACK_PAGE through the public API so all internal
-      // state (stabilizer, mappedUiStateKey, pendingIntroAnchorKey) is consistent.
-      manager.setInitialUiStateKey("INTRO_BACK_PAGE", true);
+  test("reports non-fatal pinglets when frame processing rejects with a frame transfer error", async () => {
+    const frameTransferError = new Error("Failed to transfer frame to worker");
+    frameTransferError.name = "FrameTransferError";
 
-      cameraHarness.emitPlaybackState("capturing");
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-      expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
+    mockScanningSession.process.mockRejectedValue(frameTransferError);
 
-      // Even if document is already scannable, intro step should complete first.
-      expect(manager.uiState.key).toBe("INTRO_BACK_PAGE");
+    await expect(cameraHarness.emitFrame(createFakeImageData())).rejects.toThrow("Failed to transfer frame to worker");
 
-      await jumpTime(blinkIdUiStateMap.INTRO_BACK_PAGE.minDuration - 100);
-      await tickRaf();
-      expect(manager.uiState.key).toBe("INTRO_BACK_PAGE");
+    expect(mockScanningSession.ping).toHaveBeenCalledWith(
+      expect.objectContaining({
+        schemaName: "ping.error",
+        data: expect.objectContaining({
+          errorType: "NonFatal",
+          errorMessage: "ux.frameCapture: Failed to transfer frame to worker",
+        }),
+      }),
+    );
+    expect(mockScanningSession.sendPinglets).toHaveBeenCalledTimes(1);
+  });
+
+  test("should skip further process calls after terminal document capture", async () => {
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: {
+          country: { id: "usa" },
+          documentType: { id: "dl" },
+        },
+        documentDetectionStatus: "success",
+      },
     });
 
-    test("scanningStatus 'document-scanned' should map to DOCUMENT_CAPTURED without side-capture chaining", async () => {
-      const uiStateChanges: BlinkIdUiStateKey[] = [];
-      manager.addOnUiStateChangedCallback((state) => {
-        uiStateChanges.push(state.key);
-      });
+    mockScanningSession.process.mockResolvedValue(mockProcessResult);
+    mockScanningSession.getResult.mockResolvedValue({ someData: "done" });
+    mockScanningSession.getScanningStatus.mockResolvedValue("document-scanned");
 
-      const mockProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
+    await cameraHarness.emitFrame(createFakeImageData());
+    await tickRaf();
+    await cameraHarness.emitFrame(createFakeImageData());
 
-      mockScanningSession.process.mockResolvedValue(mockProcessResult);
-      mockScanningSession.getResult.mockResolvedValue({ someData: "test" });
-      mockScanningSession.getScanningStatus.mockResolvedValue(
-        "document-scanned",
-      );
+    expect(mockScanningSession.process).toHaveBeenCalledTimes(1);
+  });
 
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-      await jumpTime(blinkIdUiStateMap.INTRO_FRONT_PAGE.minDuration + 100);
-      await tickRaf();
+  test("should handle timeout during document capture", async () => {
+    const errorCallback = vi.fn();
+    manager.addOnErrorCallback(errorCallback);
 
-      expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
-      expect(uiStateChanges).not.toContain("PAGE_CAPTURED");
-      expect(uiStateChanges).not.toContain("FLIP_CARD");
-      expect(uiStateChanges).not.toContain("INTRO_BACK_PAGE");
-    });
+    // Set a short timeout
+    manager.setTimeoutConfiguration({ inactivityTimeoutMs: 1000 });
 
-    test("should not chain states when full document is captured", async () => {
-      // Mock process result for a fully scanned document
-      const mockProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
+    // Simulate starting capture
+    cameraHarness.emitPlaybackState("capturing");
 
-      mockScanningSession.process.mockResolvedValue(mockProcessResult);
-      mockScanningSession.getResult.mockResolvedValue({ someData: "test" });
-      mockScanningSession.getScanningStatus.mockResolvedValue(
-        "document-scanned",
-      );
+    // Advance time past timeout
+    await vi.advanceTimersByTimeAsync(1100);
 
-      // Simulate frame capture
-      await cameraHarness.emitFrame(createFakeImageData());
+    // Verify timeout handling
+    expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
+    expect(errorCallback).toHaveBeenCalledWith("inactivity_timeout");
+    expect(mockScanningSession.getResult).not.toHaveBeenCalled();
+  });
 
-      expect(manager.mappedUiStateKey).toBe("DOCUMENT_CAPTURED");
+  test("should fire result_retrieval_failed error when getResult rejects", async () => {
+    const errorCallback = vi.fn();
+    const resultCallback = vi.fn();
+    manager.addOnErrorCallback(errorCallback);
+    manager.addOnResultCallback(resultCallback);
 
-      // Verify camera capture was stopped when DOCUMENT_CAPTURED state was reached
-      expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
-    });
+    mockScanningSession.getResult.mockRejectedValue(new Error("Worker RPC failure"));
 
-    test("should not trigger document capture flow for incomplete results", async () => {
-      const resultCallback = vi.fn();
-      manager.addOnResultCallback(resultCallback);
+    await applyStabilizedUiStateForContractTest(manager, "DOCUMENT_CAPTURED");
 
-      // Mock incomplete document detection
-      const mockProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "failed",
-        },
-      });
-
-      mockScanningSession.process.mockResolvedValue(mockProcessResult);
-
-      // Simulate frame capture
-      await cameraHarness.emitFrame(createFakeImageData());
-
-      await tickRaf();
-
-      // Verify no result processing occurred
-      expect(mockScanningSession.getResult).not.toHaveBeenCalled();
+    await vi.waitFor(() => {
+      expect(mockScanningSession.getResult).toHaveBeenCalled();
+      // error callback fired with the dedicated error type
+      expect(errorCallback).toHaveBeenCalledWith("result_retrieval_failed");
+      // result callback must NOT fire — no result was retrieved
       expect(resultCallback).not.toHaveBeenCalled();
-      expect(mockScanningSession.delete).not.toHaveBeenCalled();
-    });
-
-    test("should dedupe PAGE_CAPTURED queue entries when multiple frames map to side-scanned", async () => {
-      const mockProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-      mockScanningSession.process.mockResolvedValue(mockProcessResult);
-      mockScanningSession.getScanningStatus.mockResolvedValue("side-scanned");
-
-      await cameraHarness.emitFrame(createFakeImageData());
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-
-      const pageCapturedQueueEntries = manager.feedbackStabilizer
-        .getSingleEventQueue()
-        .filter((event) => event.key === "PAGE_CAPTURED");
-
-      // Two frames may map to PAGE_CAPTURED, but queue should dedupe to a single entry.
-      expect(vi.mocked(mockScanningSession.process).mock.calls.length).toBe(2);
-      expect(pageCapturedQueueEntries.length).toBe(1);
-      expect(manager.mappedUiStateKey).toBe("PAGE_CAPTURED");
-    });
-
-    test("should skip overlapping process calls while previous frame is still processing", async () => {
-      let resolveProcess!: (
-        value: ReturnType<typeof createProcessResult>,
-      ) => void;
-      const pendingProcessResult = new Promise<
-        ReturnType<typeof createProcessResult>
-      >((resolve) => {
-        resolveProcess = resolve;
-      });
-
-      const resolvedProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-
-      mockScanningSession.process.mockImplementationOnce(
-        async () => pendingProcessResult,
-      );
-
-      const firstFramePromise = cameraHarness.emitFrame(createFakeImageData());
-      const secondFrameResult = await cameraHarness.emitFrame(
-        createFakeImageData(),
-      );
-
-      // Second frame should be dropped by busy guard while first frame is in flight.
-      expect(secondFrameResult).toBeUndefined();
-      expect(mockScanningSession.process).toHaveBeenCalledTimes(1);
-
-      resolveProcess(resolvedProcessResult);
-      await firstFramePromise;
-      await tickRaf();
-
-      expect(mockScanningSession.process).toHaveBeenCalledTimes(1);
-    });
-
-    test("reports non-fatal pinglets when frame processing rejects with a recoverable error", async () => {
-      mockScanningSession.process.mockRejectedValue(
-        new Error("Worker process failure"),
-      );
-
-      await expect(
-        cameraHarness.emitFrame(createFakeImageData()),
-      ).rejects.toThrow("Worker process failure");
-
       expect(mockScanningSession.ping).toHaveBeenCalledWith(
         expect.objectContaining({
           schemaName: "ping.error",
           data: expect.objectContaining({
             errorType: "NonFatal",
-            errorMessage: "ux.frameCapture: Worker process failure",
+            errorMessage: "ux.getSessionResult: Worker RPC failure",
           }),
         }),
       );
       expect(mockScanningSession.sendPinglets).toHaveBeenCalledTimes(1);
     });
-
-    test("reports non-fatal pinglets when frame processing rejects with a WASM runtime error", async () => {
-      mockScanningSession.process.mockRejectedValue(
-        new Error("RuntimeError: Out of bounds memory access"),
-      );
-
-      await expect(
-        cameraHarness.emitFrame(createFakeImageData()),
-      ).rejects.toThrow("RuntimeError: Out of bounds memory access");
-
-      expect(mockScanningSession.ping).toHaveBeenCalledWith(
-        expect.objectContaining({
-          schemaName: "ping.error",
-          data: expect.objectContaining({
-            errorType: "NonFatal",
-            errorMessage:
-              "ux.frameCapture: RuntimeError: Out of bounds memory access",
-          }),
-        }),
-      );
-      expect(mockScanningSession.sendPinglets).toHaveBeenCalledTimes(1);
-    });
-
-    test("reports non-fatal pinglets when frame processing rejects with a frame transfer error", async () => {
-      const frameTransferError = new Error(
-        "Failed to transfer frame to worker",
-      );
-      frameTransferError.name = "FrameTransferError";
-
-      mockScanningSession.process.mockRejectedValue(frameTransferError);
-
-      await expect(
-        cameraHarness.emitFrame(createFakeImageData()),
-      ).rejects.toThrow("Failed to transfer frame to worker");
-
-      expect(mockScanningSession.ping).toHaveBeenCalledWith(
-        expect.objectContaining({
-          schemaName: "ping.error",
-          data: expect.objectContaining({
-            errorType: "NonFatal",
-            errorMessage: "ux.frameCapture: Failed to transfer frame to worker",
-          }),
-        }),
-      );
-      expect(mockScanningSession.sendPinglets).toHaveBeenCalledTimes(1);
-    });
-
-    test("should skip further process calls after terminal document capture", async () => {
-      const mockProcessResult = createProcessResult({
-        inputImageAnalysisResult: {
-          processingStatus: "success",
-          documentClassInfo: {
-            country: { id: "usa" },
-            documentType: { id: "dl" },
-          },
-          documentDetectionStatus: "success",
-        },
-      });
-
-      mockScanningSession.process.mockResolvedValue(mockProcessResult);
-      mockScanningSession.getResult.mockResolvedValue({ someData: "done" });
-      mockScanningSession.getScanningStatus.mockResolvedValue(
-        "document-scanned",
-      );
-
-      await cameraHarness.emitFrame(createFakeImageData());
-      await tickRaf();
-      await cameraHarness.emitFrame(createFakeImageData());
-
-      expect(mockScanningSession.process).toHaveBeenCalledTimes(1);
-    });
-
-    test("should handle timeout during document capture", async () => {
-      const errorCallback = vi.fn();
-      manager.addOnErrorCallback(errorCallback);
-
-      // Set a short timeout
-      manager.setTimeoutConfiguration({ inactivityTimeoutMs: 1000 });
-
-      // Simulate starting capture
-      cameraHarness.emitPlaybackState("capturing");
-
-      // Advance time past timeout
-      await vi.advanceTimersByTimeAsync(1100);
-
-      // Verify timeout handling
-      expect(cameraHarness.stopFrameCapture).toHaveBeenCalled();
-      expect(errorCallback).toHaveBeenCalledWith("inactivity_timeout");
-      expect(mockScanningSession.getResult).not.toHaveBeenCalled();
-    });
-
-    test("should fire result_retrieval_failed error when getResult rejects", async () => {
-      const errorCallback = vi.fn();
-      const resultCallback = vi.fn();
-      manager.addOnErrorCallback(errorCallback);
-      manager.addOnResultCallback(resultCallback);
-
-      mockScanningSession.getResult.mockRejectedValue(
-        new Error("Worker RPC failure"),
-      );
-
-      await applyStabilizedUiStateForContractTest(manager, "DOCUMENT_CAPTURED");
-
-      await vi.waitFor(() => {
-        expect(mockScanningSession.getResult).toHaveBeenCalled();
-        // error callback fired with the dedicated error type
-        expect(errorCallback).toHaveBeenCalledWith("result_retrieval_failed");
-        // result callback must NOT fire — no result was retrieved
-        expect(resultCallback).not.toHaveBeenCalled();
-        expect(mockScanningSession.ping).toHaveBeenCalledWith(
-          expect.objectContaining({
-            schemaName: "ping.error",
-            data: expect.objectContaining({
-              errorType: "NonFatal",
-              errorMessage: "ux.getSessionResult: Worker RPC failure",
-            }),
-          }),
-        );
-        expect(mockScanningSession.sendPinglets).toHaveBeenCalledTimes(1);
-      });
-    });
-  },
-);
+  });
+});

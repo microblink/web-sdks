@@ -8,7 +8,7 @@
 
 > **BlinkIdSessionErrorWithBuffer** = `BlinkIdSessionError` & `object`
 
-## Type declaration
+## Type Declaration
 
 ### arrayBuffer
 

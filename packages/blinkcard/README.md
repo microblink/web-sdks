@@ -2,6 +2,21 @@
 
 The all-in-one BlinkCard browser SDK package. It provides a high-level, easy-to-use API for credit and debit card scanning and recognition in web applications, bundling all required components and resources for a seamless integration experience.
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/blinkcard`:
+
+| Entrypoint | Minified  | Gzip      |
+| ---------- | --------- | --------- |
+| `root`     | 522.68 kB | 147.55 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Overview
 
 - Combines the BlinkCard engine, camera management, user experience (UX) management, and all required resources.
@@ -102,8 +117,11 @@ localhost.
 
 ### WebAssembly runtime
 
-The SDK ships two Wasm build variants (`simd` and `simd-threads`). The runtime
-selects the best supported variant automatically.
+The SDK ships four Wasm build variants (`simd`, `simd-threads`, `simd-relaxed`,
+and `simd-relaxed-threads`). The runtime selects the best supported variant
+automatically: relaxed SIMD variants are preferred when the browser supports
+relaxed SIMD, and threaded variants are preferred when the browser supports
+Wasm threads.
 
 #### `simd`
 
@@ -118,14 +136,22 @@ also requires cross-origin isolation headers
 (`Cross-Origin-Opener-Policy: same-origin` and
 `Cross-Origin-Embedder-Policy: require-corp`).
 
-Safari is excluded from `simd-threads` even when it reports Wasm thread
-support. Emscripten `simd-threads` builds use pthreads that spawn workers
+Safari is excluded from threaded variants even when it reports Wasm thread
+support. Emscripten threaded builds use pthreads that spawn workers
 from inside a worker, and Safari historically lacked reliable nested worker
 support when Wasm threads shipped in Safari 16. There are also known Safari
 issues with shared memory in Emscripten pthread builds
 ([emscripten-core/emscripten#19374](https://github.com/emscripten-core/emscripten/issues/19374)).
-For these reasons the runtime falls back to the single-threaded `simd`
-variant on Safari instead of loading `simd-threads`.
+For these reasons the runtime falls back to a single-threaded variant on Safari
+instead of loading `simd-threads` or `simd-relaxed-threads`.
+
+#### `simd-relaxed` and `simd-relaxed-threads`
+
+Require all `simd` (or `simd-threads`) features plus
+[relaxed SIMD](https://webassembly.org/features/). Relaxed SIMD instructions
+let the engine pick the fastest hardware implementation for a subset of vector
+operations. Browsers without relaxed SIMD support fall back to `simd` or
+`simd-threads`.
 
 ### Firefox for Android
 

@@ -14,5 +14,4 @@
 
 > **scanningStatus**: [`ScanningStatus`](ScanningStatus.md)
 
-The current phase of the scanning state machine, driving the progression
-toward session completion.
+The current phase of the scanning state machine, driving the progression toward session completion.

@@ -10,9 +10,8 @@
 
 Represents the completeness of the extraction process for a scanned document.
 
-This structure tracks the status of the scanning process and indicates
-whether specific components of the document, such as the specific fields from
-the VIZ, MRZ, and barcode, have been successfully extracted.
+This structure tracks the status of the scanning process and indicates whether specific components of the document,
+such as the specific fields from the VIZ, MRZ, and barcode, have been successfully extracted.
 
 ## Properties
 

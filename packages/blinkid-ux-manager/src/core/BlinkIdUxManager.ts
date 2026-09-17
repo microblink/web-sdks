@@ -1,9 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 // TODO: fix linting to apply only to /ui
-/* eslint-disable solid/reactivity */
+/* oxlint-disable solid/reactivity */
 
 import {
   AnalyticService,
@@ -18,10 +16,7 @@ import {
   type ProcessResultWithBuffer,
   type RemoteScanningSession,
 } from "@microblink/blinkid-core";
-import type {
-  CameraManager,
-  CameraPermission,
-} from "@microblink/camera-manager";
+import type { CameraManager, CameraPermission } from "@microblink/camera-manager/core";
 import { FeedbackStabilizer } from "@microblink/feedback-stabilizer";
 import {
   buildCameraAnalyticsKey,
@@ -33,7 +28,10 @@ import { subscribeToDeviceOrientation } from "@microblink/ux-common/deviceOrient
 import { HapticFeedbackManager } from "@microblink/ux-common/hapticFeedback";
 import { RafLoop } from "@microblink/ux-common/RafLoop";
 import { invokeCallbacks, sleep } from "@microblink/ux-common/utils";
+import { ProgressTimerState, ProgressTimerStatus, UxTimeoutHandler } from "@microblink/ux-common/UxTimeoutHandler";
 import { debounce } from "perfect-debounce";
+import { match } from "ts-pattern";
+
 import {
   BlinkIdUiErrorStateKey,
   blinkIdUiErrorStateKeys,
@@ -47,11 +45,15 @@ import {
   getUiStateKeyFromScanningStatus,
 } from "./blinkid-ui-state";
 import { BlinkIdProcessingError } from "./BlinkIdProcessingError";
-import { DocumentClassFilter } from "./DocumentClassFilter";
 import {
-  ChainedUiStateProps,
-  getChainedUiStateKey,
-} from "./getChainedUiStateKey";
+  defaultBlinkIdDesktopTimeoutConfiguration,
+  defaultBlinkIdTimeoutConfiguration,
+} from "./BlinkIdTimeoutConfiguration";
+import type { BlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
+import type { BlinkIdUxManagerOptions } from "./createBlinkIdUxManager";
+import { DocumentClassFilter } from "./DocumentClassFilter";
+import { getBlinkIdExtractionMode, type BlinkIdExtractionMode } from "./extractionMode";
+import { ChainedUiStateProps, getChainedUiStateKey } from "./getChainedUiStateKey";
 import {
   DocumentPagination,
   extractDocumentClassInfo,
@@ -59,50 +61,25 @@ import {
   getDocumentRotation,
   isDocumentClassified,
 } from "./ui-state-utils";
-import {
-  mapErrorStateKeyToAnalyticsType,
-  type PingableErrorUiStateKey,
-} from "./uxAnalyticsMappers";
-import { normalizeBlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
-import type { BlinkIdTimeoutConfiguration } from "./BlinkIdTimeoutConfiguration";
-import type { BlinkIdUxManagerOptions } from "./createBlinkIdUxManager";
-import {
-  getBlinkIdExtractionMode,
-  type BlinkIdExtractionMode,
-} from "./extractionMode";
-import { match } from "ts-pattern";
+import { mapErrorStateKeyToAnalyticsType, type PingableErrorUiStateKey } from "./uxAnalyticsMappers";
 
 type ProcessingLifecycleState = "ready" | "busy" | "terminal";
 type ScanTimeoutKind = "inactivity" | "scan-step";
-type ScanTimerState = {
-  timeoutId?: number;
-  startedAt?: number;
-  remainingMs: number | null;
-};
-export type BlinkIdProgressTimerStatus =
-  | "disabled"
-  | "idle"
-  | "running"
-  | "paused";
+export type BlinkIdProgressTimerStatus = ProgressTimerStatus;
 
 /**
  * Callback invoked after BlinkID processes a camera frame.
  *
- * @param frameResult - Process result for the current frame. This contains the
- * input image analysis and result completeness data that the UX manager uses to
- * map feedback state; it does not include the final scanning result.
- * @param advanceToNextStep - Advances the scanning session to the next required
- * step. Use this for custom flows that decide, from the frame result, that the
- * current side or step is complete before the default UX flow advances. For
- * example, call this once `frameResult` contains all data your integration
- * needs, even if the default flow would keep waiting for an optional barcode
- * step that is hard to capture on a poor camera.
- * @param triggerStepTimeout - Immediately triggers the scan-step timeout path
- * for the active step. Use this when custom validation decides that the current
- * step should fail or stop waiting for more frames.
- * @param getLastFrame - Returns the raw `ArrayBuffer` for the frame that
- * produced `frameResult`. The buffer is intended for diagnostics or custom
- * tooling that needs the exact last processed frame.
+ * @param frameResult - Process result for the current frame. This contains the input image analysis and result
+ *   completeness data that the UX manager uses to map feedback state; it does not include the final scanning result.
+ * @param advanceToNextStep - Advances the scanning session to the next required step. Use this for custom flows that
+ *   decide, from the frame result, that the current side or step is complete before the default UX flow advances. For
+ *   example, call this once `frameResult` contains all data your integration needs, even if the default flow would keep
+ *   waiting for an optional barcode step that is hard to capture on a poor camera.
+ * @param triggerStepTimeout - Immediately triggers the scan-step timeout path for the active step. Use this when custom
+ *   validation decides that the current step should fail or stop waiting for more frames.
+ * @param getLastFrame - Returns the raw `ArrayBuffer` for the frame that produced `frameResult`. The buffer is intended
+ *   for diagnostics or custom tooling that needs the exact last processed frame.
  */
 export type BlinkIdFrameProcessCallback = (
   frameResult: BlinkIdProcessResult,
@@ -111,14 +88,7 @@ export type BlinkIdFrameProcessCallback = (
   getLastFrame: () => ArrayBuffer,
 ) => void;
 
-export type BlinkIdProgressTimerState = {
-  /** Configured timeout duration in milliseconds. */
-  configuredMs: number | null;
-  /** Remaining timeout duration in milliseconds. */
-  remainingMs: number | null;
-  /** Whether this timer is idle, actively counting down, or paused. */
-  status: BlinkIdProgressTimerStatus;
-};
+export type BlinkIdProgressTimerState = ProgressTimerState;
 
 export type BlinkIdProgress = {
   /** Currently stabilized BlinkID UI state key. */
@@ -140,9 +110,8 @@ export type BlinkIdProgress = {
 };
 
 /**
- * The BlinkIdUxManager class. This is the main class that manages the UX of
- * the BlinkID SDK. It is responsible for handling the UI state, the timeout,
- * the help tooltip, and the document class filter.
+ * The BlinkIdUxManager class. This is the main class that manages the UX of the BlinkID SDK. It is responsible for
+ * handling the UI state, the timeout, the help tooltip, and the document class filter.
  */
 export class BlinkIdUxManager {
   /** The camera manager. */
@@ -153,9 +122,8 @@ export class BlinkIdUxManager {
   #uiState: BlinkIdUiState;
 
   /**
-   * The current UI state. Updated internally by the RAF update loop.
-   * Read externally once at UI mount to seed the initial Solid signal value;
-   * subsequent updates are delivered via `addOnUiStateChangedCallback`.
+   * The current UI state. Updated internally by the RAF update loop. Read externally once at UI mount to seed the
+   * initial Solid signal value; subsequent updates are delivered via `addOnUiStateChangedCallback`.
    */
   get uiState(): BlinkIdUiState {
     return this.#uiState;
@@ -164,8 +132,8 @@ export class BlinkIdUxManager {
   /** Latest mapped candidate key before stabilizer applies it to the UI. */
   #mappedUiStateKey: BlinkIdUiStateKey;
   /**
-   * The feedback stabilizer. Public to allow UI components to read scores,
-   * event queues, and call restartCurrentStateTimer() for help-tooltip resets.
+   * The feedback stabilizer. Public to allow UI components to read scores, event queues, and call
+   * restartCurrentStateTimer() for help-tooltip resets.
    */
   readonly feedbackStabilizer: FeedbackStabilizer<BlinkIdUiStateMap>;
   /** The session settings. Populated asynchronously from the scanning session. */
@@ -189,18 +157,12 @@ export class BlinkIdUxManager {
   #processingLifecycleState: ProcessingLifecycleState = "ready";
   /** True after destroy() is called; used to suppress late async work during teardown. */
   #isDestroyed = false;
-  /** BlinkID timeout configuration. */
-  #timeoutConfiguration: BlinkIdTimeoutConfiguration;
   /** Last stabilized UI state key that reset the inactivity timer. */
   #inactivityResetUiStateKey?: BlinkIdUiStateKey;
   /** Whether the current scan step should be timing. */
   #isTimingActiveScanStep = false;
-  /** State of the inactivity timeout timer. */
-  #inactivityTimeoutState: ScanTimerState;
-  /** State of the scan-step timeout timer. */
-  #scanStepTimeoutState: ScanTimerState;
-  /** State of the partially supported barcode resolve timer. */
-  #partiallySupportedBarcodeResolveTimeoutState: ScanTimerState;
+  /** Timeout handler */
+  #timeoutHandler: UxTimeoutHandler<BlinkIdTimeoutConfiguration>;
   /** Whether the partially supported barcode resolve timer has been started. */
   #partiallySupportedBarcodeResolveTimerStarted = false;
   /** Prevents repeated resolve attempts for the same barcode step. */
@@ -217,9 +179,7 @@ export class BlinkIdUxManager {
   /** The callbacks for BlinkID progress snapshots emitted from the RAF loop. */
   #onProgressCallbacks = new Set<(progress: BlinkIdProgress) => void>();
   /** The callbacks for when a document is filtered. */
-  #onDocumentFilteredCallbacks = new Set<
-    (documentClassInfo: DocumentClassInfo) => void
-  >();
+  #onDocumentFilteredCallbacks = new Set<(documentClassInfo: DocumentClassInfo) => void>();
   /** Clean up observers, store subscriptions and event listeners. */
   #cleanupCallbacks = new Set<() => void>();
   /** The document class filter. */
@@ -265,32 +225,23 @@ export class BlinkIdUxManager {
     this.deviceInfo = deviceInfo;
     this.#extractionMode = getBlinkIdExtractionMode(sessionSettings);
 
-    this.#timeoutConfiguration = normalizeBlinkIdTimeoutConfiguration(
-      options.timeoutConfiguration,
-      this.#isDesktop,
-    );
-
-    this.#inactivityTimeoutState = {
-      remainingMs: this.#timeoutConfiguration.inactivityTimeoutMs,
-    };
-
-    this.#scanStepTimeoutState = {
-      remainingMs: this.#timeoutConfiguration.scanStepTimeoutMs,
-    };
-
-    this.#partiallySupportedBarcodeResolveTimeoutState = {
-      remainingMs:
-        this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
-    };
+    this.#timeoutHandler = new UxTimeoutHandler({
+      defaults: this.#isDesktop ? defaultBlinkIdDesktopTimeoutConfiguration : defaultBlinkIdTimeoutConfiguration,
+      configuration: options.timeoutConfiguration,
+      onTimeout: {
+        onInactivityTimeout: () => this.#handleScanTimeout("inactivity"),
+        onPartiallySupportedBarcodeResolveTimeout: () => {
+          void this.#handlePartiallySupportedBarcodeResolveTimeout();
+        },
+        onScanStepTimeout: () => this.#handleScanTimeout("scan-step"),
+      },
+    });
 
     if (options.initialUiStateKey) {
       this.#initialUiStateKey = options.initialUiStateKey;
     }
 
-    this.feedbackStabilizer = new FeedbackStabilizer(
-      blinkIdUiStateMap,
-      this.#initialUiStateKey,
-    );
+    this.feedbackStabilizer = new FeedbackStabilizer(blinkIdUiStateMap, this.#initialUiStateKey);
 
     this.#uiState = this.feedbackStabilizer.currentState;
 
@@ -308,10 +259,8 @@ export class BlinkIdUxManager {
 
     this.#setupObservers();
 
-    const removeFrameCaptureCallback =
-      this.cameraManager.addFrameCaptureCallback(this.#frameCaptureCallback);
-    const removeCameraManagerErrorCallback =
-      this.cameraManager.addErrorCallback(this.handleCameraManagerError);
+    const removeFrameCaptureCallback = this.cameraManager.addFrameCaptureCallback(this.#frameCaptureCallback);
+    const removeCameraManagerErrorCallback = this.cameraManager.addErrorCallback(this.handleCameraManagerError);
 
     this.#cleanupCallbacks.add(removeFrameCaptureCallback);
     this.#cleanupCallbacks.add(removeCameraManagerErrorCallback);
@@ -353,21 +302,13 @@ export class BlinkIdUxManager {
       (s) => s.playbackState,
       (playbackState) => {
         console.debug(`⏯️ ${playbackState}`);
-        const wasActive =
-          previousPlaybackState !== undefined &&
-          previousPlaybackState !== "idle";
+        const wasActive = previousPlaybackState !== undefined && previousPlaybackState !== "idle";
         const isActive = playbackState !== "idle";
-        const isCaptureTransition =
-          playbackState === "capturing" &&
-          previousPlaybackState !== "capturing";
-        const isPendingIntroAnchorTransition =
-          isCaptureTransition &&
-          this.#pendingIntroAnchorKey === this.uiState.key;
+        const isCaptureTransition = playbackState === "capturing" && previousPlaybackState !== "capturing";
+        const isPendingIntroAnchorTransition = isCaptureTransition && this.#pendingIntroAnchorKey === this.uiState.key;
         const isIntroCaptureTransition =
           isPendingIntroAnchorTransition &&
-          (blinkIdUiIntroStateKeys as readonly BlinkIdUiStateKey[]).includes(
-            this.uiState.key,
-          );
+          (blinkIdUiIntroStateKeys as readonly BlinkIdUiStateKey[]).includes(this.uiState.key);
 
         if (!wasActive && isActive) {
           void this.#analytics.logCameraStartedEvent();
@@ -385,10 +326,8 @@ export class BlinkIdUxManager {
         previousPlaybackState = playbackState;
         if (playbackState !== "capturing") {
           this.#restartInactivityTimeout();
-          this.#pauseScanTimer(this.#scanStepTimeoutState);
-          this.#pauseScanTimer(
-            this.#partiallySupportedBarcodeResolveTimeoutState,
-          );
+          this.#timeoutHandler.pause("scanStepTimeoutMs");
+          this.#timeoutHandler.pause("partiallySupportedBarcodeResolveTimeoutMs");
           return;
         }
 
@@ -412,9 +351,7 @@ export class BlinkIdUxManager {
     const unsubscribeCameras = this.cameraManager.subscribe(
       (s) => s.cameras,
       (cameras) => {
-        const nextCameraKeys = new Set(
-          cameras.map((camera) => buildCameraAnalyticsKey(camera)),
-        );
+        const nextCameraKeys = new Set(cameras.map((camera) => buildCameraAnalyticsKey(camera)));
 
         const state = this.cameraManager.getState();
         if (cameras.length === 0 && !state.videoElement) {
@@ -428,9 +365,7 @@ export class BlinkIdUxManager {
         }
 
         this.#reportedCameraKeys = nextCameraKeys;
-        const pingCameras = cameras.map((camera) =>
-          convertCameraToPingCamera(camera),
-        );
+        const pingCameras = cameras.map((camera) => convertCameraToPingCamera(camera));
         void this.#analytics.logHardwareCameraInfo(pingCameras);
       },
     );
@@ -449,10 +384,7 @@ export class BlinkIdUxManager {
     document.addEventListener("visibilitychange", visibilityChangeCallback);
 
     this.#cleanupCallbacks.add(() => {
-      document.removeEventListener(
-        "visibilitychange",
-        visibilityChangeCallback,
-      );
+      document.removeEventListener("visibilitychange", visibilityChangeCallback);
     });
 
     const unsubscribeSelectedCamera = this.cameraManager.subscribe(
@@ -532,10 +464,7 @@ export class BlinkIdUxManager {
     );
   }
 
-  #handleCameraPermissionChange = (
-    curr: CameraPermission,
-    prev: CameraPermission,
-  ) => {
+  #handleCameraPermissionChange = (curr: CameraPermission, prev: CameraPermission) => {
     if (prev === undefined) {
       // startup
       if (curr === "granted") {
@@ -605,58 +534,38 @@ export class BlinkIdUxManager {
     if (!state.selectedCamera || !state.videoResolution) {
       return undefined;
     }
-    return convertCameraInputToPingData(
-      state.selectedCamera,
-      state.videoResolution,
-      state.extractionArea,
-    );
+    return convertCameraInputToPingData(state.selectedCamera, state.videoResolution, state.extractionArea);
   }
 
-  /**
-   * Returns the active BlinkID timeout configuration.
-   */
+  /** Returns the active BlinkID timeout configuration. */
   getTimeoutConfiguration(): BlinkIdTimeoutConfiguration {
-    return { ...this.#timeoutConfiguration };
+    return this.#timeoutHandler.getConfiguration();
   }
 
   #buildProgress = (): BlinkIdProgress => {
     const playbackState = this.cameraManager.getState().playbackState;
+    const inactivity = this.#timeoutHandler.getTimerState("inactivityTimeoutMs");
+    const perSide = this.#timeoutHandler.getTimerState("scanStepTimeoutMs");
+    const partiallySupportedBarcodeResolve = this.#timeoutHandler.getTimerState(
+      "partiallySupportedBarcodeResolveTimeoutMs",
+    );
+
+    if (inactivity.status !== "disabled" && this.#isBarcodeScanStepUiState(this.uiState.key)) {
+      inactivity.status = "paused";
+    }
+
+    if (
+      partiallySupportedBarcodeResolve.status !== "disabled" &&
+      (!this.#partiallySupportedBarcodeResolveTimerStarted || this.#partiallySupportedBarcodeResolveAttempted)
+    ) {
+      partiallySupportedBarcodeResolve.status = "idle";
+    }
 
     return {
       uiStateKey: this.uiState.key,
-      inactivity: {
-        configuredMs: this.#timeoutConfiguration.inactivityTimeoutMs,
-        remainingMs: this.#getProgressScanTimerRemainingMs(
-          this.#inactivityTimeoutState,
-        ),
-        status: this.#getScanTimerProgressStatus(
-          this.#inactivityTimeoutState,
-          playbackState,
-          "inactivity",
-        ),
-      },
-      perSide: {
-        configuredMs: this.#timeoutConfiguration.scanStepTimeoutMs,
-        remainingMs: this.#getProgressScanTimerRemainingMs(
-          this.#scanStepTimeoutState,
-        ),
-        status: this.#getScanTimerProgressStatus(
-          this.#scanStepTimeoutState,
-          playbackState,
-          "scan-step",
-        ),
-      },
-      partiallySupportedBarcodeResolve: {
-        configuredMs:
-          this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs,
-        remainingMs: this.#getProgressScanTimerRemainingMs(
-          this.#partiallySupportedBarcodeResolveTimeoutState,
-        ),
-        status:
-          this.#getPartiallySupportedBarcodeResolveTimerProgressStatus(
-            playbackState,
-          ),
-      },
+      inactivity,
+      perSide,
+      partiallySupportedBarcodeResolve,
       isTimingActiveScanStep: this.#isTimingActiveScanStep,
       playbackState,
       mappedUiStateKey: this.#mappedUiStateKey,
@@ -669,11 +578,7 @@ export class BlinkIdUxManager {
       return;
     }
 
-    invokeCallbacks(
-      this.#onProgressCallbacks,
-      this.#buildProgress(),
-      "onProgress",
-    );
+    invokeCallbacks(this.#onProgressCallbacks, this.#buildProgress(), "onProgress");
   };
 
   /**
@@ -697,7 +602,7 @@ export class BlinkIdUxManager {
   /**
    * Check if haptic feedback is currently enabled.
    *
-   * @returns true if haptic feedback is enabled
+   * @returns True if haptic feedback is enabled
    */
   isHapticFeedbackEnabled(): boolean {
     return this.#hapticFeedbackManager.isEnabled();
@@ -706,7 +611,7 @@ export class BlinkIdUxManager {
   /**
    * Check if haptic feedback is supported by the current browser/device.
    *
-   * @returns true if haptic feedback is supported
+   * @returns True if haptic feedback is supported
    */
   isHapticFeedbackSupported(): boolean {
     return this.#hapticFeedbackManager.isSupported();
@@ -724,16 +629,15 @@ export class BlinkIdUxManager {
   /**
    * Adds a callback function to be executed when the UI state changes.
    *
-   * @param callback - Function to be called when UI state changes. Receives the
-   * new UI state as parameter.
-   * @returns A cleanup function that removes the callback when called.
-   *
    * @example
-   * const cleanup = manager.addOnUiStateChangedCallback((newState) => {
-   *   console.log('UI state changed to:', newState);
-   * });
+   *   const cleanup = manager.addOnUiStateChangedCallback((newState) => {
+   *     console.log("UI state changed to:", newState);
+   *   });
    *
-   * cleanup();
+   *   cleanup();
+   *
+   * @param callback - Function to be called when UI state changes. Receives the new UI state as parameter.
+   * @returns A cleanup function that removes the callback when called.
    */
   addOnUiStateChangedCallback(callback: (uiState: BlinkIdUiState) => void) {
     this.#onUiStateChangedCallbacks.add(callback);
@@ -745,18 +649,17 @@ export class BlinkIdUxManager {
   /**
    * Registers a callback function to be called when a scan result is available.
    *
+   * @example
+   *   const cleanup = manager.addOnResultCallback((result) => {
+   *     console.log("Scan result:", result);
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
+   *
    * @param callback - A function that will be called with the scan result.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   *
-   * const cleanup = manager.addOnResultCallback((result) => {
-   *   console.log('Scan result:', result);
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
   addOnResultCallback(callback: (result: BlinkIdScanningResult) => void) {
     this.#onResultCallbacks.add(callback);
@@ -768,18 +671,17 @@ export class BlinkIdUxManager {
   /**
    * Registers a callback function to filter document classes.
    *
-   * @param callback - A function that will be called with the document class
-   * info.
+   * @example
+   *   const cleanup = manager.addDocumentClassFilter((docClassInfo) => {
+   *     return docClassInfo.country?.id === "usa";
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
+   *
+   * @param callback - A function that will be called with the document class info.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   * const cleanup = manager.addDocumentClassFilter((docClassInfo) => {
-   *   return docClassInfo.country?.id === 'usa';
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
   addDocumentClassFilter(callback: DocumentClassFilter) {
     this.#documentClassFilter = callback;
@@ -791,22 +693,21 @@ export class BlinkIdUxManager {
   /**
    * Registers a callback function to be called when a frame is processed.
    *
-   * @param callback - A function that receives the processed frame result and
-   * controls for custom step advancement, step timeout triggering, and access to
-   * the last processed frame buffer.
+   * @example
+   *   const cleanup = manager.addOnFrameProcessCallback((frameResult, advanceToNextStep) => {
+   *     console.log("Frame processed:", frameResult);
+   *     if (shouldAdvance(frameResult)) {
+   *       void advanceToNextStep();
+   *     }
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
+   *
+   * @param callback - A function that receives the processed frame result and controls for custom step advancement,
+   *   step timeout triggering, and access to the last processed frame buffer.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   * const cleanup = manager.addOnFrameProcessCallback((frameResult, advanceToNextStep) => {
-   *   console.log('Frame processed:', frameResult);
-   *   if (shouldAdvance(frameResult)) {
-   *     void advanceToNextStep();
-   *   }
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
   addOnFrameProcessCallback(callback: BlinkIdFrameProcessCallback) {
     this.#onFrameProcessCallbacks.add(callback);
@@ -816,20 +717,19 @@ export class BlinkIdUxManager {
   }
 
   /**
-   * Registers a callback function to be called when an error occurs during
-   * processing.
+   * Registers a callback function to be called when an error occurs during processing.
+   *
+   * @example
+   *   const cleanup = manager.addOnErrorCallback((error) => {
+   *     console.error("Processing error:", error);
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
    *
    * @param callback - A function that will be called with the error state.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   * const cleanup = manager.addOnErrorCallback((error) => {
-   *   console.error('Processing error:', error);
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
   addOnErrorCallback(callback: (errorState: BlinkIdProcessingError) => void) {
     this.#onErrorCallbacks.add(callback);
@@ -841,18 +741,17 @@ export class BlinkIdUxManager {
   /**
    * Registers a callback function to receive BlinkID progress snapshots.
    *
-   * @param callback - A function that will be called with progress data from
-   * the internal 30 FPS RAF loop.
+   * @example
+   *   const cleanup = manager.addOnProgressCallback((progress) => {
+   *     console.log("BlinkID progress:", progress);
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
+   *
+   * @param callback - A function that will be called with progress data from the internal 30 FPS RAF loop.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   * const cleanup = manager.addOnProgressCallback((progress) => {
-   *   console.log('BlinkID progress:', progress);
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
   addOnProgressCallback(callback: (progress: BlinkIdProgress) => void) {
     this.#onProgressCallbacks.add(callback);
@@ -874,22 +773,19 @@ export class BlinkIdUxManager {
   /**
    * Registers a callback function to be called when a document is filtered.
    *
-   * @param callback - A function that will be called with the document class
-   * info.
+   * @example
+   *   const cleanup = manager.addOnDocumentFilteredCallback((docClassInfo) => {
+   *     console.log("Document filtered:", docClassInfo);
+   *   });
+   *
+   *   // Later, to remove the callback:
+   *   cleanup();
+   *
+   * @param callback - A function that will be called with the document class info.
    * @returns A cleanup function that, when called, will remove the registered
    * callback.
-   *
-   * @example
-   * const cleanup = manager.addOnDocumentFilteredCallback((docClassInfo) => {
-   *   console.log('Document filtered:', docClassInfo);
-   * });
-   *
-   * // Later, to remove the callback:
-   * cleanup();
    */
-  addOnDocumentFilteredCallback(
-    callback: (documentClassInfo: DocumentClassInfo) => void,
-  ) {
+  addOnDocumentFilteredCallback(callback: (documentClassInfo: DocumentClassInfo) => void) {
     this.#onDocumentFilteredCallbacks.add(callback);
     return () => {
       this.#onDocumentFilteredCallbacks.delete(callback);
@@ -901,15 +797,9 @@ export class BlinkIdUxManager {
    *
    * @param documentClassInfo - The document class info.
    */
-  #invokeOnDocumentFilteredCallbacks = (
-    documentClassInfo: DocumentClassInfo,
-  ) => {
+  #invokeOnDocumentFilteredCallbacks = (documentClassInfo: DocumentClassInfo) => {
     this.#hapticFeedbackManager.triggerLong();
-    invokeCallbacks(
-      this.#onDocumentFilteredCallbacks,
-      documentClassInfo,
-      "onDocumentFiltered",
-    );
+    invokeCallbacks(this.#onDocumentFilteredCallbacks, documentClassInfo, "onDocumentFiltered");
   };
 
   /**
@@ -935,7 +825,7 @@ export class BlinkIdUxManager {
             resultCompleteness: frameResult.resultCompleteness,
           },
           () => this.#advanceToNextStep(),
-          () => this.#handleScanTimeout("scan-step"),
+          () => this.#timeoutHandler.trigger("scanStepTimeoutMs"),
           () => frameResult.arrayBuffer,
         );
       } catch (error) {
@@ -950,23 +840,17 @@ export class BlinkIdUxManager {
    * @param uiState - The UI state.
    */
   #invokeOnUiStateChangedCallbacks = (uiState: BlinkIdUiState) => {
-    invokeCallbacks(
-      this.#onUiStateChangedCallbacks,
-      uiState,
-      "onUiStateChanged",
-    );
+    invokeCallbacks(this.#onUiStateChangedCallbacks, uiState, "onUiStateChanged");
   };
 
   /**
-   * Handles document class filtering if configured.
-   * Returns true if the document should be processed, false if it was filtered out.
+   * Handles document class filtering if configured. Returns true if the document should be processed, false if it was
+   * filtered out.
    *
    * @param processResult - The result of processing the current frame
-   * @returns boolean indicating if the document should be processed
+   * @returns Boolean indicating if the document should be processed
    */
-  #handleDocumentClassFiltering(
-    processResult: ProcessResultWithBuffer,
-  ): boolean {
+  #handleDocumentClassFiltering(processResult: ProcessResultWithBuffer): boolean {
     // Skip filtering if no filter is configured
     if (this.#documentClassFilter === undefined) {
       return true;
@@ -975,10 +859,7 @@ export class BlinkIdUxManager {
     const documentClassInfo = extractDocumentClassInfo(processResult);
 
     // If document is not classified or passes the filter, continue processing
-    if (
-      !isDocumentClassified(documentClassInfo) ||
-      this.#documentClassFilter(documentClassInfo)
-    ) {
+    if (!isDocumentClassified(documentClassInfo) || this.#documentClassFilter(documentClassInfo)) {
       return true;
     }
 
@@ -994,19 +875,11 @@ export class BlinkIdUxManager {
   /**
    * Updates the BlinkID timeout configuration.
    *
-   * Updating the configuration resets timeout tracking for the current scan
-   * step so the new durations take effect immediately.
+   * Updating the configuration resets timeout tracking for the current scan step so the new durations take effect
+   * immediately.
    */
-  setTimeoutConfiguration(
-    timeoutConfiguration: Partial<BlinkIdTimeoutConfiguration>,
-  ) {
-    this.#timeoutConfiguration = normalizeBlinkIdTimeoutConfiguration(
-      {
-        ...this.#timeoutConfiguration,
-        ...timeoutConfiguration,
-      },
-      this.#isDesktop,
-    );
+  setTimeoutConfiguration(timeoutConfiguration: Partial<BlinkIdTimeoutConfiguration>) {
+    this.#timeoutHandler.setConfiguration(timeoutConfiguration);
 
     if (this.#isTimingActiveScanStep) {
       this.#resetScanTimeoutsForCurrentStep();
@@ -1016,240 +889,51 @@ export class BlinkIdUxManager {
     this.#clearScanTimeoutState();
   }
 
-  #getScanTimerRemainingMs = (timerState: ScanTimerState) => {
-    if (timerState.remainingMs === null) {
-      return null;
-    }
-
-    if (timerState.startedAt === undefined) {
-      return Math.max(timerState.remainingMs, 0);
-    }
-
-    return Math.max(
-      timerState.remainingMs - (performance.now() - timerState.startedAt),
-      0,
-    );
-  };
-
-  #getProgressScanTimerRemainingMs = (timerState: ScanTimerState) => {
-    const remainingMs = this.#getScanTimerRemainingMs(timerState);
-    return remainingMs === null ? null : Math.ceil(remainingMs);
-  };
-
   #isBarcodeScanStepUiState = (uiStateKey: BlinkIdUiStateKey) => {
     return uiStateKey === "PROCESSING_BARCODE";
   };
 
   #isBarcodePresenceMandatory = () => {
-    return (
-      this.sessionSettings.scanningSettings.barcodeModule?.presenceMandatory ===
-      true
-    );
-  };
-
-  #getScanTimerProgressStatus = (
-    timerState: ScanTimerState,
-    playbackState: "idle" | "playback" | "capturing",
-    timeoutKind: ScanTimeoutKind,
-  ): BlinkIdProgressTimerStatus => {
-    if (timerState.remainingMs === null) {
-      return "disabled";
-    }
-
-    if (!this.#isTimingActiveScanStep) {
-      return "idle";
-    }
-
-    if (
-      timeoutKind === "inactivity" &&
-      this.#isBarcodeScanStepUiState(this.uiState.key)
-    ) {
-      return "paused";
-    }
-
-    if (
-      playbackState === "capturing" &&
-      timerState.timeoutId !== undefined &&
-      timerState.startedAt !== undefined
-    ) {
-      return "running";
-    }
-
-    if (
-      timeoutKind === "inactivity" &&
-      timerState.timeoutId === undefined &&
-      timerState.startedAt === undefined &&
-      timerState.remainingMs === this.#timeoutConfiguration.inactivityTimeoutMs
-    ) {
-      return "idle";
-    }
-
-    return "paused";
-  };
-
-  #getPartiallySupportedBarcodeResolveTimerProgressStatus = (
-    playbackState: "idle" | "playback" | "capturing",
-  ): BlinkIdProgressTimerStatus => {
-    if (
-      this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs === null
-    ) {
-      return "disabled";
-    }
-
-    if (
-      !this.#partiallySupportedBarcodeResolveTimerStarted ||
-      this.#partiallySupportedBarcodeResolveAttempted
-    ) {
-      return "idle";
-    }
-
-    if (
-      playbackState === "capturing" &&
-      this.#partiallySupportedBarcodeResolveTimeoutState.timeoutId !==
-        undefined &&
-      this.#partiallySupportedBarcodeResolveTimeoutState.startedAt !== undefined
-    ) {
-      return "running";
-    }
-
-    return "paused";
-  };
-
-  #pauseScanTimer = (timerState: ScanTimerState) => {
-    if (
-      timerState.remainingMs === null ||
-      timerState.timeoutId === undefined ||
-      timerState.startedAt === undefined
-    ) {
-      return;
-    }
-
-    timerState.remainingMs = this.#getScanTimerRemainingMs(timerState);
-    this.#clearScanTimerHandle(timerState);
-  };
-
-  #clearScanTimerHandle = (timerState: ScanTimerState) => {
-    if (timerState.timeoutId !== undefined) {
-      window.clearTimeout(timerState.timeoutId);
-      timerState.timeoutId = undefined;
-    }
-
-    timerState.startedAt = undefined;
+    return this.sessionSettings.scanningSettings.barcodeModule?.presenceMandatory === true;
   };
 
   #clearScanTimeoutState = () => {
-    this.#clearScanTimerHandle(this.#inactivityTimeoutState);
-    this.#clearScanTimerHandle(this.#scanStepTimeoutState);
-    this.#clearScanTimerHandle(
-      this.#partiallySupportedBarcodeResolveTimeoutState,
-    );
-    this.#inactivityTimeoutState.remainingMs =
-      this.#timeoutConfiguration.inactivityTimeoutMs;
-    this.#scanStepTimeoutState.remainingMs =
-      this.#timeoutConfiguration.scanStepTimeoutMs;
-    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs =
-      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs;
+    this.#timeoutHandler.resetAll();
     this.#inactivityResetUiStateKey = undefined;
     this.#isTimingActiveScanStep = false;
     this.#partiallySupportedBarcodeResolveTimerStarted = false;
     this.#partiallySupportedBarcodeResolveAttempted = false;
   };
 
-  #scheduleScanTimer = (
-    timerState: ScanTimerState,
-    timeoutKind: ScanTimeoutKind,
-  ) => {
-    if (timerState.timeoutId !== undefined) {
-      return;
-    }
-
-    if (timerState.remainingMs === null) {
-      return;
-    }
-
-    if (timerState.remainingMs <= 0) {
-      this.#handleScanTimeout(timeoutKind);
-      return;
-    }
-
-    timerState.startedAt = performance.now();
-    timerState.timeoutId = window.setTimeout(() => {
-      timerState.timeoutId = undefined;
-      timerState.startedAt = undefined;
-      timerState.remainingMs = 0;
-      this.#handleScanTimeout(timeoutKind);
-    }, timerState.remainingMs);
-  };
-
-  #schedulePartiallySupportedBarcodeResolveTimer = () => {
-    const timerState = this.#partiallySupportedBarcodeResolveTimeoutState;
-
-    if (
-      !this.#partiallySupportedBarcodeResolveTimerStarted ||
-      this.#partiallySupportedBarcodeResolveAttempted ||
-      timerState.timeoutId !== undefined ||
-      timerState.remainingMs === null
-    ) {
-      return;
-    }
-
-    if (timerState.remainingMs <= 0) {
-      void this.#handlePartiallySupportedBarcodeResolveTimeout();
-      return;
-    }
-
-    timerState.startedAt = performance.now();
-    timerState.timeoutId = window.setTimeout(() => {
-      timerState.timeoutId = undefined;
-      timerState.startedAt = undefined;
-      timerState.remainingMs = 0;
-      void this.#handlePartiallySupportedBarcodeResolveTimeout();
-    }, timerState.remainingMs);
-  };
-
   #startPartiallySupportedBarcodeResolveTimer = () => {
     if (
       this.#partiallySupportedBarcodeResolveTimerStarted ||
       this.#partiallySupportedBarcodeResolveAttempted ||
-      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs ===
-        null
+      this.#timeoutHandler.getConfiguration().partiallySupportedBarcodeResolveTimeoutMs === null
     ) {
       return;
     }
 
     this.#partiallySupportedBarcodeResolveTimerStarted = true;
-    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs =
-      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs;
 
     if (this.cameraManager.getState().playbackState === "capturing") {
-      this.#schedulePartiallySupportedBarcodeResolveTimer();
+      this.#timeoutHandler.start("partiallySupportedBarcodeResolveTimeoutMs");
     }
   };
 
   #clearPartiallySupportedBarcodeResolveTimer = () => {
-    this.#clearScanTimerHandle(
-      this.#partiallySupportedBarcodeResolveTimeoutState,
-    );
-    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs =
-      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs;
+    this.#timeoutHandler.reset("partiallySupportedBarcodeResolveTimeoutMs");
     this.#partiallySupportedBarcodeResolveTimerStarted = false;
     this.#partiallySupportedBarcodeResolveAttempted = false;
   };
 
   #handlePartiallySupportedBarcodeResolveTimeout = async () => {
-    if (
-      this.#processingLifecycleState === "terminal" ||
-      this.#partiallySupportedBarcodeResolveAttempted
-    ) {
+    if (this.#processingLifecycleState === "terminal" || this.#partiallySupportedBarcodeResolveAttempted) {
       return;
     }
 
     this.#partiallySupportedBarcodeResolveAttempted = true;
     this.#partiallySupportedBarcodeResolveTimerStarted = false;
-    this.#clearScanTimerHandle(
-      this.#partiallySupportedBarcodeResolveTimeoutState,
-    );
-    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs = 0;
 
     void this.#analytics.logUnsupportedBarcodeTimeout();
 
@@ -1266,73 +950,61 @@ export class BlinkIdUxManager {
   };
 
   #resumeScanTimeouts = () => {
-    if (
-      !this.#isTimingActiveScanStep ||
-      this.#processingLifecycleState === "terminal"
-    ) {
+    if (!this.#isTimingActiveScanStep || this.#processingLifecycleState === "terminal") {
       return;
     }
 
     if (this.#isBarcodeScanStepUiState(this.uiState.key)) {
       this.#suppressInactivityTimeoutForBarcodeScanStep();
     } else {
-      this.#scheduleScanTimer(this.#inactivityTimeoutState, "inactivity");
+      this.#timeoutHandler.resume("inactivityTimeoutMs");
     }
-    this.#scheduleScanTimer(this.#scanStepTimeoutState, "scan-step");
-    this.#schedulePartiallySupportedBarcodeResolveTimer();
+    this.#timeoutHandler.resume("scanStepTimeoutMs");
+
+    if (this.#partiallySupportedBarcodeResolveTimerStarted && !this.#partiallySupportedBarcodeResolveAttempted) {
+      const timerState = this.#timeoutHandler.getTimerState("partiallySupportedBarcodeResolveTimeoutMs");
+      if (timerState.status === "idle") {
+        this.#timeoutHandler.start("partiallySupportedBarcodeResolveTimeoutMs");
+      } else {
+        this.#timeoutHandler.resume("partiallySupportedBarcodeResolveTimeoutMs");
+      }
+    }
   };
 
   #suppressInactivityTimeoutForBarcodeScanStep = () => {
-    this.#clearScanTimerHandle(this.#inactivityTimeoutState);
-    this.#inactivityTimeoutState.remainingMs =
-      this.#timeoutConfiguration.inactivityTimeoutMs;
+    this.#timeoutHandler.reset("inactivityTimeoutMs");
     this.#inactivityResetUiStateKey = "PROCESSING_BARCODE";
   };
 
   #resetTimeoutsForBarcodeScanStep = () => {
     this.#suppressInactivityTimeoutForBarcodeScanStep();
-    this.#clearScanTimerHandle(this.#scanStepTimeoutState);
-    this.#scanStepTimeoutState.remainingMs =
-      this.#timeoutConfiguration.scanStepTimeoutMs;
+    this.#timeoutHandler.reset("scanStepTimeoutMs");
     this.#isTimingActiveScanStep = true;
 
     if (this.cameraManager.getState().playbackState === "capturing") {
-      this.#scheduleScanTimer(this.#scanStepTimeoutState, "scan-step");
+      this.#timeoutHandler.start("scanStepTimeoutMs");
     }
   };
 
-  #resetScanTimeoutsForCurrentStep = (
-    uiStateKey: BlinkIdUiStateKey = this.uiState.key,
-  ) => {
+  #resetScanTimeoutsForCurrentStep = (uiStateKey: BlinkIdUiStateKey = this.uiState.key) => {
     if (this.#isBarcodeScanStepUiState(uiStateKey)) {
       this.#resetTimeoutsForBarcodeScanStep();
       return;
     }
 
-    this.#clearScanTimerHandle(this.#inactivityTimeoutState);
-    this.#clearScanTimerHandle(this.#scanStepTimeoutState);
-    this.#clearScanTimerHandle(
-      this.#partiallySupportedBarcodeResolveTimeoutState,
-    );
-    this.#inactivityTimeoutState.remainingMs =
-      this.#timeoutConfiguration.inactivityTimeoutMs;
-    this.#scanStepTimeoutState.remainingMs =
-      this.#timeoutConfiguration.scanStepTimeoutMs;
-    this.#partiallySupportedBarcodeResolveTimeoutState.remainingMs =
-      this.#timeoutConfiguration.partiallySupportedBarcodeResolveTimeoutMs;
+    this.#timeoutHandler.resetAll();
     this.#inactivityResetUiStateKey = uiStateKey;
     this.#isTimingActiveScanStep = true;
     this.#partiallySupportedBarcodeResolveTimerStarted = false;
     this.#partiallySupportedBarcodeResolveAttempted = false;
 
     if (this.cameraManager.getState().playbackState === "capturing") {
-      this.#resumeScanTimeouts();
+      this.#timeoutHandler.start("inactivityTimeoutMs");
+      this.#timeoutHandler.start("scanStepTimeoutMs");
     }
   };
 
-  #restartInactivityTimeout = (
-    uiStateKey: BlinkIdUiStateKey = this.uiState.key,
-  ) => {
+  #restartInactivityTimeout = (uiStateKey: BlinkIdUiStateKey = this.uiState.key) => {
     if (!this.#isTimingActiveScanStep) {
       return;
     }
@@ -1343,12 +1015,11 @@ export class BlinkIdUxManager {
     }
 
     this.#inactivityResetUiStateKey = uiStateKey;
-    this.#clearScanTimerHandle(this.#inactivityTimeoutState);
-    this.#inactivityTimeoutState.remainingMs =
-      this.#timeoutConfiguration.inactivityTimeoutMs;
 
     if (this.cameraManager.getState().playbackState === "capturing") {
-      this.#scheduleScanTimer(this.#inactivityTimeoutState, "inactivity");
+      this.#timeoutHandler.start("inactivityTimeoutMs");
+    } else {
+      this.#timeoutHandler.reset("inactivityTimeoutMs");
     }
   };
 
@@ -1369,10 +1040,7 @@ export class BlinkIdUxManager {
       return;
     }
 
-    const processingTimeoutError: BlinkIdProcessingError = match<
-      ScanTimeoutKind,
-      BlinkIdProcessingError
-    >(timeoutKind)
+    const processingTimeoutError: BlinkIdProcessingError = match<ScanTimeoutKind, BlinkIdProcessingError>(timeoutKind)
       .with("inactivity", () => {
         void this.#analytics.logInactivityTimeoutEvent();
         return "inactivity_timeout";
@@ -1406,8 +1074,7 @@ export class BlinkIdUxManager {
     }
 
     if (
-      processResult.inputImageAnalysisResult.processingStatus !==
-        "barcode-recognition-failed" ||
+      processResult.inputImageAnalysisResult.processingStatus !== "barcode-recognition-failed" ||
       processResult.resultCompleteness.barcode?.parsingSupported !== false ||
       this.#isBarcodePresenceMandatory()
     ) {
@@ -1445,16 +1112,13 @@ export class BlinkIdUxManager {
   };
 
   /**
-   * The frame capture callback. This is the main function that is called when a
-   * new frame is captured. It is responsible for processing the frame and
-   * updating the UI state.
+   * The frame capture callback. This is the main function that is called when a new frame is captured. It is
+   * responsible for processing the frame and updating the UI state.
    *
    * @param imageData - The image data.
    * @returns The processed frame's ArrayBuffer, or undefined if not applicable.
    */
-  #frameCaptureCallback = async (
-    imageData: ImageData,
-  ): Promise<ArrayBuffer | void> => {
+  #frameCaptureCallback = async (imageData: ImageData): Promise<ArrayBuffer | void> => {
     if (this.#processingLifecycleState === "terminal") {
       return;
     }
@@ -1476,14 +1140,13 @@ export class BlinkIdUxManager {
       }
 
       if (processResult.arrayBuffer.byteLength === 0) {
-        console.warn(
-          "scanningSession.process did not return ownership of the array buffer!",
-        );
+        console.warn("scanningSession.process did not return ownership of the array buffer!");
       }
 
       /**
-       * This should not happen. The processing should stop after the document has been
-       * captured, or after the result has been retrieved.
+       * This should not happen. The processing should stop after the document has been captured, or after the result
+       * has been retrieved.
+       *
        * @see BlinkIdSessionErrorType
        */
       if ("error" in processResult) {
@@ -1497,21 +1160,13 @@ export class BlinkIdUxManager {
       }
 
       this.#lastDocumentRotation = getDocumentRotation(processResult);
-      this.#documentPagination = getDocumentPaginationType(
-        extractDocumentClassInfo(processResult),
-      );
+      this.#documentPagination = getDocumentPaginationType(extractDocumentClassInfo(processResult));
 
       const scanningStatus = await this.scanningSession.getScanningStatus();
 
-      const mappedUiStateKey = this.#getMappedUiStateKey(
-        scanningStatus,
-        processResult,
-      );
+      const mappedUiStateKey = this.#getMappedUiStateKey(scanningStatus, processResult);
 
-      this.#updatePartiallySupportedBarcodeResolveTimer(
-        scanningStatus,
-        processResult,
-      );
+      this.#updatePartiallySupportedBarcodeResolveTimer(scanningStatus, processResult);
 
       // stop/resume side-effects remain on frame processing path
       this.#handleProcessResultSideEffects(mappedUiStateKey);
@@ -1565,19 +1220,13 @@ export class BlinkIdUxManager {
     this.feedbackStabilizer.ingest(mappedUiStateKey);
   }
 
-  #handleProcessResultSideEffects = (
-    mappedUiStateKey?: BlinkIdUiStateKey,
-  ): void => {
+  #handleProcessResultSideEffects = (mappedUiStateKey?: BlinkIdUiStateKey): void => {
     if (!mappedUiStateKey) {
       return;
     }
 
     // stop frame processing on success states
-    if (
-      (blinkIdUiStepSuccessKeys as readonly BlinkIdUiStateKey[]).includes(
-        mappedUiStateKey,
-      )
-    ) {
+    if ((blinkIdUiStepSuccessKeys as readonly BlinkIdUiStateKey[]).includes(mappedUiStateKey)) {
       console.debug("🛑 stop processing", mappedUiStateKey);
       this.#clearPartiallySupportedBarcodeResolveTimer();
       this.cameraManager.stopFrameCapture();
@@ -1588,19 +1237,12 @@ export class BlinkIdUxManager {
     }
   };
 
-  #getMappedUiStateKey = (
-    scanningStatus: ScanningStatus,
-    processResult: BlinkIdProcessResult,
-  ) => {
+  #getMappedUiStateKey = (scanningStatus: ScanningStatus, processResult: BlinkIdProcessResult) => {
     if (!this.sessionSettings) {
       return undefined;
     }
 
-    return getUiStateKey(
-      scanningStatus,
-      processResult.inputImageAnalysisResult,
-      this.sessionSettings.scanningSettings,
-    );
+    return getUiStateKey(scanningStatus, processResult.inputImageAnalysisResult, this.sessionSettings.scanningSettings);
   };
 
   async #advanceToNextStep(): Promise<void> {
@@ -1609,8 +1251,7 @@ export class BlinkIdUxManager {
       return;
     }
 
-    const wasCapturing =
-      this.cameraManager.getState().playbackState === "capturing";
+    const wasCapturing = this.cameraManager.getState().playbackState === "capturing";
     if (wasCapturing) {
       this.cameraManager.stopFrameCapture();
     }
@@ -1626,9 +1267,7 @@ export class BlinkIdUxManager {
 
     const stepResolved =
       mappedUiStateKey !== undefined &&
-      (blinkIdUiStepSuccessKeys as readonly BlinkIdUiStateKey[]).includes(
-        mappedUiStateKey,
-      );
+      (blinkIdUiStepSuccessKeys as readonly BlinkIdUiStateKey[]).includes(mappedUiStateKey);
 
     if (wasCapturing && stepResolved) {
       console.debug("🛑 stop processing", mappedUiStateKey);
@@ -1645,16 +1284,13 @@ export class BlinkIdUxManager {
 
     if (
       wasCapturing &&
-      (scanningStatus === "scanning-side-in-progress" ||
-        scanningStatus === "scanning-barcode-in-progress")
+      (scanningStatus === "scanning-side-in-progress" || scanningStatus === "scanning-barcode-in-progress")
     ) {
       await this.cameraManager.startFrameCapture();
     }
   }
 
-  /**
-   * Updates the UI state from the uiStateKey
-   */
+  /** Updates the UI state from the uiStateKey */
   #updateUiState = async (uiStateKey: BlinkIdUiStateKey) => {
     // Skip UI update if the state is the same
     if (uiStateKey === this.uiState.key) {
@@ -1673,9 +1309,7 @@ export class BlinkIdUxManager {
       blinkIdUiErrorStateKeys.includes(uiStateKey as BlinkIdUiErrorStateKey)
     ) {
       const errorKey = uiStateKey as PingableErrorUiStateKey;
-      void this.#analytics.logErrorMessageEvent(
-        mapErrorStateKeyToAnalyticsType(errorKey),
-      );
+      void this.#analytics.logErrorMessageEvent(mapErrorStateKeyToAnalyticsType(errorKey));
     }
 
     // Trigger haptic feedback based on UI state changes
@@ -1717,8 +1351,7 @@ export class BlinkIdUxManager {
   };
 
   /**
-   * Handles side effects triggered by a UI state transition: resumes frame
-   * capture on intro states and orchestrates
+   * Handles side effects triggered by a UI state transition: resumes frame capture on intro states and orchestrates
    * result retrieval on DOCUMENT_CAPTURED.
    *
    * @param uiState - The UI state.
@@ -1731,20 +1364,14 @@ export class BlinkIdUxManager {
     }
 
     // handle resuming processing on intro states
-    if (
-      (blinkIdUiIntroStateKeys as readonly BlinkIdUiStateKey[]).includes(
-        uiState.key,
-      )
-    ) {
+    if ((blinkIdUiIntroStateKeys as readonly BlinkIdUiStateKey[]).includes(uiState.key)) {
       this.#pendingIntroAnchorKey = uiState.key;
       void this.cameraManager.startFrameCapture();
     }
 
     // handle DOCUMENT_CAPTURED
     if (uiState.key === "DOCUMENT_CAPTURED") {
-      console.debug(
-        "Handling DOCUMENT_CAPTURED state from #handleUiStateChange",
-      );
+      console.debug("Handling DOCUMENT_CAPTURED state from #handleUiStateChange");
       // Scanning is complete — cancel any running timeout before the animation sleep
       // to prevent it from firing and triggering a spurious reset during result retrieval.
       this.clearScanTimeout();
@@ -1759,10 +1386,7 @@ export class BlinkIdUxManager {
 
         this.#invokeOnResultCallbacks(result);
       } catch (err) {
-        console.error(
-          "Failed to retrieve scan result after document capture:",
-          err,
-        );
+        console.error("Failed to retrieve scan result after document capture:", err);
         this.#invokeOnErrorCallbacks("result_retrieval_failed");
       } finally {
         this.#processingLifecycleState = "terminal";
@@ -1770,9 +1394,7 @@ export class BlinkIdUxManager {
     }
   };
 
-  /**
-   * Returns the initial UI state key used when resetting UX state.
-   */
+  /** Returns the initial UI state key used when resetting UX state. */
   getInitialUiStateKey() {
     return this.#initialUiStateKey;
   }
@@ -1783,19 +1405,14 @@ export class BlinkIdUxManager {
    * @param uiStateKey - The UI state key to use as manager initial state.
    * @param applyImmediately - If true, immediately applies and emits this state.
    */
-  setInitialUiStateKey(
-    uiStateKey: BlinkIdUiStateKey,
-    applyImmediately = false,
-  ) {
+  setInitialUiStateKey(uiStateKey: BlinkIdUiStateKey, applyImmediately = false) {
     this.#initialUiStateKey = uiStateKey;
     if (applyImmediately) {
       this.#resetUiState(uiStateKey);
     }
   }
 
-  /**
-   * Resets the feedback stabilizer and invokes the onUiStateChanged callbacks.
-   */
+  /** Resets the feedback stabilizer and invokes the onUiStateChanged callbacks. */
   #resetUiState = (uiStateKey: BlinkIdUiStateKey = this.#initialUiStateKey) => {
     this.feedbackStabilizer.reset(uiStateKey);
     this.#uiState = this.feedbackStabilizer.currentState;
@@ -1807,9 +1424,7 @@ export class BlinkIdUxManager {
     this.#invokeOnUiStateChangedCallbacks(this.uiState);
   };
 
-  /**
-   * Clears the scanning session timeout.
-   */
+  /** Clears the scanning session timeout. */
   clearScanTimeout() {
     this.#clearScanTimeoutState();
   }
@@ -1887,9 +1502,8 @@ export class BlinkIdUxManager {
   }
 
   /**
-   * Fully tears down the BlinkIdUxManager. Stops frame processing, cancels the
-   * scan timeout, removes all subscriptions and the RAF loop, and clears all
-   * registered callbacks. Should be called when the manager is no longer needed.
+   * Fully tears down the BlinkIdUxManager. Stops frame processing, cancels the scan timeout, removes all subscriptions
+   * and the RAF loop, and clears all registered callbacks. Should be called when the manager is no longer needed.
    *
    * Does not stop the camera stream or delete the scanning session.
    */

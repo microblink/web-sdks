@@ -6,8 +6,8 @@
 
 # Class: HapticFeedbackManager
 
-Manages haptic feedback for Microblink UX managers.
-Provides cross-platform haptic feedback using the Web Vibration API.
+Manages haptic feedback for Microblink UX managers. Provides cross-platform haptic feedback using the Web Vibration
+API.
 
 ## Constructors
 
@@ -31,7 +31,7 @@ Check if haptic feedback is currently enabled.
 
 `boolean`
 
-true if haptic feedback is enabled
+True if haptic feedback is enabled
 
 ***
 
@@ -45,7 +45,7 @@ Check if haptic feedback is supported by the current browser/device.
 
 `boolean`
 
-true if haptic feedback is supported
+True if haptic feedback is supported
 
 ***
 
@@ -105,8 +105,7 @@ The type of haptic feedback to trigger
 
 > **triggerLong**(): `void`
 
-Trigger long haptic feedback.
-Uses long feedback pattern.
+Trigger long haptic feedback. Uses long feedback pattern.
 
 #### Returns
 
@@ -118,8 +117,7 @@ Uses long feedback pattern.
 
 > **triggerShort**(): `void`
 
-Trigger short haptic feedback.
-Uses short feedback pattern.
+Trigger short haptic feedback. Uses short feedback pattern.
 
 #### Returns
 

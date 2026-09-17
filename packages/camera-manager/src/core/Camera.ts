@@ -1,10 +1,9 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { subscribeWithSelector } from "zustand/middleware";
-import { shallow } from "zustand/shallow";
 import { createStore } from "zustand/vanilla";
+import { shallow } from "zustand/vanilla/shallow";
+
 import { CameraError } from "./cameraError";
 import { isBackCameraName, isFrontCameraName } from "./cameraNames";
 import { closeStreamTracks, createConstraints } from "./cameraUtils";
@@ -19,7 +18,7 @@ interface CameraState {
   singleShotSupported: boolean;
   maxSupportedResolution?: VideoResolutionName;
   streamCapabilities?: ReturnType<MediaStreamTrack["getCapabilities"]>;
-  /** not implemented in iOS Safari and Firefox at the time of writing */
+  /** Not implemented in iOS Safari and Firefox at the time of writing */
   deviceCapabilities?: ReturnType<InputDeviceInfo["getCapabilities"]>;
   error?: CameraError;
 }
@@ -27,9 +26,8 @@ interface CameraState {
 /**
  * The initial state of the camera.
  *
- * It's important to cast as `CameraState` to avoid TypeScript errors. We use
- * this for better type inferrence in the store, as some types can't be imported
- * directly.
+ * It's important to cast as `CameraState` to avoid TypeScript errors. We use this for better type inferrence in the
+ * store, as some types can't be imported directly.
  */
 const initialCameraState: CameraState = {
   deviceInfo: {},
@@ -51,18 +49,12 @@ const initialCameraState: CameraState = {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getCapabilities for more details.
  */
 export class Camera {
-  /**
-   * The internal state of the camera, implemented as a Zustand store.
-   */
-  store = createStore<CameraState>()(
-    subscribeWithSelector(() => initialCameraState),
-  );
+  /** The internal state of the camera, implemented as a Zustand store. */
+  store = createStore<CameraState>()(subscribeWithSelector(() => initialCameraState));
 
   #subscribers = new Set<() => void>();
 
-  /**
-   * The device info.
-   */
+  /** The device info. */
   get deviceInfo(): InputDeviceInfo {
     return this.store.getState().deviceInfo;
   }
@@ -70,9 +62,9 @@ export class Camera {
   /**
    * Stream capabilities as reported by the stream.
    *
-   * On iOS it's the same as `deviceCapabilities`. Firefox is only reporting
-   * rudimentary capabilities, so we can't rely on this for picking the right
-   * camera.
+   * On iOS it's the same as `deviceCapabilities`. Firefox is only reporting rudimentary capabilities, so we can't rely
+   * on this for picking the right camera.
+   *
    * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamTrack/getCapabilities
    */
   get streamCapabilities() {
@@ -81,11 +73,7 @@ export class Camera {
 
   get activeStream() {
     if (this.store.getState().activeStream?.active === false) {
-      console.warn(
-        "Detected inactive stream on camera:",
-        this.name,
-        this.store.getState().activeStream,
-      );
+      console.warn("Detected inactive stream on camera:", this.name, this.store.getState().activeStream);
       // stream is inactive, clear it from state
       this.store.setState({ activeStream: undefined });
     }
@@ -151,12 +139,7 @@ export class Camera {
    * @param listener - Listener function that gets called when state changes
    * @returns Unsubscribe function
    */
-  subscribe(
-    listener: (
-      selectedState: CameraState,
-      previousSelectedState: CameraState,
-    ) => void,
-  ): () => void;
+  subscribe(listener: (selectedState: CameraState, previousSelectedState: CameraState) => void): () => void;
   /**
    * Subscribe to camera state changes with selector.
    *
@@ -175,10 +158,7 @@ export class Camera {
   ): () => void;
   subscribe(
     selectorOrListener:
-      | ((
-          selectedState: CameraState,
-          previousSelectedState: CameraState,
-        ) => void)
+      | ((selectedState: CameraState, previousSelectedState: CameraState) => void)
       | ((state: CameraState) => unknown),
     listener?: (selectedState: unknown, previousSelectedState: unknown) => void,
     options?: {
@@ -191,19 +171,10 @@ export class Camera {
 
     if (listener) {
       // Called with selector
-      unsubscribe = this.store.subscribe(
-        selectorOrListener as (state: CameraState) => unknown,
-        listener,
-        options,
-      );
+      unsubscribe = this.store.subscribe(selectorOrListener as (state: CameraState) => unknown, listener, options);
     } else {
       // Called with just listener
-      unsubscribe = this.store.subscribe(
-        selectorOrListener as (
-          selectedState: CameraState,
-          previousSelectedState: CameraState,
-        ) => void,
-      );
+      unsubscribe = this.store.subscribe(selectorOrListener);
     }
 
     this.#subscribers.add(unsubscribe);
@@ -246,10 +217,7 @@ export class Camera {
 
     // Happens when camera device disconnects
     videoTrack.onended = () => {
-      const error = new CameraError(
-        "Camera stream ended unexpectedly",
-        "STREAM_ENDED_UNEXPECTEDLY",
-      );
+      const error = new CameraError("Camera stream ended unexpectedly", "STREAM_ENDED_UNEXPECTEDLY");
       this.store.setState({
         error,
       });
@@ -261,21 +229,15 @@ export class Camera {
   }
 
   /**
-   * Acquires a camera stream with the specified resolution.
-   * If acquisition fails, it tries a lower resolution as fallback.
+   * Acquires a camera stream with the specified resolution. If acquisition fails, it tries a lower resolution as
+   * fallback.
    *
    * @param resolution - The resolution to acquire the stream with.
    * @returns The stream.
    */
-  private async acquireStreamWithFallback(
-    resolution: VideoResolutionName,
-  ): Promise<MediaStream> {
+  private async acquireStreamWithFallback(resolution: VideoResolutionName): Promise<MediaStream> {
     try {
-      const constraints = createConstraints(
-        resolution,
-        this.facingMode,
-        this.deviceInfo.deviceId,
-      );
+      const constraints = createConstraints(resolution, this.facingMode, this.deviceInfo.deviceId);
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
 
@@ -284,22 +246,16 @@ export class Camera {
     } catch (error) {
       // This branch shouldn't happen as we are using `ideal` when making
       // constraints, however it's a good fallback to have
-      console.warn(
-        `Can't get camera stream for ${this.name} at ${resolution}`,
-        error,
-      );
+      console.warn(`Can't get camera stream for ${this.name} at ${resolution}`, error);
 
-      const currentResolutionIndex =
-        Object.keys(videoResolutions).indexOf(resolution);
+      const currentResolutionIndex = Object.keys(videoResolutions).indexOf(resolution);
 
       if (currentResolutionIndex === 0) {
         throw new Error("Failed to get camera stream");
       }
 
       // try a lower index
-      const fallbackResolution = Object.keys(videoResolutions)[
-        currentResolutionIndex - 1
-      ] as VideoResolutionName;
+      const fallbackResolution = Object.keys(videoResolutions)[currentResolutionIndex - 1] as VideoResolutionName;
 
       return this.acquireStreamWithFallback(fallbackResolution);
     }
@@ -330,9 +286,7 @@ export class Camera {
     const trackSettings = videoTrack.getSettings();
 
     if (!trackSettings.width || !trackSettings.height) {
-      throw new Error(
-        "Video track resolution not available. Should not happen.",
-      );
+      throw new Error("Video track resolution not available. Should not happen.");
     }
 
     const videoTrackResolution = {
@@ -353,26 +307,17 @@ export class Camera {
       newState.torchSupported = true;
     }
 
-    if (
-      "focusMode" in streamCapabilities &&
-      streamCapabilities.focusMode?.includes("single-shot")
-    ) {
+    if ("focusMode" in streamCapabilities && streamCapabilities.focusMode?.includes("single-shot")) {
       newState.singleShotSupported = true;
     }
 
     // check for front/back mismatch and correct it
-    if (
-      this.facingMode === "front" &&
-      streamCapabilities.facingMode?.includes("environment")
-    ) {
+    if (this.facingMode === "front" && streamCapabilities.facingMode?.includes("environment")) {
       newState.facingMode = "back";
       console.warn("Front camera selected, but facingMode is environment");
     }
 
-    if (
-      this.facingMode === "back" &&
-      streamCapabilities.facingMode?.includes("user")
-    ) {
+    if (this.facingMode === "back" && streamCapabilities.facingMode?.includes("user")) {
       newState.facingMode = "front";
       console.warn("Back camera selected, but facingMode is user");
     }
@@ -429,9 +374,7 @@ export class Camera {
     return this.torchEnabled;
   }
 
-  /**
-   * Stops the stream on the camera.
-   */
+  /** Stops the stream on the camera. */
   stopStream() {
     if (this.activeStream) {
       console.debug(`Stopping active stream on ${this.name}`);
@@ -517,11 +460,7 @@ export function getNormalizedResolution(resolution: Resolution): Resolution {
   // account for errors in floating point calculations
   const epsilon = 0.0001;
   if (Math.abs(normalized.width / normalized.height - 16 / 9) > epsilon) {
-    console.warn(
-      `Resolution ${JSON.stringify(
-        resolution,
-      )} is not 16:9, may cause issues with some video players.`,
-    );
+    console.warn(`Resolution ${JSON.stringify(resolution)} is not 16:9, may cause issues with some video players.`);
   }
 
   return normalized;
@@ -533,9 +472,7 @@ export function getNormalizedResolution(resolution: Resolution): Resolution {
  * @param resolution - The resolution to match.
  * @returns The closest resolution.
  */
-export function matchClosestResolution(
-  resolution: Resolution,
-): VideoResolutionName {
+export function matchClosestResolution(resolution: Resolution): VideoResolutionName {
   const actualWidth = returnLongerSide(resolution);
   if (actualWidth > 1920) {
     return "4k";
@@ -552,20 +489,13 @@ export function matchClosestResolution(
  * @param videoTrackResolution - The resolution to find the closest key for.
  * @returns The closest resolution key.
  */
-export function findResolutionKey(
-  videoTrackResolution: Resolution,
-): VideoResolutionName {
+export function findResolutionKey(videoTrackResolution: Resolution): VideoResolutionName {
   // can be inverted in portrait mode on mobile
   const normalizedResolution = getNormalizedResolution(videoTrackResolution);
   // find a matching resolution in `videoResolutions`
-  const resolutionMatch = Object.entries(videoResolutions).find(
-    ([key, value]) => {
-      return (
-        value.width === normalizedResolution.width &&
-        value.height === normalizedResolution.height
-      );
-    },
-  );
+  const resolutionMatch = Object.entries(videoResolutions).find(([key, value]) => {
+    return value.width === normalizedResolution.width && value.height === normalizedResolution.height;
+  });
 
   if (!resolutionMatch) {
     const closestMatch = matchClosestResolution(videoTrackResolution);

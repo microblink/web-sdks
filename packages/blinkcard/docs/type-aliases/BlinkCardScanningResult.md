@@ -18,8 +18,8 @@ Result of scanning a card.
 
 A list of payment card accounts found on the card.
 
-Each result in the list represents a distinct payment account, containing
-details like the card number, CVV, and expiry date.
+Each result in the list represents a distinct payment account, containing details like the card number, CVV, and
+expiry date.
 
 ***
 
@@ -53,9 +53,8 @@ details like the card number, CVV, and expiry date.
 
 The overall liveness check result for the card.
 
-This result aggregates the outcomes of various liveness checks performed on
-the card to determine its authenticity. Set to `Pass` if all individual
-checks have passed; set to `Fail` if any individual check has failed.
+This result aggregates the outcomes of various liveness checks performed on the card to determine its authenticity.
+Set to `Pass` if all individual checks have passed; set to `Fail` if any individual check has failed.
 
 ***
 

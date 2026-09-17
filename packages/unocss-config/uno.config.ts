@@ -1,19 +1,14 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  defineConfig,
-  presetWind3,
-  transformerDirectives,
-  type PresetUnoTheme,
-} from "unocss";
-import {
-  addScaleMultiplier,
-  createSpacingRules,
-  createVerticalRules,
-  sizeObject,
-} from "./src/rules/index.ts";
+import { defineConfig, presetWind3, transformerDirectives, type PresetUnoTheme } from "unocss";
+
+import { addScaleMultiplier, createSpacingRules, createVerticalRules, sizeObject } from "./src/rules/index.ts";
+
+const focusIndicator =
+  "focus-visible:outline-none focus-visible:before:content-empty focus-visible:before:pointer-events-none focus-visible:before:absolute focus-visible:before:inset-[calc(-4px_-_var(--un-ring-width))] focus-visible:before:border-2px focus-visible:before:border-solid focus-visible:before:border-black focus-visible:before:outline focus-visible:before:outline-2px focus-visible:before:outline-solid focus-visible:before:outline-white";
+
+const dropdownItemFocusIndicator =
+  "data-[highlighted]:before:content-empty data-[highlighted]:before:pointer-events-none data-[highlighted]:before:absolute data-[highlighted]:before:inset-2px data-[highlighted]:before:rounded-[inherit] data-[highlighted]:before:border-2px data-[highlighted]:before:border-solid data-[highlighted]:before:border-black data-[highlighted]:before:outline data-[highlighted]:before:outline-2px data-[highlighted]:before:outline-solid data-[highlighted]:before:outline-white";
 
 export default defineConfig({
   presets: [presetWind3()],
@@ -126,9 +121,7 @@ export default defineConfig({
 
       const currentHeight = parseFloat(heights[size as keyof typeof heights]);
       const nextSize = nextSizes[size as keyof typeof nextSizes];
-      const maxHeight = nextSize
-        ? parseFloat(heights[nextSize as keyof typeof heights]) - 0.1
-        : 999999;
+      const maxHeight = nextSize ? parseFloat(heights[nextSize as keyof typeof heights]) - 0.1 : 999999;
 
       return {
         matcher: rest,
@@ -154,9 +147,11 @@ export default defineConfig({
   ],
   shortcuts: {
     // dialog buttons
-    btn: "px-6 py-1 text-sm text-nowrap rounded-10 border-none transition-colors transition-duration-100 appearance-none h-[2.5rem] btn-disabled btn-focus truncate",
-    "btn-focus":
-      "focus-visible:enabled:outline focus-visible:enabled:outline-2px focus-visible:enabled:outline-solid focus-visible:enabled:outline-primary focus-visible:enabled:outline-offset-4px",
+    btn: "relative px-6 py-1 text-sm text-nowrap rounded-10 border-none transition-colors transition-duration-100 appearance-none h-[2.5rem] btn-disabled btn-focus",
+    "btn-focus": `${focusIndicator} focus-visible:before:rounded-[inherit]`,
+    "control-focus": `${focusIndicator} focus-visible:before:rounded-[inherit]`,
+    "dropdown-item-focus": dropdownItemFocusIndicator,
+    "close-button-focus": `${focusIndicator} focus-visible:before:rounded-1`,
     "btn-disabled": "disabled:cursor-not-allowed",
 
     "btn-primary":
@@ -166,12 +161,10 @@ export default defineConfig({
 
     // dialog copy — requires a fluid base font-size on a Modal ancestor
     // (currently calc(0.875rem + 0.125rem * var(--modal-t)) → 14px–16px).
-    // --modal-t is a 0→1 progress variable set by ResizeObserver.
+    // --modal-t is a 0→1 width-based progress variable set by ResizeObserver.
     // All sizes are em-relative to that base.
-    "dialog-title":
-      "text-[1.5em] leading-[calc(1em+0.5rem)] font-bold text-center text-pretty text-gray-700",
-    "dialog-description":
-      "text-[1em] leading-[calc(1em+0.5rem)] text-gray-500 text-center text-pretty mt-[1em]",
+    "dialog-title": "text-[1.5em] leading-[calc(1em+0.5rem)] font-bold text-center text-pretty text-gray-700",
+    "dialog-description": "text-[1em] leading-[calc(1em+0.5rem)] text-gray-500 text-center text-pretty mt-[1em]",
   },
   theme: {
     spacing: sizeObject,
@@ -187,7 +180,7 @@ export default defineConfig({
     maxWidth: sizeObject,
     maxHeight: sizeObject,
     borderRadius: sizeObject,
-    // prettier-ignore
+    // oxfmt-ignore
     fontSize: {
       ...sizeObject,
       'xs':   [addScaleMultiplier('0.75', "rem"),   addScaleMultiplier('1', "rem")],

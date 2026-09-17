@@ -1,23 +1,17 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-/**
- * Haptic feedback types supported by the system.
- */
+/** Haptic feedback types supported by the system. */
 export type HapticFeedbackType = "short" | "long";
 
-/**
- * Mapping of haptic feedback types to their durations.
- */
+/** Mapping of haptic feedback types to their durations. */
 export const HAPTIC_FEEDBACK_CONFIGS: Record<HapticFeedbackType, number> = {
   short: 100,
   long: 300,
 };
 
 /**
- * Manages haptic feedback for Microblink UX managers.
- * Provides cross-platform haptic feedback using the Web Vibration API.
+ * Manages haptic feedback for Microblink UX managers. Provides cross-platform haptic feedback using the Web Vibration
+ * API.
  */
 export class HapticFeedbackManager {
   #enabled = true;
@@ -25,7 +19,7 @@ export class HapticFeedbackManager {
   /**
    * Check if haptic feedback is supported by the current browser/device.
    *
-   * @returns true if haptic feedback is supported
+   * @returns True if haptic feedback is supported
    */
   isSupported(): boolean {
     return typeof navigator !== "undefined" && "vibrate" in navigator;
@@ -43,7 +37,7 @@ export class HapticFeedbackManager {
   /**
    * Check if haptic feedback is currently enabled.
    *
-   * @returns true if haptic feedback is enabled
+   * @returns True if haptic feedback is enabled
    */
   isEnabled(): boolean {
     return this.#enabled;
@@ -64,9 +58,7 @@ export class HapticFeedbackManager {
     try {
       const success = navigator.vibrate([duration]);
       if (success) {
-        console.debug(
-          `HapticFeedback: Triggered ${type} feedback (${duration}ms)`,
-        );
+        console.debug(`HapticFeedback: Triggered ${type} feedback (${duration}ms)`);
       } else {
         console.debug(`HapticFeedback: Failed to trigger ${type} feedback`);
       }
@@ -75,27 +67,19 @@ export class HapticFeedbackManager {
     }
   }
 
-  /**
-   * Stop any ongoing haptic feedback.
-   */
+  /** Stop any ongoing haptic feedback. */
   stop(): void {
     if (this.isSupported()) {
       navigator.vibrate(0);
     }
   }
 
-  /**
-   * Trigger long haptic feedback.
-   * Uses long feedback pattern.
-   */
+  /** Trigger long haptic feedback. Uses long feedback pattern. */
   triggerLong(): void {
     this.triggerFeedback("long");
   }
 
-  /**
-   * Trigger short haptic feedback.
-   * Uses short feedback pattern.
-   */
+  /** Trigger short haptic feedback. Uses short feedback pattern. */
   triggerShort(): void {
     this.triggerFeedback("short");
   }

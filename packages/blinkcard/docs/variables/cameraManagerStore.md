@@ -12,14 +12,14 @@
 
 The Zustand store. Use only if you know what you're doing.
 
-Never set the state as this will break the application logic. We do not have
-two-way binding. Make sure you only observe the state.
+Never set the state as this will break the application logic. We do not have two-way binding. Make sure you only
+observe the state.
 
 Prefer using subscriptions if you require observable state.
 
-## Type declaration
+## Type Declaration
 
-### subscribe()
+### subscribe
 
 > **subscribe**: \{(`listener`): () => `void`; \<`U`\>(`selector`, `listener`, `options?`): () => `void`; \}
 
@@ -35,11 +35,7 @@ Prefer using subscriptions if you require observable state.
 
 ##### Returns
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`
 
 #### Call Signature
 
@@ -73,11 +69,7 @@ Prefer using subscriptions if you require observable state.
 
 ##### Returns
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`
 
 ## See
 

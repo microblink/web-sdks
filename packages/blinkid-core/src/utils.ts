@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { BlinkIdScanningResult, ScanningSide } from "@microblink/blinkid-wasm";
 
@@ -25,10 +23,7 @@ export function extractSideInputImage(
   blinkIdScanningResult: BlinkIdScanningResult,
   side: ScanningSide,
 ): ImageData | null {
-  return (
-    blinkIdScanningResult.subResults[scanningSideToIndex(side)]?.inputImage ??
-    null
-  );
+  return blinkIdScanningResult.subResults[scanningSideToIndex(side)]?.inputImage ?? null;
 }
 
 /**
@@ -37,17 +32,14 @@ export function extractSideInputImage(
  * @param blinkIdScanningResult - The scanning result.
  * @returns The barcode input image.
  */
-export function extractBarcodeImage(
-  blinkIdScanningResult: BlinkIdScanningResult,
-): ImageData | null {
+export function extractBarcodeImage(blinkIdScanningResult: BlinkIdScanningResult): ImageData | null {
   if (!blinkIdScanningResult.barcodeImageScanningSide) {
     return null;
   }
 
   return (
-    blinkIdScanningResult.subResults[
-      scanningSideToIndex(blinkIdScanningResult.barcodeImageScanningSide)
-    ]?.barcodeImage ?? null
+    blinkIdScanningResult.subResults[scanningSideToIndex(blinkIdScanningResult.barcodeImageScanningSide)]
+      ?.barcodeImage ?? null
   );
 }
 
@@ -62,10 +54,7 @@ export function extractSideDocumentImage(
   blinkIdScanningResult: BlinkIdScanningResult,
   side: ScanningSide,
 ): ImageData | null {
-  return (
-    blinkIdScanningResult.subResults[scanningSideToIndex(side)]
-      ?.documentImage ?? null
-  );
+  return blinkIdScanningResult.subResults[scanningSideToIndex(side)]?.documentImage ?? null;
 }
 
 /**
@@ -74,17 +63,14 @@ export function extractSideDocumentImage(
  * @param blinkIdScanningResult - The scanning result.
  * @returns The face image.
  */
-export function extractFaceImage(
-  blinkIdScanningResult: BlinkIdScanningResult,
-): ImageData | null {
+export function extractFaceImage(blinkIdScanningResult: BlinkIdScanningResult): ImageData | null {
   if (!blinkIdScanningResult.faceImageScanningSide) {
     return null;
   }
 
   return (
-    blinkIdScanningResult.subResults[
-      scanningSideToIndex(blinkIdScanningResult.faceImageScanningSide)
-    ]?.faceImage?.image ?? null
+    blinkIdScanningResult.subResults[scanningSideToIndex(blinkIdScanningResult.faceImageScanningSide)]?.faceImage
+      ?.image ?? null
   );
 }
 
@@ -94,16 +80,13 @@ export function extractFaceImage(
  * @param blinkIdScanningResult - The scanning result.
  * @returns The signature image.
  */
-export function extractSignatureImage(
-  blinkIdScanningResult: BlinkIdScanningResult,
-): ImageData | null {
+export function extractSignatureImage(blinkIdScanningResult: BlinkIdScanningResult): ImageData | null {
   if (!blinkIdScanningResult.signatureImageScanningSide) {
     return null;
   }
 
   return (
-    blinkIdScanningResult.subResults[
-      scanningSideToIndex(blinkIdScanningResult.signatureImageScanningSide)
-    ]?.signatureImage?.image ?? null
+    blinkIdScanningResult.subResults[scanningSideToIndex(blinkIdScanningResult.signatureImageScanningSide)]
+      ?.signatureImage?.image ?? null
   );
 }

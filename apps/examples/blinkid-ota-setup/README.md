@@ -13,7 +13,7 @@ The application performs the following actions:
     - `checkForUpdates: true` — always query the OTA provider for a newer compatible version
     - `otaResourceProviderUrl: undefined` — use Microblink's default OTA service (`https://blinkid-ota.microblink.com`); set a URL to use a proxy or self-hosted provider
     - `resourcesLocation: "custom-ota-resources"` — load the hosted/bundled OTA baseline from that path (see `public/custom-ota-resources` for the expected layout)
-    - `timeoutMilis: 5000` — OTA service request timeout in milliseconds
+    - `resourceDownloadTimeoutMs: 60000` — maximum inactivity period for every Wasm, data, and OTA request; the timer resets whenever data arrives
 
 3.  **Sets up a Result Callback**: It registers a callback that runs when a document is successfully scanned and logs the result to the console.
 

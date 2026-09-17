@@ -73,6 +73,8 @@
 - [PingScanningConditionsData](type-aliases/PingScanningConditionsData.md)
 - [PingSdkInitStart](type-aliases/PingSdkInitStart.md)
 - [PingSdkInitStartData](type-aliases/PingSdkInitStartData.md)
+- [PingUpload](type-aliases/PingUpload.md)
+- [PingUploadData](type-aliases/PingUploadData.md)
 - [PingUxEvent](type-aliases/PingUxEvent.md)
 - [PingUxEventData](type-aliases/PingUxEventData.md)
 - [PingWrapperProductInfo](type-aliases/PingWrapperProductInfo.md)

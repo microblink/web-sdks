@@ -10,9 +10,9 @@
 
 The worker scanning session.
 
-## Type declaration
+## Type Declaration
 
-### getSettings()
+### getSettings
 
 > **getSettings**: () => [`BlinkIdVerifySessionSettings`](BlinkIdVerifySessionSettings.md)
 
@@ -28,7 +28,7 @@ The settings.
 
 > **ping**: [`BlinkIdVerifyWorker`](../classes/BlinkIdVerifyWorker.md)\[`"reportPinglet"`\]
 
-### process()
+### process
 
 > **process**: (`image`) => [`ProcessResultWithBuffer`](ProcessResultWithBuffer.md)
 
@@ -46,7 +46,7 @@ The settings.
 
 > **sendPinglets**: [`BlinkIdVerifyWorker`](../classes/BlinkIdVerifyWorker.md)\[`"sendPinglets"`\]
 
-### showDemoOverlay()
+### showDemoOverlay
 
 > **showDemoOverlay**: () => `boolean`
 
@@ -58,7 +58,7 @@ Shows the demo overlay.
 
 Whether the demo overlay is shown.
 
-### showProductionOverlay()
+### showProductionOverlay
 
 > **showProductionOverlay**: () => `boolean`
 

@@ -2,9 +2,26 @@
 
 This package provides user experience management and feedback UI for the BlinkID Verify browser SDK. It parses results from [`@microblink/blinkid-verify-core`](https://www.npmjs.com/package/@microblink/blinkid-verify-core) and guides the user through the scanning process, controlling [`@microblink/camera-manager`](https://www.npmjs.com/package/@microblink/camera-manager) as needed.
 
+<!-- microblink:bundle-size:start -->
+
+## Bundle size
+
+Production consumer bundle sizes for `@microblink/blinkid-verify-ux-manager`:
+
+| Entrypoint | Minified  | Gzip     |
+| ---------- | --------- | -------- |
+| `root`     | 174.83 kB | 52.36 kB |
+| `/core`    | 49.03 kB  | 11.50 kB |
+| `/ui`      | 134.99 kB | 43.22 kB |
+
+External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
+
+_Generated automatically. Do not edit manually._
+<!-- microblink:bundle-size:end -->
+
 ## Features
 
-- **Smart UI State Management:** Provides both headless and UI components for user feedback during scanning
+- **Smart UI State Management:** Provides separate core and UI components for user feedback during scanning
 - **Camera Integration:** Integrates with BlinkID Verify Core and Camera Manager
 - **Haptic Feedback:** Built-in haptic feedback support for enhanced user experience on mobile devices
 - **Document Filtering:** Advanced document class filtering capabilities
@@ -15,21 +32,26 @@ This package provides user experience management and feedback UI for the BlinkID
 
 ## Overview
 
-- Provides both headless and UI components for user feedback during scanning.
+See the [custom UI example](../../apps/examples/blinkid-verify-custom-ui/) for an application-owned interface built with the `/core` entrypoint.
+
+- Provides separate core and UI entrypoints for user feedback during scanning.
 - Integrates with BlinkID Verify Core and Camera Manager.
 - Includes haptic feedback system for mobile devices.
 - Used by [`@microblink/blinkid-verify`](https://www.npmjs.com/package/@microblink/blinkid-verify) and can be used directly for custom UI integrations.
 
 ## Browser Support
 
-This package supports these browser versions and newer:
+The package exports support these browser versions and newer:
 
-- Chrome / Chromium 96 (desktop and Android)
-- Edge 96
-- Opera 84
-- Firefox 132 (desktop)
-- Safari 16.4 (macOS)
-- iOS Safari 16.4
+| Browser                     | Root | `/core` | `/ui` |
+| --------------------------- | ---- | ------- | ----- |
+| Chrome / Chromium (desktop) | 96   | 96      | 96    |
+| Chrome / Chromium (Android) | 96   | 96      | 96    |
+| Edge                        | 96   | 96      | 96    |
+| Opera                       | 84   | 84      | 84    |
+| Firefox (desktop)           | 132  | 132     | 132   |
+| Safari (macOS)              | 16.4 | 16.4    | 16.4  |
+| iOS Safari                  | 16.4 | 16.4    | 16.4  |
 
 This package depends on `@microblink/camera-manager` and `@microblink/blinkid-verify-core`.
 For the full SDK with camera capture, see `@microblink/blinkid-verify`.
@@ -50,6 +72,18 @@ yarn add @microblink/blinkid-verify-ux-manager
 pnpm add @microblink/blinkid-verify-ux-manager
 ```
 
+Use `@microblink/blinkid-verify-ux-manager/core` for orchestration without UI framework dependencies. Use
+`@microblink/blinkid-verify-ux-manager/ui` for the feedback UI. The `/ui` entry requires compatible versions of
+`solid-js`, `@ark-ui/solid`, `solid-zustand`, and `@solid-primitives/keyed`. Install them explicitly when using the root
+or `/ui` entry; they are optional package peers only so `/core` consumers do not install a Solid runtime:
+
+```sh
+npm install solid-js @ark-ui/solid solid-zustand @solid-primitives/keyed
+```
+
+The package root continues to export both entrypoints for compatibility until the next major release. New integrations
+should use `/core` and `/ui` explicitly.
+
 ## Haptic Feedback
 
 The UX Manager includes a comprehensive haptic feedback system that provides tactile responses during the document scanning process. **This feature is primarily designed for Android devices using Chrome browser**, where it works reliably to enhance the scanning experience.
@@ -68,16 +102,10 @@ The UX Manager includes a comprehensive haptic feedback system that provides tac
 ### Haptic Feedback Usage
 
 ```javascript
-import {
-  createBlinkIdVerifyUxManager,
-  HapticFeedbackManager,
-} from "@microblink/blinkid-verify-ux-manager";
+import { createBlinkIdVerifyUxManager, HapticFeedbackManager } from "@microblink/blinkid-verify-ux-manager/core";
 
 // Create UX Manager (haptic feedback enabled by default)
-const uxManager = await createBlinkIdVerifyUxManager(
-  cameraManager,
-  scanningSession,
-);
+const uxManager = await createBlinkIdVerifyUxManager(cameraManager, scanningSession);
 
 // Check if haptic feedback is supported
 if (uxManager.isHapticFeedbackSupported()) {
@@ -117,12 +145,9 @@ You can use `@microblink/blinkid-verify-ux-manager` directly in your project for
 Use the async `createBlinkIdVerifyUxManager` factory — direct constructor instantiation is not supported:
 
 ```javascript
-import { createBlinkIdVerifyUxManager } from "@microblink/blinkid-verify-ux-manager";
+import { createBlinkIdVerifyUxManager } from "@microblink/blinkid-verify-ux-manager/core";
 
-const uxManager = await createBlinkIdVerifyUxManager(
-  cameraManager,
-  scanningSession,
-);
+const uxManager = await createBlinkIdVerifyUxManager(cameraManager, scanningSession);
 
 // When done, release resources explicitly
 uxManager.destroy();
@@ -142,6 +167,8 @@ Two getters provide visibility into the current UI state:
 Tooltip delays can be configured via `FeedbackUiOptions` when creating the feedback UI:
 
 ```javascript
+import { createBlinkIdVerifyFeedbackUi } from "@microblink/blinkid-verify-ux-manager/ui";
+
 createBlinkIdVerifyFeedbackUi(uxManager, cameraUi, {
   showHelpTooltipTimeout: 15000, // ms before tooltip appears
 });

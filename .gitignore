@@ -148,7 +148,7 @@ pids
 lib-cov
 
 # Coverage directory used by tools like istanbul
-coverage
+coverage/
 *.lcov
 
 # nyc test coverage
@@ -175,6 +175,7 @@ web_modules/
 
 # TypeScript cache
 *.tsbuildinfo
+.tsconfig.staged-*.json
 
 # Optional npm cache directory
 .npm
@@ -317,5 +318,9 @@ mise.local.toml
 automatic.bazelrc
 .bazeltargets
 
+# Temporary files
+tmp/
+
 # GitHub Actions Google authentication credentials
 gha-creds-*.json
+localization.lock.json

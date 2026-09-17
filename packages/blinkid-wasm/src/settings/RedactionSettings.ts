@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { FieldType } from "../result";
 import { RedactionMode } from "./RedactionMode";
@@ -8,16 +6,16 @@ import { RedactionMode } from "./RedactionMode";
 /** Represents the document number redaction settings. */
 export type DocumentNumberRedactionSettings = {
   /**
-   * Defines how many digits at the beginning of the document number remain
-   * visible after redaction. Allowed values are `0` to `255`.
+   * Defines how many digits at the beginning of the document number remain visible after redaction. Allowed values are
+   * `0` to `255`.
    *
    * @default 0
    */
   prefixDigitsVisible: number;
 
   /**
-   * Defines how many digits at the end of the document number remain visible
-   * after redaction. Allowed values are `0` to `255`.
+   * Defines how many digits at the end of the document number remain visible after redaction. Allowed values are `0` to
+   * `255`.
    *
    * @default 0
    */
@@ -52,9 +50,8 @@ export type RedactionSettings = {
   /**
    * If true, the whole MRZ will be redacted.
    *
-   * This is the recommended way to redact MRZ (replacing the use of `fields`).
-   * This setting uses the `mode` member to determine what will be redacted
-   * (e.g., full result, image only, etc.).
+   * This is the recommended way to redact MRZ (replacing the use of `fields`). This setting uses the `mode` member to
+   * determine what will be redacted (e.g., full result, image only, etc.).
    *
    * @default false
    */
@@ -63,11 +60,10 @@ export type RedactionSettings = {
   /**
    * If true, the whole Barcode result will be redacted.
    *
-   * This will redact the barcode result data and remove the 'barcodeImage' from
-   * the subresults.
+   * This will redact the barcode result data and remove the 'barcodeImage' from the subresults.
    *
-   * This setting uses the `mode` member to determine what will be redacted
-   * (e.g., full result, barcode image only, etc.).
+   * This setting uses the `mode` member to determine what will be redacted (e.g., full result, barcode image only,
+   * etc.).
    *
    * @default false
    */

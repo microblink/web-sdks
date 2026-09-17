@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { RedactionSettings } from "@microblink/blinkid-wasm";
 
@@ -14,10 +12,8 @@ export function mergeRedactionSettings(
 ): RedactionSettings {
   return {
     ...redactionSettings,
-    redactBarcode:
-      redactionSettings.redactBarcode ?? defaultRedactionSettings.redactBarcode,
-    redactMrz:
-      redactionSettings.redactMrz ?? defaultRedactionSettings.redactMrz,
+    redactBarcode: redactionSettings.redactBarcode ?? defaultRedactionSettings.redactBarcode,
+    redactMrz: redactionSettings.redactMrz ?? defaultRedactionSettings.redactMrz,
     fields: redactionSettings.fields ?? defaultRedactionSettings.fields,
     mode: redactionSettings.mode ?? defaultRedactionSettings.mode,
   };

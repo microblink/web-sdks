@@ -12,4 +12,6 @@ Extended UI state for BlinkID Verify.
 
 ## Template
 
+**K**
+
 The key of the UI state.

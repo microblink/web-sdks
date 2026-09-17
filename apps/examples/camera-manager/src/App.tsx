@@ -1,20 +1,12 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /* @refresh reload */
 
-import {
-  CameraManager,
-  createCameraManagerUi,
-} from "@microblink/camera-manager";
+import { CameraManager, createCameraManagerUi } from "@microblink/camera-manager";
 import { Component, Show } from "solid-js";
 import { FPS } from "yy-fps";
 
-/**
- * This example shows how to use the CameraManager to capture frames from the camera
- * and display them on a canvas.
- */
+/** This example shows how to use the CameraManager to capture frames from the camera and display them on a canvas. */
 const PROCESS_FRAMES = true;
 const PORTAL = true;
 
@@ -45,14 +37,12 @@ export const App: Component = () => {
       const ctx = canvas.getContext("2d")!;
 
       const countFps = () => fps!.frame();
-      const removeFrameCaptureCallback = cameraManager.addFrameCaptureCallback(
-        (imageData) => {
-          countFps();
-          canvas.width = imageData.width;
-          canvas.height = imageData.height;
-          ctx.putImageData(imageData, 0, 0);
-        },
-      );
+      const removeFrameCaptureCallback = cameraManager.addFrameCaptureCallback((imageData) => {
+        countFps();
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        ctx.putImageData(imageData, 0, 0);
+      });
 
       cameraUi.addOnDismountCallback(() => {
         console.log("🧹 Cleaning up");

@@ -1,23 +1,12 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  InputImageAnalysisResult,
-  ScanningSettings,
-  ScanningStatus,
-} from "@microblink/blinkid-core";
+import { InputImageAnalysisResult, ScanningSettings, ScanningStatus } from "@microblink/blinkid-core";
 import { UiState } from "@microblink/feedback-stabilizer";
 import { match, P } from "ts-pattern";
-import {
-  isPassport,
-  isPassportWithBarcode,
-  isPassportWithoutBarcode,
-} from "./ui-state-utils";
 
-/**
- * The type of reticle to display.
- */
+import { isPassport, isPassportWithBarcode, isPassportWithoutBarcode } from "./ui-state-utils";
+
+/** The type of reticle to display. */
 export type BlinkIdReticleType =
   | "searching"
   | "processing"
@@ -32,34 +21,26 @@ export type BlinkIdReticleType =
  * Intro state keys for BlinkID UI.
  *
  * @remarks
- * These states display introductory screens that guide users to scan the correct
- * side or page of their document. Most intro states are automatically reached
- * during the scanning flow, but `INTRO_DATA_PAGE` requires manual initialization.
+ *   These states display introductory screens that guide users to scan the correct side or page of their document. Most
+ *   intro states are automatically reached during the scanning flow, but `INTRO_DATA_PAGE` requires manual
+ *   initialization. **Default behavior:** The UX manager defaults to `INTRO_FRONT_PAGE`, assuming users will scan
+ *   non-passport documents (ID cards, driver's licenses, etc.). **Automatically reachable states:** After capturing a
+ *   page, the flow automatically transitions through appropriate intro states:
  *
- * **Default behavior:**
- * The UX manager defaults to `INTRO_FRONT_PAGE`, assuming users will scan
- * non-passport documents (ID cards, driver's licenses, etc.).
- *
- * **Automatically reachable states:**
- * After capturing a page, the flow automatically transitions through appropriate
- * intro states:
- * - `INTRO_BACK_PAGE` - After flipping an ID card (`FLIP_CARD`)
- * - `INTRO_TOP_PAGE` - After moving to passport top page (`MOVE_TOP`)
- * - `INTRO_LEFT_PAGE` - After moving to passport left page (`MOVE_LEFT`)
- * - `INTRO_RIGHT_PAGE` - After moving to passport right page (`MOVE_RIGHT`)
- * - `INTRO_LAST_PAGE` - After moving to passport barcode page (`MOVE_LAST_PAGE`)
- *
- * **Manual initialization required:**
- * - `INTRO_DATA_PAGE` - Only reachable by overriding the UX manager initial
- *   state. Use this when restricting scanning to passport documents only,
- *   as the SDK assumes non-passport documents by default.
+ *   - `INTRO_BACK_PAGE` - After flipping an ID card (`FLIP_CARD`)
+ *   - `INTRO_TOP_PAGE` - After moving to passport top page (`MOVE_TOP`)
+ *   - `INTRO_LEFT_PAGE` - After moving to passport left page (`MOVE_LEFT`)
+ *   - `INTRO_RIGHT_PAGE` - After moving to passport right page (`MOVE_RIGHT`)
+ *   - `INTRO_LAST_PAGE` - After moving to passport barcode page (`MOVE_LAST_PAGE`) **Manual initialization required:**
+ *   - `INTRO_DATA_PAGE` - Only reachable by overriding the UX manager initial state. Use this when restricting scanning
+ *     to passport documents only, as the SDK assumes non-passport documents by default.
  *
  * @example
- * ```typescript
- * // Limit scanning to passport documents only
- * const uxManager = new BlinkIdUxManager(cameraManager, session);
- * uxManager.setInitialUiStateKey("INTRO_DATA_PAGE", true);
- * ```
+ *   ```typescript
+ *   // Limit scanning to passport documents only
+ *   const uxManager = new BlinkIdUxManager(cameraManager, session);
+ *   uxManager.setInitialUiStateKey("INTRO_DATA_PAGE", true);
+ *   ```;
  *
  * @see `BlinkIdUiIntroStateKey` for the union type of these keys
  * @see `getChainedUiStateKey` for the automatic state transition logic
@@ -85,26 +66,23 @@ export type BlinkIdUiIntroStateKey = (typeof blinkIdUiIntroStateKeys)[number];
  * Page transition state keys for BlinkID UI.
  *
  * @remarks
- * These states display transition animations and instructions between scanning
- * different document pages or sides. They are automatically triggered after
- * successfully capturing a page (`PAGE_CAPTURED`) and cannot be manually set.
+ *   These states display transition animations and instructions between scanning different document pages or sides.
+ *   They are automatically triggered after successfully capturing a page (`PAGE_CAPTURED`) and cannot be manually set.
+ *   Each transition state corresponds to a specific document type and guides the user to position the document for the
+ *   next scan:
  *
- * Each transition state corresponds to a specific document type and guides the
- * user to position the document for the next scan:
- * - `FLIP_CARD` - Instructs user to flip ID card to scan the back side
- * - `MOVE_LAST_PAGE` - Instructs user to move to passport's last page (barcode)
- * - `MOVE_TOP` - Instructs user to rotate passport to top orientation (0°)
- * - `MOVE_RIGHT` - Instructs user to rotate passport 90° clockwise
- * - `MOVE_LEFT` - Instructs user to rotate passport 90° counter-clockwise
- *
- * **Automatic flow:**
- * After a transition animation completes, the UI automatically advances to the
- * corresponding intro state to begin scanning the next page:
- * - `FLIP_CARD` → `INTRO_BACK_PAGE`
- * - `MOVE_LAST_PAGE` → `INTRO_LAST_PAGE`
- * - `MOVE_TOP` → `INTRO_TOP_PAGE`
- * - `MOVE_RIGHT` → `INTRO_RIGHT_PAGE`
- * - `MOVE_LEFT` → `INTRO_LEFT_PAGE`
+ *   - `FLIP_CARD` - Instructs user to flip ID card to scan the back side
+ *   - `MOVE_LAST_PAGE` - Instructs user to move to passport's last page (barcode)
+ *   - `MOVE_TOP` - Instructs user to rotate passport to top orientation (0°)
+ *   - `MOVE_RIGHT` - Instructs user to rotate passport 90° clockwise
+ *   - `MOVE_LEFT` - Instructs user to rotate passport 90° counter-clockwise **Automatic flow:** After a transition
+ *     animation completes, the UI automatically advances to the corresponding intro state to begin scanning the next
+ *     page:
+ *   - `FLIP_CARD` → `INTRO_BACK_PAGE`
+ *   - `MOVE_LAST_PAGE` → `INTRO_LAST_PAGE`
+ *   - `MOVE_TOP` → `INTRO_TOP_PAGE`
+ *   - `MOVE_RIGHT` → `INTRO_RIGHT_PAGE`
+ *   - `MOVE_LEFT` → `INTRO_LEFT_PAGE`
  *
  * @see `BlinkIdPageTransitionKey` for the union type of these keys
  * @see `getChainedUiStateKey` for the automatic state transition logic
@@ -123,12 +101,9 @@ export const blinkIdPageTransitionKeys = [
  *
  * @see `blinkIdPageTransitionKeys` for detailed documentation on each state
  */
-export type BlinkIdPageTransitionKey =
-  (typeof blinkIdPageTransitionKeys)[number];
+export type BlinkIdPageTransitionKey = (typeof blinkIdPageTransitionKeys)[number];
 
-/**
- * The error states for BlinkID. Mappable from `ProcessResult`.
- */
+/** The error states for BlinkID. Mappable from `ProcessResult`. */
 export const blinkIdUiErrorStateKeys = [
   // framing
   "FRONT_PAGE_NOT_IN_FRAME",
@@ -162,19 +137,12 @@ export const blinkIdUiErrorStateKeys = [
 
 export type BlinkIdUiErrorStateKey = (typeof blinkIdUiErrorStateKeys)[number];
 
-/**
- * These keys represent successful steps in the BlinkID scanning process.
- */
-export const blinkIdUiStepSuccessKeys = [
-  "PAGE_CAPTURED",
-  "DOCUMENT_CAPTURED",
-] as const;
+/** These keys represent successful steps in the BlinkID scanning process. */
+export const blinkIdUiStepSuccessKeys = ["PAGE_CAPTURED", "DOCUMENT_CAPTURED"] as const;
 
 export type BlinkIdUiStepSuccessKey = (typeof blinkIdUiStepSuccessKeys)[number];
 
-/**
- * These keys are directly mappable from a `ProcessResult`
- */
+/** These keys are directly mappable from a `ProcessResult` */
 export type BlinkIdUiMappableKey =
   | BlinkIdUiErrorStateKey
   // success
@@ -182,9 +150,7 @@ export type BlinkIdUiMappableKey =
   // "SCANNING_BARCODE" is the only exception as it's an active processing state
   | "PROCESSING_BARCODE";
 
-/**
- * The key of the UI state.
- */
+/** The key of the UI state. */
 export type BlinkIdUiStateKey =
   // intro states
   | BlinkIdUiIntroStateKey
@@ -207,9 +173,7 @@ export type BlinkIdUiStateMap = {
   };
 };
 
-/**
- * The UI state of BlinkID.
- */
+/** The UI state of BlinkID. */
 export type BlinkIdUiState = BlinkIdUiStateMap[keyof BlinkIdUiStateMap];
 
 const INTRO_DURATION = 2000;
@@ -217,9 +181,7 @@ const ERROR_DURATION = 1500;
 const SUCCESS_DURATION = 800;
 const TRANSITION_DURATION = 2000;
 
-/**
- * The UI state map of BlinkID.
- */
+/** The UI state map of BlinkID. */
 export const blinkIdUiStateMap: BlinkIdUiStateMap = {
   INTRO_FRONT_PAGE: {
     key: "INTRO_FRONT_PAGE",
@@ -362,9 +324,7 @@ export const blinkIdUiStateMap: BlinkIdUiStateMap = {
     minDuration: TRANSITION_DURATION,
     singleEmit: true,
   },
-  /**
-   * Generic step done state after capturing a side
-   */
+  /** Generic step done state after capturing a side */
   PAGE_CAPTURED: {
     key: "PAGE_CAPTURED",
     reticleType: "done",
@@ -444,12 +404,8 @@ export const blinkIdUiStateMap: BlinkIdUiStateMap = {
   },
 } as const;
 
-/**
- * Maps a session-level scanning status to a UI state key
- */
-export function getUiStateKeyFromScanningStatus(
-  scanningStatus: ScanningStatus,
-): BlinkIdUiMappableKey | undefined {
+/** Maps a session-level scanning status to a UI state key */
+export function getUiStateKeyFromScanningStatus(scanningStatus: ScanningStatus): BlinkIdUiMappableKey | undefined {
   return match<ScanningStatus, BlinkIdUiMappableKey | undefined>(scanningStatus)
     .with("document-scanned", () => "DOCUMENT_CAPTURED")
     .with("side-scanned", () => "PAGE_CAPTURED")
@@ -458,17 +414,14 @@ export function getUiStateKeyFromScanningStatus(
 }
 
 /**
- * Determines the appropriate UI state key based on the current frame processing
- * result and scanning settings.
+ * Determines the appropriate UI state key based on the current frame processing result and scanning settings.
  *
- * This function acts as a state machine, translating the low-level analysis and
- * completeness results into a high-level UI state that drives the user
- * interface.
+ * This function acts as a state machine, translating the low-level analysis and completeness results into a high-level
+ * UI state that drives the user interface.
  *
- * @param frameProcessResult - The current (possibly partial) result of frame
- * processing, including image analysis and completeness.
- * @param settings - Optional scanning settings that may influence state
- * selection.
+ * @param frameProcessResult - The current (possibly partial) result of frame processing, including image analysis and
+ *   completeness.
+ * @param settings - Optional scanning settings that may influence state selection.
  * @returns The UI state key representing what should be shown to the user.
  */
 export function getUiStateKey(
@@ -483,9 +436,7 @@ export function getUiStateKey(
   }
 
   return (
-    match<InputImageAnalysisResult, BlinkIdUiMappableKey | undefined>(
-      inputImageAnalysisResult,
-    )
+    match<InputImageAnalysisResult, BlinkIdUiMappableKey | undefined>(inputImageAnalysisResult)
       // Unsupported document
       .with(
         {
@@ -576,9 +527,7 @@ export function getUiStateKey(
         {
           documentLightingStatus: P.when(
             (status) =>
-              status === "too-bright" &&
-              scanningSettings.documentCaptureModule
-                ?.imageWithPoorLightingRejected,
+              status === "too-bright" && scanningSettings.documentCaptureModule?.imageWithPoorLightingRejected,
           ),
         },
         () => "TOO_BRIGHT",
@@ -586,10 +535,7 @@ export function getUiStateKey(
       .with(
         {
           documentLightingStatus: P.when(
-            (status) =>
-              status === "too-dark" &&
-              scanningSettings.documentCaptureModule
-                ?.imageWithPoorLightingRejected,
+            (status) => status === "too-dark" && scanningSettings.documentCaptureModule?.imageWithPoorLightingRejected,
           ),
         },
         () => "TOO_DARK",
@@ -599,9 +545,7 @@ export function getUiStateKey(
       .with(
         {
           glareDetectionStatus: P.when(
-            (status) =>
-              status === "detected" &&
-              scanningSettings.documentCaptureModule?.imageWithGlareRejected,
+            (status) => status === "detected" && scanningSettings.documentCaptureModule?.imageWithGlareRejected,
           ),
         },
         () => "GLARE_DETECTED",
@@ -617,19 +561,14 @@ export function getUiStateKey(
       .with(
         {
           documentHandOcclusionStatus: P.when(
-            (status) =>
-              status === "detected" &&
-              scanningSettings.documentCaptureModule
-                ?.imageWithHandOcclusionRejected,
+            (status) => status === "detected" && scanningSettings.documentCaptureModule?.imageWithHandOcclusionRejected,
           ),
         },
         () => "OCCLUDED",
       )
       .with(
         {
-          missingMandatoryFields: P.when(
-            (arr) => Array.isArray(arr) && arr.length > 0,
-          ),
+          missingMandatoryFields: P.when((arr) => Array.isArray(arr) && arr.length > 0),
         },
         () => "OCCLUDED",
       )
@@ -656,9 +595,7 @@ export function getUiStateKey(
       .with(
         {
           processingStatus: "image-return-failed",
-          imageExtractionFailures: P.when(
-            (arr) => Array.isArray(arr) && arr.includes("face"),
-          ),
+          imageExtractionFailures: P.when((arr) => Array.isArray(arr) && arr.includes("face")),
         },
         () => "FACE_PHOTO_OCCLUDED",
       )
@@ -667,9 +604,7 @@ export function getUiStateKey(
       .with(
         {
           blurDetectionStatus: P.when(
-            (status) =>
-              status === "detected" &&
-              scanningSettings.documentCaptureModule?.imageWithBlurRejected,
+            (status) => status === "detected" && scanningSettings.documentCaptureModule?.imageWithBlurRejected,
           ),
         },
         () => "BLUR_DETECTED",
@@ -738,10 +673,7 @@ export function getUiStateKey(
       // barcode
       .with(
         {
-          /**
-           * This processing status can only occur if document has mandatory barcode,
-           * during the VIZ step
-           */
+          /** This processing status can only occur if document has mandatory barcode, during the VIZ step */
           processingStatus: "barcode-detection-failed",
         },
         () => "BARCODE_NOT_IN_FRAME",

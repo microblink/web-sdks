@@ -60,7 +60,7 @@ The Camera Manager UI instance.
 
 ***
 
-### destroy()
+### destroy
 
 > **destroy**: () => `Promise`\<`void`\>
 

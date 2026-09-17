@@ -36,14 +36,14 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
+          node-version: "24.18.0"
           registry-url: "https://registry.npmjs.org/"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
 
       - name: Install dependencies
-        run: HUSKY=0 pnpm install --frozen-lockfile
+        run: LEFTHOOK=0 pnpm install --frozen-lockfile
 
       - name: Resolve publish targets
         id: resolve-targets

@@ -1,9 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 declare module "*.module.scss" {
-  const classes: { [key: string]: string };
+  const classes: Record<string, string>;
   export default classes;
 }
 

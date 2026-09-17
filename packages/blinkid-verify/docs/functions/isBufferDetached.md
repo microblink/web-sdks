@@ -22,4 +22,4 @@ ArrayBuffer to check
 
 `boolean`
 
-true if the buffer is detached, false otherwise
+True if the buffer is detached, false otherwise

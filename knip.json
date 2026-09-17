@@ -1,9 +1,8 @@
 {
-  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "$schema": "https://unpkg.com/knip@6/schema.json",
   "tags": ["-lintignore"],
   "svgo": true,
-  "lint-staged": true,
-  "eslint": true,
+  "oxlint": true,
   "ignoreWorkspaces": [
     // ".",
     "apps/examples/*",

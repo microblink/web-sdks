@@ -1,12 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { LicenseUnlockResult } from "@microblink/wasm-common";
 
-export type ProxyUrlValidationErrorCode =
-  | "INVALID_PROXY_URL"
-  | "HTTPS_REQUIRED";
+export type ProxyUrlValidationErrorCode = "INVALID_PROXY_URL" | "HTTPS_REQUIRED";
 
 export class ProxyUrlValidationError extends Error {
   constructor(
@@ -24,28 +20,19 @@ export type SanitizedProxyUrls = {
   baltazar: string;
 };
 
-/**
- * Validates that the license allows proxy usage.
- */
-export function validateLicenseProxyPermissions(
-  licenseUnlockResult: LicenseUnlockResult,
-): void {
-  const isOnlineLicense =
-    licenseUnlockResult.unlockResult === "requires-server-permission";
+/** Validates that the license allows proxy usage. */
+export function validateLicenseProxyPermissions(licenseUnlockResult: LicenseUnlockResult): void {
+  const isOnlineLicense = licenseUnlockResult.unlockResult === "requires-server-permission";
   const { allowPingProxy, allowBaltazarProxy, hasPing } = licenseUnlockResult;
 
   // Check if the license allows usage of any proxy
   if (!allowPingProxy && !allowBaltazarProxy) {
-    throw new Error(
-      "Microblink proxy URL is set but your license doesn't permit proxy usage. Check your license.",
-    );
+    throw new Error("Microblink proxy URL is set but your license doesn't permit proxy usage. Check your license.");
   }
 
   // For offline licenses, ping must be enabled. For online licenses, ping requirement is waived.
   if (!isOnlineLicense && !hasPing) {
-    throw new Error(
-      "Microblink proxy URL is set but your license doesn't permit proxy usage. Check your license.",
-    );
+    throw new Error("Microblink proxy URL is set but your license doesn't permit proxy usage. Check your license.");
   }
 
   // Check for inconsistent configurations and throw if found
@@ -55,15 +42,11 @@ export function validateLicenseProxyPermissions(
     (!isOnlineLicense && hasPing && allowBaltazarProxy && !allowPingProxy) ||
     (isOnlineLicense && !hasPing && !allowBaltazarProxy && allowPingProxy)
   ) {
-    throw new Error(
-      "Microblink proxy URL is set but your license doesn't permit proxy usage. Check your license.",
-    );
+    throw new Error("Microblink proxy URL is set but your license doesn't permit proxy usage. Check your license.");
   }
 }
 
-/**
- * Validates and sanitizes proxy URLs for different Microblink services.
- */
+/** Validates and sanitizes proxy URLs for different Microblink services. */
 export function sanitizeProxyUrls(baseUrl: string): {
   ping: string;
   baltazar: string;
@@ -103,37 +86,26 @@ export function sanitizeProxyUrls(baseUrl: string): {
       baltazar: baltazarUrl,
     };
   } catch (error) {
-    throw new ProxyUrlValidationError(
-      "INVALID_PROXY_URL",
-      `Failed to build baltazar service URL`,
-      baseUrl,
-    );
+    throw new ProxyUrlValidationError("INVALID_PROXY_URL", `Failed to build baltazar service URL`, baseUrl);
   }
 }
 
 /**
- * Analytics flags for `ping.sdk.init.start` (and similar), derived from the
- * configured proxy URL and license fields. Does not validate the URL or
- * license proxy permissions — validate after confirming the license unlocked
+ * Analytics flags for `ping.sdk.init.start` (and similar), derived from the configured proxy URL and license fields.
+ * Does not validate the URL or license proxy permissions — validate after confirming the license unlocked
  * successfully.
  *
- * `baltazarProxyEnabled` is true when the license is online
- * (`requires-server-permission`), a Microblink proxy base URL is set, and the
- * license allows routing the remote license (Baltazar) check through that proxy.
+ * `baltazarProxyEnabled` is true when the license is online (`requires-server-permission`), a Microblink proxy base URL
+ * is set, and the license allows routing the remote license (Baltazar) check through that proxy.
  */
 export function getMicroblinkProxyPingFlags(
   microblinkProxyUrl: string | undefined,
-  license: Pick<
-    LicenseUnlockResult,
-    "allowPingProxy" | "allowBaltazarProxy" | "hasPing" | "unlockResult"
-  >,
+  license: Pick<LicenseUnlockResult, "allowPingProxy" | "allowBaltazarProxy" | "hasPing" | "unlockResult">,
 ): { pingProxyEnabled: boolean; baltazarProxyEnabled: boolean } {
   const hasMicroblinkProxyUrl = Boolean(microblinkProxyUrl);
   const isOnlineLicense = license.unlockResult === "requires-server-permission";
   return {
-    pingProxyEnabled:
-      hasMicroblinkProxyUrl && license.allowPingProxy && license.hasPing,
-    baltazarProxyEnabled:
-      isOnlineLicense && hasMicroblinkProxyUrl && license.allowBaltazarProxy,
+    pingProxyEnabled: hasMicroblinkProxyUrl && license.allowPingProxy && license.hasPing,
+    baltazarProxyEnabled: isOnlineLicense && hasMicroblinkProxyUrl && license.allowBaltazarProxy,
   };
 }

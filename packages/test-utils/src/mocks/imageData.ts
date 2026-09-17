@@ -1,18 +1,12 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 type CreateFakeImageDataOptions = {
   width?: number;
   height?: number;
 };
 
-/**
- * Creates an ImageData-like object for tests.
- */
-export const createFakeImageData = (
-  options: CreateFakeImageDataOptions = {},
-): ImageData => {
+/** Creates an ImageData-like object for tests. */
+export const createFakeImageData = (options: CreateFakeImageDataOptions = {}): ImageData => {
   const width = options.width ?? 1;
   const height = options.height ?? 1;
 

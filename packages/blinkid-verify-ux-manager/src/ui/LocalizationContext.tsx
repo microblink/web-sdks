@@ -1,79 +1,59 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import {
-  ParentComponent,
-  createContext,
-  createEffect,
-  useContext,
-} from "solid-js";
+import { merge } from "merge-anything";
+import { ParentComponent, createContext, createEffect, useContext } from "solid-js";
 import { SetStoreFunction, createStore } from "solid-js/store";
 
 import enLocaleStrings from "./locales/en";
-import { merge } from "merge-anything";
 
-/**
- * The locale record type.
- */
+/** The locale record type. */
 export type LocaleRecord = typeof enLocaleStrings;
 
-/**
- * Recursively transforms a locale record to allow string overrides at any level.
- */
+/** Recursively transforms a locale record to allow string overrides at any level. */
 export type LocalizedValue<T> =
   T extends Record<string, unknown>
-    ? | {
-          [K in keyof T]: LocalizedValue<T[K]>;
-        }
-      | (string & Record<string, never>)
+    ?
+        | {
+            [K in keyof T]: LocalizedValue<T[K]>;
+          }
+        | (string & Record<string, never>)
     : T | (string & Record<string, never>);
 
 /**
- * Deep partial type that allows any string to be assigned to override values.
- * This type is permissive to allow any partial override structure.
+ * Deep partial type that allows any string to be assigned to override values. This type is permissive to allow any
+ * partial override structure.
  */
-// eslint-disable @typescript-eslint/ban-types
+// oxlint-disable typescript/ban-types
 type DeepPartialLocalized<T> =
   T extends Record<string, unknown>
     ? {
-        -readonly [K in keyof T]?: T[K] extends Record<string, unknown>
-          ? DeepPartialLocalized<T[K]> | string
-          : string;
+        -readonly [K in keyof T]?: T[K] extends Record<string, unknown> ? DeepPartialLocalized<T[K]> | string : string;
       }
     : never;
 
 /**
- * The localization strings type.
- * This allows for autocomplete for defaults, but also overriding with strings at any level.
- * https://twitter.com/mattpocockuk/status/1709281782325977101
+ * The localization strings type. This allows for autocomplete for defaults, but also overriding with strings at any
+ * level. https://twitter.com/mattpocockuk/status/1709281782325977101
  */
 export type LocalizationStrings = LocalizedValue<LocaleRecord>;
 
-/**
- * Partial version of LocalizationStrings that allows any string to be assigned.
- */
+/** Partial version of LocalizationStrings that allows any string to be assigned. */
 export type PartialLocalizationStrings = DeepPartialLocalized<LocaleRecord>;
 
-/**
- * The localization context.
- */
+/** The localization context. */
 const LocalizationContext = createContext<{
   t: LocalizationStrings;
   updateLocalization: SetStoreFunction<LocalizationStrings>;
 }>();
 
-/**
- * The localization provider.
- */
+/** The localization provider. */
 export const LocalizationProvider: ParentComponent<{
   userStrings?: PartialLocalizationStrings;
 }> = (props) => {
   const mergedStrings = (): LocalizationStrings =>
     merge(enLocaleStrings, props.userStrings ?? {}) as LocalizationStrings;
 
-  const [localizationStore, updateLocalizationStore] =
-    createStore<LocalizationStrings>(mergedStrings());
+  const [localizationStore, updateLocalizationStore] = createStore<LocalizationStrings>(mergedStrings());
 
   // update store as a side-effects of userStrings changing
   createEffect(() => {
@@ -85,11 +65,7 @@ export const LocalizationProvider: ParentComponent<{
     updateLocalization: updateLocalizationStore,
   };
 
-  return (
-    <LocalizationContext.Provider value={contextValue}>
-      {props.children}
-    </LocalizationContext.Provider>
-  );
+  return <LocalizationContext.Provider value={contextValue}>{props.children}</LocalizationContext.Provider>;
 };
 
 /**

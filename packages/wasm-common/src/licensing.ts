@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /** The license unlock result. */
 export type LicenseUnlockResult = Readonly<{
@@ -13,7 +11,7 @@ export type LicenseUnlockResult = Readonly<{
   /** The licensee. */
   licensee: string;
   /** The application ids. */
-  applicationIds: Array<string>;
+  applicationIds: string[];
   /** The package name. */
   packageName: string;
   /** The sdk name. */
@@ -35,10 +33,7 @@ export type LicenseUnlockResult = Readonly<{
 }>;
 
 /** The license token state. */
-export type LicenseTokenState =
-  | "invalid"
-  | "requires-server-permission"
-  | "valid";
+export type LicenseTokenState = "invalid" | "requires-server-permission" | "valid";
 
 /** The license request. */
 export type LicenseRequest = Readonly<{
@@ -47,7 +42,7 @@ export type LicenseRequest = Readonly<{
   /** The licensee. */
   licensee: string;
   /** The application ids. */
-  applicationIds: Array<string>;
+  applicationIds: string[];
   /** The package name. */
   packageName: string;
   /** The platform. */

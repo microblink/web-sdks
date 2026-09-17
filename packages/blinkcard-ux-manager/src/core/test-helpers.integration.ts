@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   BlinkCardScanningResult,
@@ -8,7 +6,7 @@ import type {
   DeviceInfo,
   ProcessResultWithBuffer,
 } from "@microblink/blinkcard-core";
-import type { CameraManager } from "@microblink/camera-manager";
+import type { CameraManager } from "@microblink/camera-manager/core";
 import {
   createFakeCameraHarness,
   createFakeScanningSession,
@@ -16,11 +14,10 @@ import {
   type FakeCameraHarness,
   type FakeScanningSession,
 } from "@microblink/test-utils";
+
+import { createDeviceInfo, createSessionSettings } from "./__testdata/blinkcardTestFixtures";
 import { BlinkCardUxManager } from "./BlinkCardUxManager";
-import {
-  createDeviceInfo,
-  createSessionSettings,
-} from "./__testdata/blinkcardTestFixtures";
+import type { BlinkCardUxManagerOptions } from "./createBlinkCardUxManager";
 
 export type BlinkCardCameraHarness = FakeCameraHarness<CameraManager>;
 
@@ -49,16 +46,13 @@ export type CreateBlinkCardIntegrationContextOptions = {
   deviceInfo?: DeviceInfo;
   fakeCameraOptions?: CreateFakeCameraManagerOptions;
   sessionOverrides?: Partial<BlinkCardSessionMock>;
+  uxManagerOptions?: BlinkCardUxManagerOptions;
 };
 
 export const createBlinkCardUnitSessionMock = (
   sessionSettings: BlinkCardSessionSettings = createSessionSettings(),
 ): BlinkCardSessionMock =>
-  createFakeScanningSession<
-    ProcessResultWithBuffer,
-    BlinkCardSessionSettings,
-    BlinkCardScanningResult
-  >({
+  createFakeScanningSession<ProcessResultWithBuffer, BlinkCardSessionSettings, BlinkCardScanningResult>({
     settings: sessionSettings,
     showDemoOverlay: false,
     showProductionOverlay: true,
@@ -84,10 +78,8 @@ export const createBlinkCardIntegrationContext = (
   });
   const manager = new BlinkCardUxManager(
     cameraHarness.cameraManager,
-    scanningSession as unknown as ConstructorParameters<
-      typeof BlinkCardUxManager
-    >[1],
-    {},
+    scanningSession as unknown as ConstructorParameters<typeof BlinkCardUxManager>[1],
+    options.uxManagerOptions ?? {},
     options.sessionSettings ?? createSessionSettings(),
     options.showDemoOverlay ?? false,
     options.showProductionOverlay ?? false,

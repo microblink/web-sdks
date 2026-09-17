@@ -14,10 +14,10 @@ Options for the VideoFrameProcessor.
 
 ### canvasRenderingMode?
 
-> `optional` **canvasRenderingMode**: [`CanvasRenderingMode`](CanvasRenderingMode.md)
+> `optional` **canvasRenderingMode?**: [`CanvasRenderingMode`](CanvasRenderingMode.md)
 
 ***
 
 ### fallbackWebGlTo2d?
 
-> `optional` **fallbackWebGlTo2d**: `boolean`
+> `optional` **fallbackWebGlTo2d?**: `boolean`

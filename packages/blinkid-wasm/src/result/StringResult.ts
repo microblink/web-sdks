@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { AlphabetType, Rectangle } from "../utils";
 import { ScanningSide } from "./ScanningSide";
@@ -16,7 +14,4 @@ export type AlphabetStringResult = {
 };
 
 /** Represents multi string results with mandatory entries for all alphabets */
-export type StringResult = {
-  /** The string results for each alphabet. */
-  [key in AlphabetType]: AlphabetStringResult;
-};
+export type StringResult = Record<AlphabetType, AlphabetStringResult>;

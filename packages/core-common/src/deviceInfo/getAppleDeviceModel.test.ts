@@ -1,8 +1,7 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { describe, it, expect, vi, afterEach } from "vitest";
+
 import { AppleDeviceModel, getAppleDeviceModel } from "./getAppleDeviceModel";
 
 describe("getAppleDeviceModel", () => {
@@ -27,8 +26,7 @@ describe("getAppleDeviceModel", () => {
     },
     {
       description: "older iPad via user agent",
-      userAgent:
-        "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+      userAgent: "Mozilla/5.0 (iPad; CPU OS 12_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
       maxTouchPoints: 5,
       expected: "iPad",
     },
@@ -76,16 +74,13 @@ describe("getAppleDeviceModel", () => {
     },
   ];
 
-  it.each(testCases)(
-    "$description",
-    ({ userAgent, maxTouchPoints, expected }) => {
-      vi.stubGlobal("navigator", {
-        userAgent,
-        maxTouchPoints,
-      });
+  it.each(testCases)("$description", ({ userAgent, maxTouchPoints, expected }) => {
+    vi.stubGlobal("navigator", {
+      userAgent,
+      maxTouchPoints,
+    });
 
-      const result = getAppleDeviceModel();
-      expect(result).toBe(expected);
-    },
-  );
+    const result = getAppleDeviceModel();
+    expect(result).toBe(expected);
+  });
 });

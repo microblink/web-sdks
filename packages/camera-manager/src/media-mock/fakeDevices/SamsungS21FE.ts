@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { FakeDevice } from "../fake-devices";
 
@@ -9,27 +7,23 @@ export const MockSamsungS21FE: FakeDevice = {
   cameras: [
     {
       inputDeviceInfo: {
-        deviceId:
-          "1e3cf0ccf4d75643caf0078958243a046ae7ae51e230d0eac28a90e66fa8bdcd",
+        deviceId: "1e3cf0ccf4d75643caf0078958243a046ae7ae51e230d0eac28a90e66fa8bdcd",
         kind: "videoinput",
         label: "camera2 1, facing front",
-        groupId:
-          "f3f49d454022ea7dd50594d792d32e04a70d4efd39eb1fb887c34e9e27c8ab78",
+        groupId: "f3f49d454022ea7dd50594d792d32e04a70d4efd39eb1fb887c34e9e27c8ab78",
       },
       deviceCapabilities: {
         aspectRatio: {
           max: 3264,
           min: 0.0004084967320261438,
         },
-        deviceId:
-          "1e3cf0ccf4d75643caf0078958243a046ae7ae51e230d0eac28a90e66fa8bdcd",
+        deviceId: "1e3cf0ccf4d75643caf0078958243a046ae7ae51e230d0eac28a90e66fa8bdcd",
         facingMode: ["user"],
         frameRate: {
           max: 30,
           min: 1,
         },
-        groupId:
-          "f3f49d454022ea7dd50594d792d32e04a70d4efd39eb1fb887c34e9e27c8ab78",
+        groupId: "f3f49d454022ea7dd50594d792d32e04a70d4efd39eb1fb887c34e9e27c8ab78",
         height: {
           max: 2448,
           min: 1,
@@ -50,8 +44,7 @@ export const MockSamsungS21FE: FakeDevice = {
           min: 2850,
           step: 50,
         },
-        deviceId:
-          "1e3cf0ccf4d75643caf0078958243a046ae7ae51e230d0eac28a90e66fa8bdcd",
+        deviceId: "1e3cf0ccf4d75643caf0078958243a046ae7ae51e230d0eac28a90e66fa8bdcd",
         exposureCompensation: {
           max: 2,
           min: -2,
@@ -74,8 +67,7 @@ export const MockSamsungS21FE: FakeDevice = {
           max: 30,
           min: 0,
         },
-        groupId:
-          "f3f49d454022ea7dd50594d792d32e04a70d4efd39eb1fb887c34e9e27c8ab78",
+        groupId: "f3f49d454022ea7dd50594d792d32e04a70d4efd39eb1fb887c34e9e27c8ab78",
         height: {
           max: 2448,
           min: 1,
@@ -100,8 +92,7 @@ export const MockSamsungS21FE: FakeDevice = {
       mediaTrackSettings: {
         aspectRatio: 0.75,
         colorTemperature: 0,
-        deviceId:
-          "1e3cf0ccf4d75643caf0078958243a046ae7ae51e230d0eac28a90e66fa8bdcd",
+        deviceId: "1e3cf0ccf4d75643caf0078958243a046ae7ae51e230d0eac28a90e66fa8bdcd",
         exposureCompensation: 0,
         exposureMode: "continuous",
         exposureTime: 399.65296,
@@ -109,8 +100,7 @@ export const MockSamsungS21FE: FakeDevice = {
         focusDistance: 0.30000001192092896,
         focusMode: "continuous",
         frameRate: 30,
-        groupId:
-          "f3f49d454022ea7dd50594d792d32e04a70d4efd39eb1fb887c34e9e27c8ab78",
+        groupId: "f3f49d454022ea7dd50594d792d32e04a70d4efd39eb1fb887c34e9e27c8ab78",
         height: 640,
         iso: 50,
         resizeMode: "none",
@@ -121,27 +111,23 @@ export const MockSamsungS21FE: FakeDevice = {
     },
     {
       inputDeviceInfo: {
-        deviceId:
-          "a9093293df4501c18a5422abd46ef29559c8f32b529b0a6e51d04265b37daaef",
+        deviceId: "a9093293df4501c18a5422abd46ef29559c8f32b529b0a6e51d04265b37daaef",
         kind: "videoinput",
         label: "camera2 3, facing front",
-        groupId:
-          "4eb24b12efbb6b2da316d8fd7642647607fa501007d9a442c30d42346c1eedb8",
+        groupId: "4eb24b12efbb6b2da316d8fd7642647607fa501007d9a442c30d42346c1eedb8",
       },
       deviceCapabilities: {
         aspectRatio: {
           max: 2640,
           min: 0.000505050505050505,
         },
-        deviceId:
-          "a9093293df4501c18a5422abd46ef29559c8f32b529b0a6e51d04265b37daaef",
+        deviceId: "a9093293df4501c18a5422abd46ef29559c8f32b529b0a6e51d04265b37daaef",
         facingMode: ["user"],
         frameRate: {
           max: 30,
           min: 1,
         },
-        groupId:
-          "4eb24b12efbb6b2da316d8fd7642647607fa501007d9a442c30d42346c1eedb8",
+        groupId: "4eb24b12efbb6b2da316d8fd7642647607fa501007d9a442c30d42346c1eedb8",
         height: {
           max: 1980,
           min: 1,
@@ -162,8 +148,7 @@ export const MockSamsungS21FE: FakeDevice = {
           min: 2850,
           step: 50,
         },
-        deviceId:
-          "a9093293df4501c18a5422abd46ef29559c8f32b529b0a6e51d04265b37daaef",
+        deviceId: "a9093293df4501c18a5422abd46ef29559c8f32b529b0a6e51d04265b37daaef",
         exposureCompensation: {
           max: 2,
           min: -2,
@@ -186,8 +171,7 @@ export const MockSamsungS21FE: FakeDevice = {
           max: 30,
           min: 0,
         },
-        groupId:
-          "4eb24b12efbb6b2da316d8fd7642647607fa501007d9a442c30d42346c1eedb8",
+        groupId: "4eb24b12efbb6b2da316d8fd7642647607fa501007d9a442c30d42346c1eedb8",
         height: {
           max: 1980,
           min: 1,
@@ -212,8 +196,7 @@ export const MockSamsungS21FE: FakeDevice = {
       mediaTrackSettings: {
         aspectRatio: 0.75,
         colorTemperature: 0,
-        deviceId:
-          "a9093293df4501c18a5422abd46ef29559c8f32b529b0a6e51d04265b37daaef",
+        deviceId: "a9093293df4501c18a5422abd46ef29559c8f32b529b0a6e51d04265b37daaef",
         exposureCompensation: 0,
         exposureMode: "continuous",
         exposureTime: 399.65296,
@@ -221,8 +204,7 @@ export const MockSamsungS21FE: FakeDevice = {
         focusDistance: 0.30000001192092896,
         focusMode: "continuous",
         frameRate: 30,
-        groupId:
-          "4eb24b12efbb6b2da316d8fd7642647607fa501007d9a442c30d42346c1eedb8",
+        groupId: "4eb24b12efbb6b2da316d8fd7642647607fa501007d9a442c30d42346c1eedb8",
         height: 640,
         iso: 50,
         resizeMode: "none",
@@ -233,12 +215,10 @@ export const MockSamsungS21FE: FakeDevice = {
     },
     {
       inputDeviceInfo: {
-        deviceId:
-          "c9264fb2344b2bb8d5d58095ceadf1b5a9258dd7eabfc7ae02f5bd878dfa0259",
+        deviceId: "c9264fb2344b2bb8d5d58095ceadf1b5a9258dd7eabfc7ae02f5bd878dfa0259",
         kind: "videoinput",
         label: "camera2 2, facing back",
-        groupId:
-          "9096a69a3a5a57114326932a07492fbeeacff328ad1de24af6b05c9c14bf3b21",
+        groupId: "9096a69a3a5a57114326932a07492fbeeacff328ad1de24af6b05c9c14bf3b21",
       },
       deviceCapabilities: {
         aspectRatio: {
@@ -250,8 +230,7 @@ export const MockSamsungS21FE: FakeDevice = {
           min: 2850,
           step: 50,
         },
-        deviceId:
-          "c9264fb2344b2bb8d5d58095ceadf1b5a9258dd7eabfc7ae02f5bd878dfa0259",
+        deviceId: "c9264fb2344b2bb8d5d58095ceadf1b5a9258dd7eabfc7ae02f5bd878dfa0259",
         exposureCompensation: {
           max: 2,
           min: -2,
@@ -274,8 +253,7 @@ export const MockSamsungS21FE: FakeDevice = {
           max: 30,
           min: 0,
         },
-        groupId:
-          "9096a69a3a5a57114326932a07492fbeeacff328ad1de24af6b05c9c14bf3b21",
+        groupId: "9096a69a3a5a57114326932a07492fbeeacff328ad1de24af6b05c9c14bf3b21",
         height: {
           max: 3000,
           min: 1,
@@ -307,8 +285,7 @@ export const MockSamsungS21FE: FakeDevice = {
           min: 2850,
           step: 50,
         },
-        deviceId:
-          "c9264fb2344b2bb8d5d58095ceadf1b5a9258dd7eabfc7ae02f5bd878dfa0259",
+        deviceId: "c9264fb2344b2bb8d5d58095ceadf1b5a9258dd7eabfc7ae02f5bd878dfa0259",
         exposureCompensation: {
           max: 2,
           min: -2,
@@ -331,8 +308,7 @@ export const MockSamsungS21FE: FakeDevice = {
           max: 30,
           min: 0,
         },
-        groupId:
-          "9096a69a3a5a57114326932a07492fbeeacff328ad1de24af6b05c9c14bf3b21",
+        groupId: "9096a69a3a5a57114326932a07492fbeeacff328ad1de24af6b05c9c14bf3b21",
         height: {
           max: 3000,
           min: 1,
@@ -357,8 +333,7 @@ export const MockSamsungS21FE: FakeDevice = {
       mediaTrackSettings: {
         aspectRatio: 0.75,
         colorTemperature: 0,
-        deviceId:
-          "c9264fb2344b2bb8d5d58095ceadf1b5a9258dd7eabfc7ae02f5bd878dfa0259",
+        deviceId: "c9264fb2344b2bb8d5d58095ceadf1b5a9258dd7eabfc7ae02f5bd878dfa0259",
         exposureCompensation: 0,
         exposureMode: "continuous",
         exposureTime: 666.696,
@@ -366,8 +341,7 @@ export const MockSamsungS21FE: FakeDevice = {
         focusDistance: 1,
         focusMode: "continuous",
         frameRate: 30,
-        groupId:
-          "9096a69a3a5a57114326932a07492fbeeacff328ad1de24af6b05c9c14bf3b21",
+        groupId: "9096a69a3a5a57114326932a07492fbeeacff328ad1de24af6b05c9c14bf3b21",
         height: 640,
         iso: 50,
         resizeMode: "none",
@@ -378,27 +352,23 @@ export const MockSamsungS21FE: FakeDevice = {
     },
     {
       inputDeviceInfo: {
-        deviceId:
-          "44cb06f4280e9cb4b0ec578b1d3df74ca6f0df5734b3ff28d2aba6d6204efff4",
+        deviceId: "44cb06f4280e9cb4b0ec578b1d3df74ca6f0df5734b3ff28d2aba6d6204efff4",
         kind: "videoinput",
         label: "camera2 0, facing back",
-        groupId:
-          "795036806e7e8e4ab7c1a2f130d833013d19ba5631814f2a615bfccb11b282bf",
+        groupId: "795036806e7e8e4ab7c1a2f130d833013d19ba5631814f2a615bfccb11b282bf",
       },
       deviceCapabilities: {
         aspectRatio: {
           max: 4000,
           min: 0.0003333333333333333,
         },
-        deviceId:
-          "44cb06f4280e9cb4b0ec578b1d3df74ca6f0df5734b3ff28d2aba6d6204efff4",
+        deviceId: "44cb06f4280e9cb4b0ec578b1d3df74ca6f0df5734b3ff28d2aba6d6204efff4",
         facingMode: ["environment"],
         frameRate: {
           max: 30,
           min: 1,
         },
-        groupId:
-          "795036806e7e8e4ab7c1a2f130d833013d19ba5631814f2a615bfccb11b282bf",
+        groupId: "795036806e7e8e4ab7c1a2f130d833013d19ba5631814f2a615bfccb11b282bf",
         height: {
           max: 3000,
           min: 1,
@@ -419,8 +389,7 @@ export const MockSamsungS21FE: FakeDevice = {
           min: 2850,
           step: 50,
         },
-        deviceId:
-          "44cb06f4280e9cb4b0ec578b1d3df74ca6f0df5734b3ff28d2aba6d6204efff4",
+        deviceId: "44cb06f4280e9cb4b0ec578b1d3df74ca6f0df5734b3ff28d2aba6d6204efff4",
         exposureCompensation: {
           max: 2,
           min: -2,
@@ -443,8 +412,7 @@ export const MockSamsungS21FE: FakeDevice = {
           max: 30,
           min: 0,
         },
-        groupId:
-          "795036806e7e8e4ab7c1a2f130d833013d19ba5631814f2a615bfccb11b282bf",
+        groupId: "795036806e7e8e4ab7c1a2f130d833013d19ba5631814f2a615bfccb11b282bf",
         height: {
           max: 3000,
           min: 1,
@@ -470,8 +438,7 @@ export const MockSamsungS21FE: FakeDevice = {
       mediaTrackSettings: {
         aspectRatio: 0.75,
         colorTemperature: 0,
-        deviceId:
-          "44cb06f4280e9cb4b0ec578b1d3df74ca6f0df5734b3ff28d2aba6d6204efff4",
+        deviceId: "44cb06f4280e9cb4b0ec578b1d3df74ca6f0df5734b3ff28d2aba6d6204efff4",
         exposureCompensation: 0,
         exposureMode: "continuous",
         exposureTime: 666.696,
@@ -479,8 +446,7 @@ export const MockSamsungS21FE: FakeDevice = {
         focusDistance: 0.10000000149011612,
         focusMode: "continuous",
         frameRate: 30,
-        groupId:
-          "795036806e7e8e4ab7c1a2f130d833013d19ba5631814f2a615bfccb11b282bf",
+        groupId: "795036806e7e8e4ab7c1a2f130d833013d19ba5631814f2a615bfccb11b282bf",
         height: 640,
         iso: 50,
         resizeMode: "none",

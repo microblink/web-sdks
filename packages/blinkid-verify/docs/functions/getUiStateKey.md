@@ -6,14 +6,12 @@
 
 # Function: getUiStateKey()
 
-> **getUiStateKey**(`frameProcessResult`): `undefined` \| [`BlinkIdVerifyUiMappableKey`](../type-aliases/BlinkIdVerifyUiMappableKey.md)
+> **getUiStateKey**(`frameProcessResult`): [`BlinkIdVerifyUiMappableKey`](../type-aliases/BlinkIdVerifyUiMappableKey.md) \| `undefined`
 
-Determines the appropriate UI state key based on the current frame processing
-result and scanning settings.
+Determines the appropriate UI state key based on the current frame processing result and scanning settings.
 
-This function acts as a state machine, translating the low-level analysis and
-completeness results into a high-level UI state that drives the user
-interface.
+This function acts as a state machine, translating the low-level analysis and completeness results into a high-level
+UI state that drives the user interface.
 
 ## Parameters
 
@@ -21,11 +19,11 @@ interface.
 
 [`PartialProcessResult`](../type-aliases/PartialProcessResult.md)
 
-The current (possibly partial) result of frame
-processing, including image analysis and completeness.
+The current (possibly partial) result of frame processing, including image analysis and
+  completeness.
 
 ## Returns
 
-`undefined` \| [`BlinkIdVerifyUiMappableKey`](../type-aliases/BlinkIdVerifyUiMappableKey.md)
+[`BlinkIdVerifyUiMappableKey`](../type-aliases/BlinkIdVerifyUiMappableKey.md) \| `undefined`
 
 The UI state key representing what should be shown to the user.

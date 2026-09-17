@@ -24,13 +24,13 @@
 
 ### gpu?
 
-> `optional` **gpu**: [`GpuInfo`](GpuInfo.md)
+> `optional` **gpu?**: [`GpuInfo`](GpuInfo.md)
 
 ***
 
 ### memory?
 
-> `optional` **memory**: `number`
+> `optional` **memory?**: `number`
 
 ***
 
@@ -54,4 +54,4 @@
 
 ### userAgentData?
 
-> `optional` **userAgentData**: [`UADataValues`](../interfaces/UADataValues.md)
+> `optional` **userAgentData?**: [`UADataValues`](../interfaces/UADataValues.md)

@@ -6,6 +6,5 @@
     "declarationDir": "types",
     "rootDir": "src"
   },
-  "include": ["src"],
-  "exclude": ["src/**/*.test.ts"]
+  "include": ["src"]
 }

@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /** Result of scanning a card. */
 export type BlinkCardScanningResult = {
@@ -10,8 +8,8 @@ export type BlinkCardScanningResult = {
   /**
    * A list of payment card accounts found on the card.
    *
-   * Each result in the list represents a distinct payment account, containing
-   * details like the card number, CVV, and expiry date.
+   * Each result in the list represents a distinct payment account, containing details like the card number, CVV, and
+   * expiry date.
    */
   cardAccounts: CardAccountResult[];
 
@@ -24,9 +22,8 @@ export type BlinkCardScanningResult = {
   /**
    * The overall liveness check result for the card.
    *
-   * This result aggregates the outcomes of various liveness checks performed on
-   * the card to determine its authenticity. Set to `Pass` if all individual
-   * checks have passed; set to `Fail` if any individual check has failed.
+   * This result aggregates the outcomes of various liveness checks performed on the card to determine its authenticity.
+   * Set to `Pass` if all individual checks have passed; set to `Fail` if any individual check has failed.
    */
   overallCardLivenessResult: CheckResult;
 
@@ -50,22 +47,13 @@ export type SingleSideScanningResult = {
 
 /** Structure representing the result of liveness checks for a card. */
 export type CardLivenessCheckResult = {
-  /**
-   * Result of the liveness check that detects whether card is displayed on the
-   * screen.
-   */
+  /** Result of the liveness check that detects whether card is displayed on the screen. */
   screenCheckResult: CheckResult;
 
-  /**
-   * Result of the liveness check that detects whether the input image is a
-   * photocopy of a card.
-   */
+  /** Result of the liveness check that detects whether the input image is a photocopy of a card. */
   photocopyCheckResult: CheckResult;
 
-  /**
-   * Result of the liveness check that detects whether a card is being held in
-   * human hands.
-   */
+  /** Result of the liveness check that detects whether a card is being held in human hands. */
   cardHeldInHandCheckResult: CheckResult;
 };
 
@@ -74,10 +62,7 @@ export type CardAccountResult = {
   /** The card number as scanned from the card. */
   cardNumber: string;
 
-  /**
-   * Indicates whether the scanned card number is valid according to the Luhn
-   * algorithm.
-   */
+  /** Indicates whether the scanned card number is valid according to the Luhn algorithm. */
   cardNumberValid: boolean;
 
   /** The payment card's number prefix. */
@@ -101,14 +86,14 @@ export type CardAccountResult = {
   /** The name of the financial institution that issued the payment card. */
   issuerName: string | undefined;
 
-  /**
-   * The ISO 3166-1 alpha-3 country code of the card issuer's country (e.g.,
-   * "USA", "GBR", "HRV").
-   */
+  /** The ISO 3166-1 alpha-3 country code of the card issuer's country (e.g., "USA", "GBR", "HRV"). */
   issuerCountryCode: string | undefined;
 
   /** The name of the card issuer's country. */
   issuerCountry: string | undefined;
+
+  /** The result of the BIN check. */
+  binCheckResult: CheckResult;
 };
 
 /** Smart date result structure. */

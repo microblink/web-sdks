@@ -1,4 +1,4 @@
-import { getPackagePath } from "@microblink/repo-utils";
+import { addJsExtensionsToDeclarationImports, getPackagePath } from "@microblink/repo-utils";
 import { Simplify } from "type-fest";
 import { PackageJsonData, writePackage } from "write-package";
 import "zx/globals";
@@ -27,13 +27,20 @@ const corePackageJson = pickKeys([
   "main",
   "module",
   "description",
+  "keywords",
   "files",
 ]);
 
 await fs.emptyDir(publishPath);
 
 await fs.copy("dist", path.join(publishPath, "dist"));
-await fs.copy("types", path.join(publishPath, "types"));
+for (const entrypoint of ["index", "core", "ui"]) {
+  await fs.copy(
+    path.join("types", `${entrypoint}.rollup.d.ts`),
+    path.join(publishPath, "types", `${entrypoint}.rollup.d.ts`),
+  );
+}
+await addJsExtensionsToDeclarationImports(path.join(publishPath, "types"));
 await fs.copy("README.md", path.join(publishPath, "README.md"));
 
 // These dependencies are bundled into the main types file, so we don't need to
@@ -47,9 +54,7 @@ const microblinkDependencies = Object.keys(packageJson.dependencies).filter(
 // Since monorepo dependencies resolve to the version "workspace:*", we need
 // to resolve the actual versions of the dependencies before publishing the
 // package.
-const mbDepsWithVersion = microblinkDependencies.reduce<
-  PackageJsonData["dependencies"]
->((acc, key) => {
+const mbDepsWithVersion = microblinkDependencies.reduce<PackageJsonData["dependencies"]>((acc, key) => {
   const pkgPath = getPackagePath(key);
   const pkgJson = fs.readJsonSync(path.join(pkgPath, "package.json"));
   if (!acc) {
@@ -68,6 +73,8 @@ await writePackage(
   {
     ...corePackageJson,
     dependencies: mbDepsWithVersion,
+    peerDependencies: packageJson.peerDependencies,
+    peerDependenciesMeta: packageJson.peerDependenciesMeta,
     access: "public",
     registry: "https://registry.npmjs.org/",
     types: "./types/index.rollup.d.ts",
@@ -80,6 +87,14 @@ await writePackage(
       ".": {
         types: "./types/index.rollup.d.ts",
         import: "./dist/blinkid-verify-ux-manager.js",
+      },
+      "./core": {
+        types: "./types/core.rollup.d.ts",
+        import: "./dist/core.js",
+      },
+      "./ui": {
+        types: "./types/ui.rollup.d.ts",
+        import: "./dist/ui.js",
       },
       "./package.json": "./package.json",
     },

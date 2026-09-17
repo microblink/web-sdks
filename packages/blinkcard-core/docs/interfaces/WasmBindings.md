@@ -22,7 +22,7 @@
 
 ## Properties
 
-### arePingRequestsInProgress()
+### arePingRequestsInProgress
 
 > **arePingRequestsInProgress**: () => `boolean`
 
@@ -32,7 +32,7 @@
 
 ***
 
-### createScanningSession()
+### createScanningSession
 
 > **createScanningSession**: (`sessionSettings`, `userId`) => `TScanningSession`
 
@@ -52,7 +52,7 @@
 
 ***
 
-### getActiveLicenseTokenInfo()
+### getActiveLicenseTokenInfo
 
 > **getActiveLicenseTokenInfo**: () => [`LicenseUnlockResult`](../type-aliases/LicenseUnlockResult.md)
 
@@ -62,7 +62,7 @@
 
 ***
 
-### initializeSdk()
+### initializeSdk
 
 > **initializeSdk**: (`userId`) => `void`
 
@@ -78,7 +78,7 @@
 
 ***
 
-### initializeWithLicenseKey()
+### initializeWithLicenseKey
 
 > **initializeWithLicenseKey**: (`licenceKey`, `userId`, `allowHelloMessage`) => [`LicenseUnlockResult`](../type-aliases/LicenseUnlockResult.md)
 
@@ -102,7 +102,7 @@
 
 ***
 
-### isPingEnabled()
+### isPingEnabled
 
 > **isPingEnabled**: () => `boolean`
 
@@ -112,7 +112,7 @@
 
 ***
 
-### queuePinglet()
+### queuePinglet
 
 > **queuePinglet**: (`data`, `schemaName`, `schemaVersion`, `sessionNumber`) => `void`
 
@@ -140,7 +140,7 @@
 
 ***
 
-### sendPinglets()
+### sendPinglets
 
 > **sendPinglets**: () => `void`
 
@@ -150,7 +150,7 @@
 
 ***
 
-### setPingProxyUrl()
+### setPingProxyUrl
 
 > **setPingProxyUrl**: (`url`) => `void`
 
@@ -166,9 +166,9 @@
 
 ***
 
-### submitServerPermission()
+### submitServerPermission
 
-> **submitServerPermission**: (`serverPermission`) => `undefined` \| `Readonly`\<\{ `error`: [`ServerPermissionErrorReason`](../type-aliases/ServerPermissionErrorReason.md); `lease`: `number`; `networkErrorDescription?`: `string`; \}\>
+> **submitServerPermission**: (`serverPermission`) => `Readonly`\<\{ `error`: [`ServerPermissionErrorReason`](../type-aliases/ServerPermissionErrorReason.md); `lease`: `number`; `networkErrorDescription?`: `string`; \}\> \| `undefined`
 
 #### Parameters
 
@@ -178,11 +178,11 @@
 
 #### Returns
 
-`undefined` \| `Readonly`\<\{ `error`: [`ServerPermissionErrorReason`](../type-aliases/ServerPermissionErrorReason.md); `lease`: `number`; `networkErrorDescription?`: `string`; \}\>
+`Readonly`\<\{ `error`: [`ServerPermissionErrorReason`](../type-aliases/ServerPermissionErrorReason.md); `lease`: `number`; `networkErrorDescription?`: `string`; \}\> \| `undefined`
 
 ***
 
-### terminateSdk()
+### terminateSdk
 
 > **terminateSdk**: () => `void`
 

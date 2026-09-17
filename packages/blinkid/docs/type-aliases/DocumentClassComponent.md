@@ -10,9 +10,8 @@
 
 A single document classification component.
 
-`id` is present when the classification maps to a value known at build time.
-`rawValue` always carries the raw classification token from the document
-knowledge database, including OTA-delivered classes unknown at build time.
+`id` is present when the classification maps to a value known at build time. `rawValue` always carries the raw
+classification token from the document knowledge database, including OTA-delivered classes unknown at build time.
 
 ## Type Parameters
 
@@ -24,7 +23,7 @@ knowledge database, including OTA-delivered classes unknown at build time.
 
 ### id?
 
-> `optional` **id**: `TId`
+> `optional` **id?**: `TId`
 
 Strongly-typed identifier, when known at build time.
 

@@ -14,7 +14,7 @@ The camera manager UI options.
 
 ### localizationStrings?
 
-> `optional` **localizationStrings**: `Partial`\<[`CameraUiLocalizationStrings`](CameraUiLocalizationStrings.md)\>
+> `optional` **localizationStrings?**: `Partial`\<[`CameraUiLocalizationStrings`](CameraUiLocalizationStrings.md)\>
 
 The localization strings.
 
@@ -22,7 +22,7 @@ The localization strings.
 
 ### showCameraErrorModal?
 
-> `optional` **showCameraErrorModal**: `boolean`
+> `optional` **showCameraErrorModal?**: `boolean`
 
 If set to `true`, the camera error modal will be shown.
 
@@ -34,9 +34,23 @@ true
 
 ***
 
+### showCameraSelector?
+
+> `optional` **showCameraSelector?**: `boolean`
+
+If set to `true`, the camera selector will be shown when multiple cameras are available.
+
+#### Default Value
+
+```ts
+true
+```
+
+***
+
 ### showCloseButton?
 
-> `optional` **showCloseButton**: `boolean`
+> `optional` **showCloseButton?**: `boolean`
 
 If set to `true`, the close button will be shown.
 
@@ -50,7 +64,7 @@ true
 
 ### showMirrorCameraButton?
 
-> `optional` **showMirrorCameraButton**: `boolean`
+> `optional` **showMirrorCameraButton?**: `boolean`
 
 If set to `true`, the mirror camera button will be shown.
 
@@ -64,7 +78,7 @@ false
 
 ### showTorchButton?
 
-> `optional` **showTorchButton**: `boolean`
+> `optional` **showTorchButton?**: `boolean`
 
 If set to `true`, the torch button will be shown.
 
@@ -78,10 +92,10 @@ true
 
 ### zIndex?
 
-> `optional` **zIndex**: `number`
+> `optional` **zIndex?**: `number`
 
-The z-index of the camera UI when rendered as a full-screen overlay.
-Only applies when no target element is provided.
+The z-index of the camera UI when rendered as a full-screen overlay. Only applies when no target element is
+provided.
 
 If not provided, uses `calc(infinity)` to ensure the camera UI appears on top.
 

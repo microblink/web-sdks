@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type {
   PingUxEvent,
@@ -17,16 +15,13 @@ import type {
 
 /**
  * Analytic service
+ *
  * Provides a clean interface for tracking user interactions and events
  */
 export class AnalyticService {
-  /**
-   * Injected function for queing ping events.
-   */
+  /** Injected function for queing ping events. */
   readonly #pingFn: (ping: Ping) => Promise<void>;
-  /**
-   * Injected function for triggering sending of queued pinglets.
-   */
+  /** Injected function for triggering sending of queued pinglets. */
   readonly #sendPingletsFn: () => Promise<void>;
 
   constructor({
@@ -40,9 +35,7 @@ export class AnalyticService {
     this.#sendPingletsFn = sendPingletsFn;
   }
 
-  /**
-   * Safely send a ping event, handling errors gracefully
-   */
+  /** Safely send a ping event, handling errors gracefully */
   async #safePing(ping: Ping) {
     try {
       await this.#pingFn(ping);
@@ -52,9 +45,7 @@ export class AnalyticService {
     }
   }
 
-  /**
-   * Safely send queued pinglets, handling errors gracefully
-   */
+  /** Safely send queued pinglets, handling errors gracefully */
   async sendPinglets() {
     try {
       await this.#sendPingletsFn();
@@ -64,12 +55,8 @@ export class AnalyticService {
     }
   }
 
-  /**
-   * Create a camera permission ping
-   */
-  #createCameraPermissionPing(
-    pingData: PingCameraPermissionData,
-  ): PingCameraPermission {
+  /** Create a camera permission ping */
+  #createCameraPermissionPing(pingData: PingCameraPermissionData): PingCameraPermission {
     return {
       schemaName: "ping.sdk.camera.permission",
       schemaVersion: "1.0.0",
@@ -77,13 +64,11 @@ export class AnalyticService {
     };
   }
 
-  /**
-   * Create a standardized UX event ping
-   */
+  /** Create a standardized UX event ping */
   #createUxEventPing(pingData: PingUxEventData): PingUxEvent {
     return {
       schemaName: "ping.sdk.ux.event",
-      schemaVersion: "1.2.0",
+      schemaVersion: "1.3.0",
       data: pingData,
     };
   }
@@ -97,7 +82,7 @@ export class AnalyticService {
       try {
         return JSON.stringify(error);
       } catch {
-        return String(error);
+        return Object.prototype.toString.call(error);
       }
     }
 
@@ -112,10 +97,20 @@ export class AnalyticService {
     );
   }
 
-  logCameraClosedEvent() {
+  logCameraClosedEvent(closeReason?: PingUxEventData["closeReason"]) {
     return this.#safePing(
       this.#createUxEventPing({
         eventType: "CameraClosed",
+        closeReason,
+      }),
+    );
+  }
+
+  logCameraOpenFailedEvent(cameraFailureCategory: string) {
+    return this.#safePing(
+      this.#createUxEventPing({
+        eventType: "CameraOpenFailed",
+        cameraFailureCategory,
       }),
     );
   }
@@ -128,13 +123,12 @@ export class AnalyticService {
     );
   }
 
-  logHelpClosedEvent(contentFullyViewed: boolean) {
+  logHelpClosedEvent(contentFullyViewed?: boolean) {
     return this.#safePing(
       this.#createUxEventPing({
         eventType: "HelpClosed",
-        helpCloseType: contentFullyViewed
-          ? "ContentFullyViewed"
-          : "ContentSkipped",
+        helpCloseType:
+          contentFullyViewed === undefined ? undefined : contentFullyViewed ? "ContentFullyViewed" : "ContentSkipped",
       }),
     );
   }
@@ -163,7 +157,7 @@ export class AnalyticService {
     );
   }
 
-  logAlertDisplayedEvent(alertType: NonNullable<PingUxEventData["alertType"]>) {
+  logAlertDisplayedEvent(alertType?: PingUxEventData["alertType"]) {
     return this.#safePing(
       this.#createUxEventPing({
         eventType: "AlertDisplayed",
@@ -221,9 +215,7 @@ export class AnalyticService {
     });
   }
 
-  logHardwareCameraInfo(
-    cameras: PingCameraHardwareInfoData["availableCameras"],
-  ) {
+  logHardwareCameraInfo(cameras: PingCameraHardwareInfoData["availableCameras"]) {
     return this.#safePing({
       schemaName: "ping.hardware.camera.info",
       schemaVersion: "1.0.3",
@@ -259,9 +251,7 @@ export class AnalyticService {
     );
   }
 
-  logDeviceOrientation(
-    orientation: PingScanningConditionsData["deviceOrientation"],
-  ) {
+  logDeviceOrientation(orientation: PingScanningConditionsData["deviceOrientation"]) {
     return this.#safePing({
       schemaName: "ping.sdk.scan.conditions",
       schemaVersion: "1.0.0",

@@ -1,30 +1,27 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { Tooltip } from "@ark-ui/solid/tooltip";
+import { eventFixer } from "@microblink/shared-components/eventFixer";
+import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
+/* oxlint-disable typescript/ban-ts-comment */
 import { Component, JSX, ParentComponent, Show, splitProps } from "solid-js";
 import CloseIcon from "~icons/material-symbols/close";
 import FlashOff from "~icons/material-symbols/flash-off";
 import FlashOn from "~icons/material-symbols/flash-on";
 import MirrorIcon from "~icons/material-symbols/flip";
+
 import { CameraSelector } from "./CameraSelector";
 import { useCameraUiStore } from "./CameraUiStoreContext";
 import { useLocalization } from "./LocalizationContext";
 
-import { Tooltip } from "@ark-ui/solid/tooltip";
-import { eventFixer } from "@microblink/shared-components/eventFixer";
-import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
-
-/**
- * The Header component.
- */
+/** The Header component. */
 export const Header: Component = () => {
   const {
     dismountCameraUi,
     cameraManagerSolidStore,
     cameraManager,
     showMirrorCameraButton,
+    showCameraSelector,
     showTorchButton,
     showCloseButton,
   } = useCameraUiStore();
@@ -36,9 +33,7 @@ export const Header: Component = () => {
 
   // Same instance of selected camera, so we can't reuse `selectedCamera` signal
   // to trigger signal updates
-  const torchEnabled = cameraManagerSolidStore(
-    (s) => s.selectedCamera?.torchEnabled,
-  );
+  const torchEnabled = cameraManagerSolidStore((s) => s.selectedCamera?.torchEnabled);
 
   const hasTorch = () => selectedCamera()?.torchSupported;
 
@@ -62,9 +57,7 @@ export const Header: Component = () => {
           class={`z-2 relative gap-2 grid justify-between items-center
           grid-cols-[1fr_auto_1fr] py-4 color-white lerp:px-3@xs,8@lg`}
         >
-          <div
-            class={"justify-self-start flex flex-nowrap gap-4 auto-cols-auto"}
-          >
+          <div class={"justify-self-start flex flex-nowrap gap-4 auto-cols-auto"}>
             {/* Mirror button */}
             <Show when={showMirrorCameraButton && isActive()}>
               <ToolbarButton
@@ -104,7 +97,7 @@ export const Header: Component = () => {
 
           {/* camera selector */}
           <div class="justify-self-center min-w-0 w-full">
-            <Show when={cameras().length > 1}>
+            <Show when={showCameraSelector && cameras().length > 1}>
               <CameraSelector />
             </Show>
           </div>
@@ -129,16 +122,12 @@ export const Header: Component = () => {
   );
 };
 
-/**
- * The toolbar button props.
- */
+/** The toolbar button props. */
 type ToolbarButtonProps = {
   tooltipLabel: string;
 } & JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
-/**
- * The toolbar button component.
- */
+/** The toolbar button component. */
 const ToolbarButton: ParentComponent<ToolbarButtonProps> = (props) => {
   const [local, buttonProps] = splitProps(props, ["tooltipLabel", "children"]);
 
@@ -148,16 +137,14 @@ const ToolbarButton: ParentComponent<ToolbarButtonProps> = (props) => {
       <Tooltip.Trigger
         asChild={(tooltipProps) => {
           // Remove aria-describedby to prevent tooltip from being announced
-          const [, cleanProps] = splitProps(tooltipProps(), [
-            "aria-describedby",
-          ]);
+          const [, cleanProps] = splitProps(tooltipProps(), ["aria-describedby"]);
           return (
             <button
               aria-label={local.tooltipLabel}
               {...buttonProps}
               {...eventFixer(cleanProps)}
               // TODO: add visual distinction for a aria-pressed state
-              class={`btn-focus rounded-full bg-gray-550/70 backdrop-blur grid
+              class={`control-focus relative rounded-full bg-gray-550/70 backdrop-blur grid
               place-items-center size-12 appearance-none border-none
               cursor-pointer`}
             >

@@ -1,13 +1,10 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 /**
  * Represents the overall result of the card processing pipeline.
  *
- * This structure combines the results of input image analysis and processing,
- * including detection, card image quality analysis, along with information
- * about the completeness of the extraction process for the card.
+ * This structure combines the results of input image analysis and processing, including detection, card image quality
+ * analysis, along with information about the completeness of the extraction process for the card.
  */
 export type BlinkCardProcessResult = {
   /** Result of the processing and analysis of the input image. */
@@ -20,9 +17,8 @@ export type BlinkCardProcessResult = {
 /**
  * Represents the results of processing and analyzing an input image.
  *
- * This structure contains the status of the processing, along with detailed
- * results from detection, and information about the card analysis performed on
- * the input image.
+ * This structure contains the status of the processing, along with detailed results from detection, and information
+ * about the card analysis performed on the input image.
  */
 export type InputImageAnalysisResult = {
   /* Status of the processing. */
@@ -74,16 +70,10 @@ export type ProcessingStatus =
   /** Failed to return a requested image. */
   | "image-return-failed"
 
-  /**
-   * The first side recognition was successful; waiting for the second side to
-   * be scanned.
-   */
+  /** The first side recognition was successful; waiting for the second side to be scanned. */
   | "awaiting-other-side"
 
-  /**
-   * The second side was not scanned because the first side recognition did not
-   * complete successfully.
-   */
+  /** The second side was not scanned because the first side recognition did not complete successfully. */
   | "not-scanned"
 
   /** Frame is not focused. Platform specific. * */
@@ -93,12 +83,7 @@ export type ProcessingStatus =
 export type ScanningSide = "first" | "second";
 
 // Represents the rotation of the card.
-export type CardRotation =
-  | "not-available"
-  | "zero"
-  | "clockwise-90"
-  | "counter-clockwise-90"
-  | "upside-down";
+export type CardRotation = "not-available" | "zero" | "clockwise-90" | "counter-clockwise-90" | "upside-down";
 
 /** Represents the completeness of the extraction process for a scanned card. */
 export type ResultCompleteness = {
@@ -130,14 +115,10 @@ export type ResultCompleteness = {
 /**
  * Represents the different states of a scanning process.
  *
- * This type defines the possible statuses that can occur during the scanning
- * operation, specifically for managing the progress of scanning sides and the
- * entire card.
+ * This type defines the possible statuses that can occur during the scanning operation, specifically for managing the
+ * progress of scanning sides and the entire card.
  */
-export type ScanningStatus =
-  | "scanning-side-in-progress"
-  | "side-scanned"
-  | "card-scanned";
+export type ScanningStatus = "scanning-side-in-progress" | "side-scanned" | "card-scanned";
 
 /** Detailed information about the field extraction process. */
 export type FieldExtractionStatus =
@@ -148,15 +129,14 @@ export type FieldExtractionStatus =
   | "not-requested"
 
   /**
-   * The field has not been detected on any scanned side so far. It may still
-   * appear on a side that hasn't been scanned yet.
+   * The field has not been detected on any scanned side so far. It may still appear on a side that hasn't been scanned
+   * yet.
    */
   | "not-present"
 
   /**
-   * The field is visually present on the current side, but could not be
-   * extracted (e.g., due to blur, occlusion, or OCR failure). This is a
-   * blocking error, user action is required before continuing.
+   * The field is visually present on the current side, but could not be extracted (e.g., due to blur, occlusion, or OCR
+   * failure). This is a blocking error, user action is required before continuing.
    */
   | "not-extracted"
 
@@ -193,10 +173,7 @@ export type DetectionStatus =
   /** Document has been detected but the camera’s angle is too steep. */
   | "camera-angle-too-steep"
 
-  /**
-   * Document has been detected but the document is too close to the camera
-   * edge.
-   */
+  /** Document has been detected but the document is too close to the camera edge. */
   | "document-too-close-to-camera-edge"
 
   /** Only part of the document is visible. */

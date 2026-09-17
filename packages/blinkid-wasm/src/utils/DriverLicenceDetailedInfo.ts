@@ -1,6 +1,4 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { StringResult } from "../result";
 import { VehicleClassInfo } from "./VehicleClassInfo";
@@ -11,10 +9,7 @@ import { VehicleClassInfo } from "./VehicleClassInfo";
  * @template S - The type of the string result.
  */
 export type DriverLicenceDetailedInfo<S extends string | StringResult> = {
-  /**
-   * The restrictions to driving privileges for the United States driver license
-   * owner
-   */
+  /** The restrictions to driving privileges for the United States driver license owner */
   restrictions?: S;
 
   /** The additional privileges granted to the US driver license owner */

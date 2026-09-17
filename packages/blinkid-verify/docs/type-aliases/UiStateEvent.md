@@ -8,8 +8,8 @@
 
 > **UiStateEvent**\<`K`\> = `object`
 
-Represents a UI state event in the stabilization queue.
-These events are processed to determine which UI state should be displayed.
+Represents a UI state event in the stabilization queue. These events are processed to determine which UI state should
+be displayed.
 
 ## Type Parameters
 
@@ -39,10 +39,10 @@ Identifier matching a UI state key
 
 ### singleEmit?
 
-> `optional` **singleEmit**: `boolean`
+> `optional` **singleEmit?**: `boolean`
 
-If true, this event will be emitted once the previous event completes.
-It bypasses the normal stabilization process.
+If true, this event will be emitted once the previous event completes. It bypasses the normal stabilization
+process.
 
 ***
 

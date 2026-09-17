@@ -14,61 +14,61 @@ https://wicg.github.io/ua-client-hints/#dictdef-uadatavalues
 
 ### architecture?
 
-> `readonly` `optional` **architecture**: `string`
+> `readonly` `optional` **architecture?**: `string`
 
 ***
 
 ### bitness?
 
-> `readonly` `optional` **bitness**: `string`
+> `readonly` `optional` **bitness?**: `string`
 
 ***
 
 ### brands?
 
-> `readonly` `optional` **brands**: `NavigatorUABrandVersion`[]
+> `readonly` `optional` **brands?**: `NavigatorUABrandVersion`[]
 
 ***
 
 ### formFactors?
 
-> `readonly` `optional` **formFactors**: [`FormFactor`](../type-aliases/FormFactor.md)[]
+> `readonly` `optional` **formFactors?**: [`FormFactor`](../type-aliases/FormFactor.md)[]
 
 ***
 
 ### fullVersionList?
 
-> `readonly` `optional` **fullVersionList**: `NavigatorUABrandVersion`[]
+> `readonly` `optional` **fullVersionList?**: `NavigatorUABrandVersion`[]
 
 ***
 
 ### mobile?
 
-> `readonly` `optional` **mobile**: `boolean`
+> `readonly` `optional` **mobile?**: `boolean`
 
 ***
 
 ### model?
 
-> `readonly` `optional` **model**: `string`
+> `readonly` `optional` **model?**: `string`
 
 ***
 
 ### platform?
 
-> `readonly` `optional` **platform**: `string`
+> `readonly` `optional` **platform?**: `string`
 
 ***
 
 ### platformVersion?
 
-> `readonly` `optional` **platformVersion**: `string`
+> `readonly` `optional` **platformVersion?**: `string`
 
 ***
 
 ### ~~uaFullVersion?~~
 
-> `readonly` `optional` **uaFullVersion**: `string`
+> `readonly` `optional` **uaFullVersion?**: `string`
 
 #### Deprecated
 
@@ -78,4 +78,4 @@ in favour of fullVersionList
 
 ### wow64?
 
-> `readonly` `optional` **wow64**: `boolean`
+> `readonly` `optional` **wow64?**: `boolean`

@@ -8,11 +8,9 @@
 
 FeedbackStabilizer provides UI state management with temporal smoothing.
 
-It helps prevent UI "flickering" by:
-- Maintaining a time-windowed history of UI state changes
-- Applying weighted averaging to determine the most appropriate state
-- Supporting immediate state changes through single-emit events
-- Enforcing minimum display durations for states
+It helps prevent UI "flickering" by: - Maintaining a time-windowed history of UI state changes - Applying weighted
+averaging to determine the most appropriate state - Supporting immediate state changes through single-emit events -
+Enforcing minimum display durations for states
 
 ## Type Parameters
 
@@ -62,7 +60,7 @@ Optional custom decay rate for event weights
 
 ## Properties
 
-### canShowNewUiState()
+### canShowNewUiState
 
 > **canShowNewUiState**: () => `boolean`
 
@@ -72,7 +70,7 @@ Checks if enough time has passed to show a new UI state
 
 `boolean`
 
-true if the current state's minimum duration has elapsed
+True if the current state's minimum duration has elapsed
 
 ## Accessors
 
@@ -112,10 +110,8 @@ A copy of the current event queue.
 
 Processes a new UI state event and determines the state to display.
 
-This method:
-1. Handles single-emit events that bypass normal stabilization
-2. Maintains a time-windowed queue of regular events
-3. Applies temporal averaging with decay to determine the winning state
+This method: 1. Handles single-emit events that bypass normal stabilization 2. Maintains a time-windowed queue of
+regular events 3. Applies temporal averaging with decay to determine the winning state
 
 #### Parameters
 
@@ -221,8 +217,8 @@ Resets the stabilizer to its initial state.
 
 `StateKey`\<`SdkSpecificStateMap`\>
 
-resets the stabilizer with a different key
-than the one it was initialized with. Does not mutate `this.initialKey`
+Resets the stabilizer with a different key than the one it was initialized with. Does not
+  mutate `this.initialKey`
 
 #### Returns
 
@@ -234,9 +230,8 @@ than the one it was initialized with. Does not mutate `this.initialKey`
 
 > **restartCurrentStateTimer**(): `void`
 
-Restarts the minimum-duration timer for the current state.
-Useful when a state should be timed from an external lifecycle point
-(e.g. actual capture start) instead of construction/reset time.
+Restarts the minimum-duration timer for the current state. Useful when a state should be timed from an external
+lifecycle point (e.g. actual capture start) instead of construction/reset time.
 
 #### Returns
 
@@ -270,10 +265,8 @@ New time window in milliseconds
 
 Advances stabilizer time and returns the state that should be displayed.
 
-This method:
-1. Handles single-emit events that bypass normal stabilization
-2. Maintains a time-windowed queue of regular events
-3. Applies temporal averaging with decay to determine the winning state
+This method: 1. Handles single-emit events that bypass normal stabilization 2. Maintains a time-windowed queue of
+regular events 3. Applies temporal averaging with decay to determine the winning state
 
 #### Returns
 

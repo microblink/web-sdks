@@ -10,5 +10,5 @@
 
 Configuration options for creating a BlinkIdVerify component.
 
-This type combines options with core initialization and session settings.
-It allows customization of the UI elements, localization, and scanning behavior.
+This type combines options with core initialization and session settings. It allows customization of the UI elements,
+localization, and scanning behavior.

@@ -1,9 +1,8 @@
-/**
- * Copyright (c) 2026 Microblink Ltd. All rights reserved.
- */
+/** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { DocumentRotation } from "@microblink/blinkid-verify-core";
 import { match } from "ts-pattern";
+
 import { BlinkIdVerifyUiStateKey } from "./blinkid-verify-ui-state";
 import { DocumentPagination } from "./ui-state-utils";
 
@@ -15,13 +14,12 @@ export type ChainedUiStateProps = {
 
 /**
  * Handles chaining of UI states based on the current state, pagination type, and rotation.
+ *
  * @param chainedUiStateProps The properties including current UI state key, pagination type, and optional rotation.
  * @returns The next chained UI state key, or undefined if there is no chained state.
  */
 
-export function getChainedUiStateKey(
-  chainedUiStateProps: ChainedUiStateProps,
-): BlinkIdVerifyUiStateKey | undefined {
+export function getChainedUiStateKey(chainedUiStateProps: ChainedUiStateProps): BlinkIdVerifyUiStateKey | undefined {
   const chainedUiState = match<
     ChainedUiStateProps,
     // we return undefined if there is no chained state

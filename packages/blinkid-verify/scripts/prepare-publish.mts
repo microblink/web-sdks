@@ -1,8 +1,8 @@
-import { Simplify } from "type-fest";
-import { PackageJsonData, writePackage } from "write-package";
-import "zx/globals";
-
 import { getPackagePath } from "@microblink/repo-utils";
+import { Simplify } from "type-fest";
+import "zx/globals";
+import { PackageJsonData, writePackage } from "write-package";
+
 import packageJson from "../package.json";
 
 type PackageKeys = keyof typeof packageJson;
@@ -27,26 +27,23 @@ const corePackageJson = pickKeys([
   "main",
   "module",
   "description",
+  "keywords",
   "files",
 ]);
 
 await fs.emptyDir(publishPath);
 
 await fs.copy("dist", path.join(publishPath, "dist"));
-await fs.copy("types", path.join(publishPath, "types"));
+await fs.copy("types/index.rollup.d.ts", path.join(publishPath, "types/index.rollup.d.ts"));
 await fs.copy("README.md", path.join(publishPath, "README.md"));
 
 // Since monorepo dependencies resolve to the version "workspace:*", we need
 // to resolve the actual versions of the dependencies before publishing the
 // package.
 
-const microblinkDependencies = Object.keys(packageJson.dependencies).filter(
-  (key) => key.startsWith("@microblink"),
-);
+const microblinkDependencies = Object.keys(packageJson.dependencies).filter((key) => key.startsWith("@microblink"));
 
-const mbDepsWithVersion = microblinkDependencies.reduce<
-  PackageJsonData["dependencies"]
->((acc, key) => {
+const mbDepsWithVersion = microblinkDependencies.reduce<PackageJsonData["dependencies"]>((acc, key) => {
   const pkgPath = getPackagePath(key);
   const pkgJson = fs.readJsonSync(path.join(pkgPath, "package.json"));
   if (!acc) {

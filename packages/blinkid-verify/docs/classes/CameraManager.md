@@ -40,7 +40,7 @@ The options for the VideoFrameProcessor.
 
 ## Properties
 
-### getState()
+### getState
 
 > **getState**: () => [`CameraManagerStore`](../type-aliases/CameraManagerStore.md)
 
@@ -50,26 +50,26 @@ Gets the current internal state of the CameraManager.
 
 [`CameraManagerStore`](../type-aliases/CameraManagerStore.md)
 
-the current state of the CameraManager
+The current state of the CameraManager
 
 ***
 
-### setResolution()
+### setResolution
 
 > **setResolution**: (`resolution`) => `Promise`\<`void`\>
 
-Sets the desired video resolution for camera streams. This is used as the ideal resolution
-when starting camera streams. If a camera doesn't support the specified resolution,
-the camera will automatically fall back to the next lower supported resolution in this order:
-4k → 1080p → 720p. If there's an active stream, it will be restarted with the new resolution.
+Sets the desired video resolution for camera streams. This is used as the ideal resolution when starting camera
+streams. If a camera doesn't support the specified resolution, the camera will automatically fall back to the next
+lower supported resolution in this order: 4k → 1080p → 720p. If there's an active stream, it will be restarted with
+the new resolution.
 
 #### Parameters
 
 ##### resolution
 
-The ideal resolution to set for camera streams.
+`"720p"` \| `"1080p"` \| `"4k"`
 
-`"720p"` | `"1080p"` | `"4k"`
+The ideal resolution to set for camera streams.
 
 #### Returns
 
@@ -77,7 +77,7 @@ The ideal resolution to set for camera streams.
 
 ***
 
-### startFrameCapture()
+### startFrameCapture
 
 > **startFrameCapture**: () => `Promise`\<`void`\>
 
@@ -87,16 +87,16 @@ Starts capturing frames from the video element.
 
 `Promise`\<`void`\>
 
-resolves when frame capture starts
+Resolves when frame capture starts
 
 ***
 
-### subscribe()
+### subscribe
 
 > **subscribe**: \{(`listener`): () => `void`; \<`U`\>(`selector`, `listener`, `options?`): () => `void`; \}
 
-Allows the user to subscribe to state changes inside the Camera Manager.
-Implemented using Zustand. For usage information, see
+Allows the user to subscribe to state changes inside the Camera Manager. Implemented using Zustand. For usage
+information, see
 
 #### Call Signature
 
@@ -110,11 +110,7 @@ Implemented using Zustand. For usage information, see
 
 ##### Returns
 
-> (): `void`
-
-###### Returns
-
-`void`
+() => `void`
 
 #### Call Signature
 
@@ -148,19 +144,15 @@ Implemented using Zustand. For usage information, see
 
 ##### Returns
 
-> (): `void`
+() => `void`
 
-###### Returns
+#### Returns
 
-`void`
+A cleanup function to remove the subscription
 
 #### See
 
 https://github.com/pmndrs/zustand#using-subscribe-with-selector for more details.
-
-#### Returns
-
-a cleanup function to remove the subscription
 
 ## Accessors
 
@@ -168,13 +160,13 @@ a cleanup function to remove the subscription
 
 #### Get Signature
 
-> **get** **extractionArea**(): `undefined` \| [`ExtractionArea`](../type-aliases/ExtractionArea.md)
+> **get** **extractionArea**(): [`ExtractionArea`](../type-aliases/ExtractionArea.md) \| `undefined`
 
 Gets the area of the video frame that will be extracted.
 
 ##### Returns
 
-`undefined` \| [`ExtractionArea`](../type-aliases/ExtractionArea.md)
+[`ExtractionArea`](../type-aliases/ExtractionArea.md) \| `undefined`
 
 The area of the video frame that will be extracted.
 
@@ -204,11 +196,10 @@ https://developer.mozilla.org/en-US/docs/Web/API/MediaSession/playbackState for 
 
 > **get** **resolution**(): `"720p"` \| `"1080p"` \| `"4k"`
 
-The desired video resolution for camera streams. This is used as the ideal resolution
-when starting camera streams. If a camera doesn't support the specified resolution,
-the camera will automatically fall back to the next lower supported resolution in this order:
-4k → 1080p → 720p. The actual resolution used may differ from this setting based on
-camera capabilities and system constraints.
+The desired video resolution for camera streams. This is used as the ideal resolution when starting camera streams.
+If a camera doesn't support the specified resolution, the camera will automatically fall back to the next lower
+supported resolution in this order: 4k → 1080p → 720p. The actual resolution used may differ from this setting
+based on camera capabilities and system constraints.
 
 ##### Returns
 
@@ -220,11 +211,11 @@ camera capabilities and system constraints.
 
 #### Get Signature
 
-> **get** **selectedCamera**(): `undefined` \| [`Camera`](Camera.md)
+> **get** **selectedCamera**(): [`Camera`](Camera.md) \| `undefined`
 
 ##### Returns
 
-`undefined` \| [`Camera`](Camera.md)
+[`Camera`](Camera.md) \| `undefined`
 
 ***
 
@@ -234,8 +225,8 @@ camera capabilities and system constraints.
 
 > **get** **userInitiatedAbort**(): `boolean`
 
-If true, the user has initiated an abort. This will prevent the
-CameraManager from throwing errors when the user interrupts the process.
+If true, the user has initiated an abort. This will prevent the CameraManager from throwing errors when the user
+interrupts the process.
 
 ##### Returns
 
@@ -269,11 +260,7 @@ CameraManager from throwing errors when the user interrupts the process.
 
 #### Returns
 
-> (): `boolean`
-
-##### Returns
-
-`boolean`
+() => `boolean`
 
 ***
 
@@ -281,8 +268,7 @@ CameraManager from throwing errors when the user interrupts the process.
 
 > **addFrameCaptureCallback**(`frameCaptureCallback`): () => `boolean`
 
-Adds a callback that will be triggered on each frame when the playback state
-is "capturing".
+Adds a callback that will be triggered on each frame when the playback state is "capturing".
 
 #### Parameters
 
@@ -294,13 +280,9 @@ The callback to add.
 
 #### Returns
 
-a cleanup function to remove the callback
+A cleanup function to remove the callback
 
-> (): `boolean`
-
-##### Returns
-
-`boolean`
+() => `boolean`
 
 ***
 
@@ -308,8 +290,8 @@ a cleanup function to remove the callback
 
 > **getCameraDevices**(): `Promise`\<[`Camera`](Camera.md)[]\>
 
-Returns the cameras that are available to the user, filtered by the facing mode.
-If no facing mode is set, all cameras are returned.
+Returns the cameras that are available to the user, filtered by the facing mode. If no facing mode is set, all
+cameras are returned.
 
 #### Returns
 
@@ -361,7 +343,7 @@ Refreshes available devices on the system and updates the state.
 
 `Promise`\<`void`\>
 
-resolves when the camera devices are refreshed
+Resolves when the camera devices are refreshed
 
 ***
 
@@ -473,8 +455,7 @@ The facing filter.
 
 > **startCameraStream**(`params?`): `Promise`\<`void`\>
 
-Starts a best-effort camera stream. Will pick a camera automatically if
-none is selected.
+Starts a best-effort camera stream. Will pick a camera automatically if none is selected.
 
 #### Parameters
 
@@ -488,7 +469,7 @@ The parameters for the camera stream.
 
 `Promise`\<`void`\>
 
-resolves when the camera stream starts
+Resolves when the camera stream starts
 
 ***
 
@@ -502,7 +483,7 @@ Starts the video playback
 
 `Promise`\<`void`\>
 
-resolves when playback starts
+Resolves when playback starts
 
 ***
 
