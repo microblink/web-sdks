@@ -1,21 +1,17 @@
 # @microblink/blinkcard-wasm
 
-## 3001.0.0-next.0
+## 3001.0.0
 
 ### Major Changes
 
 - Added `CardAccountResult.binCheckResult` to BlinkCard WebAssembly scanning results and defaulted CVV and card-number redaction to `full-result`. Removed `RedactionSettings.cardNumberPrefixRedactionMode`; remove that setting from custom redaction options and use `cardNumberRedactionSettings` to configure card-number redaction.
+- Removed the `basic` Wasm build.
+  - Renamed shipped Wasm build directories: `advanced` → `simd` and `advanced-threads` → `simd-threads`.
 
 ### Minor Changes
 
-- Removed the `basic` Wasm build.
-  - Renamed shipped Wasm build directories: `advanced` → `simd` and `advanced-threads` → `simd-threads`.
+- Added the `simd-relaxed` and `simd-relaxed-threads` WebAssembly builds, their size-manifest entries, and the corresponding directories in the shipped `resources/` tree.
 - Updated the Emscripten toolchain used to build the BlinkCard WebAssembly module to v6.x.
-
-### Patch Changes
-
-- Speeds up BlinkCard initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
-
 
 ## 3000.0.8
 

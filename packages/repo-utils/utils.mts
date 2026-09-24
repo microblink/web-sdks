@@ -1,5 +1,6 @@
 import browserslist from "browserslist";
 import browserslistToEsbuild from "browserslist-to-esbuild";
+import type { Plugin } from "vite";
 import { $, fs, path } from "zx";
 
 type BrowserslistToEsbuild = (
@@ -118,6 +119,22 @@ export function collapseClassWhitespace() {
       }
 
       return { code: result, map: null };
+    },
+  };
+}
+
+export function removeModuleRegions(): Plugin {
+  return {
+    name: "remove-module-regions",
+    apply(_config, { command, mode }) {
+      return command === "build" && mode === "production";
+    },
+    generateBundle(_options, bundle) {
+      for (const output of Object.values(bundle)) {
+        if (output.type === "chunk") {
+          output.code = output.code.replace(/^[\t ]*\/\/#(?:end)?region[^\r\n]*(?:\r?\n|$)/gm, "");
+        }
+      }
     },
   };
 }

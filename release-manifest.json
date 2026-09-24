@@ -8,34 +8,32 @@
   ],
   "changed": [
     "camera-manager",
-    "blinkid",
-    "blinkcard",
-    "blinkid-verify"
+    "blinkcard"
   ],
   "products": {
     "camera-manager": {
       "selected": true,
       "changed": true,
-      "newVersion": "8.0.0",
-      "baselineVersion": "7.3.5"
+      "newVersion": "8.0.1",
+      "baselineVersion": "8.0.0"
     },
     "blinkid": {
       "selected": true,
-      "changed": true,
+      "changed": false,
       "newVersion": "8002.0.0",
-      "baselineVersion": "8001.0.1"
+      "baselineVersion": "8002.0.0"
     },
     "blinkcard": {
       "selected": true,
       "changed": true,
-      "newVersion": "3001.0.0-next.0",
-      "baselineVersion": "3000.1.0-next"
+      "newVersion": "3001.0.0",
+      "baselineVersion": "3001.0.0-next.0"
     },
     "blinkid-verify": {
       "selected": true,
-      "changed": true,
+      "changed": false,
       "newVersion": "4000.0.0-next.0",
-      "baselineVersion": "3.22.0-next"
+      "baselineVersion": "4000.0.0-next.0"
     }
   }
 }

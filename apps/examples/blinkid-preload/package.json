@@ -22,16 +22,10 @@
   "devDependencies": {
     "@microblink/repo-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",
-    "@typescript/native": "catalog:typescript",
-    "oxfmt": "catalog:oxc",
-    "oxlint": "catalog:oxc",
-    "oxlint-tsgolint": "catalog:oxc",
     "rimraf": "catalog:utils",
-    "sass": "catalog:ui",
     "typescript": "catalog:typescript",
     "vite": "catalog:vite",
     "vite-plugin-mkcert": "catalog:vite",
-    "vite-plugin-solid": "catalog:vite",
-    "zx": "catalog:utils"
+    "vite-plugin-solid": "catalog:vite"
   }
 }

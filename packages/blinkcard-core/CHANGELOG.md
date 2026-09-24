@@ -1,25 +1,19 @@
 # @microblink/blinkcard-core
 
-## 3001.0.0-next.0
+## 3001.0.0
 
 ### Major Changes
 
 - Updated the BlinkCard result and settings types re-exported by `@microblink/blinkcard-core`: `CardAccountResult` now requires `binCheckResult`, and `RedactionSettings` no longer has `cardNumberPrefixRedactionMode`. Add `binCheckResult` to manually constructed account results and remove `cardNumberPrefixRedactionMode` from custom scanning settings.
 
-### Minor Changes
-
-- Adds the `simd-relaxed` and `simd-relaxed-threads` WebAssembly variants. Browsers that support relaxed SIMD now load these faster builds automatically, while other browsers keep using `simd` or `simd-threads`. The `wasmVariant` setting accepts the new variant names, and the shipped `resources/` tree contains the new variant directories.
-
 ### Patch Changes
 
-- Updated package dependencies.
 - Require HTTPS when loading cross-origin worker resources.
-- Speeds up BlinkCard initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
-- Upgrade to TypeScript 7
+- Upgraded to TypeScript 7
 - Updated dependencies
   - @microblink/analytics@2.1.0
-  - @microblink/blinkcard-wasm@3001.0.0-next.0
-  - @microblink/blinkcard-worker@3001.0.0-next.0
+  - @microblink/blinkcard-wasm@3001.0.0
+  - @microblink/blinkcard-worker@3001.0.0
 
 ## 3000.0.8
 

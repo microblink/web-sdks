@@ -1,17 +1,18 @@
 # @microblink/blinkcard-worker
 
-## 3001.0.0-next.0
+## 3001.0.0
+
+### Minor Changes
+
+- Adds support for automatically selecting and loading the `simd-relaxed` and `simd-relaxed-threads` WebAssembly variants when the browser supports relaxed SIMD, with fallback to `simd` or `simd-threads`. The `wasmVariant` setting also accepts the new variant names.
 
 ### Patch Changes
 
 - Speeds up BlinkCard initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
-
-### Patch Changes
-
 - Updated dependencies
-  - @microblink/blinkcard-wasm@3001.0.0-next.0
+  - @microblink/blinkcard-wasm@3001.0.0
   - @microblink/analytics@2.1.0
-  - @microblink/worker-common@1.0.5
+  - @microblink/worker-common@1.1.0
 
 ## 3000.0.8
 

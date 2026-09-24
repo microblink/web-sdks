@@ -1,9 +1,9 @@
 {
   "wasm": {
-    "simd": 2165846,
-    "simd-threads": 2193482,
-    "simd-relaxed": 2158272,
-    "simd-relaxed-threads": 2185956
+    "simd": 2165838,
+    "simd-threads": 2193474,
+    "simd-relaxed": 2158264,
+    "simd-relaxed-threads": 2185948
   },
   "data": {
     "simd": 12280182,

@@ -223,9 +223,6 @@ importers:
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      syncpack:
-        specifier: 15.3.2
-        version: 15.3.2
       turbo:
         specifier: ^2.8.10
         version: 2.9.14
@@ -250,15 +247,9 @@ importers:
       '@microblink/camera-manager':
         specifier: workspace:^
         version: link:../../../packages/camera-manager
-      '@microblink/feedback-stabilizer':
-        specifier: workspace:^
-        version: link:../../../packages/feedback-stabilizer
       solid-js:
         specifier: catalog:ui
         version: 1.9.14
-      yy-fps:
-        specifier: 'catalog:'
-        version: 2.0.1
     devDependencies:
       '@microblink/repo-utils':
         specifier: workspace:*
@@ -266,18 +257,6 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
@@ -296,9 +275,6 @@ importers:
       vite-plugin-solid:
         specifier: catalog:vite
         version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkcard-custom-ui:
     dependencies:
@@ -355,27 +331,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../../../packages/repo-utils
-      '@microblink/tsconfig':
-        specifier: workspace:*
-        version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -385,9 +343,6 @@ importers:
       vite-plugin-mkcert:
         specifier: catalog:vite
         version: 2.1.0(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-advanced-setup:
     dependencies:
@@ -400,15 +355,9 @@ importers:
       '@microblink/camera-manager':
         specifier: workspace:^
         version: link:../../../packages/camera-manager
-      '@microblink/feedback-stabilizer':
-        specifier: workspace:^
-        version: link:../../../packages/feedback-stabilizer
       solid-js:
         specifier: catalog:ui
         version: 1.9.14
-      yy-fps:
-        specifier: 'catalog:'
-        version: 2.0.1
     devDependencies:
       '@microblink/repo-utils':
         specifier: workspace:*
@@ -416,24 +365,9 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -449,9 +383,6 @@ importers:
       vite-plugin-solid:
         specifier: catalog:vite
         version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-core-api:
     dependencies:
@@ -462,27 +393,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../../../packages/repo-utils
-      '@microblink/tsconfig':
-        specifier: workspace:*
-        version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -492,9 +405,6 @@ importers:
       vite-plugin-mkcert:
         specifier: catalog:vite
         version: 2.1.0(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-custom-ui:
     dependencies:
@@ -551,27 +461,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../../../packages/repo-utils
-      '@microblink/tsconfig':
-        specifier: workspace:*
-        version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -581,9 +473,6 @@ importers:
       vite-plugin-mkcert:
         specifier: catalog:vite
         version: 2.1.0(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-photo-upload:
     dependencies:
@@ -600,24 +489,9 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -633,9 +507,6 @@ importers:
       vite-plugin-solid:
         specifier: catalog:vite
         version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-preload:
     dependencies:
@@ -658,24 +529,9 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -688,9 +544,6 @@ importers:
       vite-plugin-solid:
         specifier: catalog:vite
         version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-simple:
     dependencies:
@@ -701,27 +554,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../../../packages/repo-utils
-      '@microblink/tsconfig':
-        specifier: workspace:*
-        version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -731,9 +566,6 @@ importers:
       vite-plugin-mkcert:
         specifier: catalog:vite
         version: 2.1.0(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-ui-overrides:
     dependencies:
@@ -746,9 +578,6 @@ importers:
       '@microblink/camera-manager':
         specifier: workspace:^
         version: link:../../../packages/camera-manager
-      '@microblink/feedback-stabilizer':
-        specifier: workspace:^
-        version: link:../../../packages/feedback-stabilizer
       solid-js:
         specifier: catalog:ui
         version: 1.9.14
@@ -759,24 +588,9 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -792,9 +606,6 @@ importers:
       vite-plugin-solid:
         specifier: catalog:vite
         version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-verify-advanced-setup:
     dependencies:
@@ -807,15 +618,9 @@ importers:
       '@microblink/camera-manager':
         specifier: workspace:^
         version: link:../../../packages/camera-manager
-      '@microblink/feedback-stabilizer':
-        specifier: workspace:^
-        version: link:../../../packages/feedback-stabilizer
       solid-js:
         specifier: catalog:ui
         version: 1.9.14
-      yy-fps:
-        specifier: 'catalog:'
-        version: 2.0.1
     devDependencies:
       '@microblink/repo-utils':
         specifier: workspace:*
@@ -823,18 +628,6 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
@@ -853,9 +646,6 @@ importers:
       vite-plugin-solid:
         specifier: catalog:vite
         version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/blinkid-verify-custom-ui:
     dependencies:
@@ -912,30 +702,9 @@ importers:
       '@microblink/repo-utils':
         specifier: workspace:*
         version: link:../../../packages/repo-utils
-      '@microblink/tsconfig':
-        specifier: workspace:*
-        version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
-      resolve-package-path:
-        specifier: ^4.0.3
-        version: 4.0.3
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -945,9 +714,6 @@ importers:
       vite-plugin-mkcert:
         specifier: catalog:vite
         version: 2.1.0(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/camera-manager:
     dependencies:
@@ -957,31 +723,16 @@ importers:
       solid-js:
         specifier: catalog:ui
         version: 1.9.14
+      yy-fps:
+        specifier: 'catalog:'
+        version: 2.0.1
     devDependencies:
-      '@microblink/repo-utils':
-        specifier: workspace:*
-        version: link:../../../packages/repo-utils
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -997,12 +748,6 @@ importers:
       vite-plugin-solid:
         specifier: catalog:vite
         version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      yy-fps:
-        specifier: 'catalog:'
-        version: 2.0.1
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   apps/examples/camera-manager-custom-ui:
     dependencies:
@@ -1050,30 +795,12 @@ importers:
         specifier: catalog:ui
         version: 1.9.14
     devDependencies:
-      '@microblink/repo-utils':
-        specifier: workspace:*
-        version: link:../../../packages/repo-utils
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../../../packages/tsconfig
-      '@typescript/native':
-        specifier: catalog:typescript
-        version: typescript@7.0.2
-      oxfmt:
-        specifier: catalog:oxc
-        version: 0.61.0
-      oxlint:
-        specifier: catalog:oxc
-        version: 1.76.0(oxlint-tsgolint@7.0.2001)
-      oxlint-tsgolint:
-        specifier: catalog:oxc
-        version: 7.0.2001
       rimraf:
         specifier: catalog:utils
         version: 6.1.3
-      sass:
-        specifier: catalog:ui
-        version: 1.85.0
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
@@ -1089,12 +816,6 @@ importers:
       vite-plugin-solid:
         specifier: catalog:vite
         version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-      yy-fps:
-        specifier: 'catalog:'
-        version: 2.0.1
-      zx:
-        specifier: catalog:utils
-        version: 8.8.5
 
   packages/analytics:
     devDependencies:
@@ -2610,6 +2331,9 @@ importers:
       typescript:
         specifier: catalog:typescript
         version: '@typescript/typescript6@6.0.2'
+      vite:
+        specifier: catalog:vite
+        version: 8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0)
       vitest:
         specifier: catalog:test
         version: 5.0.0(@types/node@25.9.4)(@vitest/browser-playwright@5.0.0)(@vitest/coverage-v8@5.0.0)(@vitest/ui@5.0.0)(happy-dom@20.11.2)(jsdom@25.0.1(supports-color@10.2.2))(msw@2.7.3(@types/node@25.9.4)(@typescript/typescript6@6.0.2))(vite@8.2.0(@types/node@25.9.4)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
@@ -5245,10 +4969,6 @@ packages:
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
 
-  acorn@8.14.0:
-    resolution: {integrity: sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==}
-    engines: {node: '>=0.4.0'}
-
   acorn@8.16.0:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
     engines: {node: '>=0.4.0'}
@@ -6662,14 +6382,6 @@ packages:
   path-parse@1.0.7:
     resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
 
-  path-root-regex@0.1.2:
-    resolution: {integrity: sha512-4GlJ6rZDhQZFE0DPVKh0e9jmZ5egZfxTkp7bcRDuPlJXbAwhxcl2dINPUAsjLdejqaLsCeg8axcLjIbvBjN4pQ==}
-    engines: {node: '>=0.10.0'}
-
-  path-root@0.1.1:
-    resolution: {integrity: sha512-QLcPegTHF11axjfojBIoDygmS2E3Lf+8+jI6wOVmNVenrKSo3mFdSGiIgdSHenczw3wPtlVMQaFVwGmM7BJdtg==}
-    engines: {node: '>=0.10.0'}
-
   path-scurry@2.0.2:
     resolution: {integrity: sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==}
     engines: {node: 18 || 20 || >=22}
@@ -6815,10 +6527,6 @@ packages:
   resolve-from@5.0.0:
     resolution: {integrity: sha512-qYg9KP24dD5qka9J47d0aVky0N+b4fTU89LN9iDnjB5waksiC49rvMB0PrUJQGoTmH50XPiqOvAjDfaijGxYZw==}
     engines: {node: '>=8'}
-
-  resolve-package-path@4.0.3:
-    resolution: {integrity: sha512-SRpNAPW4kewOaNUt8VPqhJ0UMxawMwzJD8V7m1cJfdSTK9ieZwS6K7Dabsm4bmLFM96Z5Y/UznrpG5kt1im8yA==}
-    engines: {node: '>= 12'}
 
   resolve-pkg-maps@1.0.0:
     resolution: {integrity: sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==}
@@ -7050,50 +6758,6 @@ packages:
     resolution: {integrity: sha512-eNRKgb3z66Yp3D2CixVujOUvXLFUTij/zVnV8KRyvFdQwpz7I5DS8UfRkTeLzb64u+dkzDSdelE24izu+zSSUg==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  syncpack-darwin-arm64@15.3.2:
-    resolution: {integrity: sha512-rQwZOvWJbvUzhBySbKnvs+F5khmdkH2W/kTZo+zz6UfH651K9z2fiOYlcpDPX0L97m566gRxVmOr930ygB97ZQ==}
-    cpu: [arm64]
-    os: [darwin]
-
-  syncpack-darwin-x64@15.3.2:
-    resolution: {integrity: sha512-91CWe9Pamfmlm2nY8bCL5z8GYOafGJUm/nQqtvaQDZ9SS25c6Gn8LDfRu6JSKV0dcI1zOH3EiRCM0K/kn9Mpiw==}
-    cpu: [x64]
-    os: [darwin]
-
-  syncpack-linux-arm64-musl@15.3.2:
-    resolution: {integrity: sha512-IzI4Sr1rFDuF7FFbZ+ti+qA2/0Rp/aGNgzoUzNH28wYJkJMv9KBBr3Nygc1jsoO1+XE1JkYsXkJHuSFrwiwtgA==}
-    cpu: [arm64]
-    os: [linux]
-
-  syncpack-linux-arm64@15.3.2:
-    resolution: {integrity: sha512-eApeUFLb8yFHAFnCyHicDieTBW0eR3HsaKSWPMmz+VOQOpZYl0cmqbRLtunsYN6OykRi9Sl1faYjKmyETow7Gg==}
-    cpu: [arm64]
-    os: [linux]
-
-  syncpack-linux-x64-musl@15.3.2:
-    resolution: {integrity: sha512-dohyuYgUVHdSFz1KYW/XngyYSiSV3tarroYRsloYsT8bcSStkh2vJVBht0eMl1OFTh3Hb6lNEC12Pgtw4gWTcg==}
-    cpu: [x64]
-    os: [linux]
-
-  syncpack-linux-x64@15.3.2:
-    resolution: {integrity: sha512-xrzBZx3DjKoece2h3Olv/Y/U7b1eNorWTMiF407m0tO5KJp5u926TMeHlldaA5GRCkVJBe5VaI33WYTJF753oQ==}
-    cpu: [x64]
-    os: [linux]
-
-  syncpack-windows-arm64@15.3.2:
-    resolution: {integrity: sha512-ZGjVpyS8PW6Y69HyXOb8RYVWRQ+hlRklqdgOp+x+eqrCRidGho8z2nN5tleMGzcaMC7hg+qSPFh5u6Fy/BXr4w==}
-    cpu: [arm64]
-    os: [win32]
-
-  syncpack-windows-x64@15.3.2:
-    resolution: {integrity: sha512-9zKWNXGhd3rryQjcpBjs02pKgvIzuz3PUS+vKL4vWnDu5VoHad4e6TzL4pvn+VfAm4wXzcuS9fZkxLBEMPLerw==}
-    cpu: [x64]
-    os: [win32]
-
-  syncpack@15.3.2:
-    resolution: {integrity: sha512-RKYfXFQlrIWosTheNbyJg3xHNjTDrW2mOvwxAz3XGghrUDN4hDjhKPCTAQrUtGZw9hNeIr37qRO3/+EP927Vtg==}
-    engines: {node: '>=14.17.0'}
-
   term-size@2.2.1:
     resolution: {integrity: sha512-wK0Ri4fOGjv/XPy8SBHZChl8CM7uMc5VML7SqiQ0zG7+J5Vr+RMQDoHa2CNT6KHUnTGIXH34UDMkPzAUyapBZg==}
     engines: {node: '>=8'}
@@ -7178,6 +6842,9 @@ packages:
 
   tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+
+  tslib@2.8.1:
+    resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
   tsx@4.21.0:
     resolution: {integrity: sha512-5C1sg4USs1lfG0GFb2RLXsdpXqBSEhAaA/0kPL01wxzpMqLILNxIxIOKiILz+cdg/pLnOUxFYOR5yhHU666wbw==}
@@ -7544,18 +7211,6 @@ packages:
   write-package@7.1.0:
     resolution: {integrity: sha512-DqUx8GI3r9BFWwU2DPKddL1E7xWfbFED82mLVhGXKlFEPe8IkBftzO7WfNwHtk7oGDHDeuH/o8VMpzzfMwmLUA==}
     engines: {node: '>=18'}
-
-  ws@8.21.1:
-    resolution: {integrity: sha512-+0NTnW77fFN/DjQi6k/Sq/Yvk4Sgajw7urW8V+asjXnRgDs9gyGkdb7EzgfhA4goXsRIZKE28fzIXBHEzhuiWw==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
 
   ws@8.21.3:
     resolution: {integrity: sha512-201TZ/kPWxoPr/OKWjquZR1SWKXcvxdH+e1xrx89b3YbmzLMFCLfnaG1HFIgWzJOEWZ7MvpK++odZufgYR50Rw==}
@@ -8075,7 +7730,7 @@ snapshots:
   '@emnapi/core@1.10.0':
     dependencies:
       '@emnapi/wasi-threads': 1.2.1
-      tslib: 2.6.2
+      tslib: 2.8.1
     optional: true
 
   '@emnapi/core@1.11.2':
@@ -8087,12 +7742,12 @@ snapshots:
   '@emnapi/core@2.0.0-alpha.3':
     dependencies:
       '@emnapi/wasi-threads': 2.0.1
-      tslib: 2.6.2
+      tslib: 2.8.1
     optional: true
 
   '@emnapi/runtime@1.10.0':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     optional: true
 
   '@emnapi/runtime@1.11.2':
@@ -8102,22 +7757,22 @@ snapshots:
 
   '@emnapi/runtime@2.0.0-alpha.3':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     optional: true
 
   '@emnapi/wasi-threads@1.2.1':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     optional: true
 
   '@emnapi/wasi-threads@1.2.2':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     optional: true
 
   '@emnapi/wasi-threads@2.0.1':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     optional: true
 
   '@esbuild/aix-ppc64@0.27.2':
@@ -8507,7 +8162,7 @@ snapshots:
   '@motionone/easing@10.18.0':
     dependencies:
       '@motionone/utils': 10.18.0
-      tslib: 2.6.2
+      tslib: 2.8.1
 
   '@motionone/generators@10.18.0':
     dependencies:
@@ -9213,7 +8868,7 @@ snapshots:
 
   '@swc/helpers@0.5.3':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
 
   '@turbo/darwin-64@2.9.14':
     optional: true
@@ -9235,7 +8890,7 @@ snapshots:
 
   '@tybys/wasm-util@0.10.3':
     dependencies:
-      tslib: 2.6.2
+      tslib: 2.8.1
     optional: true
 
   '@types/argparse@1.0.38': {}
@@ -10240,8 +9895,6 @@ snapshots:
     dependencies:
       acorn: 8.16.0
 
-  acorn@8.14.0: {}
-
   acorn@8.16.0: {}
 
   agent-base@7.1.4:
@@ -11041,7 +10694,7 @@ snapshots:
       buffer-image-size: 0.6.4
       entities: 7.0.1
       whatwg-mimetype: 3.0.0
-      ws: 8.21.1
+      ws: 8.21.3
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -11502,7 +11155,7 @@ snapshots:
 
   mlly@1.7.4:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.16.0
       pathe: 2.0.3
       pkg-types: 1.3.1
       ufo: 1.5.4
@@ -11845,12 +11498,6 @@ snapshots:
 
   path-parse@1.0.7: {}
 
-  path-root-regex@0.1.2: {}
-
-  path-root@0.1.1:
-    dependencies:
-      path-root-regex: 0.1.2
-
   path-scurry@2.0.2:
     dependencies:
       lru-cache: 11.5.2
@@ -11974,10 +11621,6 @@ snapshots:
   resolve-from@4.0.0: {}
 
   resolve-from@5.0.0: {}
-
-  resolve-package-path@4.0.3:
-    dependencies:
-      path-root: 0.1.1
 
   resolve-pkg-maps@1.0.0: {}
 
@@ -12219,41 +11862,6 @@ snapshots:
     dependencies:
       '@pkgr/core': 0.3.6
 
-  syncpack-darwin-arm64@15.3.2:
-    optional: true
-
-  syncpack-darwin-x64@15.3.2:
-    optional: true
-
-  syncpack-linux-arm64-musl@15.3.2:
-    optional: true
-
-  syncpack-linux-arm64@15.3.2:
-    optional: true
-
-  syncpack-linux-x64-musl@15.3.2:
-    optional: true
-
-  syncpack-linux-x64@15.3.2:
-    optional: true
-
-  syncpack-windows-arm64@15.3.2:
-    optional: true
-
-  syncpack-windows-x64@15.3.2:
-    optional: true
-
-  syncpack@15.3.2:
-    optionalDependencies:
-      syncpack-darwin-arm64: 15.3.2
-      syncpack-darwin-x64: 15.3.2
-      syncpack-linux-arm64: 15.3.2
-      syncpack-linux-arm64-musl: 15.3.2
-      syncpack-linux-x64: 15.3.2
-      syncpack-linux-x64-musl: 15.3.2
-      syncpack-windows-arm64: 15.3.2
-      syncpack-windows-x64: 15.3.2
-
   term-size@2.2.1: {}
 
   terser@5.49.0:
@@ -12330,6 +11938,8 @@ snapshots:
   ts-pattern@5.6.2: {}
 
   tslib@2.6.2: {}
+
+  tslib@2.8.1: {}
 
   tsx@4.21.0:
     dependencies:
@@ -12475,11 +12085,11 @@ snapshots:
   unplugin-utils@0.3.1:
     dependencies:
       pathe: 2.0.3
-      picomatch: 4.0.5
+      picomatch: 4.0.7
 
   unplugin@2.2.0:
     dependencies:
-      acorn: 8.14.0
+      acorn: 8.16.0
       webpack-virtual-modules: 0.6.2
 
   update-browserslist-db@1.3.2(browserslist@4.28.7):
@@ -12677,8 +12287,6 @@ snapshots:
       sort-keys: 5.1.0
       type-fest: 4.35.0
       write-json-file: 6.0.0
-
-  ws@8.21.1: {}
 
   ws@8.21.3: {}
 

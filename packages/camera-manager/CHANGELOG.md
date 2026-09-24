@@ -1,5 +1,11 @@
 # @microblink/camera-manager
 
+## 8.0.1
+
+### Patch Changes
+
+- Fixes camera error recovery actions so Retry and Cancel work correctly in `CameraErrorModal`.
+
 ## 8.0.0
 
 ### Major Changes
