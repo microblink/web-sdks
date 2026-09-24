@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkcard-worker",
-  "version": "3001.0.0-next.0",
+  "version": "3001.0.0",
   "private": true,
   "description": "Provides a worker which runs the BlinkCard WebAssembly in separate thread",
   "files": [

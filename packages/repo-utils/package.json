@@ -17,6 +17,7 @@
     "oxc-parser": "0.142.0",
     "tsx": "catalog:typescript",
     "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
     "vitest": "catalog:test",
     "zx": "catalog:utils"
   }

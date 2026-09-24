@@ -49,6 +49,7 @@ catalogs:
     vite-plugin-solid-svg: 0.8.1
 
 allowBuilds:
+  "@bufbuild/buf": true
   "@parcel/watcher": true
   esbuild: true
   lefthook: true
@@ -64,12 +65,10 @@ publicHoistPattern:
 catalog:
   "@types/common-tags": ^1.8.3
   "@types/node": ^25.2.3
-  "@types/qrcode": ^1.5.6
   clsx: ^2.1.1
   comlink: ^4.4.2
   merge-anything: ^6.0.3
   perfect-debounce: ^2.1.0
-  qrcode: ^1.5.4
   ts-pattern: ^5.6.2
   type-fest: ^4.35.0
   yy-fps: ^2.0.1

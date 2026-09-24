@@ -17,23 +17,16 @@
     "@microblink/blinkid-verify-core": "workspace:^",
     "@microblink/blinkid-verify-ux-manager": "workspace:^",
     "@microblink/camera-manager": "workspace:^",
-    "@microblink/feedback-stabilizer": "workspace:^",
-    "solid-js": "catalog:ui",
-    "yy-fps": "catalog:"
+    "solid-js": "catalog:ui"
   },
   "devDependencies": {
     "@microblink/repo-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",
-    "@typescript/native": "catalog:typescript",
-    "oxfmt": "catalog:oxc",
-    "oxlint": "catalog:oxc",
-    "oxlint-tsgolint": "catalog:oxc",
     "rimraf": "catalog:utils",
     "typescript": "catalog:typescript",
     "vite": "catalog:vite",
     "vite-plugin-mkcert": "catalog:vite",
     "vite-plugin-qrcode": "catalog:vite",
-    "vite-plugin-solid": "catalog:vite",
-    "zx": "catalog:utils"
+    "vite-plugin-solid": "catalog:vite"
   }
 }

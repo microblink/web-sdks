@@ -982,6 +982,10 @@ function getPackageBrowserSupportErrors(packageRoot, workspaceRoot, workspacePac
     errors.push(...getRootBaselineErrors(packageName, environmentMinimums));
   }
 
+  if (packageJson.private) {
+    return errors;
+  }
+
   if (!publicReadme) {
     errors.push(`${packageName} declares browserslist but has no README.md or README.github.md.`);
     return errors;

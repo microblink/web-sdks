@@ -54,11 +54,11 @@ const CameraErrorModal: Component = () => {
         actions={{
           primary: {
             label: t.camera_error_primary_btn,
-            onclick: () => void cameraManager.startCameraStream(),
+            onClick: () => void cameraManager.startCameraStream(),
           },
           secondary: {
             label: t.camera_error_cancel_btn,
-            onclick: () => dismountCameraUi(),
+            onClick: () => dismountCameraUi(),
           },
         }}
       >

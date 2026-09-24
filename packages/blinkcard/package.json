@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkcard",
-  "version": "3001.0.0-next.0",
+  "version": "3001.0.0",
   "description": "All-in-one BlinkCard browser SDK for fast and accurate debit and credit card scanning and recognition in web applications.",
   "keywords": [
     "blinkcard",

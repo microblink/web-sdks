@@ -192,6 +192,25 @@ describe("browser support checks", () => {
     }
   });
 
+  it("does not require browser support documentation for a private package", () => {
+    const workspaceRoot = createWorkspace();
+
+    try {
+      const packageRoot = nodePath.join(workspaceRoot, "packages/browser");
+
+      writePackageJson(packageRoot, {
+        name: "@scope/browser",
+        private: true,
+        browserslist: browserPackageBrowserslist,
+      });
+      writeBrowserTargetedTooling(packageRoot);
+
+      expect(getBrowserSupportErrors(workspaceRoot)).toEqual([]);
+    } finally {
+      cleanupWorkspace(workspaceRoot);
+    }
+  });
+
   it("fails when a runtime source file cannot be parsed", () => {
     const workspaceRoot = createWorkspace();
 
