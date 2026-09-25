@@ -1,10 +1,19 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import { type FaceLandmarks } from "@microblink/biometrics-common";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createLandmarks } from "../../test/landmarks";
 import { type AnalysisResult, WasmFaceAnalyzer } from "../analyzer/wasmFaceAnalyzer";
 import { createBiometricsCapture, type BiometricsCaptureSession, type CaptureConfig } from "./capture";
+
+const sampleLandmarks: FaceLandmarks = {
+  LeftEye: { x: 0.4, y: 0.4 },
+  RightEye: { x: 0.6, y: 0.4 },
+  NoseTip: { x: 0.5, y: 0.52 },
+  Mouth: { x: 0.5, y: 0.66 },
+  LeftEar: { x: 0.25, y: 0.42 },
+  RightEar: { x: 0.75, y: 0.42 },
+};
 
 const processor = vi.hoisted(() => ({
   analyze: vi.fn<(image: ImageData) => Promise<AnalysisResult>>(),
@@ -65,7 +74,7 @@ function okResult(image: ImageData, overrides: Partial<AnalysisResult> = {}): An
     feedback: "OK",
     image,
     arrayBuffer: image.data.buffer,
-    landmarks: createLandmarks(),
+    landmarks: sampleLandmarks,
     isCaptureComplete: true,
     ...overrides,
   };

@@ -1,6 +1,6 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { BiometricsError } from "@microblink/biometrics-common";
+import { BiometricsError, type FaceLandmarks } from "@microblink/biometrics-common";
 import {
   ImageDataError,
   InputError,
@@ -11,7 +11,6 @@ import {
 } from "@microblink/biometrics-wasm";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { createLandmarks } from "../../test/landmarks";
 import { createCaptureInitializationContext } from "../initialization";
 import type { BiometricsProcessResultWithBuffer } from "./biometricsWorkerClient";
 
@@ -41,14 +40,14 @@ vi.mock("comlink", () => ({
 
 import { WasmFaceAnalyzer } from "./wasmFaceAnalyzer";
 
-const sampleLandmarks = createLandmarks({
+const sampleLandmarks: FaceLandmarks = {
   LeftEye: { x: 0.2, y: 0.25 },
   RightEye: { x: 0.8, y: 0.25 },
   NoseTip: { x: 0.5, y: 0.45 },
   Mouth: { x: 0.5, y: 0.7 },
   LeftEar: { x: 0.1, y: 0.3 },
   RightEar: { x: 0.9, y: 0.3 },
-});
+};
 
 function processOk(status: NativeFrameStatus, arrayBuffer = new ArrayBuffer(16)): BiometricsProcessResultWithBuffer {
   return {
