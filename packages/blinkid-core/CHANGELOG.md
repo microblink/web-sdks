@@ -1,5 +1,14 @@
 # @microblink/blinkid-core
 
+## 8002.0.1
+
+### Patch Changes
+
+- Update declaration bundles
+- Updated dependencies
+  - @microblink/blinkid-wasm@8002.0.1
+  - @microblink/blinkid-worker@8002.0.1
+
 ## 8002.0.0
 
 ### Major Changes

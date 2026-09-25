@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Skannið aðra hlið kortsins",
     scan_the_front_side: "Skannið kortanúmerið",
   },
+  flashlight_warning_message: "Gætið að glampi frá vasaljósum.\nFærðu kortið varlega til að forðast það.",
   help_button: {
     aria_label: "Hjálp",
     tooltip: "Þarftu aðstoð?",

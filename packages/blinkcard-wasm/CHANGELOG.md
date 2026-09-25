@@ -1,5 +1,7 @@
 # @microblink/blinkcard-wasm
 
+## 3001.0.1
+
 ## 3001.0.0
 
 ### Major Changes

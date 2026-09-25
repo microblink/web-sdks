@@ -43,6 +43,7 @@ export default {
     wrong_right: "Di chuyển đến trang bên phải",
     wrong_top: "Di chuyển đến trang trên cùng",
   },
+  flashlight_warning_message: "Coi chừng lóa sáng do đèn flash.\nNhẹ nhàng di chuyển giấy tờ của bạn qua lại để chống lóa.",
   help_button: {
     aria_label: "Trợ giúp",
     tooltip: "Bạn cần trợ giúp?",

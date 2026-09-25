@@ -1,0 +1,155 @@
+{
+  "name": "@microblink/biometrics-ux-manager",
+  "version": "1000.0.0",
+  "description": "Biometrics guided capture UX manager for Web",
+  "keywords": [
+    "biometrics",
+    "biometrics-ux-manager",
+    "browser",
+    "camera",
+    "face-capture",
+    "microblink",
+    "sdk",
+    "typescript",
+    "ui",
+    "ux"
+  ],
+  "license": "ISC",
+  "author": "Microblink",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "type": "module",
+  "main": "./dist/biometrics-ux-manager.js",
+  "module": "./dist/biometrics-ux-manager.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/biometrics-ux-manager.js"
+    },
+    "./core": {
+      "types": "./types/core.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./ui": {
+      "types": "./types/ui.d.ts",
+      "import": "./dist/ui.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "directory": "publish",
+    "linkDirectory": false
+  },
+  "scripts": {
+    "build": "pnpm run --no-bail \"/^build:(js|types)$/\"",
+    "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
+    "build:js-dev": "vite build --mode development",
+    "build:publish": "pnpm build && pnpm type-rollup",
+    "build:types": "tsc -p tsconfig.build.json",
+    "clean": "rimraf .turbo types dist publish *.tgz",
+    "docs:api": "typedoc",
+    "format": "pnpm exec oxfmt src",
+    "lint:browser-entrypoints": "BROWSERSLIST_ENV=core oxlint src/core.ts src/core && BROWSERSLIST_ENV=ui oxlint src/ui.ts src/ui",
+    "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
+    "prepack": "pnpm prepare-publish",
+    "prepare-publish": "tsx scripts/prepare-publish.mts",
+    "publish-test": "pnpm build:publish && pnpm prepare-publish && pnpm pack-check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-rollup": "bundle-declarations --entry core --entry ui --compatibility-root --bundle @microblink/analytics",
+    "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
+    "watch:js": "pnpm run build:js --watch --mode development",
+    "watch:types": "pnpm run build:types --watch",
+    "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly false --noEmit"
+  },
+  "dependencies": {
+    "@microblink/analytics": "workspace:*",
+    "@microblink/biometrics-core": "workspace:*",
+    "@microblink/camera-manager": "workspace:^",
+    "@microblink/shared-components": "workspace:^",
+    "@microblink/ux-common": "workspace:^",
+    "merge-anything": "catalog:",
+    "perfect-debounce": "catalog:"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "catalog:publish",
+    "@microblink/repo-utils": "workspace:*",
+    "@microblink/test-utils": "workspace:*",
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/unocss-config": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "@vitest/browser-playwright": "catalog:test",
+    "axe-core": "4.12.1",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "publint": "catalog:publish",
+    "rimraf": "catalog:utils",
+    "tsx": "catalog:typescript",
+    "type-fest": "catalog:",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "unocss": "catalog:ui",
+    "vite": "catalog:vite",
+    "vite-plugin-css-injected-by-js": "catalog:vite",
+    "vite-plugin-externalize-dependencies": "catalog:vite",
+    "vite-plugin-solid": "catalog:vite",
+    "vite-plugin-solid-svg": "catalog:vite",
+    "vitest": "catalog:test",
+    "write-package": "catalog:publish",
+    "zx": "catalog:utils"
+  },
+  "peerDependencies": {
+    "@ark-ui/solid": "catalog:ui",
+    "@solid-primitives/keyed": "catalog:ui",
+    "solid-js": "catalog:ui",
+    "solid-zustand": "catalog:ui"
+  },
+  "peerDependenciesMeta": {
+    "@ark-ui/solid": {
+      "optional": true
+    },
+    "@solid-primitives/keyed": {
+      "optional": true
+    },
+    "solid-js": {
+      "optional": true
+    },
+    "solid-zustand": {
+      "optional": true
+    }
+  },
+  "browserslist": {
+    "production": [
+      "Chrome >= 96",
+      "ChromeAndroid >= 96",
+      "Edge >= 96",
+      "Opera >= 84",
+      "Firefox >= 132",
+      "Safari >= 16.4",
+      "iOS >= 16.4"
+    ],
+    "core": [
+      "Chrome >= 96",
+      "ChromeAndroid >= 96",
+      "Edge >= 96",
+      "Opera >= 84",
+      "Firefox >= 132",
+      "Safari >= 16.4",
+      "iOS >= 16.4"
+    ],
+    "ui": [
+      "Chrome >= 96",
+      "ChromeAndroid >= 96",
+      "Edge >= 96",
+      "Opera >= 84",
+      "Firefox >= 132",
+      "Safari >= 16.4",
+      "iOS >= 16.4"
+    ]
+  }
+}

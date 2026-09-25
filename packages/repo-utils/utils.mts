@@ -10,28 +10,6 @@ type BrowserslistToEsbuild = (
 
 const convertBrowserslistToEsbuild = browserslistToEsbuild as unknown as BrowserslistToEsbuild;
 
-export async function addJsExtensionsToDeclarationImports(directory: string): Promise<void> {
-  const declarationFiles = (await fs.readdir(directory, { recursive: true }))
-    .filter((filePath: string) => filePath.endsWith(".d.ts"))
-    .map((filePath: string) => path.join(directory, filePath));
-  const relativeSpecifierPattern = /((?:from\s*|import\s*(?:\(\s*)?)["'])(\.\.?\/[^"']+)(["'])/g;
-
-  await Promise.all(
-    declarationFiles.map(async (filePath: string) => {
-      const declaration = await fs.readFile(filePath, "utf8");
-      const nodeCompatibleDeclaration = declaration.replace(
-        relativeSpecifierPattern,
-        (match: string, prefix: string, specifier: string, suffix: string) =>
-          path.extname(specifier) ? match : `${prefix}${specifier}.js${suffix}`,
-      );
-
-      if (nodeCompatibleDeclaration !== declaration) {
-        await fs.writeFile(filePath, nodeCompatibleDeclaration);
-      }
-    }),
-  );
-}
-
 interface BrowserslistEsbuildTargetOptions {
   /** A single named Browserslist environment. Mutually exclusive with `environments`. */
   environment?: string;

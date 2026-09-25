@@ -1,5 +1,7 @@
 # @microblink/blinkid-wasm
 
+## 8002.0.1
+
 ## 8002.0.0
 
 ### Patch Changes

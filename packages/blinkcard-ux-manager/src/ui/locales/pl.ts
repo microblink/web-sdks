@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Zeskanuj drugą stronę karty",
     scan_the_front_side: "Zeskanuj numer karty",
   },
+  flashlight_warning_message: "Zwróć uwagę na odblaski od flesza.\nDelikatnie zmień pozycję kartą, aby ich uniknąć.",
   help_button: {
     aria_label: "Pomoc",
     tooltip: "Potrzebujesz pomocy?",

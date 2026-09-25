@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkcard-wasm",
-  "version": "3001.0.0",
+  "version": "3001.0.1",
   "private": true,
   "description": "BlinkCard Wasm runtime",
   "keywords": [

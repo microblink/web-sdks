@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Pindai sisi lain kartu",
     scan_the_front_side: "Pindai nomor kartu",
   },
+  flashlight_warning_message: "Awas lampu kilat silau.\nGerakkan kartu Anda dengan perlahan untuk menghindarinya.",
   help_button: {
     aria_label: "Bantuan",
     tooltip: "Perlu bantuan?",

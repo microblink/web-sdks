@@ -1,8 +1,9 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { enableFakeTimers } from "@microblink/test-utils";
-import { beforeEach, describe, expect, test, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
+import { createMockInputDeviceInfo } from "../media-mock/createInputDeviceInfo";
 import { VideoResolutionName } from "./Camera";
 import { CameraManager, defaultCameraManagerOptions } from "./CameraManager";
 import { cameraManagerStore as store, resetCameraManagerStore } from "./cameraManagerStore";
@@ -22,6 +23,40 @@ vi.mock("./VideoFrameProcessor", () => ({
   ),
   isBufferDetached: vi.fn().mockReturnValue(false),
 }));
+
+describe("CameraManager - Camera Devices", () => {
+  beforeEach(() => {
+    vi.spyOn(navigator.mediaDevices, "getUserMedia").mockResolvedValue(new MediaStream());
+    vi.spyOn(navigator.mediaDevices, "enumerateDevices").mockResolvedValue([
+      createMockInputDeviceInfo({ label: "FaceTime HD Camera" }),
+      createMockInputDeviceInfo({ label: "Apple Desk View Camera" }),
+      createMockInputDeviceInfo({ label: "DESK VIEW" }),
+    ]);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+    resetCameraManagerStore();
+  });
+
+  test("shares name patterns across managers without filtering the cached device list", async () => {
+    const firstManager = new CameraManager();
+    const secondManager = new CameraManager();
+    const allNames = ["FaceTime HD Camera", "Apple Desk View Camera", "DESK VIEW"];
+
+    expect((await firstManager.getCameraDevices()).map((camera) => camera.name)).toEqual(["FaceTime HD Camera"]);
+
+    secondManager.setExcludedCameraNamePatterns(["", "FACETIME", "apple desk"]);
+
+    expect((await firstManager.getCameraDevices()).map((camera) => camera.name)).toEqual(["DESK VIEW"]);
+    expect((await secondManager.getCameraDevices()).map((camera) => camera.name)).toEqual(["DESK VIEW"]);
+    expect(store.getState().cameras.map((camera) => camera.name)).toEqual(allNames);
+
+    firstManager.setExcludedCameraNamePatterns([]);
+
+    expect((await secondManager.getCameraDevices()).map((camera) => camera.name)).toEqual(allNames);
+  });
+});
 
 describe("CameraManager - Default Resolution", () => {
   let cameraManager: CameraManager;

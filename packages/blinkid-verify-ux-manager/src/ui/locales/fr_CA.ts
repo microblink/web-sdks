@@ -43,6 +43,7 @@ export default {
     wrong_right: "Veuillez passer à la page de droite.",
     wrong_top: "Veuillez passer à la page supérieure.",
   },
+  flashlight_warning_message: "Faites attention à l'éblouissement causé par le flash.\nVeuillez déplacer délicatement votre pièce d'identité pour l'éviter.",
   help_button: {
     aria_label: "Aide",
     tooltip: "Besoin d'aide?",

@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkcard-ux-manager",
-  "version": "3001.0.0",
+  "version": "3001.0.1",
   "description": "BlinkCard UX Manager provides user feedback based on the blinkcard process results.",
   "keywords": [
     "blinkcard",
@@ -60,7 +60,7 @@
     "publish-test": "pnpm pack-check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "type-rollup": "api-extractor run --local --config api-extractor.core.json && api-extractor run --local --config api-extractor.ui.json && tsx ../repo-utils/write-compatibility-declaration-rollup.mts",
+    "type-rollup": "bundle-declarations --entry core --entry ui --compatibility-root --bundle @microblink/feedback-stabilizer --bundle @microblink/ux-common",
     "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
     "watch:js": "pnpm run build:js --watch --mode development",
     "watch:types": "pnpm run build:types --watch",
@@ -85,7 +85,6 @@
     "@microblink/test-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",
     "@microblink/unocss-config": "workspace:*",
-    "@microsoft/api-extractor": "catalog:typescript",
     "@typescript/native": "catalog:typescript",
     "@vitest/browser-playwright": "catalog:test",
     "oxfmt": "catalog:oxc",

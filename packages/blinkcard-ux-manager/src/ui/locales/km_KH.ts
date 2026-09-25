@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "ស្កេនផ្នែកម្ខាងទៀតនៃកាត",
     scan_the_front_side: "ស្កេនលេខកាត",
   },
+  flashlight_warning_message: "ប្រយ័ត្នចំពោះពន្លឺពិលភ្លឺចែងចាំង។\nរំកិលកាតរបស់អ្នកថ្នមៗដើម្បីជៀសវាងវា។",
   help_button: {
     aria_label: "ជំនួយ",
     tooltip: "ត្រូវការជំនួយ?",

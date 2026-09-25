@@ -43,6 +43,7 @@ export default {
     wrong_right: "Pārvietot uz labo lapu",
     wrong_top: "Pārvietot uz augšējo lapu",
   },
+  flashlight_warning_message: "Uzmanieties no zibspuldzes atspīduma.\nUzmanīgi kustiniet savu ID, lai no tā izvairītos.",
   help_button: {
     aria_label: "Palīdzība",
     tooltip: "Vai vajadzīga palīdzība?",

@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "طرف دیگر کارت را اسکن کنید",
     scan_the_front_side: "شماره کارت را اسکن کنید",
   },
+  flashlight_warning_message: "مراقب تابش خیره کننده چراغ قوه باشید.\nکارت خود را به آرامی حرکت دهید تا از آن جلوگیری شود.",
   help_button: {
     aria_label: "کمک",
     tooltip: "به کمک نیاز دارید؟",

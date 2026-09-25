@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Відскануйте іншу сторону картки",
     scan_the_front_side: "Відскануйте номер картки",
   },
+  flashlight_warning_message: "Зверніть увагу на відблиски ліхтарика.\nОбережно рухайте карткою, щоб уникнути цього.",
   help_button: {
     aria_label: "Допомога",
     tooltip: "Потрібна допомога?",

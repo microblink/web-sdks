@@ -43,6 +43,7 @@ export default {
     wrong_right: "दायाँ पृष्ठमा जानुहोस्",
     wrong_top: "माथिल्लो पृष्ठमा जानुहोस्",
   },
+  flashlight_warning_message: "फ्ल्यासलाइटबाट सावधान रहनुहोस्। त्यसलाई रोक्न आफ्नो परिचयपत्र बिस्तारै मिलाउनुहोस्।",
   help_button: {
     aria_label: "मद्दत",
     tooltip: "सहयोग चाहिन्छ?",

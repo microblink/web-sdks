@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "د کارت بل مخ سکن کړئ",
     scan_the_front_side: "د کارت شمېره سکن کړئ",
   },
+  flashlight_warning_message: "د فلش لائټ ځلا ته پام وکړئ.\nد مخنیوي لپاره خپل کارت په نرمۍ سره شاوخوا وګرځئ.",
   help_button: {
     aria_label: "مرسته",
     tooltip: "تاسو مرستې ته اړتیا لرئ؟",

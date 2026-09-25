@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Scannen Sie die andere Seite der Karte",
     scan_the_front_side: "Scannen Sie die Kartennummer",
   },
+  flashlight_warning_message: "Achten Sie auf die Blendung durch eine Taschenlampe.\nBewegen Sie Ihre Karte vorsichtig umher, um dies zu vermeiden.",
   help_button: {
     aria_label: "Hilfe",
     tooltip: "Brauchen Sie Hilfe?",

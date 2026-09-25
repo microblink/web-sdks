@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Lue kortin toinen puoli",
     scan_the_front_side: "Skannaa kortin numero",
   },
+  flashlight_warning_message: "Varo salaman häikäisyä.\nSiirrä korttiasi varovasti välttääksesi häikäisyn.",
   help_button: {
     aria_label: "Ohje",
     tooltip: "Tarvitsetko apua?",

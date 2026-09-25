@@ -43,6 +43,7 @@ export default {
     wrong_right: "עבור אל העמוד הימני",
     wrong_top: "עבור אל העמוד העליון",
   },
+  flashlight_warning_message: "היזהרו מפני סנוור הפנס.\nהזיזו בעדינות את תעודת הזהות שלכם בכדי להימנע מהדבר.",
   help_button: {
     aria_label: "עזרה",
     tooltip: "זקוקים לעזרה?",

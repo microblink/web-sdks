@@ -43,6 +43,7 @@ export default {
     wrong_right: "انتقال به صفحه سمت راست",
     wrong_top: "انتقال به صفحه بالا",
   },
+  flashlight_warning_message: "مراقب تابش خیره کننده چراغ قوه باشید.\nبرای جلوگیری از آن، کارت شناسایی خود را به آرامی حرکت دهید.",
   help_button: {
     aria_label: "کمک",
     tooltip: "به کمک نیاز دارید؟",

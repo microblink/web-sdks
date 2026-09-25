@@ -48,6 +48,7 @@ export default {
     wrong_right: "Přesuňte se na pravou stránku",
     wrong_top: "Přesuňte se na horní stránku",
   },
+  flashlight_warning_message: "Dejte pozor na odlesky způsobené bleskem.\nVyhnete se jim lehkým posunutím vašeho průkazu.",
   help_button: {
     aria_label: "Nápověda",
     tooltip: "Potřebujete pomoct?",

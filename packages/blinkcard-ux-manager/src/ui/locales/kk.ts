@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Картаның басқа жағын сканерлеңіз",
     scan_the_front_side: "Карта нөмірін сканерлеңіз",
   },
+  flashlight_warning_message: "Фонарьдың жарқылына назар аударыңыз.\nОдан құтылу үшін картаңызды ақырын жылжытыңыз.",
   help_button: {
     aria_label: "Анықтама",
     tooltip: "Көмек керек пе?",

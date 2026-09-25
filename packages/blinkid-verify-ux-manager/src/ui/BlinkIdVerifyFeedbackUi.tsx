@@ -1,6 +1,7 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import { cameraManagerStore } from "@microblink/camera-manager/core";
+import { FlashlightWarning } from "@microblink/shared-components/FlashlightWarning";
 import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import type { Component } from "solid-js";
 import { createEffect, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
@@ -58,6 +59,7 @@ export const BlinkIdVerifyFeedbackUi: Component<{
   });
 
   const playbackState = create(cameraManagerStore)((s) => s.playbackState);
+  const torchEnabled = create(cameraManagerStore)((s) => s.selectedCamera?.torchEnabled ?? false);
 
   // assume modal is displayed on camera error
   const cameraErrorState = create(cameraManagerStore)((s) => s.errorState);
@@ -204,6 +206,12 @@ export const BlinkIdVerifyFeedbackUi: Component<{
                 <Show when={store.showHelpButton}>
                   <HelpButton isProcessing={isProcessing()} />
                 </Show>
+
+                <FlashlightWarning
+                  enabled={torchEnabled()}
+                  visible={shouldShowFeedback()}
+                  message={t.flashlight_warning_message}
+                />
               </>
             );
           }}

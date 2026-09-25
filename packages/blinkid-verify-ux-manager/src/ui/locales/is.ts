@@ -43,6 +43,7 @@ export default {
     wrong_right: "Farið yfir á hægri síðuna",
     wrong_top: "Farið á efstu síðuna",
   },
+  flashlight_warning_message: "Gætið að glampi frá vasaljósi.\nFærið skilríkin varlega til að forðast þau.",
   help_button: {
     aria_label: "Hjálp",
     tooltip: "Þarftu aðstoð?",

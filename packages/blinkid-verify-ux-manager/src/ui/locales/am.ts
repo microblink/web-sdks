@@ -43,6 +43,7 @@ export default {
     wrong_right: "ወደ ቀኝ ገጽ ይሂዱ",
     wrong_top: "ወደ ላይኛው ገጽ ተንቀሳቅስ",
   },
+  flashlight_warning_message: "የባትሪ ብርሃን እንዳያበራ ይጠንቀቁ።\nይህንን ለማስወገድ መታወቂያዎን በቀስታ ያንቀሳቅሱት።",
   help_button: {
     aria_label: "እገዛ",
     tooltip: "እርዳታ ይፈልጋሉ?",

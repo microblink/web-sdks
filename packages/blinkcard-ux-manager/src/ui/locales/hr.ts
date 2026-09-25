@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Skenirajte drugu stranu kartice",
     scan_the_front_side: "Skenirajte broj kartice",
   },
+  flashlight_warning_message: "Smanjite odsjaj bljeskalice laganim pomicanjem kartice.",
   help_button: {
     aria_label: "Pomoć",
     tooltip: "Trebate pomoć?",

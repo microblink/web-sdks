@@ -1,0 +1,99 @@
+[**@microblink/biometrics-common**](../README.md)
+
+***
+
+[@microblink/biometrics-common](../README.md) / PermissionError
+
+# Class: PermissionError
+
+Error thrown when required device permissions are unavailable.
+
+## Extends
+
+- [`BiometricsError`](BiometricsError.md)
+
+## Constructors
+
+### Constructor
+
+> **new PermissionError**(`message`, `code?`, `context?`): `PermissionError`
+
+#### Parameters
+
+##### message
+
+`string`
+
+##### code?
+
+[`BiometricsErrorCode`](../type-aliases/BiometricsErrorCode.md) = `"CAMERA_ACCESS_DENIED"`
+
+##### context?
+
+[`BiometricsErrorContext`](../type-aliases/BiometricsErrorContext.md) = `{}`
+
+#### Returns
+
+`PermissionError`
+
+#### Overrides
+
+[`BiometricsError`](BiometricsError.md).[`constructor`](BiometricsError.md#constructor)
+
+## Properties
+
+### cause?
+
+> `readonly` `optional` **cause?**: `unknown`
+
+#### Inherited from
+
+[`BiometricsError`](BiometricsError.md).[`cause`](BiometricsError.md#cause)
+
+***
+
+### code
+
+> `readonly` **code**: [`BiometricsErrorCode`](../type-aliases/BiometricsErrorCode.md)
+
+Machine-readable code that identifies the failure.
+
+#### Inherited from
+
+[`BiometricsError`](BiometricsError.md).[`code`](BiometricsError.md#code)
+
+***
+
+### component
+
+> `readonly` **component**: [`BiometricsErrorComponent`](../type-aliases/BiometricsErrorComponent.md)
+
+SDK component that produced the failure.
+
+#### Inherited from
+
+[`BiometricsError`](BiometricsError.md).[`component`](BiometricsError.md#component)
+
+***
+
+### isRetryable
+
+> `readonly` **isRetryable**: `boolean`
+
+Indicates whether retrying the operation may resolve the failure.
+
+#### Inherited from
+
+[`BiometricsError`](BiometricsError.md).[`isRetryable`](BiometricsError.md#isretryable)
+
+***
+
+### stage
+
+> `readonly` **stage**: [`BiometricsErrorStage`](../type-aliases/BiometricsErrorStage.md)
+
+SDK lifecycle stage in which the failure occurred.
+
+#### Inherited from
+
+[`BiometricsError`](BiometricsError.md).[`stage`](BiometricsError.md#stage)

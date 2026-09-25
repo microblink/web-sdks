@@ -43,6 +43,7 @@ export default {
     wrong_right: "Aller à la page de droite",
     wrong_top: "Aller à la première page",
   },
+  flashlight_warning_message: "Attention aux reflets de la lampe de poche.\nBougez doucement votre pièce d'identité pour les éviter.",
   help_button: {
     aria_label: "Aide",
     tooltip: "Besoin d'aide ?",

@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Scanner l'autre côté de la carte",
     scan_the_front_side: "Numérisez le numéro de la carte.",
   },
+  flashlight_warning_message: "Faites attention à l'éblouissement causé par le flash.\nVeuillez déplacer délicatement votre carte pour l'éviter.",
   help_button: {
     aria_label: "Aide",
     tooltip: "Besoin d'aide?",

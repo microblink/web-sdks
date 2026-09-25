@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Отсканируйте другую сторону карты",
     scan_the_front_side: "Отсканируйте номер карты",
   },
+  flashlight_warning_message: "Остерегайтесь бликов от фонарика.\nАккуратно перемещайте карту, чтобы избежать столкновения.",
   help_button: {
     aria_label: "Помощь",
     tooltip: "Нужна помощь?",

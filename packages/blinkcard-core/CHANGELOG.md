@@ -1,5 +1,14 @@
 # @microblink/blinkcard-core
 
+## 3001.0.1
+
+### Patch Changes
+
+- Update declaration bundles
+- Updated dependencies
+  - @microblink/blinkcard-wasm@3001.0.1
+  - @microblink/blinkcard-worker@3001.0.1
+
 ## 3001.0.0
 
 ### Major Changes

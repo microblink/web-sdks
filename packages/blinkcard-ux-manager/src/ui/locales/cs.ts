@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Naskenujte druhou stranu karty",
     scan_the_front_side: "Naskenujte číslo karty",
   },
+  flashlight_warning_message: "Dejte pozor na odlesky způsobené bleskem.\nVyhnete se jim lehkým pohybem karty.",
   help_button: {
     aria_label: "Nápověda",
     tooltip: "Potřebujete pomoct?",

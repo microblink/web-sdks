@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Scan the other side of the card",
     scan_the_front_side: "Scan the card number",
   },
+  flashlight_warning_message: "Watch out for flashlight glare.\nGently move your card around to avoid it.",
   help_button: {
     aria_label: "Help",
     tooltip: "Need help?",

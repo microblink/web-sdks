@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-verify-core",
-  "version": "4000.0.0-next.0",
+  "version": "4000.0.0-next.1",
   "description": "BlinkID Verify Core SDK",
   "keywords": [
     "aml",
@@ -61,7 +61,7 @@
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
     "publish-test": "pnpm prepare-publish && pnpm pack-check",
-    "type-rollup": "api-extractor run --local",
+    "type-rollup": "bundle-declarations --entry index --bundle @microblink/analytics --bundle @microblink/blinkid-verify-wasm --bundle @microblink/blinkid-verify-worker --bundle @microblink/core-common --bundle @microblink/wasm-common --bundle @microblink/worker-common",
     "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
     "watch:js": "pnpm run build:js --watch --mode development",
     "watch:types": "pnpm run build:types --watch",
@@ -83,7 +83,6 @@
     "@microblink/tsconfig": "workspace:*",
     "@microblink/wasm-common": "workspace:*",
     "@microblink/worker-common": "workspace:*",
-    "@microsoft/api-extractor": "catalog:typescript",
     "@types/common-tags": "catalog:",
     "@typescript/native": "catalog:typescript",
     "@vitest/browser-playwright": "catalog:test",

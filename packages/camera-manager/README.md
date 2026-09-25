@@ -110,10 +110,24 @@ See the [`camera-manager` example](../../apps/examples/camera-manager/src/App.ts
 - `stopStream()`: Stops the camera stream and video playback.
 - `setResolution(resolution)`: Sets the desired video resolution (e.g., `"1080p"`).
 - `setFacingFilter(facingModes)`: Filters available cameras by facing mode (`"front"` or `"back"`).
+- `setExcludedCameraNamePatterns(patterns)`: Sets parts of camera names to exclude from available camera lists.
 - `getCameraDevices()`: Returns available camera devices.
 - `selectCamera(camera)`: Selects a specific camera device.
 - `setCameraMirrorX(mirrorX)`: Mirrors the video horizontally if needed.
 - `reset()`: Resets the camera manager and stops all streams.
+
+### Camera name filtering
+
+By default, some commonly undesired cameras are excluded. To exclude more cameras while keeping the defaults:
+
+```js
+import { CameraManager, defaultExcludedCameraPatterns } from "@microblink/camera-manager/core";
+
+const cameraManager = new CameraManager();
+cameraManager.setExcludedCameraNamePatterns([...defaultExcludedCameraPatterns, "other camera name"]);
+```
+
+To include all cameras, call `cameraManager.setExcludedCameraNamePatterns([])`.
 
 ### UI Integration
 
@@ -144,8 +158,7 @@ const cameraUi = await createCameraManagerUi(cameraManager, document.body, {
 });
 ```
 
-`showCameraSelector` defaults to `true`. The selector is rendered when multiple
-cameras are available.
+`showCameraSelector` defaults to `true`. The selector appears when the user can choose another camera.
 
 #### Styling
 

@@ -43,6 +43,7 @@ export default {
     wrong_right: "انتقل إلى الصفحة اليمنى",
     wrong_top: "انتقل إلى الصفحة العليا",
   },
+  flashlight_warning_message: "احترس من وهج المصباح. \n حرك هويتك برفق لتتجنبه.",
   help_button: {
     aria_label: "المساعدة",
     tooltip: "هل تحتاج مساعدة؟",

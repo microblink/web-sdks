@@ -43,6 +43,7 @@ export default {
     wrong_right: "Ir a la página de la derecha",
     wrong_top: "Ir a la página superior",
   },
+  flashlight_warning_message: "Tenga cuidado con el resplandor de la linterna.\nMueva suavemente su ID a su alrededor para evitarlo.",
   help_button: {
     aria_label: "Ayuda",
     tooltip: "¿Necesitas ayuda?",

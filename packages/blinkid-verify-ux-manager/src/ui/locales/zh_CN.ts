@@ -43,6 +43,7 @@ export default {
     wrong_right: "移动至右侧页面",
     wrong_top: "移动至顶部页面",
   },
+  flashlight_warning_message: "当心闪光灯眩光。\n请轻轻移动您的身份证件,避免产生眩光。",
   help_button: {
     aria_label: "帮助",
     tooltip: "需要帮助？",

@@ -1,6 +1,9 @@
 {
   "name": "@microblink/repo-utils",
   "private": true,
+  "bin": {
+    "bundle-declarations": "./bundle-declarations-cli.mts"
+  },
   "main": "utils.mts",
   "module": "utils.mts",
   "types": "utils.mts",
@@ -15,6 +18,8 @@
     "@typescript/native": "catalog:typescript",
     "browserslist-to-esbuild": "^2.1.1",
     "oxc-parser": "0.142.0",
+    "rolldown": "~1.2.1",
+    "rolldown-plugin-dts": "~0.28.5",
     "tsx": "catalog:typescript",
     "typescript": "catalog:typescript",
     "vite": "catalog:vite",

@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "請掃描卡片的另一面",
     scan_the_front_side: "掃描卡號",
   },
+  flashlight_warning_message: "請注意閃光燈眩光。\n慢慢移動您的銀行卡以避免眩光。",
   help_button: {
     aria_label: "說明",
     tooltip: "需要協助嗎？",

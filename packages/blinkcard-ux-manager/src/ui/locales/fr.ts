@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Scannez l'autre côté de la carte.",
     scan_the_front_side: "Scanner le numéro de carte",
   },
+  flashlight_warning_message: "Attention aux reflets de la lampe de poche.\nBougez doucement votre carte pour les éviter.",
   help_button: {
     aria_label: "Aide",
     tooltip: "Besoin d'aide ?",

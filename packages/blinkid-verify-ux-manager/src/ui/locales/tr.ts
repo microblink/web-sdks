@@ -43,6 +43,7 @@ export default {
     wrong_right: "Sağdaki sayfaya geç",
     wrong_top: "En üst sayfaya geç",
   },
+  flashlight_warning_message: "Flaş ışığının parlamasına dikkat et.\nParlamayı önlemek için kimliğini hafifçe hareket ettir.",
   help_button: {
     aria_label: "Yardım",
     tooltip: "Yardıma mı ihtiyacın var?",

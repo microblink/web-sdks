@@ -286,18 +286,41 @@ A cleanup function to remove the callback
 
 ***
 
+### filterCameraDevices()
+
+> **filterCameraDevices**(`cameras`, `facingFilter?`, `excludedCameraNamePatterns?`): [`Camera`](Camera.md)[]
+
+Returns cameras that match the shared name and facing filters.
+
+#### Parameters
+
+##### cameras
+
+[`Camera`](Camera.md)[]
+
+##### facingFilter?
+
+[`FacingMode`](../type-aliases/FacingMode.md)[]
+
+##### excludedCameraNamePatterns?
+
+readonly `string`[]
+
+#### Returns
+
+[`Camera`](Camera.md)[]
+
+***
+
 ### getCameraDevices()
 
 > **getCameraDevices**(): `Promise`\<[`Camera`](Camera.md)[]\>
 
-Returns the cameras that are available to the user, filtered by the facing mode. If no facing mode is set, all
-cameras are returned.
+Returns the cameras available after the shared filters are applied.
 
 #### Returns
 
 `Promise`\<[`Camera`](Camera.md)[]\>
-
-The cameras that are available to the user, filtered by the facing mode.
 
 ***
 
@@ -404,6 +427,25 @@ If true, the video and captured frames will be mirrored horizontally.
 `boolean`
 
 If true, the video and captured frames will be mirrored horizontally.
+
+#### Returns
+
+`void`
+
+***
+
+### setExcludedCameraNamePatterns()
+
+> **setExcludedCameraNamePatterns**(`patterns`): `void`
+
+Sets the camera name fragments excluded from camera lists for all managers. Pass an empty list to include all
+cameras.
+
+#### Parameters
+
+##### patterns
+
+readonly `string`[]
 
 #### Returns
 
