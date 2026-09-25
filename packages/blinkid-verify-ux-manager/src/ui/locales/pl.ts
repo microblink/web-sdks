@@ -43,6 +43,7 @@ export default {
     wrong_right: "Przejdź do prawej strony",
     wrong_top: "Przejdź do górnej strony",
   },
+  flashlight_warning_message: "Zwróć uwagę na odblaski od flesza.\nDelikatnie zmień pozycję dokumentu, aby ich uniknąć.",
   help_button: {
     aria_label: "Pomoc",
     tooltip: "Potrzebujesz pomocy?",

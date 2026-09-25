@@ -43,6 +43,7 @@ export default {
     wrong_right: "Flytt til den høyre siden",
     wrong_top: "Flytt til toppen av siden",
   },
+  flashlight_warning_message: "Pass deg for gjenskinn fra sterkt lys.\n Flytt ID-en din rundt for å unngå det.",
   help_button: {
     aria_label: "Hjelp",
     tooltip: "Trenger du hjelp?",

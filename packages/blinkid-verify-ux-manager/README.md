@@ -207,7 +207,7 @@ You can customize UI strings when creating the feedback UI:
 ```typescript
 createBlinkIdVerifyFeedbackUi(uxManager, cameraUi, {
   localizationStrings: {
-    scan_the_barcode: "Please scan the barcode",
+    flashlight_warning_message: "Move your ID to avoid flashlight glare.",
   },
 });
 ```

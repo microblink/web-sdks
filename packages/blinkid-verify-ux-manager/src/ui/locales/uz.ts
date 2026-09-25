@@ -43,6 +43,7 @@ export default {
     wrong_right: "Oʻng sahifaga oʻting",
     wrong_top: "Yuqori sahifaga oʻting",
   },
+  flashlight_warning_message: "Chaqnoq akslanishining oldini oling.\nBuning uchun ID hujjatingizni ohista siljiting.",
   help_button: {
     aria_label: "Yordam",
     tooltip: "Yordam kerakmi?",

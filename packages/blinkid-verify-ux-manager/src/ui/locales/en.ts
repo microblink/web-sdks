@@ -43,6 +43,7 @@ export default {
     wrong_right: "Move to the right page",
     wrong_top: "Move to the top page",
   },
+  flashlight_warning_message: "Watch out for flashlight glare.\nGently move your ID around to avoid it.",
   help_button: {
     aria_label: "Help",
     tooltip: "Need help?",

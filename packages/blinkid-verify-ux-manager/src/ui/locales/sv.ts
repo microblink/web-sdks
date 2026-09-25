@@ -43,6 +43,7 @@ export default {
     wrong_right: "Flytta till den högra sidan",
     wrong_top: "Flytta till den översta sidan",
   },
+  flashlight_warning_message: "Akta dig för reflektioner från kamerablixten.\nFlytta ditt ID försiktigt för att undvika detta.",
   help_button: {
     aria_label: "Hjälp",
     tooltip: "Behöver du hjälp?",

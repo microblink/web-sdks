@@ -43,6 +43,7 @@ export default {
     wrong_right: "ย้ายไปยังหน้าด้านขวา",
     wrong_top: "ย้ายไปยังหน้าบนสุด",
   },
+  flashlight_warning_message: "ระวังแสงจ้าจากไฟฉาย\nค่อย ๆ เลื่อนบัตรประชาชนของคุณไปรอบ ๆ เพื่อหลีกเลี่ยง",
   help_button: {
     aria_label: "ช่วยเหลือ",
     tooltip: "ต้องการความช่วยเหลือ?",

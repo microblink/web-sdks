@@ -1,6 +1,6 @@
 # @microblink/blinkid-verify-ux-manager
 
-## 4000.0.0-next.0
+## 4000.0.0-next.1
 
 ### Major Changes
 
@@ -29,6 +29,8 @@
 
 ### Patch Changes
 
+- Update declaration bundles
+- Turning on the flashlight now shows a glare warning message
 - Updated package dependencies.
 - Fixed an issue where frame processing wouldnt stop if showTimeoutModal was configured to false
 - Improves keyboard focus visibility for controls shown over light and dark backgrounds.
@@ -36,7 +38,8 @@
 - Fixed feedback UI localization merging so partial user string overrides preserve the default nested localized values instead of replacing whole sections.
 - Fixed UX manager creation failing when `screen.orientation` is unavailable (e.g. iOS Safari and some WebViews). Device orientation analytics now use a guarded subscription with legacy fallback and log warning when reporting is unavailable.
 - Updated dependencies
-  - @microblink/blinkid-verify-core@4000.0.0-next.0
+  - @microblink/camera-manager@8.1.0
+  - @microblink/blinkid-verify-core@4000.0.0-next.1
 
 ## 3.21.0
 

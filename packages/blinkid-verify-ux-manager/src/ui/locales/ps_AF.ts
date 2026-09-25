@@ -43,6 +43,7 @@ export default {
     wrong_right: "ښي پاڼې ته لاړ شئ",
     wrong_top: "پورته پاڼې ته لاړ شئ",
   },
+  flashlight_warning_message: "د فلش لائټ ځلا ته پام وکړئ.\nخپل ID په نرمۍ سره حرکت ورکړئ ترڅو له دې څخه مخنیوی وشي.",
   help_button: {
     aria_label: "مرسته",
     tooltip: "تاسو مرستې ته اړتیا لرئ؟",

@@ -11,7 +11,8 @@
     "camera-manager",
     "blinkid",
     "blinkcard",
-    "biometrics"
+    "biometrics",
+    "blinkid-verify"
   ],
   "products": {
     "camera-manager": {
@@ -40,8 +41,8 @@
     },
     "blinkid-verify": {
       "selected": true,
-      "changed": false,
-      "newVersion": "4000.0.0-next.0",
+      "changed": true,
+      "newVersion": "4000.0.0-next.1",
       "baselineVersion": "4000.0.0-next.0"
     }
   }
