@@ -165,6 +165,7 @@
 - [createBlinkCardUxManager](variables/createBlinkCardUxManager.md)
 - [defaultBlinkCardTimeoutConfiguration](variables/defaultBlinkCardTimeoutConfiguration.md)
 - [defaultCameraManagerOptions](variables/defaultCameraManagerOptions.md)
+- [defaultExcludedCameraPatterns](variables/defaultExcludedCameraPatterns.md)
 - [getBuffer](variables/getBuffer.md)
 - [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [HAPTIC\_FEEDBACK\_CONFIGS](variables/HAPTIC_FEEDBACK_CONFIGS.md)

@@ -1,0 +1,320 @@
+.mb-bio-dialog {
+  box-sizing: border-box;
+  padding: 24px !important;
+}
+
+.mb-bio-dialog-desktop {
+  width: min(500px, 100%) !important;
+}
+
+.mb-bio-dialog-desktop.mb-bio-error-dialog {
+  width: min(452px, 100%) !important;
+}
+
+.mb-bio-dialog-mobile {
+  width: min(300px, 100%) !important;
+}
+
+.mb-bio-dialog > div:first-of-type {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.mb-bio-dialog-layout {
+  grid-template-rows: minmax(min(4rem, 20dvh), 1fr) auto;
+  gap: 24px;
+}
+
+.mb-bio-dialog-illustration {
+  max-height: min(100%, 40dvh);
+}
+
+.mb-bio-onboarding-dialog.mb-bio-dialog-mobile {
+  gap: 16px !important;
+}
+
+.mb-bio-onboarding-dialog.mb-bio-dialog-mobile .mb-bio-dialog-layout {
+  gap: 16px;
+}
+
+.mb-bio-onboarding-dialog.mb-bio-dialog-mobile .mb-bio-dialog-visual {
+  max-width: 200px;
+}
+
+.mb-bio-onboarding-dialog.mb-bio-dialog-mobile .mb-bio-dialog-title {
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.mb-bio-onboarding-dialog.mb-bio-dialog-mobile .mb-bio-dialog-description {
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.mb-bio-error-dialog .mb-bio-dialog-title {
+  color: rgb(var(--color-gray-700-rgb-value));
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 27px;
+}
+
+.mb-bio-error-dialog .mb-bio-dialog-description {
+  color: rgb(var(--color-gray-500-rgb-value));
+}
+
+.mb-bio-error-dialog > div:last-of-type {
+  gap: 16px;
+}
+
+@media (max-height: 639.9px) and (min-width: 380px) {
+  .mb-bio-help-dialog-layout {
+    grid-template-rows: minmax(0, 1fr);
+  }
+}
+
+.mb-bio-dialog-title {
+  margin: 0;
+  color: rgb(var(--color-deep-blue));
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.012em;
+  line-height: 36px;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.mb-bio-dialog-description {
+  margin: 8px 0 0;
+  color: rgb(var(--color-gray-600-rgb-value));
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.012em;
+  line-height: 24px;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.mb-bio-dialog-action {
+  height: auto !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.012em !important;
+  line-height: 21px !important;
+  min-height: 44px !important;
+  min-width: 44px !important;
+  overflow-wrap: anywhere;
+  text-overflow: clip !important;
+  white-space: normal !important;
+}
+
+.mb-bio {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: transparent;
+  color: rgb(var(--color-white-rgb-value));
+}
+
+.mb-bio *,
+.mb-bio *::before,
+.mb-bio *::after {
+  box-sizing: border-box;
+}
+
+.mb-bio-status-stack {
+  position: absolute;
+  inset-inline: 0;
+  top: 180px;
+  display: flex;
+  pointer-events: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-inline: 16px;
+}
+
+.mb-bio[data-layout="mobile"] .mb-bio-status-stack {
+  top: 125px;
+}
+
+.mb-bio[data-layout="desktop"] .mb-bio-status {
+  max-width: min(28rem, 88vw);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+}
+
+.mb-bio[data-layout="mobile"] .mb-bio-status {
+  max-width: min(28rem, 88vw);
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+}
+
+.mb-bio-help-button-container {
+  inset-inline-end: 16px;
+  bottom: 16px;
+}
+
+.mb-bio[data-layout="desktop"] .mb-bio-help-button-container {
+  inset-inline-end: 28px;
+  bottom: 28px;
+}
+
+[part="capture-screen-part"]:has(.mb-bio[data-layout="desktop"]) [part="close-button-part"] {
+  width: 44px;
+  height: 44px;
+}
+
+[part="capture-screen-part"]:has(.mb-bio[data-layout="mobile"]) [part="close-button-part"] {
+  width: 44px;
+  height: 44px;
+  margin-inline-end: 4px;
+}
+
+.mb-bio-scan {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.mb-bio-scan-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.mb-bio-scan-oval {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--mb-bio-face-visual-width, 500px);
+  aspect-ratio: 500 / 673.4375;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+}
+
+.mb-bio[data-layout="mobile"] .mb-bio-scan-oval {
+  width: var(--mb-bio-face-visual-width, 320px);
+}
+
+.mb-bio-scan-trail {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  background: linear-gradient(
+    to bottom,
+    rgb(var(--color-white-rgb-value) / 0) 0%,
+    rgb(var(--color-white-rgb-value) / 0.16) 100%
+  );
+  transition: height 120ms linear;
+}
+
+.mb-bio-scan-line {
+  position: absolute;
+  inset-inline: 0;
+  height: 3px;
+  transform: translateY(-50%);
+  background: linear-gradient(
+    90deg,
+    rgb(var(--color-white-rgb-value) / 0) 0%,
+    rgb(var(--color-white-rgb-value) / 0.95) 25%,
+    rgb(var(--color-white-rgb-value) / 0.95) 75%,
+    rgb(var(--color-white-rgb-value) / 0) 100%
+  );
+  box-shadow: 0 0 16px 3px rgb(var(--color-white-rgb-value) / 0.55);
+  transition: top 120ms linear;
+}
+
+.mb-bio[data-reduced-motion="true"] .mb-bio-scan-trail {
+  transition: none;
+}
+
+.mb-bio[data-reduced-motion="true"] .mb-bio-scan-line {
+  display: none;
+}
+
+.mb-bio-feedback-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mb-bio-landmarks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.mb-bio-landmark-box {
+  position: absolute;
+  border: 2px solid;
+}
+
+.mb-bio-landmark-box-ok {
+  border-color: rgb(var(--color-success));
+}
+
+.mb-bio-landmark-box-error {
+  border-color: rgb(var(--color-error));
+}
+
+.mb-bio-landmark-point {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgb(var(--color-primary));
+  transform: translate(-50%, -50%);
+}
+
+.mb-bio-success-animation {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  width: var(--mb-bio-face-visual-width, 500px);
+  justify-content: center;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+.mb-bio[data-layout="mobile"] .mb-bio-success-animation {
+  width: var(--mb-bio-face-visual-width, 320px);
+}
+
+.mb-bio-success-animation-visible {
+  opacity: 1;
+}
+
+.mb-bio-success-mark {
+  width: 109px;
+  height: auto;
+  animation: mb-bio-scale-in 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mb-bio[data-layout="mobile"] .mb-bio-success-mark {
+  width: 94px;
+}
+
+@keyframes mb-bio-scale-in {
+  from {
+    transform: scale(0.82);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.mb-bio[data-reduced-motion="true"] .mb-bio-success-mark {
+  animation: none;
+}
+
+.mb-bio[data-reduced-motion="true"] .mb-bio-success-animation {
+  opacity: 1;
+  transition: none;
+}

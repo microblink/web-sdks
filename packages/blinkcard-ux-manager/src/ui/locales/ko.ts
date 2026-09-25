@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "카드 반대쪽 면을 스캔하세요",
     scan_the_front_side: "카드 번호를 스캔하세요",
   },
+  flashlight_warning_message: "손전등 불빛에 주의하세요.\n카드를 살살 움직여서 부딪히지 않도록 하세요.",
   help_button: {
     aria_label: "도움말",
     tooltip: "도움이 필요하신가요?",

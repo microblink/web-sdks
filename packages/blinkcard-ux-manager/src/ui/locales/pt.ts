@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Digitalize o outro lado do cartão",
     scan_the_front_side: "Digitalize o número do cartão",
   },
+  flashlight_warning_message: "Tenha cuidado com o clarão da lanterna.\nMova de forma ligeira o seu cartão para o evitar.",
   help_button: {
     aria_label: "Ajuda",
     tooltip: "Precisa de ajuda?",

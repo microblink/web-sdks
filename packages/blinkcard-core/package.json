@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkcard-core",
-  "version": "3001.0.0",
+  "version": "3001.0.1",
   "description": "BlinkCard Core SDK",
   "keywords": [
     "blinkcard",
@@ -52,7 +52,7 @@
     "publish-test": "pnpm prepare-publish && pnpm pack-check",
     "test": "vitest run",
     "test:watch": "vitest",
-    "type-rollup": "api-extractor run --local",
+    "type-rollup": "bundle-declarations --entry index --bundle @microblink/analytics --bundle @microblink/blinkcard-wasm --bundle @microblink/blinkcard-worker --bundle @microblink/core-common --bundle @microblink/wasm-common --bundle @microblink/worker-common",
     "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
     "watch:js": "pnpm run build:js --watch --mode development",
     "watch:types": "pnpm run build:types --watch",
@@ -74,7 +74,6 @@
     "@microblink/tsconfig": "workspace:*",
     "@microblink/wasm-common": "workspace:*",
     "@microblink/worker-common": "workspace:*",
-    "@microsoft/api-extractor": "catalog:typescript",
     "@types/common-tags": "catalog:",
     "@typescript/native": "catalog:typescript",
     "oxfmt": "catalog:oxc",

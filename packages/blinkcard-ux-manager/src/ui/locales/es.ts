@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Escanee el otro lado de la tarjeta",
     scan_the_front_side: "Escanee el número de la tarjeta",
   },
+  flashlight_warning_message: "Tenga cuidado con el resplandor de la linterna.\nMueva suavemente su tarjeta alrededor para evitarla.",
   help_button: {
     aria_label: "Ayuda",
     tooltip: "¿Necesitas ayuda?",

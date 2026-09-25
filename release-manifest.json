@@ -4,30 +4,39 @@
     "camera-manager",
     "blinkid",
     "blinkcard",
+    "biometrics",
     "blinkid-verify"
   ],
   "changed": [
     "camera-manager",
-    "blinkcard"
+    "blinkid",
+    "blinkcard",
+    "biometrics"
   ],
   "products": {
     "camera-manager": {
       "selected": true,
       "changed": true,
-      "newVersion": "8.0.1",
-      "baselineVersion": "8.0.0"
+      "newVersion": "8.1.0",
+      "baselineVersion": "8.0.1"
     },
     "blinkid": {
       "selected": true,
-      "changed": false,
-      "newVersion": "8002.0.0",
+      "changed": true,
+      "newVersion": "8002.0.1",
       "baselineVersion": "8002.0.0"
     },
     "blinkcard": {
       "selected": true,
       "changed": true,
-      "newVersion": "3001.0.0",
-      "baselineVersion": "3001.0.0-next.0"
+      "newVersion": "3001.0.1",
+      "baselineVersion": "3001.0.0"
+    },
+    "biometrics": {
+      "selected": true,
+      "changed": true,
+      "newVersion": "1000.0.0",
+      "baselineVersion": null
     },
     "blinkid-verify": {
       "selected": true,

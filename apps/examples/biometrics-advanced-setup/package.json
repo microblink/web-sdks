@@ -1,0 +1,40 @@
+{
+  "name": "@microblink/biometrics-advanced-setup-example",
+  "private": true,
+  "description": "An example of advanced Biometrics SDK setup with the modular capture, UX, and camera packages",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "build:js-dev": "vite build --mode development",
+    "clean": "rimraf dist public .turbo types tsconfig.tsbuildinfo",
+    "dev": "vite --host",
+    "preview": "vite preview",
+    "watch": "vite build --watch --mode development",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "dependencies": {
+    "@ark-ui/solid": "catalog:ui",
+    "@microblink/biometrics": "workspace:^",
+    "@microblink/biometrics-core": "workspace:^",
+    "@microblink/biometrics-ux-manager": "workspace:^",
+    "@microblink/camera-manager": "workspace:^",
+    "@solid-primitives/keyed": "catalog:ui",
+    "solid-js": "catalog:ui",
+    "solid-zustand": "catalog:ui"
+  },
+  "devDependencies": {
+    "@microblink/repo-utils": "workspace:*",
+    "@microblink/tsconfig": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vite-plugin-mkcert": "catalog:vite",
+    "vite-plugin-qrcode": "catalog:vite",
+    "vite-plugin-solid": "catalog:vite"
+  }
+}

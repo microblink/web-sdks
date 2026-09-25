@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Scan de andere kant van de kaart",
     scan_the_front_side: "Scan het kaartnummer",
   },
+  flashlight_warning_message: "Pas op voor schittering van de flitser.\nVerplaats uw kaart voorzichtig om dit te voorkomen.",
   help_button: {
     aria_label: "Help",
     tooltip: "Hulp nodig?",

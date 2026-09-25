@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "I-scan ang kabilang panig ng card",
     scan_the_front_side: "I-scan ang numero ng card",
   },
+  flashlight_warning_message: "Tingnan kung may flashlight glare.\nDahan-dahang galawin ang iyong card para maiwasan ito.",
   help_button: {
     aria_label: "Tulong",
     tooltip: "Kailangan ng tulong?",

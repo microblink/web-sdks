@@ -1,0 +1,154 @@
+# Open Source Dependencies Report
+
+This report lists all open source dependencies used in the Biometrics SDK packages.
+
+## Summary
+
+This report includes:
+- **NPM Dependencies**: Production dependencies from all packages in the monorepo (111 packages)
+- **C++ Dependencies**: Native dependencies for WebAssembly builds (24 unique packages)
+
+## NPM Dependencies
+
+| Package | Version | License | Author | Homepage |
+|---------|---------|---------|---------|----------|
+| @ark-ui/solid | 5.38.1 | MIT | N/A | [Link](https://ark-ui.com) |
+| @csstools/normalize.css | 12.1.1 | CC0-1.0 | Jonathan Neal | [Link](https://github.com/csstools/normalize.css#readme) |
+| @floating-ui/core | 1.8.0 | MIT | atomiks | [Link](https://floating-ui.com) |
+| @floating-ui/dom | 1.8.0 | MIT | atomiks | [Link](https://floating-ui.com) |
+| @floating-ui/utils | 0.2.12 | MIT | atomiks | [Link](https://floating-ui.com) |
+| @internationalized/date | 3.12.2 | Apache-2.0 | N/A | [Link](https://github.com/adobe/react-spectrum/tree/main#readme) |
+| @internationalized/number | 3.6.7 | Apache-2.0 | N/A | [Link](https://github.com/adobe/react-spectrum#readme) |
+| @solid-primitives/event-listener | 2.4.6 | MIT | David Di Biase | [Link](https://primitives.solidjs.community/package/event-listener) |
+| @solid-primitives/keyed | 1.5.3 | MIT | Damian Tarnawski @thetarnav | [Link](https://primitives.solidjs.community/package/keyed) |
+| @solid-primitives/resize-observer | 2.2.0 | MIT | Moshe Udimar | [Link](https://primitives.solidjs.community/package/resize-observer) |
+| @solid-primitives/rootless | 1.5.4 | MIT | Damian Tarnawski @thetarnav | [Link](https://primitives.solidjs.community/package/rootless) |
+| @solid-primitives/static-store | 0.1.4 | MIT | Damian Tarnawski | [Link](https://primitives.solidjs.community/package/static-store) |
+| @solid-primitives/utils | 6.4.1 | MIT | Damian Tarnawski @thetarnav | [Link](https://github.com/solidjs-community/solid-primitives/tree/main/packages/utils#readme) |
+| @swc/helpers | 0.5.3 | Apache-2.0 | 강동윤 | [Link](https://swc.rs) |
+| @wessberg/connection-observer | 1.0.5 | MIT | N/A | [Link](https://github.com/wessberg/connection-observer#readme) |
+| @zag-js/accordion | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/anatomy | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/angle-slider | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/aria-hidden | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/async-list | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/auto-resize | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/avatar | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/carousel | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/cascade-select | 1.43.0 | MIT | Abraham Aremu | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/checkbox | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/clipboard | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/collapsible | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/collection | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/color-picker | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/color-utils | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/combobox | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/core | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/date-input | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/date-picker | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/date-utils | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/dialog | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/dismissable | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/dom-query | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/drawer | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/editable | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/file-upload | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/file-utils | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/floating-panel | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/focus-trap | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/focus-visible | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/highlight-word | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/hover-card | 1.43.0 | MIT | Abraham Aremu | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/i18n-utils | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/image-cropper | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/interact-outside | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/json-tree-utils | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/listbox | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/live-region | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/marquee | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/menu | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/navigation-menu | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/number-input | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/pagination | 1.43.0 | MIT | Abraham Aremu | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/password-input | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/pin-input | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/popover | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/popper | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/presence | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/progress | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/qr-code | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/radio-group | 1.43.0 | MIT | Abraham Aremu | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/rating-group | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/rect-utils | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/remove-scroll | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/scroll-area | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/scroll-snap | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/select | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/signature-pad | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/slider | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/solid | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/splitter | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/steps | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/store | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/switch | 1.43.0 | MIT | Abraham Aremu | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/tabs | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/tags-input | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/timer | 1.43.0 | MIT | Abraham Aremu | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/toast | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/toggle | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/toggle-group | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/tooltip | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/tour | 1.43.0 | MIT | Segun Adebayo | [Link](https://zagjs.com/components/tour) |
+| @zag-js/tree-view | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/types | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| @zag-js/utils | 1.43.0 | MIT | Segun Adebayo | [Link](https://github.com/chakra-ui/zag#readme) |
+| comlink | 4.4.2 | Apache-2.0 | Surma | [Link](https://github.com/GoogleChromeLabs/comlink#readme) |
+| common-tags | 1.8.2 | MIT | Declan de Wet | [Link](https://github.com/zspecza/common-tags) |
+| csstype | 3.2.3 | MIT | Fredrik Nicol | [Link](https://github.com/frenic/csstype#readme) |
+| is-what | 5.0.2 | MIT | Luca Ban - Mesqueeb | [Link](https://github.com/mesqueeb/is-what#readme) |
+| merge-anything | 6.0.3 | MIT | Luca Ban - Mesqueeb | [Link](https://github.com/mesqueeb/merge-anything#readme) |
+| nanoid | 5.1.16 | MIT | Andrey Sitnik | [Link](https://github.com/ai/nanoid#readme) |
+| perfect-debounce | 2.1.0 | MIT | N/A | [Link](https://github.com/unjs/perfect-debounce#readme) |
+| perfect-freehand | 1.2.3 | MIT | Steve Ruiz | [Link](https://github.com/steveruizok/perfect-freehand#readme) |
+| proxy-compare | 3.0.1 | MIT | Daishi Kato | [Link](https://github.com/dai-shi/proxy-compare#readme) |
+| proxy-memoize | 3.0.1 | MIT | Daishi Kato | [Link](https://github.com/dai-shi/proxy-memoize#readme) |
+| rad-event-listener | 0.2.4 | MIT | N/A | [Link](https://github.com/JLarky/rad-event-listener#readme) |
+| rvfc-polyfill | 1.0.7 | GPL-3.0 | ThaUnknown | [Link](https://github.com/ThaUnknown/rvfc-polyfill#readme) |
+| seroval | 1.5.6 | MIT | Alexis Munsayac | [Link](https://github.com/lxsmnsyc/seroval/tree/main/packages/seroval) |
+| seroval-plugins | 1.5.6 | MIT | Alexis Munsayac | [Link](https://github.com/lxsmnsyc/seroval/tree/main/packages/plugins) |
+| solid-js | 1.9.14 | MIT | Ryan Carniato | [Link](https://solidjs.com) |
+| solid-zustand | 2.0.0 | MIT | N/A | [Link](https://github.com/wobsoriano/solid-zustand#readme) |
+| tslib | 2.8.1 | 0BSD | Microsoft Corp. | [Link](https://www.typescriptlang.org/) |
+| type-fest | 4.35.0 | (MIT OR CC0-1.0) | Sindre Sorhus | [Link](https://github.com/sindresorhus/type-fest#readme) |
+| uqr | 0.1.3 | MIT | Anthony Fu | [Link](https://github.com/unjs/uqr#readme) |
+| wasm-feature-detect | 1.9.0 | Apache-2.0 | Surma | [Link](https://github.com/GoogleChromeLabs/wasm-feature-detect#readme) |
+| zustand | 5.0.14 | MIT | Paul Henschel | [Link](https://github.com/pmndrs/zustand) |
+
+## C++ Dependencies
+
+| Package | License | URL | Description |
+|---------|---------|-----|-------------|
+| concurrentqueue/1.0.4.mb.1 | BSD-2-Clause,BSL-1.0 | N/A | N/A |
+| ConfigEx/27.0.0-biometrics.alpha.1 | MIT | [Link](https://github.com/microblink/config_ex) | N/A |
+| core-identity++http_archive+adv-obfuscator | BSD-3-Clause-Clear | [Link](https://github.com/microblink/ADVObfuscator) | N/A |
+| core-identity++http_archive+kiwaku | BSL-1.0 | [Link](https://github.com/microblink/kiwaku) | N/A |
+| core-identity++http_archive+micro-ecc | BSD-2-Clause | [Link](https://github.com/microblink/micro-ecc) | N/A |
+| core-identity++http_archive+qoixx | MIT | [Link](https://github.com/wx257osn2/qoixx) | N/A |
+| core-identity++http_archive+utfcpp | BSL-1.0 | [Link](https://github.com/nemtrif/utfcpp) | N/A |
+| cpuinfo/0.0.0-20260312-7607ca5.mb.1 | BSD-2-Clause | N/A | N/A |
+| eigen/5.0.1.bcr.2 | MPL-2.0 | N/A | N/A |
+| Err/27.0.0-biometrics.alpha.1 | BSL-1.0 | [Link](https://github.com/microblink/err) | N/A |
+| Functionoid/27.0.0-biometrics.alpha.1 | BSL-1.0 | [Link](https://github.com/microblink/functionoid) | N/A |
+| Hash/27.0.0-biometrics.alpha.1 | Zlib | [Link](https://github.com/stbrumme/hash-library) | N/A |
+| libbacktrace/1.0.0-20250926-7939218.mb.1 | BSD-3-Clause | N/A | N/A |
+| libdeflate/1.25 | MIT | N/A | N/A |
+| libjpeg_turbo/3.1.3.bcr.6 | BSD-3-Clause-Modification,IJG,Zlib | N/A | N/A |
+| libpng/1.6.58 | libpng-2.0 | N/A | N/A |
+| MMap/27.0.0-biometrics.alpha.1 | BSL-1.0 | [Link](https://github.com/microblink/mmap) | N/A |
+| nanopb/27.0.0-biometrics.alpha.1 | Zlib | [Link](https://github.com/nanopb/nanopb) | N/A |
+| opencv/5.0.0.mb.4 | Apache-2.0 | N/A | N/A |
+| pthreadpool/0.0.0-20250926-560c60d.mb.1 | BSD-2-Clause | N/A | N/A |
+| rapidjson/1.1.0.mb.20250205 | MIT | N/A | N/A |
+| sweater/27.0.0-biometrics.alpha.1 | MIT | [Link](https://github.com/microblink/sweater) | N/A |
+| xnnpack/20230525.6.0 | BSD-3-Clause | [Link](https://github.com/microblink/XNNPACK) | N/A |
+| zlib/1.3.2.mb.2 | Zlib | N/A | N/A |

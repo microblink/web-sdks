@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "කාඩ්පතේ ඉදිරි පැත්ත ස්කෑන් කරන්න",
     scan_the_front_side: "කාඩ්පතේ අංකය ස්කෑන් කරන්න",
   },
+  flashlight_warning_message: "ෆ්ලෑෂ් ලයිට් දිලිසීම ගැන විමසිල්ලෙන් සිටින්න.\nඑය වළක්වා ගැනීම සඳහා ඔබේ කාඩ්පත මෘදු ලෙස එහා මෙහා කරන්න.",
   help_button: {
     aria_label: "උදව්",
     tooltip: "උදව් අවශ්‍ය ද?",

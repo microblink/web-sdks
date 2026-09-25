@@ -48,6 +48,7 @@ export default {
     wrong_right: "移動到右頁",
     wrong_top: "移動到頂部頁面",
   },
+  flashlight_warning_message: "請注意閃光燈眩光。\n慢慢移動您的證件以避免眩光。",
   help_button: {
     aria_label: "說明",
     tooltip: "需要協助嗎？",

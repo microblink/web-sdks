@@ -43,6 +43,7 @@
 - [cameraManagerStore](variables/cameraManagerStore.md)
 - [cameraUiRefStore](variables/cameraUiRefStore.md)
 - [defaultCameraManagerOptions](variables/defaultCameraManagerOptions.md)
+- [defaultExcludedCameraPatterns](variables/defaultExcludedCameraPatterns.md)
 - [MOUNT\_POINT\_ID](variables/MOUNT_POINT_ID.md)
 - [videoResolutions](variables/videoResolutions.md)
 

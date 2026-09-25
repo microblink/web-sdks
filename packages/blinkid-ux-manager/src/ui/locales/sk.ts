@@ -48,6 +48,7 @@ export default {
     wrong_right: "Prejdite na stránku vpravo",
     wrong_top: "Prejdite na stránku hore",
   },
+  flashlight_warning_message: "Dajte si pozor na oslnenie baterkou.\nJemne posuňte svoje ID, aby ste sa tomu vyhli.",
   help_button: {
     aria_label: "Pomoc",
     tooltip: "Potrebujete pomoc?",

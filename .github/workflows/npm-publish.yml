@@ -86,6 +86,13 @@ jobs:
                 "@microblink/blinkcard"
               )
               ;;
+            "@microblink/biometrics")
+              PACKAGES=(
+                "@microblink/biometrics-core"
+                "@microblink/biometrics-ux-manager"
+                "@microblink/biometrics"
+              )
+              ;;
             "@microblink/blinkid-verify")
               PACKAGES=(
                 "@microblink/blinkid-verify-core"

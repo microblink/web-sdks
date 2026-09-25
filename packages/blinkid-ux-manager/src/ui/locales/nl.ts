@@ -48,6 +48,7 @@ export default {
     wrong_right: "Ga naar de rechterpagina",
     wrong_top: "Ga naar de bovenste pagina",
   },
+  flashlight_warning_message: "Pas op voor schittering van de flitser.\nVerplaats uw ID voorzichtig om dit te voorkomen.",
   help_button: {
     aria_label: "Help",
     tooltip: "Hulp nodig?",

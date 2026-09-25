@@ -48,6 +48,7 @@ export default {
     wrong_right: "Áthelyezés a jobb oldali oldalra",
     wrong_top: "Áthelyezés a legfelső oldalra",
   },
+  flashlight_warning_message: "Figyeljen oda a vaku fényének visszaverődésére.\nFinoman mozgassa a személyi igazolványát, hogy elkerülje.",
   help_button: {
     aria_label: "Súgó",
     tooltip: "Segíthetünk bármiben?",

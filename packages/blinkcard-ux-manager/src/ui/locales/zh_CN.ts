@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "扫描卡片的另一面",
     scan_the_front_side: "扫描卡号",
   },
+  flashlight_warning_message: "当心闪光灯眩光。\n请轻轻移动您的身份证件，避免产生眩光。",
   help_button: {
     aria_label: "帮助",
     tooltip: "需要帮助？",

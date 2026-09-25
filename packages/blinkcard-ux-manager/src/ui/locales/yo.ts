@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Ṣe ẹ̀dà àwòrán apá kejì káàdì náà",
     scan_the_front_side: "Ṣe ẹ̀dà àwòrán nọ́mbà káàdì náà",
   },
+  flashlight_warning_message: "Ṣọ́ra fún ìmọ́lẹ̀ iná mànàmáná.\nFi pẹ̀lẹ́pẹ̀lẹ́ gbé káàdì rẹ káàkiri kí o má baà ṣe é.",
   help_button: {
     aria_label: "Ìrànlọ́wọ́",
     tooltip: "Ṣé o nílò ìrànlọ́wọ́?",

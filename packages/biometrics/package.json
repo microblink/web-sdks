@@ -1,0 +1,89 @@
+{
+  "name": "@microblink/biometrics",
+  "version": "1000.0.0",
+  "description": "Biometrics browser SDK for guided and headless face capture.",
+  "keywords": [],
+  "license": "ISC",
+  "author": "Microblink",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "type": "module",
+  "main": "./dist/biometrics.js",
+  "module": "./dist/biometrics.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/biometrics.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "publishConfig": {
+    "directory": "publish",
+    "linkDirectory": false
+  },
+  "scripts": {
+    "build": "pnpm run --no-bail \"/^build:(js|types)$/\"",
+    "build:js": "vite build",
+    "build:js-dev": "vite build --mode development",
+    "build:publish": "pnpm build && pnpm type-rollup",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist publish public/resources/* *.tgz",
+    "docs:api": "typedoc",
+    "format": "pnpm exec oxfmt src",
+    "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
+    "prepack": "pnpm prepare-publish",
+    "prepare-publish": "tsx scripts/prepare-publish.mts",
+    "publish-test": "pnpm build:publish && pnpm prepare-publish && pnpm pack-check",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-rollup": "bundle-declarations --entry index --bundle @microblink/analytics --bundle @microblink/biometrics-worker --bundle @microblink/core-common",
+    "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
+    "watch:js": "pnpm run build:js --watch --mode development",
+    "watch:types": "pnpm run build:types --watch",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "dependencies": {
+    "@microblink/analytics": "workspace:*",
+    "@microblink/biometrics-core": "workspace:*",
+    "@microblink/biometrics-ux-manager": "workspace:*",
+    "@microblink/camera-manager": "workspace:^",
+    "@microblink/core-common": "workspace:*"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "catalog:publish",
+    "@microblink/repo-utils": "workspace:*",
+    "@microblink/tsconfig": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "publint": "catalog:publish",
+    "rimraf": "catalog:utils",
+    "tsx": "catalog:typescript",
+    "type-fest": "catalog:",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vitest": "catalog:test",
+    "write-package": "catalog:publish",
+    "zx": "catalog:utils"
+  },
+  "peerDependencies": {
+    "@ark-ui/solid": "catalog:ui",
+    "solid-js": "catalog:ui",
+    "solid-zustand": "catalog:ui"
+  },
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 132",
+    "Safari >= 16.4",
+    "iOS >= 16.4"
+  ]
+}

@@ -48,6 +48,7 @@ export default {
     wrong_right: "Mover a la página derecha",
     wrong_top: "Mover a la página principal",
   },
+  flashlight_warning_message: "Atención al reflejo de la linterna.\nMueve ligeramente tu identificación para evitarlo.",
   help_button: {
     aria_label: "Ayuda",
     tooltip: "¿Necesitas ayuda?",

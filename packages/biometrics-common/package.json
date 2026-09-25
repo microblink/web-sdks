@@ -1,0 +1,54 @@
+{
+  "name": "@microblink/biometrics-common",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Biometrics Common Utilities",
+  "keywords": [],
+  "license": "ISC",
+  "author": "Microblink",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "type": "module",
+  "main": "./dist/biometrics-common.js",
+  "module": "./dist/biometrics-common.js",
+  "types": "./types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/biometrics-common.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "pnpm run --no-bail \"/^build:(js|types)$/\"",
+    "build:js": "vite build",
+    "build:js-dev": "vite build --mode development",
+    "build:publish": "pnpm build",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist public/resources/*",
+    "docs:api": "typedoc",
+    "format": "pnpm exec oxfmt src",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
+    "watch:js": "pnpm run build:js --watch --mode development",
+    "watch:types": "pnpm run build:types --watch",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "devDependencies": {
+    "@microblink/tsconfig": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "typedoc": "catalog:typescript",
+    "typedoc-plugin-markdown": "catalog:publish",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vitest": "catalog:test",
+    "zx": "catalog:utils"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "extends": "../../typedoc.base.json",
+  "entryPoints": ["./src/index.ts", "./src/core.ts", "./src/ui.ts"],
+  "out": "docs",
+  "tsconfig": "./tsconfig.build.json",
+  "gitRemote": "https://github.com/microblink/web-sdks/tree/main/packages/biometrics-ux-manager"
+}

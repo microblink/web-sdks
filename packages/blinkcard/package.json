@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkcard",
-  "version": "3001.0.0",
+  "version": "3001.0.1",
   "description": "All-in-one BlinkCard browser SDK for fast and accurate debit and credit card scanning and recognition in web applications.",
   "keywords": [
     "blinkcard",
@@ -55,7 +55,7 @@
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
     "publish-test": "pnpm pack-check",
-    "type-rollup": "api-extractor run --local",
+    "type-rollup": "bundle-declarations --entry index",
     "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
     "watch:js": "pnpm run build:js --watch --mode development",
     "watch:types": "pnpm run build:types --watch",
@@ -72,7 +72,6 @@
     "@microblink/repo-utils": "workspace:*",
     "@microblink/test-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",
-    "@microsoft/api-extractor": "catalog:typescript",
     "@typescript/native": "catalog:typescript",
     "oxfmt": "catalog:oxc",
     "oxlint": "catalog:oxc",

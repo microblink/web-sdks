@@ -19,7 +19,7 @@ catalogs:
     playwright: ^1.62.1
     vitest: "5.0.0"
   typescript:
-    "@microsoft/api-extractor": 7.58.12
+    "@microsoft/api-extractor": "7.58.12"
     "@typescript/native": npm:typescript@7.0.2
     typedoc: 0.28.20
     typescript: npm:@typescript/typescript6@6.0.2

@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Noskenējiet kartes otru pusi",
     scan_the_front_side: "Noskenējiet kartes numuru",
   },
+  flashlight_warning_message: "Uzmanieties no lukturīša atspīduma.\nViegli pārvietojiet karti, lai no tās izvairītos.",
   help_button: {
     aria_label: "Palīdzība",
     tooltip: "Vai vajadzīga palīdzība?",
