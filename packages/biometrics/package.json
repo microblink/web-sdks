@@ -36,7 +36,7 @@
     "pack-check": "pnpm pack | tail -n1 | xargs attw --profile esm-only && publint publish",
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
-    "publish-test": "pnpm build:publish && pnpm prepare-publish && pnpm pack-check",
+    "publish-test": "pnpm prepare-publish && pnpm pack-check",
     "test": "vitest run",
     "test:watch": "vitest",
     "type-rollup": "bundle-declarations --entry index --bundle @microblink/analytics --bundle @microblink/biometrics-worker --bundle @microblink/core-common",
