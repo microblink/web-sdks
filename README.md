@@ -34,6 +34,14 @@ Have questions, feedback, or running into issues? We're here to help! Contact us
 | [@microblink/blinkid-verify-core](https://github.com/microblink/web-sdks/tree/main/packages/blinkid-verify-core)             | [![npm](https://img.shields.io/npm/v/@microblink/blinkid-verify-core.svg)](https://www.npmjs.com/package/@microblink/blinkid-verify-core)             | [CHANGELOG](https://github.com/microblink/web-sdks/blob/main/packages/blinkid-verify-core/CHANGELOG.md)       |
 | [@microblink/blinkid-verify-ux-manager](https://github.com/microblink/web-sdks/tree/main/packages/blinkid-verify-ux-manager) | [![npm](https://img.shields.io/npm/v/@microblink/blinkid-verify-ux-manager.svg)](https://www.npmjs.com/package/@microblink/blinkid-verify-ux-manager) | [CHANGELOG](https://github.com/microblink/web-sdks/blob/main/packages/blinkid-verify-ux-manager/CHANGELOG.md) |
 
+### Biometrics
+
+| Package                                                                                                              | Version                                                                                                                                       |
+| -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| [@microblink/biometrics](https://github.com/microblink/web-sdks/tree/main/packages/biometrics)                       | [![npm](https://img.shields.io/npm/v/@microblink/biometrics.svg)](https://www.npmjs.com/package/@microblink/biometrics)                       |
+| [@microblink/biometrics-core](https://github.com/microblink/web-sdks/tree/main/packages/biometrics-core)             | [![npm](https://img.shields.io/npm/v/@microblink/biometrics-core.svg)](https://www.npmjs.com/package/@microblink/biometrics-core)             |
+| [@microblink/biometrics-ux-manager](https://github.com/microblink/web-sdks/tree/main/packages/biometrics-ux-manager) | [![npm](https://img.shields.io/npm/v/@microblink/biometrics-ux-manager.svg)](https://www.npmjs.com/package/@microblink/biometrics-ux-manager) |
+
 ### Camera Manager
 
 | Package                                                                                                | Version                                                                                                                         | Changelog                                                                                          |
