@@ -51,7 +51,7 @@ const resolvedDependencies = dependencyEntries.reduce<NonNullable<PackageJsonDat
       const dependencyPackageJson = fs.readJsonSync(path.join(packagePath, "package.json"));
       acc[dependencyName] = dependencyName.startsWith("@microblink/biometrics")
         ? dependencyPackageJson.version
-        : `https://registry.npmjs.org/${dependencyName}/-/${dependencyName.split("/").at(-1)}-${dependencyPackageJson.version}.tgz`;
+        : `^${dependencyPackageJson.version}`;
       return acc;
     }
 
