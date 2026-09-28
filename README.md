@@ -36,11 +36,11 @@ Have questions, feedback, or running into issues? We're here to help! Contact us
 
 ### Biometrics
 
-| Package                                                                                                              | Version                                                                                                                                       |
-| -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| [@microblink/biometrics](https://github.com/microblink/web-sdks/tree/main/packages/biometrics)                       | [![npm](https://img.shields.io/npm/v/@microblink/biometrics.svg)](https://www.npmjs.com/package/@microblink/biometrics)                       |
-| [@microblink/biometrics-core](https://github.com/microblink/web-sdks/tree/main/packages/biometrics-core)             | [![npm](https://img.shields.io/npm/v/@microblink/biometrics-core.svg)](https://www.npmjs.com/package/@microblink/biometrics-core)             |
-| [@microblink/biometrics-ux-manager](https://github.com/microblink/web-sdks/tree/main/packages/biometrics-ux-manager) | [![npm](https://img.shields.io/npm/v/@microblink/biometrics-ux-manager.svg)](https://www.npmjs.com/package/@microblink/biometrics-ux-manager) |
+| Package                                                                                                              | Version                                                                                                                                       | Changelog                                                                                                 |
+| -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| [@microblink/biometrics](https://github.com/microblink/web-sdks/tree/main/packages/biometrics)                       | [![npm](https://img.shields.io/npm/v/@microblink/biometrics.svg)](https://www.npmjs.com/package/@microblink/biometrics)                       | [CHANGELOG](https://github.com/microblink/web-sdks/blob/main/packages/biometrics/CHANGELOG.md)            |
+| [@microblink/biometrics-core](https://github.com/microblink/web-sdks/tree/main/packages/biometrics-core)             | [![npm](https://img.shields.io/npm/v/@microblink/biometrics-core.svg)](https://www.npmjs.com/package/@microblink/biometrics-core)             | [CHANGELOG](https://github.com/microblink/web-sdks/blob/main/packages/biometrics-core/CHANGELOG.md)       |
+| [@microblink/biometrics-ux-manager](https://github.com/microblink/web-sdks/tree/main/packages/biometrics-ux-manager) | [![npm](https://img.shields.io/npm/v/@microblink/biometrics-ux-manager.svg)](https://www.npmjs.com/package/@microblink/biometrics-ux-manager) | [CHANGELOG](https://github.com/microblink/web-sdks/blob/main/packages/biometrics-ux-manager/CHANGELOG.md) |
 
 ### Camera Manager
 
