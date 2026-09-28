@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Imbas bahagian kad yang sebelah lagi",
     scan_the_front_side: "Imbas nombor kad",
   },
+  flashlight_warning_message: "Berhati-hati dengan silau lampu suluh.\nGerakkan kad anda dengan perlahan di sekeliling untuk menjauhinya.",
   help_button: {
     aria_label: "Bantuan",
     tooltip: "Perlukan bantuan?",

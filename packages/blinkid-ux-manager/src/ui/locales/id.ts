@@ -48,6 +48,7 @@ export default {
     wrong_right: "Pindah ke halaman kanan",
     wrong_top: "Pindah ke halaman atas",
   },
+  flashlight_warning_message: "Waspadai kilau blitz.\nPindahkan ID Anda dengan perlahan untuk menghindarinya.",
   help_button: {
     aria_label: "Bantuan",
     tooltip: "Perlu bantuan?",

@@ -48,6 +48,7 @@ export default {
     wrong_right: "Mova para a página direita",
     wrong_top: "Mova para a página superior",
   },
+  flashlight_warning_message: "Cuidado com o brilho da lanterna. \nMova seu documento de identidade com cuidado para evitá-lo.",
   help_button: {
     aria_label: "Ajuda",
     tooltip: "Precisa de ajuda?",

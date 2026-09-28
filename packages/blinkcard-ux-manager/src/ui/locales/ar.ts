@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "امسح الجانب الآخر من البطاقة ضوئياً",
     scan_the_front_side: "قم بمسح رقم البطاقة ضوئياً",
   },
+  flashlight_warning_message: "احذر وهج المصباح الضوئي.\nحرِّك بطاقتك حوله برفق لتفاديه.",
   help_button: {
     aria_label: "المساعدة",
     tooltip: "هل تحتاج مساعدة؟",

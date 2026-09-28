@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Skaane kaade no fa foforo no",
     scan_the_front_side: "Skaane kaade nɔma no",
   },
+  flashlight_warning_message: "Hwɛ sɛ wobehu flashlight hann bi a.\nNkakrankakra no fa wo kaad no kyinkyin na antɔ so.",
   help_button: {
     aria_label: "Mmoa",
     tooltip: "Wohia mmoa?",

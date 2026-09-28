@@ -48,6 +48,7 @@ export default {
     wrong_right: "Muovi alla pagina di destra",
     wrong_top: "Muovi alla pagina in alto",
   },
+  flashlight_warning_message: "Attenzione al riflesso della luce.\nMuovi lentamente il documento per evitarlo.",
   help_button: {
     aria_label: "Aiuto",
     tooltip: "Ti serve aiuto?",

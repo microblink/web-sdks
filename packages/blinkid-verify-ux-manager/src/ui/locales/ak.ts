@@ -43,6 +43,7 @@ export default {
     wrong_right: "Dane kɔ nifa so",
     wrong_top: "Dane kɔ soro",
   },
+  flashlight_warning_message: "Hwɛ sɛ wobehu flashlight hann bi a.\nNkakrankakra no fa wo ID no kyinkyin na antɔ so.",
   help_button: {
     aria_label: "Mmoa",
     tooltip: "Wohia mmoa?",

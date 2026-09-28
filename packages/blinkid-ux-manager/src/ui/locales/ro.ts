@@ -48,6 +48,7 @@ export default {
     wrong_right: "Treceți la pagina dreaptă",
     wrong_top: "Treceți la prima pagină",
   },
+  flashlight_warning_message: "Fiți atent la strălucirea cauzată de lumina blițului.\nMutați-vă ușor actul de identitate pentru a o evita.",
   help_button: {
     aria_label: "Ajutor",
     tooltip: "Aveți nevoie de ajutor?",

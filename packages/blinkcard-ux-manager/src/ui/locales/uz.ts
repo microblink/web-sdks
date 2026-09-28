@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Kartaning boshqa tomonini skanerlang",
     scan_the_front_side: "Karta raqamini skanerlang",
   },
+  flashlight_warning_message: "Chiroqning porlashiga e'tibor bering.\nBunga yo'l qo'ymaslik uchun kartangizni muloyimlik bilan harakatlantiring.",
   help_button: {
     aria_label: "Yordam",
     tooltip: "Yordam kerakmi?",

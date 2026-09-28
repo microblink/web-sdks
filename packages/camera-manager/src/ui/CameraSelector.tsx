@@ -21,22 +21,17 @@ export const CameraSelector: Component = () => {
   const cameras = cameraManagerSolidStore((x) => x.cameras);
   const selectedCamera = cameraManagerSolidStore((x) => x.selectedCamera);
   const facingFilter = cameraManagerSolidStore((x) => x.facingFilter);
+  const excludedCameraNamePatterns = cameraManagerSolidStore((x) => x.excludedCameraNamePatterns);
   const isQueryingCameras = cameraManagerSolidStore((x) => x.isQueryingCameras);
   const isSwappingCamera = cameraManagerSolidStore((x) => x.isSwappingCamera);
 
   const isDisabled = () => isQueryingCameras() || isSwappingCamera();
 
-  const camerasWithFacingFilter = () => {
-    const $facingFilter = facingFilter();
-    if (!$facingFilter) {
-      return cameras();
-    }
-
-    return cameras().filter((camera) => $facingFilter.includes(camera.facingMode));
-  };
+  const availableCameras = () =>
+    cameraManager.filterCameraDevices(cameras(), facingFilter(), excludedCameraNamePatterns());
 
   const createCameraOptions = () => [
-    ...camerasWithFacingFilter().map((camera) => ({
+    ...availableCameras().map((camera) => ({
       value: camera.deviceInfo.deviceId,
       label: camera.name,
     })),

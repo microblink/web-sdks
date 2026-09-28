@@ -48,6 +48,7 @@ export default {
     wrong_right: "Ir para a página direita",
     wrong_top: "Ir para a página superior",
   },
+  flashlight_warning_message: "Tenha cuidado com o clarão da lanterna. \n Mova de forma ligeira a sua identificação para o evitar.",
   help_button: {
     aria_label: "Ajuda",
     tooltip: "Precisa de ajuda?",

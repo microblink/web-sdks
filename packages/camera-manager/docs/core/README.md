@@ -74,6 +74,12 @@ Re-exports [defaultCameraManagerOptions](../index/variables/defaultCameraManager
 
 ***
 
+### defaultExcludedCameraPatterns
+
+Re-exports [defaultExcludedCameraPatterns](../index/variables/defaultExcludedCameraPatterns.md)
+
+***
+
 ### ErrorCallback
 
 Re-exports [ErrorCallback](../index/type-aliases/ErrorCallback.md)

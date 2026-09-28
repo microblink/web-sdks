@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "סרוק את הצד השני של הכרטיס",
     scan_the_front_side: "סרוק את מספר הכרטיס",
   },
+  flashlight_warning_message: "היזהרו מפני סנוור הפנס.\nהזיזו בעדינות את הכרטיס שלכם בכדי להימנע מהדבר.",
   help_button: {
     aria_label: "עזרה",
     tooltip: "זקוקים לעזרה?",

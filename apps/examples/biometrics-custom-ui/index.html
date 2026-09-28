@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="worker-src 'self' blob:" />
+    <title>Biometrics Custom UI Example</title>
+  </head>
+  <body>
+    <main>
+      <h1>Biometrics custom UI example</h1>
+      <p>The app supplies this interface and the camera loop. The headless SDK supplies face capture.</p>
+
+      <div class="controls">
+        <button id="start" disabled>Start capture</button>
+        <button id="retry" hidden>Retry</button>
+        <button id="stop" disabled>Stop</button>
+      </div>
+
+      <p id="status" role="status" aria-live="polite">Loading SDK resources…</p>
+      <p id="error" class="error" role="alert" hidden></p>
+
+      <div id="frame" class="frame" data-feedback="idle">
+        <video id="video" aria-label="Camera stream" playsinline muted></video>
+      </div>
+
+      <section id="result" aria-label="Capture result" hidden>
+        <h2>Captured face</h2>
+        <canvas id="best-image"></canvas>
+        <pre id="result-details"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="/src/index.ts"></script>
+  </body>
+</html>

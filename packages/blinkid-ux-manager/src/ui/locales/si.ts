@@ -48,6 +48,7 @@ export default {
     wrong_right: "දකුණු පිටුවට යන්න",
     wrong_top: "මුදුන් පිටුවට යන්න",
   },
+  flashlight_warning_message: "කැමරාවේ ෆ්ලෑෂ් ලයිට් දිලිසුම ගැන විමසිලිමත් වන්න.\nඑය වළක්වා ගැනීමට ඔබේ හැඳුනුම්පත සෙමෙන් එහා මෙහා කරන්න.",
   help_button: {
     aria_label: "උදව්",
     tooltip: "උදව් අවශ්‍ය ද?",

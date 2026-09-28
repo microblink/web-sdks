@@ -43,6 +43,7 @@ export default {
     wrong_right: "右ページへ移動",
     wrong_top: "トップページへ移動",
   },
+  flashlight_warning_message: "フラッシュライトの反射にご注意ください。\n反射を避けるため,身分証明書をゆっくりと動かしてください。",
   help_button: {
     aria_label: "ヘルプ",
     tooltip: "ヘルプが必要ですか？",

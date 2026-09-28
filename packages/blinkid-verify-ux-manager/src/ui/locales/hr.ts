@@ -43,6 +43,7 @@ export default {
     wrong_right: "Prijeđite na desnu stranicu",
     wrong_top: "Prijeđite na gornju stranicu",
   },
+  flashlight_warning_message: "Smanjite odsjaj bljeskalice laganim pomicanjem dokumenta.",
   help_button: {
     aria_label: "Pomoć",
     tooltip: "Trebate pomoć?",

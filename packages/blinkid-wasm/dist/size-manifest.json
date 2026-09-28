@@ -1,20 +1,20 @@
 {
   "wasm": {
     "simd": {
-      "full": 4637189,
-      "lightweight": 4608772
+      "full": 4637197,
+      "lightweight": 4608784
     },
     "simd-threads": {
-      "full": 4683030,
-      "lightweight": 4651105
+      "full": 4683039,
+      "lightweight": 4651113
     },
     "simd-relaxed": {
-      "full": 4629080,
-      "lightweight": 4600651
+      "full": 4629088,
+      "lightweight": 4600663
     },
     "simd-relaxed-threads": {
-      "full": 4674922,
-      "lightweight": 4642985
+      "full": 4674931,
+      "lightweight": 4642993
     }
   },
   "data": {

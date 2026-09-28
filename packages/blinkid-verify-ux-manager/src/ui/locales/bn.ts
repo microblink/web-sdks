@@ -43,6 +43,7 @@ export default {
     wrong_right: "ডান পৃষ্ঠায় যান",
     wrong_top: "উপরের পৃষ্ঠায় যান",
   },
+  flashlight_warning_message: "ফ্ল্যাশলাইটের ঝলকানি থেকে সতর্ক থাকুন।\nএটি এড়াতে আপনার আইডিটি আলতো করে ঘোরান।",
   help_button: {
     aria_label: "সহায়তা",
     tooltip: "সাহায্য দরকার?",

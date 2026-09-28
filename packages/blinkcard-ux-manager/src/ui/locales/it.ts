@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Scansiona l'altro lato della carta",
     scan_the_front_side: "Scansiona il numero della carta",
   },
+  flashlight_warning_message: "Attenzione al riflesso della luce.\nMuovi lentamente la carta per evitarlo.",
   help_button: {
     aria_label: "Aiuto",
     tooltip: "Ti serve aiuto?",

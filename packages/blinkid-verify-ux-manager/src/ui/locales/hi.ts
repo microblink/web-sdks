@@ -43,6 +43,7 @@ export default {
     wrong_right: "सही पेज पर जाएँ",
     wrong_top: "टॉप पेज पर जाएँ",
   },
+  flashlight_warning_message: "टॉर्च की चमक से सावधान रहें.\nइससे बचने के लिए अपनी आईडी को धीरे से इधर-उधर घुमाएं.",
   help_button: {
     aria_label: "सहायता",
     tooltip: "मदद चाहिए?",

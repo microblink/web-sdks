@@ -13,6 +13,9 @@ export type PlaybackState = "idle" | "playback" | "capturing";
 
 export type CameraPermission = "prompt" | "granted" | "denied" | "blocked" | undefined;
 
+/** Default camera name fragments to exclude. */
+export const defaultExcludedCameraPatterns = ["desk view"] as const;
+
 /** The camera manager store. */
 export type CameraManagerStore = {
   /** The video element that will display the camera stream. */
@@ -24,7 +27,7 @@ export type CameraManagerStore = {
   /** Defines the area of the video which will be sent for processing. */
   extractionArea?: ExtractionArea;
 
-  /** The list of cameras that are available to the user. */
+  /** All detected cameras, before name and facing filters. */
   cameras: Camera[];
 
   /** Browser camera permission. */
@@ -35,6 +38,9 @@ export type CameraManagerStore = {
    * of facing modes.
    */
   facingFilter?: FacingMode[];
+
+  /** Case-insensitive name fragments to exclude from available cameras. */
+  excludedCameraNamePatterns: readonly string[];
 
   /** The currently selected camera. */
   selectedCamera?: Camera;
@@ -63,6 +69,7 @@ export type CameraManagerStore = {
 const initialState: CameraManagerStore = {
   cameras: [],
   facingFilter: undefined,
+  excludedCameraNamePatterns: defaultExcludedCameraPatterns,
   videoElement: undefined,
   videoResolution: undefined,
   playbackState: "idle",

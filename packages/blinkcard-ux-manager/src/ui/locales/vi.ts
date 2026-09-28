@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Quét mặt còn lại của thẻ",
     scan_the_front_side: "Quét số thẻ",
   },
+  flashlight_warning_message: "Đề phòng ánh sáng của đèn flash.\nNhẹ nhàng di chuyển thẻ của bạn xung quanh để tránh nó.",
   help_button: {
     aria_label: "Trợ giúp",
     tooltip: "Bạn cần trợ giúp?",

@@ -186,14 +186,33 @@ export class CameraManager {
   }
 
   /**
-   * Returns the cameras that are available to the user, filtered by the facing mode. If no facing mode is set, all
-   * cameras are returned.
-   *
-   * @returns The cameras that are available to the user, filtered by the facing mode.
+   * Sets the camera name fragments excluded from camera lists for all managers. Pass an empty list to include all
+   * cameras.
    */
+  setExcludedCameraNamePatterns(patterns: readonly string[]) {
+    store.setState({ excludedCameraNamePatterns: [...patterns] });
+  }
+
+  /** Returns cameras that match the shared name and facing filters. */
+  filterCameraDevices(
+    cameras: Camera[],
+    facingFilter = store.getState().facingFilter,
+    excludedCameraNamePatterns = store.getState().excludedCameraNamePatterns,
+  ): Camera[] {
+    const patterns = excludedCameraNamePatterns
+      .filter((pattern) => pattern.length > 0)
+      .map((pattern) => pattern.toLowerCase());
+
+    return cameras.filter(
+      (camera) =>
+        !patterns.some((pattern) => camera.name.toLowerCase().includes(pattern)) &&
+        (!facingFilter || facingFilter.includes(camera.facingMode)),
+    );
+  }
+
+  /** Returns the cameras available after the shared filters are applied. */
   async getCameraDevices() {
     let allCameras = store.getState().cameras;
-    const facingFilter = store.getState().facingFilter;
 
     if (!allCameras.length) {
       await this.refreshCameraDevices();
@@ -202,13 +221,7 @@ export class CameraManager {
     // get fresh state
     allCameras = store.getState().cameras;
 
-    if (!facingFilter) {
-      return allCameras;
-    }
-
-    const filteredCameras = allCameras.filter((camera) => facingFilter.includes(camera.facingMode));
-
-    return filteredCameras;
+    return this.filterCameraDevices(allCameras);
   }
 
   get selectedCamera() {

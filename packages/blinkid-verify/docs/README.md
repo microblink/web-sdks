@@ -163,6 +163,7 @@
 - [cameraUiRefStore](variables/cameraUiRefStore.md)
 - [createBlinkIdVerifyUxManager](variables/createBlinkIdVerifyUxManager.md)
 - [defaultCameraManagerOptions](variables/defaultCameraManagerOptions.md)
+- [defaultExcludedCameraPatterns](variables/defaultExcludedCameraPatterns.md)
 - [getBuffer](variables/getBuffer.md)
 - [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [HAPTIC\_FEEDBACK\_CONFIGS](variables/HAPTIC_FEEDBACK_CONFIGS.md)

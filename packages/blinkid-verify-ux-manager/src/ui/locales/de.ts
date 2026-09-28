@@ -43,6 +43,7 @@ export default {
     wrong_right: "Zur rechten Seite wechseln",
     wrong_top: "Zur obersten Seite wechseln",
   },
+  flashlight_warning_message: "Achten Sie auf eine Blendung durch Blitzlicht.\n Bewegen Sie Ihren Ausweis vorsichtig umher, um dies zu vermeiden.",
   help_button: {
     aria_label: "Hilfe",
     tooltip: "Brauchen Sie Hilfe?",

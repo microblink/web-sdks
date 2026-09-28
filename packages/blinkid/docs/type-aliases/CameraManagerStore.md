@@ -24,7 +24,7 @@ Browser camera permission.
 
 > **cameras**: [`Camera`](../classes/Camera.md)[]
 
-The list of cameras that are available to the user.
+All detected cameras, before name and facing filters.
 
 ***
 
@@ -33,6 +33,14 @@ The list of cameras that are available to the user.
 > `optional` **errorState?**: `Error` \| [`CameraError`](../classes/CameraError.md)
 
 If the Camera manager has encountered an error, this will be set to the error.
+
+***
+
+### excludedCameraNamePatterns
+
+> **excludedCameraNamePatterns**: readonly `string`[]
+
+Case-insensitive name fragments to exclude from available cameras.
 
 ***
 

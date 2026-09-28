@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "የካርዱን ሌላኛውን ጎን ይቃኙ",
     scan_the_front_side: "የካርድ ቁጥሩን ይቃኙ",
   },
+  flashlight_warning_message: "የባትሪ ብርሃን እንዳያበራ ይጠንቀቁ።\nካርድዎን ለማስቀረት በቀስታ ያንቀሳቅሱት።",
   help_button: {
     aria_label: "እገዛ",
     tooltip: "እርዳታ ይፈልጋሉ?",

@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-verify-wasm",
-  "version": "4000.0.0-next.0",
+  "version": "4000.0.0-next.1",
   "private": true,
   "description": "BlinkIdVerify Wasm runtime",
   "keywords": [

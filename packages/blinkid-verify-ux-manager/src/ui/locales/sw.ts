@@ -43,6 +43,7 @@ export default {
     wrong_right: "Nenda kwenye ukurasa wa kulia",
     wrong_top: "Nenda kwenye ukurasa wa juu",
   },
+  flashlight_warning_message: "Kuwa mwangalifu na mwanga wa tochi.\nSogeza taratibu kitambulisho chako ili uuepuke.",
   help_button: {
     aria_label: "Usaidizi",
     tooltip: "Unahitaji usaidizi?",

@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Nasnímajte druhú stranu karty",
     scan_the_front_side: "Nasnímajte číslo karty",
   },
+  flashlight_warning_message: "Pozor na oslnenie bleskom.\nJemne pohnite kartou, aby ste tomu zabránili.",
   help_button: {
     aria_label: "Pomoc",
     tooltip: "Potrebujete pomoc?",

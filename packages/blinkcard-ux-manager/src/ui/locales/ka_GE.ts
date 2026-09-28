@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "დაასკანერეთ ბარათის მეორე მხარე",
     scan_the_front_side: "დაასკანერეთ ბარათის ნომერი",
   },
+  flashlight_warning_message: "მოერიდეთ ბლიცის მკვეთრ ნათებას.\nამის თავიდან ასაცილებლად, ფრთხილად გადაადგილეთ საკრედიტო ბარათი.",
   help_button: {
     aria_label: "დახმარება",
     tooltip: "დახმარება გჭირდებათ?",

@@ -2,6 +2,7 @@
 
 import { PingUxEventData } from "@microblink/blinkcard-core";
 import { cameraManagerStore } from "@microblink/camera-manager/core";
+import { FlashlightWarning } from "@microblink/shared-components/FlashlightWarning";
 import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnvironmentProvider";
 import type { Component } from "solid-js";
 import { createEffect, createSignal, Match, onCleanup, onMount, Show, Switch } from "solid-js";
@@ -72,6 +73,7 @@ export const BlinkCardFeedbackUi: Component<{
   });
 
   const playbackState = create(cameraManagerStore)((s) => s.playbackState);
+  const torchEnabled = create(cameraManagerStore)((s) => s.selectedCamera?.torchEnabled ?? false);
 
   const cameraErrorState = create(cameraManagerStore)((s) => s.errorState);
 
@@ -194,6 +196,12 @@ export const BlinkCardFeedbackUi: Component<{
                 <Show when={store.showHelpButton}>
                   <HelpButton isProcessing={isProcessing()} />
                 </Show>
+
+                <FlashlightWarning
+                  enabled={torchEnabled()}
+                  visible={shouldShowFeedback()}
+                  message={t.flashlight_warning_message}
+                />
               </>
             );
           }}

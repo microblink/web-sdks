@@ -1,5 +1,15 @@
 # @microblink/blinkid
 
+## 8002.0.1
+
+### Patch Changes
+
+- Update declaration bundles
+- Updated dependencies
+  - @microblink/camera-manager@8.1.0
+  - @microblink/blinkid-core@8002.0.1
+  - @microblink/blinkid-ux-manager@8002.0.1
+
 ## 8002.0.0
 
 ### Major Changes

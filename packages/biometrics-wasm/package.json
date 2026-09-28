@@ -1,0 +1,54 @@
+{
+  "name": "@microblink/biometrics-wasm",
+  "version": "1.0.0",
+  "private": true,
+  "files": [
+    "dist",
+    "types"
+  ],
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./size-manifest.json": {
+      "types": "./src/size-manifest.d.ts",
+      "default": "./dist/size-manifest.json"
+    },
+    "./package.json": "./package.json",
+    "./browser": {
+      "types": "./dist/browser/runtime.d.ts",
+      "import": "./dist/browser/runtime.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:publish": "tsc",
+    "clean": "rimraf .turbo types",
+    "format": "pnpm exec oxfmt src",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "dependencies": {
+    "comlink": "catalog:"
+  },
+  "devDependencies": {
+    "@microblink/repo-utils": "workspace:*",
+    "@microblink/tsconfig": "workspace:*",
+    "@microblink/wasm-common": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "dotenv-cli": "catalog:utils",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "tsx": "catalog:typescript",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "vitest": "catalog:test",
+    "zx": "catalog:utils"
+  }
+}

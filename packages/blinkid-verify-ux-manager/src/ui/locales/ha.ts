@@ -43,6 +43,7 @@ export default {
     wrong_right: "Koma zuwa shafin dama",
     wrong_top: "Koma zuwa shafin sama",
   },
+  flashlight_warning_message: "A duba idan akwai wurin da haske ya dusashe takardar.\nA motsa ID ɗin a hankali domin kauce wa hasken.",
   help_button: {
     aria_label: "Taimako",
     tooltip: "Ana buƙatar taimako?",

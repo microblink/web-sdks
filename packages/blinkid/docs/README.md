@@ -237,6 +237,7 @@
 - [DEFAULT\_BLINK\_ID\_RESOURCE\_DOWNLOAD\_TIMEOUT\_MS](variables/DEFAULT_BLINK_ID_RESOURCE_DOWNLOAD_TIMEOUT_MS.md)
 - [DEFAULT\_REDACTION\_SETTINGS](variables/DEFAULT_REDACTION_SETTINGS.md)
 - [defaultCameraManagerOptions](variables/defaultCameraManagerOptions.md)
+- [defaultExcludedCameraPatterns](variables/defaultExcludedCameraPatterns.md)
 - [getBuffer](variables/getBuffer.md)
 - [getCrossOriginWorkerURL](variables/getCrossOriginWorkerURL.md)
 - [HAPTIC\_FEEDBACK\_CONFIGS](variables/HAPTIC_FEEDBACK_CONFIGS.md)

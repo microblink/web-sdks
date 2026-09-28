@@ -1,6 +1,6 @@
 # @microblink/blinkid-verify
 
-## 4000.0.0-next.0
+## 4000.0.0-next.1
 
 ### Minor Changes
 
@@ -23,13 +23,15 @@
 
 ### Patch Changes
 
+- Update declaration bundles
 - Updated package dependencies.
 - Fixed an issue where frame processing wouldnt stop if showTimeoutModal was configured to false
 - Speeds up BlinkID Verify initialization by compiling WebAssembly while it downloads. Resources served without the `application/wasm` content type or environments without streaming compilation continue to use buffered compilation.
 - Upgrade to TypeScript 7
 - Updated dependencies
-  - @microblink/blinkid-verify-core@4000.0.0-next.0
-  - @microblink/blinkid-verify-ux-manager@4000.0.0-next.0
+  - @microblink/camera-manager@8.1.0
+  - @microblink/blinkid-verify-core@4000.0.0-next.1
+  - @microblink/blinkid-verify-ux-manager@4000.0.0-next.1
 
 ## 3.21.1
 

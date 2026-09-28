@@ -43,6 +43,7 @@ export default {
     wrong_right: "Flyt til den højre side",
     wrong_top: "Flyt til den øverste side",
   },
+  flashlight_warning_message: "Hold øje med lygtens genskin.\nFlyt dit ID forsigtigt rundt for at undgå det.",
   help_button: {
     aria_label: "Hjælp",
     tooltip: "Brug for hjælp?",

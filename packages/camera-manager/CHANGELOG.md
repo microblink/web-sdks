@@ -1,5 +1,16 @@
 # @microblink/camera-manager
 
+## 8.1.0
+
+### Minor Changes
+
+- Adds a shared `excludedCameraNamePatterns` setting and `CameraManager.setExcludedCameraNamePatterns()` for case-insensitive camera name filtering. Desk View cameras are excluded by default through the exported `defaultExcludedCameraPatterns` preset.
+
+### Patch Changes
+
+- Update declaration bundles
+- Turning on the flashlight now shows a glare warning message
+
 ## 8.0.1
 
 ### Patch Changes

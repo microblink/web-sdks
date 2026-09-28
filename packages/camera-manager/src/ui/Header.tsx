@@ -6,10 +6,10 @@ import { SmartEnvironmentProvider } from "@microblink/shared-components/SmartEnv
 /* oxlint-disable typescript/ban-ts-comment */
 import { Component, JSX, ParentComponent, Show, splitProps } from "solid-js";
 import CloseIcon from "~icons/material-symbols/close";
-import FlashOff from "~icons/material-symbols/flash-off";
-import FlashOn from "~icons/material-symbols/flash-on";
 import MirrorIcon from "~icons/material-symbols/flip";
 
+import flashlightOffUrl from "./assets/icons/flashlight-off.svg?url";
+import flashlightOnUrl from "./assets/icons/flashlight-on.svg?url";
 import { CameraSelector } from "./CameraSelector";
 import { useCameraUiStore } from "./CameraUiStoreContext";
 import { useLocalization } from "./LocalizationContext";
@@ -29,6 +29,8 @@ export const Header: Component = () => {
   const isMirrored = cameraManagerSolidStore((s) => s.mirrorX);
   const selectedCamera = cameraManagerSolidStore((s) => s.selectedCamera);
   const cameras = cameraManagerSolidStore((s) => s.cameras);
+  const facingFilter = cameraManagerSolidStore((s) => s.facingFilter);
+  const excludedCameraNamePatterns = cameraManagerSolidStore((s) => s.excludedCameraNamePatterns);
   const isActive = cameraManagerSolidStore((s) => s.playbackState !== "idle");
 
   // Same instance of selected camera, so we can't reuse `selectedCamera` signal
@@ -48,6 +50,16 @@ export const Header: Component = () => {
 
   const toggleMirrorX = () => {
     cameraManager.setCameraMirrorX(!cameraManagerSolidStore.getState().mirrorX);
+  };
+
+  const hasCameraChoice = () => {
+    const availableCameras = cameraManager.filterCameraDevices(cameras(), facingFilter(), excludedCameraNamePatterns());
+    const selected = selectedCamera();
+
+    return (
+      availableCameras.length > 1 ||
+      (availableCameras.length === 1 && !!selected && !availableCameras.includes(selected))
+    );
   };
 
   return (
@@ -84,12 +96,15 @@ export const Header: Component = () => {
                 onClick={() => toggleTorch()}
                 tooltipLabel={t.torch}
                 aria-pressed={torchEnabled() ? "true" : "false"}
+                torchActive={torchEnabled()}
               >
                 <Show when={!torchEnabled()}>
-                  <FlashOn aria-hidden="true" class="size-6 shrink-0" />
+                  <img src={flashlightOffUrl} alt="" class="size-6 shrink-0" />
                 </Show>
                 <Show when={torchEnabled()}>
-                  <FlashOff aria-hidden="true" class="size-6 shrink-0" />
+                  <span class="grid size-11 place-items-center rounded-full bg-white">
+                    <img src={flashlightOnUrl} alt="" class="size-6 shrink-0" />
+                  </span>
                 </Show>
               </ToolbarButton>
             </Show>
@@ -97,7 +112,7 @@ export const Header: Component = () => {
 
           {/* camera selector */}
           <div class="justify-self-center min-w-0 w-full">
-            <Show when={showCameraSelector && cameras().length > 1}>
+            <Show when={showCameraSelector && hasCameraChoice()}>
               <CameraSelector />
             </Show>
           </div>
@@ -125,11 +140,12 @@ export const Header: Component = () => {
 /** The toolbar button props. */
 type ToolbarButtonProps = {
   tooltipLabel: string;
+  torchActive?: boolean;
 } & JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
 /** The toolbar button component. */
 const ToolbarButton: ParentComponent<ToolbarButtonProps> = (props) => {
-  const [local, buttonProps] = splitProps(props, ["tooltipLabel", "children"]);
+  const [local, buttonProps] = splitProps(props, ["tooltipLabel", "children", "torchActive"]);
 
   return (
     <Tooltip.Root>
@@ -143,10 +159,9 @@ const ToolbarButton: ParentComponent<ToolbarButtonProps> = (props) => {
               aria-label={local.tooltipLabel}
               {...buttonProps}
               {...eventFixer(cleanProps)}
-              // TODO: add visual distinction for a aria-pressed state
-              class={`control-focus relative rounded-full bg-gray-550/70 backdrop-blur grid
+              class={`control-focus relative rounded-full backdrop-blur grid
               place-items-center size-12 appearance-none border-none
-              cursor-pointer`}
+              cursor-pointer ${local.torchActive ? "bg-transparent" : "bg-gray-550/70"}`}
             >
               {local.children}
             </button>

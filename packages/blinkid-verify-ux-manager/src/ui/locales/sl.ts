@@ -43,6 +43,7 @@ export default {
     wrong_right: "Premaknite se na desno stran",
     wrong_top: "Premaknite se na prvo stran",
   },
+  flashlight_warning_message: "Pazite na bleščanje bliskavice.\nOsebni dokument rahlo premaknite, da se mu izognete.",
   help_button: {
     aria_label: "Pomoč",
     tooltip: "Potrebujete pomoč?",

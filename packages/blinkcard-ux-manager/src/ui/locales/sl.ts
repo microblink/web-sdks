@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Optično preberite drugo stran kartice",
     scan_the_front_side: "Skenirajte številko kartice",
   },
+  flashlight_warning_message: "Pazite na bleščanje bliskavice.\nKartico rahlo premaknite, da se mu izognete.",
   help_button: {
     aria_label: "Pomoč",
     tooltip: "Potrebujete pomoč?",

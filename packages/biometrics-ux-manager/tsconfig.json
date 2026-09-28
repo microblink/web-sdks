@@ -1,0 +1,16 @@
+{
+  "extends": "@microblink/tsconfig/base.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declarationDir": "types",
+    "rootDir": "src",
+    "jsx": "preserve",
+    "moduleResolution": "Bundler",
+    "jsxImportSource": "solid-js",
+    "types": ["vite/client", "vite-plugin-solid-svg/types"],
+    "paths": {
+      "@microblink/biometrics-ux-manager/core": ["./src/core.ts"]
+    }
+  },
+  "include": ["src"]
+}

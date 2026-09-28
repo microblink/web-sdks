@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-verify",
-  "version": "4000.0.0-next.0",
+  "version": "4000.0.0-next.1",
   "description": "All-in-one BlinkID Verify browser SDK for fast and accurate ID verification in web applications.",
   "keywords": [
     "aml",
@@ -62,7 +62,7 @@
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
     "publish-test": "pnpm pack-check",
-    "type-rollup": "api-extractor run --local",
+    "type-rollup": "bundle-declarations --entry index",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --emitDeclarationOnly false --noEmit"
@@ -78,7 +78,6 @@
     "@microblink/repo-utils": "workspace:*",
     "@microblink/test-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",
-    "@microsoft/api-extractor": "catalog:typescript",
     "@typescript/native": "catalog:typescript",
     "oxfmt": "catalog:oxc",
     "oxlint": "catalog:oxc",

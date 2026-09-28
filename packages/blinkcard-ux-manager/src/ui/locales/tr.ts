@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Kartın diğer tarafını tarayın",
     scan_the_front_side: "Kart numarasını tara",
   },
+  flashlight_warning_message: "El fenerinin parlamasına dikkat edin.\nKartınızı hafifçe hareket ettirerek çarpmayı önleyin.",
   help_button: {
     aria_label: "Yardım",
     tooltip: "Yardıma mı ihtiyacın var?",

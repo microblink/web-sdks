@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "สแกนอีกด้านหนึ่งของบัตร",
     scan_the_front_side: "สแกนหมายเลขบัตร",
   },
+  flashlight_warning_message: "ระวังแสงจ้าจากไฟฉาย ค่อย ๆ ขยับบัตรไปเพื่อหลีกเลี่ยง",
   help_button: {
     aria_label: "ช่วยเหลือ",
     tooltip: "ต้องการความช่วยเหลือ?",

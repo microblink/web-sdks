@@ -23,6 +23,11 @@
       "@microblink/blinkcard-ux-manager",
       "@microblink/blinkcard-wasm",
       "@microblink/blinkcard-worker"
+    ],
+    [
+      "@microblink/biometrics",
+      "@microblink/biometrics-core",
+      "@microblink/biometrics-ux-manager"
     ]
   ],
   "access": "public",

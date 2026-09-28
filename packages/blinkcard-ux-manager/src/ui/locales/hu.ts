@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Olvassa be a kártya másik oldalát",
     scan_the_front_side: "Szkennelje be a kártyaszámot",
   },
+  flashlight_warning_message: "Figyeljen oda a vaku fényének visszaverődésére.\nFinoman mozgassa a kártyáját, hogy elkerülje.",
   help_button: {
     aria_label: "Súgó",
     tooltip: "Segíthetünk bármiben?",

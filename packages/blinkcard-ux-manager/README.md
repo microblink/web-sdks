@@ -191,6 +191,7 @@ import { createBlinkCardFeedbackUi } from "@microblink/blinkcard-ux-manager/ui";
 createBlinkCardFeedbackUi(uxManager, cameraUi, {
   localizationStrings: {
     scan_the_barcode: "Please scan the barcode",
+    flashlight_warning_message: "Move your card to avoid flashlight glare.",
   },
 });
 ```

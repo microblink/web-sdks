@@ -43,6 +43,7 @@ export default {
     wrong_right: "Lọ sí ojú-ìwé ọ̀tún",
     wrong_top: "Lọ sí ojú-ìwé òkè",
   },
+  flashlight_warning_message: "Ṣóra fun ìtànyòò ìtànsan iná kámẹ́rà.\nRọra máa yí káàdì ìdánimọ̀ rẹ káàkiri láti yẹra fún un.",
   help_button: {
     aria_label: "Ìrànlọ́wọ́",
     tooltip: "Ṣé o nílò ìrànlọ́wọ́?",

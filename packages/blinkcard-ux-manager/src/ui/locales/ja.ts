@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "カードの反対側をスキャンしてください",
     scan_the_front_side: "カード番号をスキャン",
   },
+  flashlight_warning_message: "懐中電灯のまぶしさに注意してください。\nそれを避けるためにカードをゆっくり動かしてください。",
   help_button: {
     aria_label: "ヘルプ",
     tooltip: "ヘルプが必要ですか？",

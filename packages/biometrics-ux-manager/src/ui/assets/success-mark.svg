@@ -1,0 +1,51 @@
+<svg
+  width="94"
+  height="94"
+  viewBox="0 0 94 94"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <filter
+      id="biometrics-success-filter"
+      x="0"
+      y="0"
+      width="94"
+      height="94"
+      filterUnits="userSpaceOnUse"
+      color-interpolation-filters="sRGB"
+    >
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feColorMatrix
+        in="SourceAlpha"
+        type="matrix"
+        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        result="hardAlpha"
+      />
+      <feOffset />
+      <feGaussianBlur stdDeviation="7.5" />
+      <feColorMatrix
+        type="matrix"
+        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+      />
+      <feBlend
+        mode="normal"
+        in2="BackgroundImageFix"
+        result="effect1_dropShadow"
+      />
+      <feBlend
+        mode="normal"
+        in="SourceGraphic"
+        in2="effect1_dropShadow"
+        result="shape"
+      />
+    </filter>
+  </defs>
+  <g filter="url(#biometrics-success-filter)">
+    <circle cx="47" cy="47" r="32" fill="white" />
+  </g>
+  <path
+    d="M42.6579 52.9845L59.6724 35.2292C60.6951 34.1619 62.3533 34.1619 63.3761 35.2292C64.3988 36.2964 64.3988 38.0268 63.3761 39.0941L42.6579 60.7144L30.6245 48.1571C29.6017 47.0898 29.6017 45.3594 30.6245 44.2921C31.6472 43.2249 33.3054 43.2249 34.3282 44.2921L42.6579 52.9845Z"
+    fill="black"
+  />
+</svg>

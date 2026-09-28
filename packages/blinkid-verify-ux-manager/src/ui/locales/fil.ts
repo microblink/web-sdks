@@ -43,6 +43,7 @@ export default {
     wrong_right: "Pumunta sa kanang page",
     wrong_top: "Pumunta sa itaas ng page",
   },
+  flashlight_warning_message: "Mag-ingat sa flashlight glare.\nDahan-dahang ilipat ang iyong ID sa paligid upang maiwasan ito.",
   help_button: {
     aria_label: "Tulong",
     tooltip: "Kailangan ng tulong?",

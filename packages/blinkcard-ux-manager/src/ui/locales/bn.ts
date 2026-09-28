@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "কার্ডের অন্য দিকটি স্ক্যান করুন",
     scan_the_front_side: "কার্ড নম্বর স্ক্যান করুন",
   },
+  flashlight_warning_message: "ফ্ল্যাশলাইটের ঝলকানি থেকে সতর্ক থাকুন।\nএটি এড়াতে আপনার আইডিটি আলতো করে ঘোরান।",
   help_button: {
     aria_label: "সহায়তা",
     tooltip: "সাহায্য দরকার?",

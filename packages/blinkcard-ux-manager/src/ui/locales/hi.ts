@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "कार्ड के दूसरे साइड को स्कैन करें",
     scan_the_front_side: "कार्ड नंबर को स्कैन करें",
   },
+  flashlight_warning_message: "टॉर्च की चकाचौंध से सावधान रहें।\nइससे बचने के लिए अपने कार्ड को धीरे से इधर-उधर घुमाएं।",
   help_button: {
     aria_label: "सहायता",
     tooltip: "मदद चाहिए?",

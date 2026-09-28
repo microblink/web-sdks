@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Scan den anden side af kortet",
     scan_the_front_side: "Scan kortnummeret",
   },
+  flashlight_warning_message: "Hold øje med lygtens genskin.\nFlyt dit jirt forsigtigt rundt for at undgå det.",
   help_button: {
     aria_label: "Hjælp",
     tooltip: "Brug for hjælp?",

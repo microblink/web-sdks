@@ -48,6 +48,7 @@ export default {
     wrong_right: "오른쪽 페이지로 이동하세요",
     wrong_top: "상단 페이지로 이동하세요",
   },
+  flashlight_warning_message: "손전등 반사광에 주의하세요.\n신분증을 조금씩 움직여 반사를 피해주세요.",
   help_button: {
     aria_label: "도움말",
     tooltip: "도움이 필요하신가요?",

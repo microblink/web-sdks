@@ -43,6 +43,7 @@ export default {
     wrong_right: "ផ្លាស់ទីទៅទំព័រខាងស្តាំ",
     wrong_top: "ផ្លាស់ទីទៅទំព័រកំពូល",
   },
+  flashlight_warning_message: "សូមប្រយ័ត្នចំពោះពន្លឺពិល។\nផ្លាស់ទីលេខសម្គាល់របស់អ្នកដោយថ្នមៗ ដើម្បីជៀសវាងវា។",
   help_button: {
     aria_label: "ជំនួយ",
     tooltip: "ត្រូវការជំនួយ?",

@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Scanează cealaltă parte a cardului",
     scan_the_front_side: "Scanare număr card",
   },
+  flashlight_warning_message: "Fiți atent la strălucirea cauzată de lumina blițului.\nMutați-vă ușor cardul pentru a o evita.",
   help_button: {
     aria_label: "Ajutor",
     tooltip: "Aveți nevoie de ajutor?",

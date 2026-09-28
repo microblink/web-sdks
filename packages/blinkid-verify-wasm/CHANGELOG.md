@@ -1,6 +1,6 @@
 # @microblink/blinkid-verify-wasm
 
-## 4000.0.0-next.0
+## 4000.0.0-next.1
 
 ### Minor Changes
 

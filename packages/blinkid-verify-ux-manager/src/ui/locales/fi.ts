@@ -43,6 +43,7 @@ export default {
     wrong_right: "Siirry oikealle sivulle",
     wrong_top: "Siirry yläsivulle",
   },
+  flashlight_warning_message: "Varo salaman häikäisyä.\nSiirrä henkilötodistusta varovasti välttääksesi häikäisyn.",
   help_button: {
     aria_label: "Ohje",
     tooltip: "Tarvitsetko apua?",

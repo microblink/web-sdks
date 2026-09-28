@@ -48,6 +48,7 @@ export default {
     wrong_right: "Beralih ke halaman sebelah kanan",
     wrong_top: "Beralih ke halaman sebelah atas",
   },
+  flashlight_warning_message: "Berhati-hati dengan silau lampu suluh.\nGerakkan ID anda dengan perlahan keliling untuk menjauhinya.",
   help_button: {
     aria_label: "Bantuan",
     tooltip: "Perlukan bantuan?",

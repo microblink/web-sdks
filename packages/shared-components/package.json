@@ -4,6 +4,7 @@
   "private": true,
   "exports": {
     "./SmartEnvironmentProvider": "./src/SmartEnvironmentProvider.tsx",
+    "./FlashlightWarning": "./src/FlashlightWarning.tsx",
     "./Modal": "./src/Modal.tsx",
     "./AlertModal": "./src/Modal.tsx",
     "./eventFixer": "./src/eventFixer.ts",

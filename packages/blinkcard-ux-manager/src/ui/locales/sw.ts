@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Skani upande mwingine wa kadi",
     scan_the_front_side: "Skani namba ya kadi",
   },
+  flashlight_warning_message: "Jihadhari na mwangaza wa tochi.\nSogeza kadi yako kwa upole ili kuiepuka.",
   help_button: {
     aria_label: "Usaidizi",
     tooltip: "Unahitaji usaidizi?",

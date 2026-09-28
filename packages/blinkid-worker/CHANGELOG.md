@@ -1,5 +1,12 @@
 # @microblink/blinkid-worker
 
+## 8002.0.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@8002.0.1
+
 ## 8002.0.0
 
 ### Patch Changes

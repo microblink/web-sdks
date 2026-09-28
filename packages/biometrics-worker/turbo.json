@@ -1,0 +1,10 @@
+{
+  "$schema": "https://v2-8-9.turborepo.dev/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "env": ["PING_ANALYTICS_ENV"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/packages/biometrics-wasm/dist/build-info.json"]
+    }
+  }
+}

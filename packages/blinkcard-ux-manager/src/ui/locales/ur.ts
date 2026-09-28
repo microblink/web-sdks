@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "کارڈ کے دوسرے حصے کو اسکین کریں",
     scan_the_front_side: "کارڈ نمبر کو اسکین کریں",
   },
+  flashlight_warning_message: "ٹارچ کی چکاچوند پر نگاہ رکھیں۔\nاس سے بچنے کے لیے اپنے کارڈ کو آہستہ سے ادھر ادھر گھمائیں۔",
   help_button: {
     aria_label: "مدد",
     tooltip: "مدد چاہیے؟",

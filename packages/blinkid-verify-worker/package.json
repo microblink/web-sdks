@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-verify-worker",
-  "version": "4000.0.0-next.0",
+  "version": "4000.0.0-next.1",
   "private": true,
   "description": "Provides a worker which runs the BlinkID WebAssembly in separate thread",
   "files": [

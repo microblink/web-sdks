@@ -65,6 +65,66 @@ describe("CaptureScreenPortalled", () => {
       expect(shadowRoot?.querySelector('[part="camera-select-part"]') !== null).toBe(expected);
     });
   });
+
+  it("shows the flashlight design for each torch state", async () => {
+    cameraUi = await createCameraManagerUi(new CameraManager());
+
+    const camera = createCamera("back-camera", "Back Camera");
+    camera.store.setState({ torchSupported: true });
+    cameraManagerStore.setState({ selectedCamera: camera, playbackState: "playback" });
+
+    const shadowRoot = document.querySelector<HTMLElement>("#mb-camera-host")?.shadowRoot;
+    const button = shadowRoot?.querySelector<HTMLButtonElement>('[part="torch-button-part"]');
+
+    await vi.waitFor(() => expect(button?.getAttribute("aria-pressed")).toBe("false"));
+    await vi.waitFor(() => expect(button?.querySelector("img")?.naturalWidth).toBe(24));
+
+    camera.store.setState({ torchEnabled: true });
+    cameraManagerStore.setState({ selectedCamera: camera });
+
+    await vi.waitFor(() => expect(button?.getAttribute("aria-pressed")).toBe("true"));
+    await vi.waitFor(() => expect(button?.querySelector("img")?.naturalWidth).toBe(24));
+  });
+
+  it("shows the selector when the selected camera is excluded by the facing filter", async () => {
+    cameraUi = await createCameraManagerUi(new CameraManager());
+
+    const frontCamera = createCamera("front-camera", "Front Camera");
+    const backCamera = createCamera("back-camera", "Back Camera");
+    const shadowRoot = document.querySelector<HTMLElement>("#mb-camera-host")?.shadowRoot;
+
+    cameraManagerStore.setState({
+      cameras: [frontCamera, backCamera],
+      selectedCamera: frontCamera,
+      facingFilter: ["back"],
+    });
+
+    await vi.waitFor(() => expect(shadowRoot?.querySelector('[part="camera-select-part"]')).not.toBeNull());
+
+    cameraManagerStore.setState({ selectedCamera: backCamera });
+
+    await vi.waitFor(() => expect(shadowRoot?.querySelector('[part="camera-select-part"]')).toBeNull());
+  });
+
+  it("updates the selector when shared camera name patterns change", async () => {
+    const manager = new CameraManager();
+    cameraUi = await createCameraManagerUi(manager);
+
+    const shadowRoot = document.querySelector<HTMLElement>("#mb-camera-host")?.shadowRoot;
+    cameraManagerStore.setState({
+      cameras: [createCamera("front-camera", "Front Camera"), createCamera("desk-view", "Desk View Camera")],
+    });
+
+    await vi.waitFor(() => expect(shadowRoot?.querySelector('[part="camera-select-part"]')).toBeNull());
+
+    manager.setExcludedCameraNamePatterns([]);
+
+    await vi.waitFor(() => expect(shadowRoot?.querySelector('[part="camera-select-part"]')).not.toBeNull());
+
+    manager.setExcludedCameraNamePatterns(["desk view"]);
+
+    await vi.waitFor(() => expect(shadowRoot?.querySelector('[part="camera-select-part"]')).toBeNull());
+  });
 });
 
 function createCamera(deviceId: string, label: string) {

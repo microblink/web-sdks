@@ -351,6 +351,7 @@ import { createBlinkIdFeedbackUi } from "@microblink/blinkid-ux-manager/ui";
 
 createBlinkIdFeedbackUi(uxManager, cameraUi, {
   localizationStrings: {
+    flashlight_warning_message: "Move your ID to avoid flashlight glare.",
     feedback_messages: {
       scan_the_barcode: "Please scan the barcode",
     },

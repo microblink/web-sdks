@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "A ɗauki hoton ɗaya ɓangaren katin",
     scan_the_front_side: "A ɗauki hoton lambar katin",
   },
+  flashlight_warning_message: "A duba idan akwai wurin da haske ya dusashe takardar.\nMatsar da katin ku a hankali don guje masa.",
   help_button: {
     aria_label: "Taimako",
     tooltip: "Ana buƙatar taimako?",

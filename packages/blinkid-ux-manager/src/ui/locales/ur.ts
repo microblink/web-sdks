@@ -48,6 +48,7 @@ export default {
     wrong_right: "دائیں صفحے پر جائیں",
     wrong_top: "اوپری صفحے پر جائیں",
   },
+  flashlight_warning_message: "فلیش لائٹ کی چمک سے بچیں۔\nاس سے بچنے کے لیے اپنی شناختی دستاویز کو آہستہ سے حرکت دیں۔",
   help_button: {
     aria_label: "مدد",
     tooltip: "مدد چاہیے؟",

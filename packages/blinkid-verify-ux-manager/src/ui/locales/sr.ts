@@ -43,6 +43,7 @@ export default {
     wrong_right: "Pređite na desnu stranicu",
     wrong_top: "Pređite na gornju stranicu",
   },
+  flashlight_warning_message: "Pazite na odsjaj blica.\nNežno pomerajte ličnu kartu okolo da biste ga izbegli.",
   help_button: {
     aria_label: "Pomoć",
     tooltip: "Potrebna vam je pomoć?",

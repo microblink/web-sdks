@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Σαρώστε την άλλη πλευρά της κάρτας",
     scan_the_front_side: "Σαρώστε τον αριθμό κάρτας",
   },
+  flashlight_warning_message: "Προσέξτε την αντανάκλαση από τον φακό.\nΚουνήστε απαλά την πιστωτική σας κάρτα για να την αποφύγετε.",
   help_button: {
     aria_label: "Βοήθεια",
     tooltip: "Χρειάζεστε βοήθεια;",

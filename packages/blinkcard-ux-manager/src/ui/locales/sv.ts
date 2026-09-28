@@ -18,6 +18,7 @@ export default {
     scan_the_back_side: "Läs av den andra sidan av kortet",
     scan_the_front_side: "Skanna kortnumret",
   },
+  flashlight_warning_message: "Akta dig för reflektioner från kamerablixten.\nFlytta försiktigt på kortet för att undvika det.",
   help_button: {
     aria_label: "Hjälp",
     tooltip: "Behöver du hjälp?",

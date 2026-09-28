@@ -1,0 +1,54 @@
+{
+  "name": "@microblink/biometrics-worker",
+  "version": "1.0.0",
+  "private": true,
+  "files": [
+    "dist",
+    "types"
+  ],
+  "main": "dist/biometrics-worker.js",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "require": "./dist/biometrics-worker.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "pnpm run --no-bail \"/^build:(js|types)$/\"",
+    "build:publish": "PING_ANALYTICS_ENV=PROD pnpm build",
+    "build:js": "vite build --mode ${VITE_BUILD_MODE:-production}",
+    "build:types": "tsc",
+    "clean": "rimraf .turbo types dist",
+    "format": "pnpm exec oxfmt src",
+    "typecheck": "tsc --emitDeclarationOnly false --noEmit"
+  },
+  "dependencies": {
+    "@microblink/analytics": "workspace:*",
+    "@microblink/biometrics-common": "workspace:*",
+    "@microblink/biometrics-wasm": "workspace:*",
+    "@microblink/worker-common": "workspace:*",
+    "comlink": "catalog:"
+  },
+  "devDependencies": {
+    "@microblink/repo-utils": "workspace:*",
+    "@microblink/tsconfig": "workspace:*",
+    "@typescript/native": "catalog:typescript",
+    "oxfmt": "catalog:oxc",
+    "oxlint": "catalog:oxc",
+    "oxlint-tsgolint": "catalog:oxc",
+    "rimraf": "catalog:utils",
+    "typescript": "catalog:typescript",
+    "vite": "catalog:vite",
+    "zx": "catalog:utils"
+  },
+  "browserslist": [
+    "Chrome >= 96",
+    "ChromeAndroid >= 96",
+    "Edge >= 96",
+    "Opera >= 84",
+    "Firefox >= 132",
+    "Safari >= 16.4",
+    "iOS >= 16.4"
+  ]
+}

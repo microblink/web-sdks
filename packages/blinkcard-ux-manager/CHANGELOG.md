@@ -1,5 +1,15 @@
 # @microblink/blinkcard-ux-manager
 
+## 3001.0.1
+
+### Patch Changes
+
+- Update declaration bundles
+- Turning on the flashlight now shows a glare warning message
+- Updated dependencies
+  - @microblink/camera-manager@8.1.0
+  - @microblink/blinkcard-core@3001.0.1
+
 ## 3001.0.0
 
 ### Major Changes
