@@ -1,6 +1,6 @@
-# BlinkID, BlinkCard, and BlinkID Verify Example Applications
+# Web SDK Example Applications
 
-This directory contains example applications demonstrating the capabilities of the BlinkID, BlinkCard, and BlinkID Verify SDKs.
+This directory contains example applications for Microblink Web SDKs.
 
 ## Available Examples
 
@@ -33,6 +33,12 @@ This directory contains example applications demonstrating the capabilities of t
 - [BlinkID Verify Advanced Setup](./blinkid-verify-advanced-setup/): Demonstrates advanced setup and customization of the BlinkID Verify SDK.
 - [BlinkID Verify Custom UI](./blinkid-verify-custom-ui/): Shows how to build an application-owned interface with the framework-independent Core entrypoints.
 
+### Biometrics
+
+- [Biometrics Simple](./biometrics-simple/): Guided face capture with `createBiometricsUi`.
+- [Biometrics Advanced Setup](./biometrics-advanced-setup/): Composes guided capture from the headless SDK, UX Manager, and Camera Manager packages.
+- [Biometrics Custom UI](./biometrics-custom-ui/): Headless face capture with `createBiometrics`, Camera Manager, and an application-owned interface.
+
 ## Getting Started
 
 To run any of the example applications, follow these steps:
@@ -55,7 +61,7 @@ pnpm build:packages
 
 ### 3. Set up the License Key
 
-BlinkID, BlinkCard, and BlinkID Verify example applications require a license key to run. You can obtain a free trial license key by registering on the [Microblink Developer Hub](https://developer.microblink.com/license/new).
+BlinkID, BlinkCard, BlinkID Verify, and Biometrics example applications require a license key to run. You can obtain a free trial license key by registering on the [Microblink Developer Hub](https://developer.microblink.com/license/new).
 
 After obtaining the license key, create a `.env.local` file in the root of the specific example application you want to run (e.g., `apps/examples/blinkid-simple/.env.local`) and add the following line:
 

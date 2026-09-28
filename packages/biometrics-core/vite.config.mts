@@ -20,7 +20,10 @@ export default defineConfig((config) => ({
     removeModuleRegions(),
     copyPackageResources({
       destination: resourcesDir,
-      packages: [{ packageName: "@microblink/biometrics-worker" }],
+      packages: [
+        { packageName: "@microblink/biometrics-wasm", resourceSet: "wasmVariants" },
+        { packageName: "@microblink/biometrics-worker" },
+      ],
     }),
   ],
 }));
