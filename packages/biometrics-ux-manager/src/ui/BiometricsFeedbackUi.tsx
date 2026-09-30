@@ -39,10 +39,6 @@ export type BiometricsFeedbackUiManager<DialogKind extends string = never> = Pic
 >;
 
 const reducedMotionQuery = "(prefers-reduced-motion: reduce)";
-const CAPTURE_PROGRESS_START = 0.1;
-const VISUAL_CAPTURE_PROGRESS_DURATION_MS = 1_000;
-const CAPTURE_SUCCESS_DURATION_MS = 2_000;
-const PROGRESS_UPDATE_INTERVAL_MS = 50;
 
 declare global {
   interface Window {
@@ -65,12 +61,6 @@ function useReducedMotion(): () => boolean {
   return reducedMotion;
 }
 
-function getVisualCaptureProgress(elapsedMs: number, visualDurationMs: number, startProgress: number): number {
-  const normalizedProgress = Math.min(1, Math.max(0, elapsedMs / Math.max(1, visualDurationMs)));
-
-  return Math.max(startProgress, normalizedProgress);
-}
-
 function statusText(sessionState: CaptureSessionState, feedbackText: string, processingText: string): string {
   switch (sessionState) {
     case "PROCESSING":
@@ -87,8 +77,6 @@ export function BiometricsFeedbackUi<DialogKind extends string = never>(props: B
     untrack(() => props.manager.getState()),
   );
   const reducedMotion = useReducedMotion();
-  const [progressStartTimeMs, setProgressStartTimeMs] = createSignal<number | null>(null);
-  const [progressNowMs, setProgressNowMs] = createSignal(0);
   const [isProgressComplete, setIsProgressComplete] = createSignal(false);
   const [captureCompletionNotified, setCaptureCompletionNotified] = createSignal(false);
 
@@ -150,32 +138,8 @@ export function BiometricsFeedbackUi<DialogKind extends string = never>(props: B
     }
   };
 
-  const captureProgress = createMemo(() => {
-    if (state().sessionState === "PROCESSING") {
-      return CAPTURE_PROGRESS_START;
-    }
-
-    if (state().sessionState !== "COMPLETE") {
-      return 0;
-    }
-
-    if (reducedMotion()) {
-      return 1;
-    }
-
-    const progressStart = progressStartTimeMs();
-
-    if (progressStart === null) {
-      return CAPTURE_PROGRESS_START;
-    }
-
-    const elapsedMs = progressNowMs() - progressStart;
-
-    return getVisualCaptureProgress(elapsedMs, VISUAL_CAPTURE_PROGRESS_DURATION_MS, CAPTURE_PROGRESS_START);
-  });
-
   const captureAnimationComplete = () => {
-    if (captureCompletionNotified()) {
+    if (!isCaptureComplete() || captureCompletionNotified()) {
       return;
     }
 
@@ -185,50 +149,9 @@ export function BiometricsFeedbackUi<DialogKind extends string = never>(props: B
 
   createEffect(() => {
     if (!isCaptureComplete()) {
-      setProgressStartTimeMs(null);
-      setProgressNowMs(0);
       setIsProgressComplete(false);
       setCaptureCompletionNotified(false);
-
-      return;
     }
-
-    const now = performance.now();
-    const progressStart = progressStartTimeMs() ?? now;
-
-    if (progressStartTimeMs() === null) {
-      setProgressStartTimeMs(progressStart);
-      setProgressNowMs(now);
-    }
-
-    const progressTimerId = window.setTimeout(
-      () => {
-        setProgressNowMs(performance.now());
-        setIsProgressComplete(true);
-      },
-      Math.max(0, progressStart + VISUAL_CAPTURE_PROGRESS_DURATION_MS - now),
-    );
-    const completionTimerId = window.setTimeout(
-      captureAnimationComplete,
-      Math.max(0, progressStart + CAPTURE_SUCCESS_DURATION_MS - now),
-    );
-
-    onCleanup(() => {
-      window.clearTimeout(progressTimerId);
-      window.clearTimeout(completionTimerId);
-    });
-  });
-
-  createEffect(() => {
-    if (!isCaptureComplete() || isProgressComplete()) {
-      return;
-    }
-
-    const intervalId = window.setInterval(() => {
-      setProgressNowMs(performance.now());
-    }, PROGRESS_UPDATE_INTERVAL_MS);
-
-    onCleanup(() => window.clearInterval(intervalId));
   });
 
   const showProgress = createMemo(
@@ -275,13 +198,16 @@ export function BiometricsFeedbackUi<DialogKind extends string = never>(props: B
         landmarks={state().landmarks}
         boundingBox={state().boundingBox}
         faceBounds={state().faceBounds}
+        faceCenter={state().faceCenter}
         feedback={state().feedback}
         frameWidth={state().frameSize.width}
         frameHeight={state().frameSize.height}
         mirrorX={state().mirrorX}
         landmarksVisible={!!state().landmarks}
         showProgress={showProgress()}
-        captureProgress={captureProgress()}
+        captureComplete={isCaptureComplete()}
+        onProgressComplete={() => setIsProgressComplete(true)}
+        onSuccessComplete={captureAnimationComplete}
         showSuccess={isCaptureComplete() && isProgressComplete()}
       />
 

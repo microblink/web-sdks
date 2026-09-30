@@ -63,7 +63,7 @@ describe("createBiometricsUi", () => {
     await createBiometricsUi({
       licenseKey: "license",
       resourcesLocation: "/assets/",
-      capture: { imageOrigin: "canvas2d" },
+      capture: { logLevel: "debug" },
       captureTimeoutMs: 42_000,
       captureFace: { debugMode: true },
     });
@@ -74,7 +74,7 @@ describe("createBiometricsUi", () => {
         resourcesLocation: "/assets/",
         wasmVariant: undefined,
         capture: {
-          imageOrigin: "canvas2d",
+          logLevel: "debug",
         },
         analytics: undefined,
       },

@@ -74,16 +74,19 @@ catalog:
 
 overrides:
   "@babel/runtime@7": 7.29.7
+  "ajv@6": 6.15.0
   "brace-expansion@1": 1.1.18
   fast-uri: 3.1.5
   flatted: 3.4.4
   "immutable@5": 5.1.9
-  "js-yaml@3": 3.15.1
-  "js-yaml@4": 4.3.1
+  "js-yaml@3": 3.15.2
+  "js-yaml@4": 4.3.2
   "minimatch@3": 3.1.4
-  "nanoid@3": 3.3.17
+  "nanoid@3": 3.3.19
   "picomatch@2": 2.3.2
-  "vite-plugin-solid-svg>svgo": 3.3.4
+  "vite-plugin-mkcert>undici": 8.11.2
+  "vite-plugin-solid-svg>svgo": 3.3.5
+  "write-package@7.1.0>deepmerge-ts": 8.0.2
 minimumReleaseAgeExclude:
   # Renovate security update: browserslist@4.28.7
   - browserslist@4.28.7

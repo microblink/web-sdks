@@ -24,7 +24,7 @@
 
 ### capture?
 
-> `optional` **capture?**: [`BiometricsCaptureSettings`](BiometricsCaptureSettings.md)
+> `optional` **capture?**: `Omit`\<[`BiometricsCaptureSettings`](BiometricsCaptureSettings.md), `"imageOrigin"`\>
 
 ***
 

@@ -527,7 +527,7 @@ describe("WasmFaceAnalyzer", () => {
         livenessFrames: [
           {
             data: livenessBytes,
-            mimeType: "image/qoi",
+            mimeType: "image/jpeg",
             frameNumber: 11,
             captureTimeMs: 1016,
           },
@@ -543,6 +543,7 @@ describe("WasmFaceAnalyzer", () => {
     expect(result.engineFrames?.captureFrame?.data).toBe(captureBytes);
     expect(result.engineFrames?.captureFrame?.signature?.signature).toBe(signatureBytes);
     expect(result.engineFrames?.livenessFrames[0]?.data).toBe(livenessBytes);
+    expect(result.engineFrames?.livenessFrames[0]?.mimeType).toBe("image/jpeg");
   });
 
   it("maps image-data errors to TOO_BLURRY feedback", async () => {

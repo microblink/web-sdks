@@ -44,6 +44,12 @@
 
 ***
 
+### faceCenter?
+
+> `optional` **faceCenter?**: `FaceLandmarks`\[`"Mouth"`\]
+
+***
+
 ### feedback
 
 > **feedback**: `UnifiedFeedback`

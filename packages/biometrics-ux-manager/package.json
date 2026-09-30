@@ -1,6 +1,6 @@
 {
   "name": "@microblink/biometrics-ux-manager",
-  "version": "1000.0.0",
+  "version": "1000.0.1",
   "description": "Biometrics guided capture UX manager for Web",
   "keywords": [
     "biometrics",

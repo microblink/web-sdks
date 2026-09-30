@@ -8,22 +8,30 @@ import en from "./locales/en";
 
 const { mount } = setupFeedbackUiHarness();
 
-function useAnimationClock() {
-  vi.useFakeTimers();
-  let currentTime = 0;
+function pauseAnimations(element: Element) {
+  const animations = element.getAnimations({ subtree: true });
+  expect(animations.length).toBeGreaterThan(0);
 
-  vi.spyOn(performance, "now").mockImplementation(() => currentTime);
+  for (const animation of animations) {
+    animation.pause();
+    animation.currentTime = 0;
+  }
 
-  return (durationMs: number) => {
-    let remainingMs = durationMs;
+  return animations;
+}
 
-    while (remainingMs > 0) {
-      const tickMs = Math.min(remainingMs, 50);
-      currentTime += tickMs;
-      vi.advanceTimersByTime(tickMs);
-      remainingMs -= tickMs;
-    }
-  };
+function finishAnimations(element: Element) {
+  for (const animation of element.getAnimations({ subtree: true })) {
+    animation.finish();
+  }
+
+  element.dispatchEvent(new AnimationEvent("animationend", { bubbles: true }));
+}
+
+const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+
+function transform(element: Element) {
+  return new DOMMatrix(getComputedStyle(element).transform);
 }
 
 afterEach(() => {
@@ -254,88 +262,139 @@ describe("BiometricsFeedbackUi", () => {
     expect(view.query('[role="status"]')?.textContent).toBe(en.processing);
   });
 
-  it("shows one second of progress and one second of success", () => {
-    const advance = useAnimationClock();
-    const view = mount(
-      createFeedbackUiState({
-        key: "complete",
-        sessionState: "COMPLETE",
-        feedback: "OK",
-      }),
-    );
+  it.each([true, false])("plays the whole scan and success animation (desktop: %s)", async (isDesktop) => {
+    const view = mount(createFeedbackUiState({ key: "capturing", sessionState: "PROCESSING" }), { isDesktop });
+    const trail = view.query<HTMLElement>(".mb-bio-scan-trail")!;
+    const line = view.query<HTMLElement>(".mb-bio-scan-line")!;
 
-    expect(view.query(".mb-bio-scan")).toBeTruthy();
-    expect(view.query<HTMLElement>(".mb-bio-scan-trail")?.style.height).toBe("10%");
+    expect(transform(trail).d).toBe(0);
+    expect(transform(line).f).toBe(0);
+
+    view.setState({ key: "complete", sessionState: "COMPLETE", feedback: "OK" });
+    const scan = view.query<HTMLElement>(".mb-bio-scan")!;
+    const scanAnimations = pauseAnimations(scan);
+
+    expect(transform(trail).d).toBe(0);
     expect(view.query(".mb-bio-success-animation")).toBeNull();
-    expect(view.captureAnimationComplete).not.toHaveBeenCalled();
     expect(view.query(".mb-bio-status")?.textContent).toBe(en.feedback_messages.ok);
-    expect(view.query(".sr-only")?.textContent).toBe(en.feedback_messages.capture_complete_aria);
 
-    advance(999);
-    expect(view.query(".mb-bio-scan")).toBeTruthy();
-    expect(view.query(".mb-bio-success-animation")).toBeNull();
+    for (const time of [50, 500, 950]) {
+      for (const animation of scanAnimations) animation.currentTime = time;
+      expect(transform(trail).d).toBeCloseTo(time / 1_000);
+      expect(transform(line).f / line.getBoundingClientRect().height).toBeCloseTo(time / 1_000);
+    }
+
+    finishAnimations(trail);
+    scanAnimations.forEach((animation) => animation.finish());
+    expect(trail.isConnected).toBe(true);
+    expect(transform(trail).d).toBe(1);
+    expect(transform(line).f / line.getBoundingClientRect().height).toBeCloseTo(1);
     expect(view.captureAnimationComplete).not.toHaveBeenCalled();
 
-    advance(1);
-    expect(view.query(".mb-bio-scan")).toBeNull();
-    expect(view.query(".mb-bio-success-animation")).toBeTruthy();
-    expect(view.query(".mb-bio-success-mark")).toBeTruthy();
-    expect(view.query(".mb-bio-status")?.textContent).toBe(en.feedback_messages.ok);
-    expect(view.captureAnimationComplete).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(view.query(".mb-bio-success-animation")).toBeTruthy());
+    const success = view.query<HTMLElement>(".mb-bio-success-animation")!;
+    const mark = view.query<SVGElement>(".mb-bio-success-mark")!;
+    const successAnimations = pauseAnimations(success);
 
-    advance(999);
-    expect(view.query(".mb-bio-success-animation")).toBeTruthy();
-    expect(view.captureAnimationComplete).not.toHaveBeenCalled();
-
-    advance(1);
-    expect(view.captureAnimationComplete).toHaveBeenCalledOnce();
-
-    advance(1_000);
-    expect(view.captureAnimationComplete).toHaveBeenCalledOnce();
-  });
-
-  it("cancels the success presentation when an alert appears", () => {
-    const advance = useAnimationClock();
-    const view = mount(
-      createFeedbackUiState({
-        key: "complete",
-        sessionState: "COMPLETE",
-        feedback: "OK",
-      }),
-    );
-
-    advance(500);
-    view.setState({
-      key: "error",
-      sessionState: "COMPLETE",
-      errorDialogKind: "scanningNotAvailable",
+    expect(getComputedStyle(success).opacity).toBe("0");
+    expect(transform(mark).a).toBeCloseTo(0.82);
+    successAnimations.forEach((animation) => {
+      animation.currentTime = 150;
     });
+    expect(Number(getComputedStyle(success).opacity)).toBeGreaterThan(0);
+    expect(Number(getComputedStyle(success).opacity)).toBeLessThan(1);
 
-    expect(view.query(".mb-bio-scan")).toBeNull();
-    expect(view.query(".mb-bio-success-animation")).toBeNull();
-
-    advance(2_000);
+    finishAnimations(mark);
     expect(view.captureAnimationComplete).not.toHaveBeenCalled();
+    finishAnimations(success);
+    expect(success.isConnected).toBe(true);
+    expect(getComputedStyle(success).opacity).toBe("1");
+    expect(transform(mark).a).toBe(1);
+    expect(view.captureAnimationComplete).not.toHaveBeenCalled();
+
+    await vi.waitFor(() => expect(view.captureAnimationComplete).toHaveBeenCalledOnce());
   });
 
-  it("offsets success above the scan anchor by rendered face width", () => {
-    const advance = useAnimationClock();
+  it("does not shorten success when the scan is delayed", async () => {
+    const view = mount(createFeedbackUiState({ key: "complete", sessionState: "COMPLETE" }));
+    const trail = view.query<HTMLElement>(".mb-bio-scan-trail")!;
+    pauseAnimations(view.query(".mb-bio-scan")!);
+
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "setInterval", "clearInterval"] });
+    vi.advanceTimersByTime(5_000);
+    expect(view.query(".mb-bio-success-animation")).toBeNull();
+    expect(view.captureAnimationComplete).not.toHaveBeenCalled();
+    vi.useRealTimers();
+
+    finishAnimations(trail);
+    await vi.waitFor(() => expect(view.query(".mb-bio-success-animation")).toBeTruthy());
+    const success = view.query<HTMLElement>(".mb-bio-success-animation")!;
+    pauseAnimations(success);
+    await nextFrame();
+    expect(view.captureAnimationComplete).not.toHaveBeenCalled();
+    finishAnimations(success);
+    await vi.waitFor(() => expect(view.captureAnimationComplete).toHaveBeenCalledOnce());
+  });
+
+  it.each(["error", "retry", "dispose"])("cancels pending completion on %s", async (interruption) => {
+    const view = mount(createFeedbackUiState({ key: "complete", sessionState: "COMPLETE" }));
+    finishAnimations(view.query(".mb-bio-scan-trail")!);
+    await vi.waitFor(() => expect(view.query(".mb-bio-success-animation")).toBeTruthy());
+    const success = view.query<HTMLElement>(".mb-bio-success-animation")!;
+    pauseAnimations(success);
+    finishAnimations(success);
+
+    if (interruption === "dispose") {
+      view.cleanup();
+    } else {
+      view.setState({
+        key: interruption === "error" ? "error" : "capturing",
+        sessionState: interruption === "error" ? "COMPLETE" : "ANALYZING",
+        errorDialogKind: "scanningNotAvailable",
+      });
+    }
+
+    await nextFrame();
+    await nextFrame();
+    expect(view.query(".mb-bio-success-animation")).toBeNull();
+    expect(view.captureAnimationComplete).not.toHaveBeenCalled();
+
+    if (interruption === "retry") {
+      view.setState({ key: "complete", sessionState: "COMPLETE" });
+      const trail = view.query<HTMLElement>(".mb-bio-scan-trail")!;
+      pauseAnimations(view.query(".mb-bio-scan")!);
+      expect(transform(trail).d).toBe(0);
+      finishAnimations(trail);
+      await vi.waitFor(() => expect(view.query(".mb-bio-success-animation")).toBeTruthy());
+      finishAnimations(view.query(".mb-bio-success-animation")!);
+      await vi.waitFor(() => expect(view.captureAnimationComplete).toHaveBeenCalledOnce());
+    }
+  });
+
+  it.each([false, true])("anchors scan and success on the same face point with mirroring %s", async (mirrorX) => {
     const view = mount(
       createFeedbackUiState({
         key: "complete",
         sessionState: "COMPLETE",
         feedback: "OK",
         faceBounds: { x: 0.25, y: 0.25, width: 0.5, height: 0.5 },
+        faceCenter: { x: 0.6, y: 0.4 },
+        mirrorX,
       }),
     );
 
     const scanOval = view.query<HTMLElement>(".mb-bio-scan-oval")!;
-    expect(scanOval.style.top).toBe("50%");
-
-    advance(1_000);
-
-    const successAnimation = view.query<HTMLElement>(".mb-bio-success-animation")!;
-    expect(successAnimation.style.top).toBe("calc(50% - 35.84px)");
+    const scanRect = scanOval.getBoundingClientRect();
+    const scanCenter = { x: scanRect.x + scanRect.width / 2, y: scanRect.y + scanRect.height / 2 };
+    expect(scanOval.style.left).toBe(mirrorX ? "40%" : "60%");
+    expect(scanOval.style.top).not.toBe("50%");
+    finishAnimations(view.query(".mb-bio-scan-trail")!);
+    await vi.waitFor(() => expect(view.query(".mb-bio-success-animation")).toBeTruthy());
+    const success = view.query<HTMLElement>(".mb-bio-success-animation")!;
+    pauseAnimations(success);
+    const successRect = success.getBoundingClientRect();
+    expect(successRect.x + successRect.width / 2).toBeCloseTo(scanCenter.x, 1);
+    expect(successRect.y + successRect.height / 2).toBeLessThan(scanCenter.y);
   });
 
   it("hides raw errors and routes retry and cancel", async () => {

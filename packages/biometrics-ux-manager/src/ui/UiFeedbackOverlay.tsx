@@ -14,11 +14,9 @@ import {
   type Size,
 } from "./videoContainProjection";
 
-const PERCENTAGE_MULTIPLIER = 100;
 const MIN_LANDMARK_PX = 4;
 const MAX_LANDMARK_PX = 14;
 const LANDMARK_RATIO = 0.03;
-const SUCCESS_OFFSET_FACE_WIDTH_RATIO = 0.07;
 
 const FACE_CLIP_PATH = "M0.5,0 C0.8,0 1,0.2 1,0.42 C1,0.7 0.78,1 0.5,1 " + "C0.22,1 0,0.7 0,0.42 C0,0.2 0.2,0 0.5,0 Z";
 
@@ -26,26 +24,45 @@ export type UiFeedbackOverlayProps = {
   landmarks?: FaceLandmarks;
   boundingBox?: BoundingBox;
   faceBounds?: BoundingBox;
+  faceCenter?: FaceLandmarks["Mouth"];
   feedback: UnifiedFeedback;
   frameWidth: number;
   frameHeight: number;
   mirrorX: boolean;
   landmarksVisible: boolean;
   showProgress: boolean;
-  captureProgress: number;
+  captureComplete: boolean;
+  onProgressComplete: () => void;
+  onSuccessComplete: () => void;
   showSuccess: boolean;
 };
 
-function FaceScan(props: { progress: number; anchor?: FaceAnchor }) {
-  const clipId = `mb-bio-face-clip-${createUniqueId()}`;
-  const progressPercent = createMemo(() => {
-    const clampedProgress = Math.min(Math.max(props.progress, 0), 1);
+function createAnimationCompleteHandler(onComplete: () => void) {
+  let frameId: number | undefined;
 
-    return clampedProgress * PERCENTAGE_MULTIPLIER;
+  onCleanup(() => {
+    if (frameId !== undefined) {
+      cancelAnimationFrame(frameId);
+    }
   });
 
+  return (event: AnimationEvent) => {
+    if (event.target !== event.currentTarget || frameId !== undefined) {
+      return;
+    }
+
+    frameId = requestAnimationFrame(() => {
+      frameId = requestAnimationFrame(onComplete);
+    });
+  };
+}
+
+function FaceScan(props: { captureComplete: boolean; onComplete: () => void; anchor?: FaceAnchor }) {
+  const clipId = `mb-bio-face-clip-${createUniqueId()}`;
+  const onAnimationEnd = createAnimationCompleteHandler(() => props.onComplete());
+
   return (
-    <div class="mb-bio-scan" aria-hidden="true">
+    <div class="mb-bio-scan" classList={{ "mb-bio-scan-complete": props.captureComplete }} aria-hidden="true">
       <svg class="mb-bio-scan-defs" width="0" height="0" aria-hidden="true">
         <defs>
           <clipPath id={clipId} clipPathUnits="objectBoundingBox">
@@ -61,36 +78,30 @@ function FaceScan(props: { progress: number; anchor?: FaceAnchor }) {
             ? {
                 left: props.anchor.left,
                 top: props.anchor.top,
-                transform: `translate(-50%, -50%) scale(${props.anchor.scale})`,
+                "--mb-bio-scan-scale": String(props.anchor.scale),
               }
             : {}),
         }}
       >
-        <div class="mb-bio-scan-trail" style={{ height: `${progressPercent()}%` }} />
-        <div class="mb-bio-scan-line" style={{ top: `${progressPercent()}%` }} />
+        <div class="mb-bio-scan-trail" onAnimationEnd={onAnimationEnd} />
+        <div class="mb-bio-scan-line" />
       </div>
     </div>
   );
 }
 
-function SuccessAnimation(props: { anchor?: FaceAnchor }) {
-  const [isVisible, setIsVisible] = createSignal(false);
-
-  onMount(() => {
-    setIsVisible(true);
-  });
+function SuccessAnimation(props: { onComplete: () => void; anchor?: FaceAnchor }) {
+  const onAnimationEnd = createAnimationCompleteHandler(() => props.onComplete());
 
   return (
     <div
       class="mb-bio-success-animation"
-      classList={{
-        "mb-bio-success-animation-visible": isVisible(),
-      }}
+      onAnimationEnd={onAnimationEnd}
       style={
         props.anchor
           ? {
               left: props.anchor.left,
-              top: `calc(${props.anchor.top} - ${props.anchor.renderedFaceWidth * SUCCESS_OFFSET_FACE_WIDTH_RATIO}px)`,
+              top: props.anchor.top,
               transform: `translate(-50%, -50%) scale(${props.anchor.scale})`,
             }
           : undefined
@@ -223,7 +234,14 @@ export function UiFeedbackOverlay(props: UiFeedbackOverlayProps) {
   });
 
   const faceAnchor = createMemo(() =>
-    faceAnchorPercent(props.faceBounds, containerSize(), props.frameWidth, props.frameHeight, props.mirrorX),
+    faceAnchorPercent(
+      props.faceBounds,
+      containerSize(),
+      props.frameWidth,
+      props.frameHeight,
+      props.mirrorX,
+      props.faceCenter,
+    ),
   );
 
   return (
@@ -240,11 +258,11 @@ export function UiFeedbackOverlay(props: UiFeedbackOverlayProps) {
       />
 
       <Show when={props.showProgress}>
-        <FaceScan progress={props.captureProgress} anchor={faceAnchor()} />
+        <FaceScan captureComplete={props.captureComplete} onComplete={props.onProgressComplete} anchor={faceAnchor()} />
       </Show>
 
       <Show when={props.showSuccess}>
-        <SuccessAnimation anchor={faceAnchor()} />
+        <SuccessAnimation onComplete={props.onSuccessComplete} anchor={faceAnchor()} />
       </Show>
     </div>
   );

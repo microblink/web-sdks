@@ -161,7 +161,7 @@ export type BiometricsUiOptions = {
   wasmVariant?: WasmVariant;
   /** Maximum SDK initialization duration in milliseconds. @default 60000 */
   initializationTimeoutMs?: number;
-  capture?: BiometricsCaptureSettings;
+  capture?: Omit<BiometricsCaptureSettings, "imageOrigin">;
   analytics?: BiometricsAnalyticsSettings;
   /** Capture timeout in milliseconds. Set to `null` to disable. @default 60000 */
   captureTimeoutMs?: number | null;
