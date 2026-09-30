@@ -8,7 +8,6 @@ import { createBiometricsUi } from "@microblink/biometrics";
  */
 const ui = await createBiometricsUi({
   licenseKey: import.meta.env.VITE_LICENCE_KEY,
-  targetNode: document.getElementById("root") ?? undefined,
   onResult(result) {
     console.log("Result:", result);
     void ui.destroy();

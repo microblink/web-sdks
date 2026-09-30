@@ -45,26 +45,31 @@ describe("videoContainProjection", () => {
       false,
     );
 
-    expect(anchor).toEqual({
+    expect(anchor).toMatchObject({
       left: "50%",
       top: "50%",
       scale: 1 + (0.5 / 0.45 - 1) * 0.15,
-      renderedFaceWidth: 50,
     });
   });
 
-  test("computes rendered face width inside a pillarboxed video", () => {
+  test("projects a landmark center inside a pillarboxed video", () => {
     const anchor = faceAnchorPercent(
       { x: 0.25, y: 0.25, width: 0.5, height: 0.5 },
       { width: 100, height: 100 },
       100,
       200,
       false,
+      { x: 0.6, y: 0.4 },
     );
 
-    expect(anchor).toMatchObject({
-      top: "50%",
-      renderedFaceWidth: 25,
+    expect(Number.parseFloat(anchor?.left ?? "")).toBeCloseTo(55);
+    expect(anchor?.top).toBe("40%");
+  });
+  test("positions an animation from landmarks without a detected box", () => {
+    expect(faceAnchorPercent(undefined, { width: 100, height: 100 }, 100, 100, false, { x: 0.3, y: 0.4 })).toEqual({
+      left: "30%",
+      top: "40%",
+      scale: 1,
     });
   });
 });

@@ -1,6 +1,6 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type { BoundingBox, CaptureSessionState, UnifiedFeedback } from "@microblink/biometrics-core";
+import type { BoundingBox, CaptureSessionState, FaceLandmarks, UnifiedFeedback } from "@microblink/biometrics-core";
 import { ConfigurationError, type BiometricsError } from "@microblink/biometrics-core";
 
 import { resolveBiometricsErrorDialogKind } from "./resolveBiometricsErrorDialogKind";
@@ -63,16 +63,27 @@ export function validateHelpNudgeDelay(delayMs: number | null): void {
   }
 }
 
-function latchFaceBounds(
-  previous: BoundingBox | undefined,
-  next: BoundingBox | undefined,
+function latchCaptureGeometry<T>(
+  previous: T | undefined,
+  next: T | undefined,
   sessionState: CaptureSessionState,
-): BoundingBox | undefined {
+): T | undefined {
   if (sessionState === "PROCESSING" || sessionState === "COMPLETE") {
     return previous;
   }
 
   return next ?? previous;
+}
+
+function faceCenter(landmarks?: FaceLandmarks, bounds?: BoundingBox): FaceLandmarks["Mouth"] | undefined {
+  if (landmarks) {
+    return {
+      x: (landmarks.LeftEye.x + landmarks.RightEye.x) / 2,
+      y: (landmarks.LeftEye.y + landmarks.RightEye.y) / 2,
+    };
+  }
+
+  return bounds ? { x: bounds.x + bounds.width / 2, y: bounds.y + bounds.height / 2 } : undefined;
 }
 
 function presentFailure<SessionError, DialogKind extends string>(
@@ -279,8 +290,13 @@ class GuidedPresentationController<Result, SessionError, DialogKind extends stri
       feedback: capture.feedback,
       landmarks: this.#showDebugOverlay ? data?.landmarks : undefined,
       boundingBox: this.#showDebugOverlay ? data?.normalizedFaceBounds : undefined,
-      faceBounds: latchFaceBounds(state.faceBounds, data?.normalizedFaceBounds, capture.sessionState),
-      frameSize: data?.inputImageSize ?? state.frameSize,
+      faceBounds: latchCaptureGeometry(state.faceBounds, data?.normalizedFaceBounds, capture.sessionState),
+      faceCenter: latchCaptureGeometry(
+        state.faceCenter,
+        faceCenter(data?.landmarks, data?.normalizedFaceBounds),
+        capture.sessionState,
+      ),
+      frameSize: latchCaptureGeometry(state.frameSize, data?.inputImageSize, capture.sessionState) ?? state.frameSize,
       ...(complete ? { key: "complete" as const, sessionState: "COMPLETE" as const, helpNudgeVisible: false } : {}),
     };
     const gatedState = this.#gateCapturingState(nextState);

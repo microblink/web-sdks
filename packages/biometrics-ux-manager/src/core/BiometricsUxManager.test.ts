@@ -167,6 +167,7 @@ function createCameraManagerMock() {
   const reset = vi.fn();
 
   let frameCallback: FrameCaptureCallback | undefined;
+  const mirrorListeners = new Set<(mirrorX: boolean) => void>();
 
   const addFrameCaptureCallback = vi.fn((callback: FrameCaptureCallback) => {
     frameCallback = callback;
@@ -183,6 +184,11 @@ function createCameraManagerMock() {
     reset,
     addFrameCaptureCallback,
     getState: vi.fn(() => state),
+    subscribe: vi.fn((_selector: unknown, listener: (mirrorX: boolean) => void) => {
+      mirrorListeners.add(listener);
+
+      return () => mirrorListeners.delete(listener);
+    }),
   } as unknown as CameraManager;
 
   return {
@@ -193,6 +199,12 @@ function createCameraManagerMock() {
     addFrameCaptureCallback,
     get frameCallback() {
       return frameCallback;
+    },
+    setMirrorX(mirrorX: boolean) {
+      state.mirrorX = mirrorX;
+      for (const listener of mirrorListeners) {
+        listener(mirrorX);
+      }
     },
   };
 }
@@ -447,6 +459,17 @@ describe("BiometricsUxManager", () => {
       frameSize: { width: 640, height: 480 },
       mirrorX: true,
     });
+  });
+
+  it("follows camera mirroring changes during capture", async () => {
+    const { camera, manager } = await createHarness();
+
+    void manager.beginCapture();
+    camera.setMirrorX(false);
+    expect(manager.getState().mirrorX).toBe(false);
+
+    camera.setMirrorX(true);
+    expect(manager.getState().mirrorX).toBe(true);
   });
 
   it("pauses capture for help and resumes only while the session is capturing", async () => {

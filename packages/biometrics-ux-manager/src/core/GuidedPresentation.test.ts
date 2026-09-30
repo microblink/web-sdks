@@ -122,6 +122,76 @@ describe("GuidedPresentation", () => {
     expect(getState().faceBounds).toEqual(faceBounds);
   });
 
+  it("anchors animation geometry without debug mode and freezes it during completion", () => {
+    const { presentation, getState } = createHarness();
+    const landmarks = {
+      LeftEye: { x: 0.3, y: 0.2 },
+      RightEye: { x: 0.7, y: 0.3 },
+      NoseTip: { x: 0.5, y: 0.4 },
+      Mouth: { x: 0.6, y: 0.55 },
+      LeftEar: { x: 0.2, y: 0.4 },
+      RightEar: { x: 0.8, y: 0.4 },
+    };
+    const technicalData = {
+      landmarks,
+      normalizedFaceBounds: { x: 0.2, y: 0.2, width: 0.6, height: 0.6 },
+      inputImageSize: { width: 640, height: 480 },
+    };
+    presentation.sessionChanged(capturing({ technicalData }));
+    vi.advanceTimersByTime(2_000);
+    expect(getState().faceCenter?.x).toBeCloseTo(0.5);
+    expect(getState().faceCenter?.y).toBeCloseTo(0.25);
+    expect(getState().landmarks).toBeUndefined();
+    expect(getState().boundingBox).toBeUndefined();
+
+    presentation.sessionChanged(capturing({ technicalData: { inputImageSize: technicalData.inputImageSize } }));
+    expect(getState().faceCenter?.y).toBeCloseTo(0.25);
+
+    for (const sessionState of ["PROCESSING", "COMPLETE"] as const) {
+      presentation.sessionChanged(
+        capturing({
+          sessionState,
+          technicalData: {
+            ...technicalData,
+            landmarks: { ...landmarks, LeftEye: { x: 0.1, y: 0.1 } },
+            normalizedFaceBounds: { x: 0, y: 0, width: 1, height: 1 },
+            inputImageSize: { width: 1920, height: 1080 },
+          },
+        }),
+      );
+      expect(getState().faceCenter?.y).toBeCloseTo(0.25);
+      expect(getState().faceBounds).toEqual(technicalData.normalizedFaceBounds);
+      expect(getState().frameSize).toEqual(technicalData.inputImageSize);
+    }
+  });
+
+  it("falls back to the current box when landmarks are unavailable", () => {
+    const { presentation, getState } = createHarness();
+    presentation.sessionChanged(
+      capturing({
+        technicalData: {
+          landmarks: {
+            LeftEye: { x: 0.2, y: 0.2 },
+            RightEye: { x: 0.4, y: 0.2 },
+            Mouth: { x: 0.3, y: 0.4 },
+            NoseTip: { x: 0.3, y: 0.3 },
+            LeftEar: { x: 0.1, y: 0.3 },
+            RightEar: { x: 0.5, y: 0.3 },
+          },
+        },
+      }),
+    );
+    vi.advanceTimersByTime(2_000);
+    presentation.sessionChanged(
+      capturing({
+        technicalData: {
+          normalizedFaceBounds: { x: 0.4, y: 0.5, width: 0.2, height: 0.4 },
+        },
+      }),
+    );
+    expect(getState().faceCenter).toEqual({ x: 0.5, y: 0.7 });
+  });
+
   it("protects initial guidance for two seconds and buffers completion", () => {
     const { presentation, getState } = createHarness();
 

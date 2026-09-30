@@ -103,6 +103,7 @@ export type BiometricsUxState<SessionError = BiometricsError, DialogKind extends
   landmarks?: FaceLandmarks;
   boundingBox?: BoundingBox;
   faceBounds?: BoundingBox;
+  faceCenter?: FaceLandmarks["Mouth"];
   frameSize: {
     width: number;
     height: number;

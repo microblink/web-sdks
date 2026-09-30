@@ -251,7 +251,7 @@ Every guided and headless capture returns `FaceCaptureResult`:
 - `bestImage` is the selected user-visible selfie as `ImageData` with face landmarks.
 - `supportingImages` contains other selected capture images.
 - `captureFrame` is the optional engine-produced JPEG frame for face matching.
-- `livenessFrames` contains ordered engine-produced QOI frames for liveness checks.
+- `livenessFrames` contains ordered engine-produced JPEG frames for liveness checks.
 - `livenessBatchSignature` contains the optional batch signature.
 
 Frame and batch signatures are present only when the native engine produces them. When the engine does not produce capture or liveness frames, `captureFrame` is undefined and `livenessFrames` is empty.

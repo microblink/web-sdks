@@ -128,11 +128,11 @@ export type WasmLivenessFrameQuality = {
   faceScore?: number;
 };
 
-/** Engine-selected QOI frame intended for liveness verification. */
+/** Engine-selected JPEG frame intended for liveness verification. */
 export type WasmLivenessFrame = {
-  /** Compressed QOI bytes copied from native memory. */
+  /** Compressed JPEG bytes copied from native memory. */
   data: ArrayBuffer;
-  mimeType: "image/qoi";
+  mimeType: "image/jpeg";
   /** One-based frame number assigned by the native capture session. */
   frameNumber: number;
   /** Native capture time for this frame in milliseconds. */

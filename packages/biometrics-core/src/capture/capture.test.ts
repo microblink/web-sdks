@@ -92,7 +92,7 @@ const engineFrames = {
   livenessFrames: [
     {
       data: new Uint8Array([4, 5, 6]).buffer,
-      mimeType: "image/qoi" as const,
+      mimeType: "image/jpeg" as const,
       frameNumber: 43,
       captureTimeMs: 1250,
       timestamp: "2026-06-16T10:00:00.000Z",

@@ -414,8 +414,8 @@ describe("BiometricsFeedbackUi accessibility", () => {
     const scanTrail = scan?.querySelector<HTMLElement>(".mb-bio-scan-trail") ?? null;
     const scanLine = scan?.querySelector<HTMLElement>(".mb-bio-scan-line") ?? null;
 
-    expect(scanTrail?.style.height).toBe("100%");
-    expect(window.getComputedStyle(scanTrail!).transitionProperty).toBe("none");
+    expect(new DOMMatrix(window.getComputedStyle(scanTrail!).transform).d).toBe(1);
+    expect(window.getComputedStyle(scanTrail!).transitionDuration).toBe("0s");
     expect(window.getComputedStyle(scanLine!).display).toBe("none");
     expect(view.query(".mb-bio-success-animation")).toBeNull();
     expect(view.query(".mb-bio-status")?.textContent).toBe(en.feedback_messages.ok);
@@ -438,7 +438,6 @@ describe("BiometricsFeedbackUi accessibility", () => {
     expect(window.getComputedStyle(successMark!).animationName).toBe("none");
 
     expect(successAnimationStyle.opacity).toBe("1");
-    expect(successAnimationStyle.transitionProperty).toBe("none");
     expect(successAnimationStyle.transitionDuration).toBe("0s");
     expect(view.captureAnimationComplete).not.toHaveBeenCalled();
 

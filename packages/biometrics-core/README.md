@@ -48,7 +48,7 @@ device discovery and permission handling are unreliable there; see
 - `supportingImages`: additional user-visible images when available;
 - `captureFrame`: engine-produced JPEG bytes for selfie template extraction,
   when available;
-- `livenessFrames`: ordered engine-produced liveness frames, usually QOI bytes;
+- `livenessFrames`: ordered engine-produced liveness frames as JPEG bytes;
 - `livenessBatchSignature`: optional engine batch signature;
 - `traceId` and `sessionNumber`: session identifiers.
 
