@@ -153,8 +153,8 @@ describe("BiometricsAnalytics", () => {
       },
       livenessFrames: [
         {
-          data: new TextEncoder().encode("private-image/qoi").buffer,
-          mimeType: "image/qoi",
+          data: new TextEncoder().encode("private-image/jpeg").buffer,
+          mimeType: "image/jpeg",
           frameNumber: 8,
           captureTimeMs: 140,
           timestamp: "2026-06-16T10:00:00.000Z",

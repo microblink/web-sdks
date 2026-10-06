@@ -92,7 +92,7 @@ export class BiometricsUxManager<
       "showOnboarding" | "helpNudgeDelayMs" | "showDebugOverlay"
     >;
   readonly #listeners = new Set<StateListener<SessionError, DialogKind>>();
-  readonly #removeSessionSubscriptions: (() => void)[] = [];
+  readonly #removeSubscriptions: (() => void)[] = [];
   readonly #analytics?: Analytics;
 
   #state: BiometricsUxState<SessionError, DialogKind>;
@@ -142,11 +142,15 @@ export class BiometricsUxManager<
       );
     }
 
-    this.#removeSessionSubscriptions.push(
+    this.#removeSubscriptions.push(
       session.subscribe((state) => this.#handleSessionState(state)),
       session.onEvent((event) => this.#emitEvent(event)),
       session.onError((error) => this.#invoke(this.#options.onError, error)),
       session.onDiagnostic((event) => this.#invoke(this.#options.onDiagnostic, event)),
+      cameraManager.subscribe(
+        (state) => state.mirrorX,
+        (mirrorX) => this.#setState({ mirrorX }),
+      ),
     );
 
     if (this.#options.showOnboarding) {
@@ -314,7 +318,7 @@ export class BiometricsUxManager<
     this.#presentation = undefined;
     this.#stopFrameCapture();
 
-    for (const remove of this.#removeSessionSubscriptions.splice(0)) {
+    for (const remove of this.#removeSubscriptions.splice(0)) {
       remove();
     }
 
@@ -344,6 +348,7 @@ export class BiometricsUxManager<
       landmarks: undefined,
       boundingBox: undefined,
       faceBounds: undefined,
+      faceCenter: undefined,
       frameSize: { width: 0, height: 0 },
       helpNudgeVisible: false,
       mirrorX: cameraState.mirrorX,

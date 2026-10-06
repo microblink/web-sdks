@@ -77,10 +77,10 @@ export type LivenessFrameQuality = {
   faceScore?: number;
 };
 
-/** Engine-produced QOI frame included in capture evidence. */
+/** Engine-produced JPEG frame included in capture evidence. */
 export type LivenessFrame = {
   data: ArrayBuffer;
-  mimeType: "image/qoi";
+  mimeType: "image/jpeg";
   frameNumber: number;
   captureTimeMs: number;
   timestamp: string;

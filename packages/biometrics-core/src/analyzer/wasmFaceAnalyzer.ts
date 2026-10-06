@@ -218,7 +218,7 @@ function mapCaptureFrame(frame: WasmSuccessPayload["captureFrame"]): CaptureFram
 function mapLivenessFrames(frames: NonNullable<WasmSuccessPayload["livenessFrames"]> | undefined): LivenessFrame[] {
   return (frames ?? []).map((frame) => ({
     data: frame.data,
-    mimeType: "image/qoi",
+    mimeType: frame.mimeType,
     frameNumber: frame.frameNumber,
     captureTimeMs: frame.captureTimeMs,
     timestamp: new Date().toISOString(),

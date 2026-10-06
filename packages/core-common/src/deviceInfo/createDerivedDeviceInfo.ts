@@ -17,9 +17,12 @@ export function createDerivedDeviceInfo(userAgent: string, userAgentData?: UADat
     model = appleDeviceModel;
   } else {
     // Fallback for Android devices on Firefox
-    const androidMatch = userAgent.match(/Android.*?; ([^)]+)\)/);
-    if (androidMatch?.[1]) {
-      model = androidMatch[1];
+    const androidIndex = userAgent.indexOf("Android");
+    const modelStart = androidIndex === -1 ? -1 : userAgent.indexOf("; ", androidIndex);
+    const modelEnd = modelStart === -1 ? -1 : userAgent.indexOf(")", modelStart);
+
+    if (modelEnd > modelStart + 2) {
+      model = userAgent.slice(modelStart + 2, modelEnd);
     }
   }
 

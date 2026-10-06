@@ -4,7 +4,7 @@ This example shows the smallest guided face capture integration with `@microblin
 
 ## Functionality
 
-1. **Creates the guided UI**: `createBiometricsUi` loads the SDK resources, opens the front camera, and mounts the capture UI into `#root`.
+1. **Creates the guided UI**: `createBiometricsUi` loads the SDK resources, opens the front camera, and mounts the capture UI in portal mode.
 2. **Guides the user**: The SDK shows onboarding, live face guidance, help, and retry dialogs.
 3. **Logs the result**: `onResult` receives a `FaceCaptureResult` and logs it to the console.
 4. **Cleans up**: The example calls `destroy()` after the result to release the camera, worker, and WebAssembly module. The close button also destroys the UI.

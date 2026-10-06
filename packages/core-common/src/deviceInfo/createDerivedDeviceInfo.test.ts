@@ -149,4 +149,13 @@ describe("createDerivedDeviceInfo", () => {
       expect(derivedInfo).toEqual(expected);
     },
   );
+
+  it.each([
+    ["Firefox Android user agent", "Mozilla/5.0 (Android 15; Pixel 9) Gecko/122.0 Firefox/122.0", "Pixel 9"],
+    ["repeated incomplete model segments", "Android; (".repeat(2_000), ""],
+  ])("extracts the Android model from %s", (_description, userAgent, expectedModel) => {
+    vi.stubGlobal("navigator", { userAgent, maxTouchPoints: 0 });
+
+    expect(createDerivedDeviceInfo(userAgent).model).toBe(expectedModel);
+  });
 });

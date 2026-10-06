@@ -192,8 +192,8 @@
   left: 50%;
   top: 50%;
   width: var(--mb-bio-face-visual-width, 500px);
-  aspect-ratio: 500 / 673.4375;
-  transform: translate(-50%, -50%);
+  aspect-ratio: 500 / 633.4375;
+  transform: translate(-50%, calc(-50% + 100% * 20 / 633.4375)) scale(var(--mb-bio-scan-scale, 1));
   overflow: hidden;
 }
 
@@ -210,12 +210,24 @@
     rgb(var(--color-white-rgb-value) / 0) 0%,
     rgb(var(--color-white-rgb-value) / 0.16) 100%
   );
-  transition: height 120ms linear;
+  height: 100%;
+  transform: scaleY(0);
+  transform-origin: top;
 }
 
 .mb-bio-scan-line {
   position: absolute;
   inset-inline: 0;
+  top: 0;
+  height: 100%;
+  transform: translateY(0);
+}
+
+.mb-bio-scan-line::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
   height: 3px;
   transform: translateY(-50%);
   background: linear-gradient(
@@ -226,11 +238,37 @@
     rgb(var(--color-white-rgb-value) / 0) 100%
   );
   box-shadow: 0 0 16px 3px rgb(var(--color-white-rgb-value) / 0.55);
-  transition: top 120ms linear;
 }
 
-.mb-bio[data-reduced-motion="true"] .mb-bio-scan-trail {
-  transition: none;
+.mb-bio-scan-complete .mb-bio-scan-trail {
+  animation: mb-bio-scan-fill 1s linear both;
+}
+
+.mb-bio-scan-complete .mb-bio-scan-line {
+  animation: mb-bio-scan-sweep 1s linear both;
+}
+
+@keyframes mb-bio-scan-fill {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes mb-bio-scan-sweep {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.mb-bio[data-reduced-motion="true"] .mb-bio-scan-complete .mb-bio-scan-trail {
+  transform: scaleY(1);
+  animation-name: mb-bio-hold;
 }
 
 .mb-bio[data-reduced-motion="true"] .mb-bio-scan-line {
@@ -279,16 +317,28 @@
   width: var(--mb-bio-face-visual-width, 500px);
   justify-content: center;
   transform: translate(-50%, -50%);
-  opacity: 0;
-  transition: opacity 300ms ease;
+  animation: mb-bio-success-appear 1s ease both;
 }
 
 .mb-bio[data-layout="mobile"] .mb-bio-success-animation {
   width: var(--mb-bio-face-visual-width, 320px);
 }
 
-.mb-bio-success-animation-visible {
-  opacity: 1;
+@keyframes mb-bio-success-appear {
+  from {
+    opacity: 0;
+  }
+  30%,
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes mb-bio-hold {
+  from,
+  to {
+    visibility: visible;
+  }
 }
 
 .mb-bio-success-mark {
@@ -316,5 +366,5 @@
 
 .mb-bio[data-reduced-motion="true"] .mb-bio-success-animation {
   opacity: 1;
-  transition: none;
+  animation-name: mb-bio-hold;
 }

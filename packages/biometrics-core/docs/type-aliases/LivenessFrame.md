@@ -8,7 +8,7 @@
 
 > **LivenessFrame** = `object`
 
-Engine-produced QOI frame included in capture evidence.
+Engine-produced JPEG frame included in capture evidence.
 
 ## Properties
 
@@ -38,7 +38,7 @@ Engine-produced QOI frame included in capture evidence.
 
 ### mimeType
 
-> **mimeType**: `"image/qoi"`
+> **mimeType**: `"image/jpeg"`
 
 ***
 

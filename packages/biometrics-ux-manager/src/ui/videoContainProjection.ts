@@ -14,7 +14,6 @@ export type FaceAnchor = {
   left: string;
   top: string;
   scale: number;
-  renderedFaceWidth: number;
 };
 
 export function renderedRect(container: Size, frameWidth: number, frameHeight: number): RenderedVideoRect {
@@ -97,8 +96,9 @@ export function faceAnchorPercent(
   frameWidth: number,
   frameHeight: number,
   mirrorX: boolean,
+  faceCenter?: { x: number; y: number },
 ): FaceAnchor | undefined {
-  if (!faceBounds || container.width <= 0 || container.height <= 0) {
+  if ((!faceBounds && !faceCenter) || container.width <= 0 || container.height <= 0) {
     return undefined;
   }
 
@@ -108,17 +108,15 @@ export function faceAnchorPercent(
     return undefined;
   }
 
-  const centerX = faceBounds.x + faceBounds.width / 2;
-  const centerY = faceBounds.y + faceBounds.height / 2;
+  const centerX = faceCenter?.x ?? (faceBounds ? faceBounds.x + faceBounds.width / 2 : 0.5);
+  const centerY = faceCenter?.y ?? (faceBounds ? faceBounds.y + faceBounds.height / 2 : 0.5);
   const position = pointToPercent(centerX, centerY, container, rect, mirrorX);
 
-  const faceHeightFraction = (faceBounds.height * rect.height) / container.height;
+  const faceHeightFraction = faceBounds
+    ? (faceBounds.height * rect.height) / container.height
+    : FACE_SCALE_REFERENCE_HEIGHT;
   const sizeRatio = faceHeightFraction / FACE_SCALE_REFERENCE_HEIGHT;
   const scale = Math.min(FACE_SCALE_MAX, Math.max(FACE_SCALE_MIN, 1 + (sizeRatio - 1) * FACE_SCALE_INFLUENCE));
 
-  return {
-    ...position,
-    scale,
-    renderedFaceWidth: faceBounds.width * rect.width,
-  };
+  return { ...position, scale };
 }
