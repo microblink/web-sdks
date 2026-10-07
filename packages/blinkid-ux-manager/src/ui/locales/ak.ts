@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Nea Edi Hɔ",
+    passport_only: {
+      blur: {
+        details: "Bɔ mmɔden sɛ worenwoso krataa no ne fon no abere a woreskane. Sɛ wo wosow emu biara a ebetumi ama mfonini no ayɛ kusuu na ama no ayɛ den sɛ wobɛkenkan krataa no.",
+        details_desktop: "Bɔ mmɔden sɛ worenkeka wo ho bere a wo skane no. Sɛ wokeka wo ho a ebetumi ama mfonini no ani ayɛ kusuu na ɛbɛyɛ den sɛ wobetumi akan krataa no.",
+        title: "Gyina faako abere a woreskanee no",
+        title_desktop: "Gyina faako abere a woreskanee no",
+      },
+      camera_lens: {
+        details_desktop: "Hwɛ sɛ nkekae anaa mfuturu nni wo lɛns no so. Lɛns a ani ayɛ fi ma mfonini no anim nna hɔ, ɛyɛ den sɛ wɔbɛkenkan nhoma no so nkyerɛw na ɛmma wontumi nskane nsɛm a ɛwɔ so yiye.",
+        title_desktop: "Popa wo kamɛra lɛns",
+      },
+      lighting: {
+        details: "Kwati kanea a ano yɛ den a ɛhwɛ so tẽẽ efisɛ ɛtɔ krataa bi so na ebetumi ama krataa no afã horow bi ayɛ den sɛ wobɛkenkan. Sɛ wuntumi nkenkan nsɛm a ɛwɔ krataa no so a, saa ara na wontumi nhu no yiye wɔ kamara so nso.",
+        details_desktop: "Kwati kanea a ano yɛ den a ɛhwɛ so tẽẽ efisɛ ɛtɔ krataa bi so na ebetumi ama krataa no afã horow bi ayɛ den sɛ wobɛkenkan. Sɛ wuntumi nkenkan nsɛm a ɛwɔ krataa no so a, saa ara na wontumi nhu no yiye wɔ kamara so nso.",
+        title: "Hwɛ hann a ano yɛ den kwan",
+        title_desktop: "Hwɛ hann a ano yɛ den kwan",
+      },
+      open_passport: {
+        details: "Bue wo akwantuo krataa no kɔ krataafa a wo mfonini ne wo ho nsɛm wɔ so no so. Krataafa yi kyerɛ wo din, da a wɔwoo wo, wo akwantuo krataa nɔma, ne nsɛm afoforo a wɔde hu wo.",
+        details_desktop: "Bue wo passport no wɔ krataafa a wo mfonini ne wo ho nsɛm wɔ so. Saa krataafa yi kyerɛ wo din, da a wɔwoo wo, wo passport nɔma, ne nsɛm afoforo a ɛda wo adi.",
+        title: "Bue akwantuo krataa no kɔ nsɛm krataafa no so",
+        title_desktop: "Bue akwantuo krataa no kɔ nsɛm krataafa no so",
+      },
+      visibility: {
+        details: "Hwɛ hu sɛ womfa wo nsateaa nkata krataa no afã horow so, a ase nkyerɛwde no ka ho. Afei nso, hwɛ yiye wɔ hologram reflections a ɛfa krataa no so ho.",
+        details_desktop: "Hwɛ hu sɛ womfa wo nsateaa nkata krataa no afã horow so, a ase nkyerɛwde no ka ho. Afei nso, hwɛ yiye wɔ hologram reflections a ɛfa krataa no so ho.",
+        title: "Hwɛ sɛ wobehu baabiara",
+        title_desktop: "Hwɛ sɛ wobehu baabiara",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Skaane ho akwankyerɛ",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Hwɛ hu sɛ wobɛma wo kamɛra lɛns no ani atew na han atɔ krataa no so yiye. Ɛsɛ sɛ wohu krataa no afa nyinaa wɔ kamɛra no skriin so.",
       title: "Hwɛ sɛ wobehu afa nyinaa",
       title_desktop: "Yɛ krado sɛ wobɛskaane",
+    },
+    passport_only: {
+      details: "Siesie wo akwantu krataa no na bue no wɔ krataafa a wo mfonini ne wo ho nsɛm wɔ so. Hwɛ sɛ hann hyerɛn so yiye. Ɛsɛ sɛ wotumi hu nsɛm a ɛwɔ so nyinaa yiye.",
+      details_desktop: "Siesie wo akwantu krataa no, na bue no wɔ krataafa a wo mfonini ne wo ho nsɛm wɔ so no. Ma wo kamera ahwehwɛ no ho ntew, na hwɛ sɛ hann pa bɔ krataa no. Ɛsɛ sɛ wohu mfuw nyinaa yiye.",
+      title: "Bue wo akwantu krataa no",
+      title_desktop: "Bue wo akwantu krataa no",
     },
   },
   sdk_aria: "Skriin a wɔde skaane nhoma",

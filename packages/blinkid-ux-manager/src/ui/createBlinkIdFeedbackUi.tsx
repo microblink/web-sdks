@@ -59,7 +59,7 @@ const defaultFeedbackUiOptions: DefaultFeedbackUiOptions = {
   localizationStrings: {},
   showOnboardingGuide: true,
   showHelpButton: true,
-  helpTooltipShowDelay: 5000,
+  helpTooltipShowDelay: 10_000,
   helpTooltipHideDelay: 5000,
   showDocumentFilteredModal: true,
   showTimeoutModal: true,

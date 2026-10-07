@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Gaba",
+    passport_only: {
+      blur: {
+        details: "A daina motsa waya da takarda yayin ɗaukar hoto. Motsa ɗaya daga cikinsu zai sa hoton ya yi dishi-dishi sannan zai sa ba za a iya karanta bayanan da suke kan takardar ba.",
+        details_desktop: "A daina motsawa yayin ɗaukar hoto. Motsawa zai sa hoton ya yi dishi-dishi sannan zai sa ba za a iya karanta bayanan da suke kan takardar ba.",
+        title: "Kada a motsa yayin ɗaukar hoto",
+        title_desktop: "Kada a motsa yayin ɗaukar hoto",
+      },
+      camera_lens: {
+        details_desktop: "A duba domin tabbatar da gilashin kamerarku bai yi dishi-dishi ba, kuma ba ya ɗauke da ƙura. Gilashin kamera mai datti yakan sa hoton ya yi bishi-bishi, wanda hakan zai sa ba za a iya karanta bayanan da suke kan takardar ba sannan zai hana a ɗauki hoton bayanna yadda ya kamata.",
+        title_desktop: "Ku tsaftace gilashin kamerarku",
+      },
+      lighting: {
+        details: "Kada a yi amfani da haske mai ƙarfi domin zai yi dau a kan takardar sannan zai sa ba za a iya karanta wasu ɓangarorin takardar ba. Idan ba za ku iya karanta bayanan da suke kan takardar ba, to kemara ma ba za ta iya ganin su ba.",
+        details_desktop: "Kada a yi amfani da haske mai ƙarfi domin zai yi dau a kan takardar sannan zai sa ba za a iya karanta wasu ɓangarorin takardar ba. Idan ba za ku iya karanta bayanan da suke kan takardar ba, to kemara ma ba za ta iya ganin su ba.",
+        title: "A duba haske mai ƙarfi",
+        title_desktop: "A duba haske mai ƙarfi",
+      },
+      open_passport: {
+        details: "Buɗe fasfonku zuwa shafin da ke ɗauke da hotonku da bayananku na sirri. Wannan shafin yana nuna sunanku, ranar haihuwarku, lambar fasfo, da sauran bayanan tantancewa.",
+        details_desktop: "Buɗe fasfonka zuwa shafin da ke ɗauke da hotonka da bayananka na sirri. Wannan shafin yana nuna sunanka, ranar haihuwarka, lambar fasfo, da sauran bayanan tantancewa.",
+        title: "Buɗe fasfo don nuna shafin bayanai",
+        title_desktop: "Buɗe fasfo don nuna shafin bayanai",
+      },
+      visibility: {
+        details: "A tabbatar da cewa ba a rufe wasu ɓangarorin takardar ba da yatsa, ciki har da layukan da suke ƙasan takardar. Bayan haka, a duba ko akwai layukan haske da suka hau kan ɓangarorin takardar.",
+        details_desktop: "A tabbatar da cewa ba a rufe wasu ɓangarorin takardar ba da yatsa, ciki har da layukan da suke ƙasan takardar. Bayan haka, a duba ko akwai layukan haske da suka hau kan ɓangarorin takardar.",
+        title: "A daidaita yadda za a riƙa ganin dukkannin ɓangarori",
+        title_desktop: "A daidaita yadda za a riƙa ganin dukkannin ɓangarori",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Ƙa'idojin Ɗaukar Hoto",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "A tabbatar da cewa gilashin kamera ɗin ba shi da ƙura sannan an haska ɗaukacin takardar. Ya kasance ana ganin dukkannin ɓangarorin takardar a cikin sikirin ɗin kamera.",
       title: "A daidaita yadda za a riƙa ganin dukkannin bayanan",
       title_desktop: "Shirya domin ɗaukar hoto",
+    },
+    passport_only: {
+      details: "Buɗe fasfo ɗinka zuwa shafin da ke ɗauke da hotonka da bayananka na sirri. Tabbatar fasfon yana da isasshen haske. Dukkan filayen dole ne su bayyana gaba ɗaya.",
+      details_desktop: "Shirya fasfo ɗinka ta hanyar buɗe shi a shafin da ke ɗauke da hotonka da bayananka na sirri. Tsaftace ruwan tabarau na kyamararka kuma tabbatar da cewa takardar tana da isasshen haske. Dole ne duk filayen su kasance a bayyane gaba ɗaya.",
+      title: "Buɗe fasfo ɗinka",
+      title_desktop: "Buɗe fasfo ɗinka",
     },
   },
   sdk_aria: "Sikirin na ɗaukar hoton takarda",

@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Următorul",
+    passport_only: {
+      blur: {
+        details: "Încercați să mențineți telefonul și documentul imobile în timpul scanării. Mișcările pot compromite claritatea imaginii și pot face imposibilă citirea datelor din document.",
+        details_desktop: "Încercați să nu vă mișcați în timpul scanării. Mișcarea poate face ca imaginea să fie neclară și ca datele din document să devină ilizibile.",
+        title: "Nu vă mișcați în timpul scanării",
+        title_desktop: "Nu vă mișcați în timpul scanării",
+      },
+      camera_lens: {
+        details_desktop: "Verificați ca lentila camerei să nu prezinte pete sau praf. Folosirea unei lentile murdare duce la o imagine finală neclară, făcând detaliile documentului ilizibile și împiedicând scanarea cu succes a datelor.",
+        title_desktop: "Curățați lentila camerei",
+      },
+      lighting: {
+        details: "Evitați lumina puternică directă, deoarece se va reflecta din document și poate face imposibilă citirea anumitor porțiuni din acesta. Dacă nu puteți citi datele din document, ele nu vor fi vizibile nici pe cameră.",
+        details_desktop: "Evitați lumina puternică directă, deoarece se va reflecta din document și poate face imposibilă citirea anumitor porțiuni din acesta. Dacă nu puteți citi datele din document, ele nu vor fi vizibile nici pe cameră.",
+        title: "Feriți-vă de lumina puternică",
+        title_desktop: "Feriți-vă de lumina puternică",
+      },
+      open_passport: {
+        details: "Deschideți pașaportul la pagina cu fotografia și datele dumneavoastră personale. Această pagină conține numele, data nașterii, numărul pașaportului și alte informații de identificare.",
+        details_desktop: "Deschideți pașaportul la pagina cu fotografia și datele dumneavoastră personale. Această pagină conține numele, data nașterii, numărul pașaportului și alte informații de identificare.",
+        title: "Deschideți pașaportul la pagina cu date personale",
+        title_desktop: "Deschideți pașaportul la pagina cu date personale",
+      },
+      visibility: {
+        details: "Asigurați-vă că nu ați acoperit cu degetul porțiuni din document, nici rândurile de jos. Evitați și reflexiile holografice care se suprapun pe secțiunile din document.",
+        details_desktop: "Asigurați-vă că nu ați acoperit cu degetul porțiuni din document, nici rândurile de jos. Evitați și reflexiile holografice care se suprapun pe secțiunile din document.",
+        title: "Asigurați vizibilitatea tuturor secțiunilor",
+        title_desktop: "Asigurați vizibilitatea tuturor secțiunilor",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Instrucțiuni de scanare",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Asigurați-vă că lentila camerei este curată, iar documentul este bine iluminat. Toate câmpurile din document trebuie să fie vizibile pe ecranul camerei.",
       title: "Asigurați vizibilitatea tuturor detaliilor",
       title_desktop: "Pregătiți-vă să scanați",
+    },
+    passport_only: {
+      details: "Deschideți pașaportul la pagina care conține fotografia și datele dumneavoastră personale. Asigurați-vă că pașaportul este bine iluminat. Toate câmpurile trebuie să fie complet vizibile.",
+      details_desktop: "Deschideți pașaportul la pagina care conține fotografia și datele dumneavoastră personale. Mențineți lentila camerei curată și asigurați-vă că documentul este bine iluminat. Toate câmpurile trebuie să fie complet vizibile.",
+      title: "Deschideți pașaportul",
+      title_desktop: "Deschideți pașaportul",
     },
   },
   sdk_aria: "Ecran scanare documente",

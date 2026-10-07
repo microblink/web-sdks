@@ -12,6 +12,14 @@ Options for the BlinkIdUxManager.
 
 ## Properties
 
+### enablePassportOnlyExtractionMode?
+
+> `optional` **enablePassportOnlyExtractionMode?**: `boolean`
+
+Enables passport only extraction mode with a custom ui suited for scanning passports.
+
+***
+
 ### initialUiStateKey?
 
 > `optional` **initialUiStateKey?**: [`BlinkIdUiStateKey`](BlinkIdUiStateKey.md)

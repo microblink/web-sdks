@@ -12,8 +12,14 @@ import type { BlinkIdSessionSettings, ScanningSettings } from "@microblink/blink
  * - `document-with-barcode` - Single-side document capture flow that requires the barcode side to be scanned.
  * - `document-with-mrz` - Single-side document capture flow that requires only the MRZ side to be scanned.
  * - `barcode-only` - Barcode extraction flow with no document capture, MRZ, or VIZ extraction.
+ * - `passport-only` - Passport extraction flow.
  */
-export type BlinkIdExtractionMode = "full-document" | "document-with-barcode" | "document-with-mrz" | "barcode-only";
+export type BlinkIdExtractionMode =
+  | "full-document"
+  | "document-with-barcode"
+  | "document-with-mrz"
+  | "barcode-only"
+  | "passport-only";
 
 /**
  * Minimal subset of session settings required to derive a UX extraction mode.
@@ -25,6 +31,7 @@ export type BlinkIdExtractionModeInput = Partial<Pick<BlinkIdSessionSettings, "s
   scanningSettings?: Partial<
     Pick<ScanningSettings, "documentCaptureModule" | "barcodeModule" | "mrzModule" | "vizModule">
   > | null;
+  enablePassportOnlyExtractionMode?: boolean;
 };
 
 /**
@@ -39,6 +46,10 @@ export type BlinkIdExtractionModeInput = Partial<Pick<BlinkIdSessionSettings, "s
  *   MRZ-focused flow.
  */
 export function getBlinkIdExtractionMode(sessionSettings: BlinkIdExtractionModeInput): BlinkIdExtractionMode {
+  if (sessionSettings.enablePassportOnlyExtractionMode) {
+    return "passport-only";
+  }
+
   const scanningSettings = sessionSettings?.scanningSettings;
   const barcodeModule = scanningSettings?.barcodeModule;
   const documentCaptureEnabled = scanningSettings?.documentCaptureModule !== null;

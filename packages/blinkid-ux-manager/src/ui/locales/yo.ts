@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Tó kàn",
+    passport_only: {
+      blur: {
+        details: "Gbìyànjú kó mú fóònù àti ìwé àkọsílẹ̀ dúró nígbà ṣíṣe ẹ̀dà àwòrán. Sí sún kiri lè fa bóyá kí àwòrán náà rí bàìbàì àti kí ó mú kí àwọn ìsọfúnni orí ìwé àkọsílẹ̀ má ṣe jẹ́ é kà.",
+        details_desktop: "Gbìyànjú láti dúró sójú kan nígbà ṣíṣe àyẹ̀wò. Sí sún kiri lè fa kí àwòrán náà rí bàìbàì àti kí ó mú àwọn ìsọfúnni orí ìwé àkọsílẹ̀ náà má ṣe é kà.",
+        title: "Dúró sí ojú kan nígbà ṣíṣe ẹ̀dà àwòrán",
+        title_desktop: "Dúró sí ojú kan nígbà ṣíṣe ẹ̀dà àwòrán",
+      },
+      camera_lens: {
+        details_desktop: "Yẹ awò ojú kámẹ́rà wò fún àwọn àbàwọ́n tàbí eruku. Awò kámẹ́rà tó bá dọ̀tí lè ṣokùnfa kí àwòrán ìkẹyìn rí bàìbàì, tí ó lè fa kí àwon ìsọfúnni orí ìwé àkọsílẹ̀ náà má ṣe é kà tàbí ìdènà àṣeyọrí ṣíṣe ẹ̀dà àwòrán dátà náà.",
+        title_desktop: "Nu awò ojú kámẹ́rà rẹ nù",
+      },
+      lighting: {
+        details: "Yẹra fún ìmọ́lẹ̀ tó lágbára nítorí pé ó máa ń hàn nínú ìwé àkọsílẹ̀ náà àti pé ó lè mú kí àwọn apá kan nínú àwọn ìwé àkọsílẹ̀ náà má ṣe é kà. Tí ọ kò bá lè ka àwọn ìsọfúnni tó wà nínú ìwé àkọsílẹ̀ náà, kò ní hàn sí kámẹ́rà náà.",
+        details_desktop: "Yẹra fún ìmọ́lẹ̀ tó lágbára nítorí pé ó máa ń hàn nínú ìwé àkọsílẹ̀ náà àti pé ó lè mú kí àwọn apá kan nínú àwọn ìwé àkọsílẹ̀ náà má ṣe é kà. Tí ọ kò bá lè ka àwọn ìsọfúnni tó wà nínú ìwé àkọsílẹ̀ náà, kò ní hàn sí kámẹ́rà náà.",
+        title: "Ṣọ́ra fún ìmọ́lẹ̀ tó lágbára jù",
+        title_desktop: "Ṣọ́ra fún ìmọ́lẹ̀ tó lágbára jù",
+      },
+      open_passport: {
+        details: "Ṣí ìwé ìrìnnà rẹ sí ojú-ewé tí ó ní fọ́tò rẹ àti àwọn ìwífún ti ara ẹni. Ojú-ewé yìí ní orúkọ rẹ, ọjọ́ ìbí, nọ́mbà ìwé ìrìnnà, àti àwọn ìwífún ìdánimọ̀ míì.",
+        details_desktop: "Ṣí ìwé ìrìnnà rẹ sí ojú ewé tí fọ́tò rẹ àti àlàyé ara ẹni wà. Ojú ewé yìí fi orúkọ rẹ, ọjọ́ ìbí, nọ́mbà ìwé ìrìnnà, àti àwọn ìwífún ìdánimọ̀ míì hàn.",
+        title: "Ṣí ìwé ìrìnnà sí ojú-ewé ìwífún",
+        title_desktop: "Ṣí ìwé ìrìnnà sí ojú-ewé ìwífún",
+      },
+      visibility: {
+        details: "Rí i dájú pé o kò fi ìka bo apá ibì kan lára ìwé àkọsílẹ̀ náà, títí kan àwọn ìlà ìsàlẹ̀. Bákan náà, ṣọ́ra fún àwọn ìtànyòò hologram tí wọ́n máa ń wa ní àwọn apá kan lórí ìwé àkọsílẹ̀ náà.",
+        details_desktop: "Rí i dájú pé o kò fi ìka bo apá ibì kan lára ìwé àkọsílẹ̀ náà, títí kan àwọn ìlà ìsàlẹ̀. Bákan náà, ṣọ́ra fún àwọn ìtànyòò hologram tí wọ́n máa ń wa ní àwọn apá kan lórí ìwé àkọsílẹ̀ náà.",
+        title: "Jẹ́ kí gbogbo ààyè orí ìwé àkọsílẹ̀ náà hàn kedere",
+        title_desktop: "Jẹ́ kí gbogbo ààyè orí ìwé àkọsílẹ̀ náà hàn kedere",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Àwọn Ìtọ́nisọ́nà Ṣíṣẹ́dà àwòrán",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Ríi dájú pé awò ojú kámẹ́rà rẹ mọ́ àti kí ìmọ́lẹ̀ tàn sórí ìwé àkọsílẹ̀ náà dáadáa. Gbogbo ààyè orí ìwé àkọsílẹ̀ náà ni kó sí hàn kedere lórí àwo kámẹ́rà.",
       title: "Jẹ́ kí gbogbo àwọn ìsọfúnni náà hàn kedere",
       title_desktop: "Múra sílẹ̀ láti ṣe ẹ̀dà àwòrán",
+    },
+    passport_only: {
+      details: "Múra ìwé ìrìnnà rẹ sílẹ̀ nípa ṣíṣí i sí ojúewé tí ó ní àwòrán rẹ àti ìwífúnni ara ẹni. Rí i dájú pé ìwé ìrìnnà náà wà lábẹ́ ìmọ́lẹ̀ tó dára. Gbogbo àwọn ààyè gbọ́dọ̀ hàn ní kíkún.",
+      details_desktop: "Mú ìwé ìrìnnà rẹ ṣetán nípa ṣíṣí i sí ojú ewé tó ní fọ́tò àti ìwífún ara ẹni rẹ. Jẹ́ kí lẹ́nsi káàmérà rẹ mọ́, kí o sì rí i dájú pé ìwé náà ní ìmọ́lẹ̀ dáadáa. Gbogbo pápá gbọ́dọ̀ hàn ní kíkún.",
+      title: "Ṣí ìwé ìrìnnà rẹ",
+      title_desktop: "Ṣí ìwé ìrìnnà rẹ",
     },
   },
   sdk_aria: "Ìbojú ṣíṣẹ́dà àwòrán ìwé àkọsílẹ̀",

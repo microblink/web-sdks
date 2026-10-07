@@ -1,10 +1,37 @@
 # @microblink/blinkid
 
+## 8003.0.0
+
+### Minor Changes
+
+- Adds the `presetScanningSettingsBuilder` option to `createBlinkId`, allowing integrations to configure a scanning
+  preset through the provided `presetBuilder`:
+
+  ```ts
+  import { createBlinkId } from "@microblink/blinkid";
+
+  const blinkId = await createBlinkId({
+    licenseKey: "your-license-key",
+    presetScanningSettingsBuilder: (presetBuilder) =>
+      presetBuilder.buildDocumentVideoSettings({
+        scenario: "general",
+        quality: "high-accuracy",
+        captureEnvironment: "hand-held",
+      }),
+  });
+  ```
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-ux-manager@8003.0.0
+  - @microblink/blinkid-core@8003.0.0
+
 ## 8002.0.1
 
 ### Patch Changes
 
-- Update declaration bundles
+- Updated declaration bundles
 - Updated dependencies
   - @microblink/camera-manager@8.1.0
   - @microblink/blinkid-core@8002.0.1

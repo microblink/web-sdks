@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Neste",
+    passport_only: {
+      blur: {
+        details: "Forsøk å holde telefonen og dokumentet i ro under skanningen. Å bevege dem kan føre til at bildet blir uskarpt og dataene i dokumentet uleselige.",
+        details_desktop: "Hold enheten i ro når du skanner. Bevegelse kan gjøre bildet uskarpt og føre til at dataene blir uleselige.",
+        title: "Stå i ro under skanningen",
+        title_desktop: "Stå i ro under skanningen",
+      },
+      camera_lens: {
+        details_desktop: "Sjekk om det er støv eller flekker på kameralinsen. En skitten linse gjør at bildet blir uskarpt, noe som fører til at informasjonen i dokumentet blir uleselig og ikke skannes ordentlig.",
+        title_desktop: "Rens kameralinsen din",
+      },
+      lighting: {
+        details: "Unngå direkte hardt lys fordi det gjenspeiles i dokumentet og kan føre til at deler av dokumentet blir uleselig. Hvis ikke du kan lese det som står i dokumentet, blir det heller ikke synlig for kamera.",
+        details_desktop: "Unngå direkte hardt lys fordi det gjenspeiles i dokumentet og kan føre til at deler av dokumentet blir uleselig. Hvis ikke du kan lese det som står i dokumentet, blir det heller ikke synlig for kamera.",
+        title: "Se opp for hardt lys",
+        title_desktop: "Se opp for hardt lys",
+      },
+      open_passport: {
+        details: "Åpne passet på siden med bildet ditt og personopplysningene dine. Denne siden viser navnet ditt, fødselsdatoen, passnummeret og annen identifiserende informasjon.",
+        details_desktop: "Åpne passet på siden med bildet ditt og personopplysningene dine. Denne siden viser navnet ditt, fødselsdatoen din, passnummeret ditt og andre identifiserende opplysninger.",
+        title: "Åpne passet på informasjonssiden",
+        title_desktop: "Åpne passet på informasjonssiden",
+      },
+      visibility: {
+        details: "Sørg for at du ikke dekker til deler av dokumentet med en finger, inkludert bunnlinjene. Se også etter hologramrefleksjoner som kan forstyrre feltene i dokumentet.",
+        details_desktop: "Sørg for at du ikke dekker til deler av dokumentet med en finger, inkludert bunnlinjene. Se også etter hologramrefleksjoner som kan forstyrre feltene i dokumentet.",
+        title: "La alle feltene være synlige",
+        title_desktop: "La alle feltene være synlige",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Slik skanner du",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Sørg for at kameralinsen er ren og at dokumentet er godt opplyst. Alle feltene i dokumentet skal være synlige på skjermen.",
       title: "La alle detaljene være synlige",
       title_desktop: "Gjør deg klar til å skanne",
+    },
+    passport_only: {
+      details: "Åpne passet på siden med bilde og personopplysninger. Sørg for at passet er godt belyst. Alle feltene må være fullt synlige.",
+      details_desktop: "Åpne passet på siden med bildet ditt og personopplysningene dine. Hold kameralinsen ren, og sørg for at dokumentet er godt opplyst. Alle feltene må være fullt synlige.",
+      title: "Åpne passet",
+      title_desktop: "Åpne passet",
     },
   },
   sdk_aria: "Dokumentskanningside",

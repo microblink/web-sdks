@@ -408,6 +408,35 @@ describe("BlinkIdUxManager - package-specific: document class filtering", () => 
     filterCleanup();
   });
 
+  test("should filter passports when extraction mode is passport-only", async () => {
+    const { manager, cameraHarness, scanningSession } = await createBlinkIdTestContext({
+      managerOptions: { enablePassportOnlyExtractionMode: true },
+    });
+
+    const mockDocumentClassInfo = createDocumentClassInfo({
+      country: "usa",
+      type: "id",
+    });
+
+    const mockProcessResult = createProcessResult({
+      inputImageAnalysisResult: {
+        processingStatus: "success",
+        documentClassInfo: mockDocumentClassInfo,
+        documentDetectionStatus: "success",
+      },
+    });
+    scanningSession.process.mockResolvedValue(mockProcessResult);
+    const documentFilteredSpy = vi.fn();
+    const cleanupFilteredCallback = manager.addOnDocumentFilteredCallback(documentFilteredSpy);
+
+    await cameraHarness.emitFrame(createFakeImageData());
+
+    expect(documentFilteredSpy).toHaveBeenCalled();
+
+    await scanningSession.delete();
+    manager.destroy();
+  });
+
   test("should not call document filtered callback when filter returns true", async () => {
     const mockDocumentClassInfo = createDocumentClassInfo({
       country: "usa",

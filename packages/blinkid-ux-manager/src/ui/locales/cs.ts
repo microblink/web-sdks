@@ -83,7 +83,7 @@ export default {
     document_with_barcode: {
       blur: {
         details: "Při skenování se snažte držet telefon a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
-        details_desktop: "Při skenování se snažte nebýhat. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+        details_desktop: "Při skenování se snažte zůstat v klidu. Pohyb může obraz rozmazat a způsobit, že údaje v dokumentu budou nečitelné.",
         title: "Při skenování se nehýbejte",
         title_desktop: "Při skenování se nehýbejte",
       },
@@ -107,7 +107,7 @@ export default {
     document_with_mrz: {
       blur: {
         details: "Při skenování se snažte držet telefon a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
-        details_desktop: "Při skenování se snažte nebýhat. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+        details_desktop: "Při skenování se snažte zůstat v klidu. Pohyb může obraz rozmazat a způsobit, že údaje v dokumentu budou nečitelné.",
         title: "Při skenování se nehýbejte",
         title_desktop: "Při skenování se nehýbejte",
       },
@@ -133,7 +133,7 @@ export default {
     full_document: {
       blur: {
         details: "Při skenování se snažte držet telefon a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
-        details_desktop: "Při skenování se snažte nebýhat. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+        details_desktop: "Při skenování se snažte zůstat v klidu. Pohyb může obraz rozmazat a způsobit, že údaje v dokumentu budou nečitelné.",
         title: "Při skenování se nehýbejte",
         title_desktop: "Při skenování se nehýbejte",
       },
@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Další",
+    passport_only: {
+      blur: {
+        details: "Při skenování se snažte držet telefon a dokument v klidu. Pohyb může obraz rozmazat a způsobit, že data na dokumentu nebudou čitelná.",
+        details_desktop: "Při skenování se snažte zůstat v klidu. Pohyb může obraz rozmazat a způsobit, že údaje v dokumentu budou nečitelné.",
+        title: "Při skenování se nehýbejte",
+        title_desktop: "Při skenování se nehýbejte",
+      },
+      camera_lens: {
+        details_desktop: "Zkontrolujte, zda na objektivu fotoaparátu nejsou šmouhy nebo prach. Špinavý objektiv způsobuje rozmazání výsledného obrazu, což znemožňuje přečtení údajů v dokumentu a úspěšné naskenování dat.",
+        title_desktop: "Vyčistěte objektiv fotoaparátu",
+      },
+      lighting: {
+        details: "Vyhněte se přímému ostrému světlu, protože se odráží od dokumentu a může způsobit, že části dokumentu nebudou čitelné. Pokud nelze údaje na dokumentu přečíst, nebudou viditelné ani pro fotoaparát.",
+        details_desktop: "Vyhněte se přímému ostrému světlu, protože se odráží od dokumentu a může způsobit, že části dokumentu nebudou čitelné. Pokud nelze údaje na dokumentu přečíst, nebudou viditelné ani pro fotoaparát.",
+        title: "Dávejte pozor na ostré světlo",
+        title_desktop: "Dávejte pozor na ostré světlo",
+      },
+      open_passport: {
+        details: "Otevřete pas na stránce s fotografií a osobními údaji. Na této stránce je uvedeno vaše jméno, datum narození, číslo pasu a další identifikační údaje.",
+        details_desktop: "Otevřete pas na stránce s fotografií a osobními údaji. Na této stránce je uvedeno vaše jméno, datum narození, číslo pasu a další identifikační údaje.",
+        title: "Otevřete pas na stránce s údaji",
+        title_desktop: "Otevřete pas na stránce s údaji",
+      },
+      visibility: {
+        details: "Ujistěte se, že prstem nezakrýváte části dokumentu, včetně spodních řádků. Dávejte si také pozor na hologramové odlesky, které přesahují pole dokumentu.",
+        details_desktop: "Ujistěte se, že prstem nezakrýváte části dokumentu, včetně spodních řádků. Dávejte si také pozor na hologramové odlesky, které přesahují pole dokumentu.",
+        title: "Všechna pole musejí být ve viditelném stavu",
+        title_desktop: "Všechna pole musejí být ve viditelném stavu",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Pokyny pro skenování",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Ujistěte se, že je objektiv fotoaparátu čistý a dokument je dobře osvětlen. Na obrazovce fotoaparátu by měla být vidět všechna pole dokumentu.",
       title: "Všechny detaily musejí být ve viditelném stavu",
       title_desktop: "Připravte se na skenování",
+    },
+    passport_only: {
+      details: "Otevřete pas na stránce s fotografií a osobními údaji. Zajistěte, aby byl pas dobře osvětlený. Všechna pole musí být plně viditelná.",
+      details_desktop: "Připravte si pas otevřený na stránce s fotografií a osobními údaji. Udržujte objektiv kamery čistý a zajistěte dobré osvětlení dokumentu. Všechny údaje musí být zcela viditelné.",
+      title: "Otevřete pas",
+      title_desktop: "Otevřete pas",
     },
   },
   sdk_aria: "Obrazovka skenování dokumentu",

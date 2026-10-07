@@ -59,6 +59,13 @@ export const App: Component = () => {
 
     console.log("creating new session");
 
+    /* Optionally use one of our presets for the scanning session settings
+       const scanningSettings = await blinkIdCore.buildDocumentVideoSettings({
+         scenario: "general",
+         captureEnvironment: "hand-held",
+       });
+     */
+
     /*
      * Initialize the session with the default settings.
      * For additional configuration look at the BlinkIdSessionSettings type.

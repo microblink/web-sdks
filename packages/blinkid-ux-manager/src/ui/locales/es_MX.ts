@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Siguiente",
+    passport_only: {
+      blur: {
+        details: "Trata de no mover el celular ni el documento mientras se esté escaneando. Si se mueven, puede desenfocarse la imagen y provocar que el documento no pueda leerse.",
+        details_desktop: "Trate de mantenerse quieto mientras escanea. Al moverse puede hacer que la imagen se vea borrosa y esto hará que los datos del documento sean ilegibles.",
+        title: "No mover durante el escaneo",
+        title_desktop: "No mover durante el escaneo",
+      },
+      camera_lens: {
+        details_desktop: "Revisa si hay manchas o polvo en la lente de la cámara. Si la lente está sucia, la imagen final saldrá borrosa, por lo que los detalles del documento serán ilegibles y no se podrán escanear los datos correctamente.",
+        title_desktop: "Limpie la lente de la cámara",
+      },
+      lighting: {
+        details: "Evita el exceso de luz directa, ya que se refleja en el documento y puede provocar que algunas partes no puedan leerse. Si no alcanzas a leer los datos del documento, tampoco serán visibles para la cámara.",
+        details_desktop: "Evita el exceso de luz directa, ya que se refleja en el documento y puede provocar que algunas partes no puedan leerse. Si no alcanzas a leer los datos del documento, tampoco serán visibles para la cámara.",
+        title: "Atención al exceso de luz",
+        title_desktop: "Atención al exceso de luz",
+      },
+      open_passport: {
+        details: "Abra su pasaporte en la página con su foto y datos personales. Esta página muestra su nombre, fecha de nacimiento, número de pasaporte y otra información de identificación.",
+        details_desktop: "Abra su pasaporte en la página donde aparecen su foto y sus datos personales. Esta página muestra su nombre, fecha de nacimiento, número de pasaporte y otros datos de identificación.",
+        title: "Abra su pasaporte en la página de datos personales",
+        title_desktop: "Abra su pasaporte en la página de datos personales",
+      },
+      visibility: {
+        details: "Asegúrate de no cubrir partes del documento con un dedo, incluso las líneas inferiores. Asimismo, presta atención a los reflejos de hologramas que hay en los campos del documento.",
+        details_desktop: "Asegúrate de no cubrir partes del documento con un dedo, incluso las líneas inferiores. Asimismo, presta atención a los reflejos de hologramas que hay en los campos del documento.",
+        title: "Mantener visibles todos los campos",
+        title_desktop: "Mantener visibles todos los campos",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Instrucciones para escanear",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Asegúrate de mantener limpia la lente de la cámara y de que el documento esté bien iluminado. Todos los campos del documento deben ser visibles en la pantalla de la cámara.",
       title: "Mantener visibles todos los detalles",
       title_desktop: "Prepárate para escanear",
+    },
+    passport_only: {
+      details: "Abra su pasaporte en la página que contiene su foto e información personal. Asegúrese de que el pasaporte esté bien iluminado. Todos los campos deben estar completamente visibles.",
+      details_desktop: "Prepara tu pasaporte y ábrelo en la página que contiene tu foto y datos personales. Mantén limpio el lente de la cámara y asegúrate de que el documento esté bien iluminado. Todos los campos deben estar completamente visibles.",
+      title: "Abra su pasaporte",
+      title_desktop: "Abra su pasaporte",
     },
   },
   sdk_aria: "Pantalla para escanear documentos",

@@ -13,6 +13,8 @@ export type BlinkIdUxManagerOptions = {
   initialUiStateKey?: BlinkIdUiStateKey;
   /** Configures BlinkID scanning timeout behavior. */
   timeoutConfiguration?: Partial<BlinkIdTimeoutConfiguration>;
+  /** Enables passport only extraction mode with a custom ui suited for scanning passports. */
+  enablePassportOnlyExtractionMode?: boolean;
 };
 
 /**

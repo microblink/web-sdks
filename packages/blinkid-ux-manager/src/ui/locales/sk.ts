@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Ďalej",
+    passport_only: {
+      blur: {
+        details: "Skúste počas snímania ponechať telefón a dokument v pokoji. Pohyb môže rozmazať obraz a spôsobiť, že údaje v dokumente budú nečitateľné.",
+        details_desktop: "Počas snímania sa snažte nehýbať. Pohyb môže rozmazať obraz a spôsobiť nečitateľnosť údajov na dokumente.",
+        title: "Počas snímania zostaňte v pokoji",
+        title_desktop: "Počas snímania zostaňte v pokoji",
+      },
+      camera_lens: {
+        details_desktop: "Skontrolujte, či na objektíve kamery nie sú šmuhy alebo prach. Ak je objektív znečistený, výsledný obraz bude rozmazaný, údaje na dokumente sa nebudú dať prečítať a skenovanie údajov sa nepodarí.",
+        title_desktop: "Vyčistite objektív kamery",
+      },
+      lighting: {
+        details: "Vyhnite sa priamemu ostrému svetlu, pretože sa odráža od dokumentu a môže spôsobiť, že časti dokumentu budú nečitateľné. Ak vy nedokážete čítať údaje v dokumente, neuvidí ich ani fotoaparát.",
+        details_desktop: "Vyhnite sa priamemu ostrému svetlu, pretože sa odráža od dokumentu a môže spôsobiť, že časti dokumentu budú nečitateľné. Ak vy nedokážete čítať údaje v dokumente, neuvidí ich ani fotoaparát.",
+        title: "Pozor na ostré svetlo",
+        title_desktop: "Pozor na ostré svetlo",
+      },
+      open_passport: {
+        details: "Otvorte pas na strane s vašou fotografiou a osobnými údajmi. Na tejto strane je uvedené vaše meno, dátum narodenia, číslo pasu a ďalšie identifikačné údaje.",
+        details_desktop: "Otvorte pas na strane s fotografiou a osobnými údajmi. Na tejto strane sú uvedené vaše meno, dátum narodenia, číslo pasu a ďalšie identifikačné údaje.",
+        title: "Otvorte pas na strane s osobnými údajmi",
+        title_desktop: "Otvorte pas na strane s osobnými údajmi",
+      },
+      visibility: {
+        details: "Uistite sa, že nezakrývate časti dokumentu prstom, vrátane spodných riadkov. Dávajte si tiež pozor na hologramové odrazy, ktoré prechádzajú cez polia dokumentu.",
+        details_desktop: "Uistite sa, že nezakrývate časti dokumentu prstom, vrátane spodných riadkov. Dávajte si tiež pozor na hologramové odrazy, ktoré prechádzajú cez polia dokumentu.",
+        title: "Udržujte všetky polia viditeľné",
+        title_desktop: "Udržujte všetky polia viditeľné",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Pokyny na skenovanie",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Uistite sa, že je objektív fotoaparátu čistý a dokument dobre osvetlený. Všetky polia dokumentu by mali byť viditeľné na obrazovke fotoaparátu.",
       title: "Udržujte všetky detaily viditeľné",
       title_desktop: "Pripravte sa na skenovanie",
+    },
+    passport_only: {
+      details: "Pripravte si pas a otvorte ho na strane s vašou fotografiou a osobnými údajmi. Uistite sa, že je pas dobre osvetlený. Všetky údaje musia byť úplne viditeľné.",
+      details_desktop: "Pripravte si pas a otvorte ho na strane s fotografiou a osobnými údajmi. Udržujte objektív kamery čistý a zabezpečte dobré osvetlenie dokumentu. Všetky údaje musia byť úplne viditeľné.",
+      title: "Otvorte pas",
+      title_desktop: "Otvorte pas",
     },
   },
   sdk_aria: "Obrazovka skenovania dokumentu",

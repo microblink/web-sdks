@@ -98,6 +98,9 @@ describe("BlinkID OTA resources", () => {
     expect(normalizeOtaResourceProviderUrl("https://blinkid-ota.microblink.com/api/v1/versions/")).toBe(
       "https://blinkid-ota.microblink.com",
     );
+    expect(normalizeOtaResourceProviderUrl("https://blinkid-ota.microblink.com/api/v1/versions///")).toBe(
+      "https://blinkid-ota.microblink.com",
+    );
   });
 
   it("resolves OTA service response filename metadata", async () => {
@@ -279,7 +282,7 @@ describe("BlinkID OTA resources", () => {
 
     await expect(
       resolveBlinkIdOtaResourcesFromLocation({
-        resourcesLocation: "  https://cdn.example.com/blinkid-ota/  ",
+        resourcesLocation: "  https://cdn.example.com/blinkid-ota///  ",
         fetchFn,
       }),
     ).resolves.toEqual([

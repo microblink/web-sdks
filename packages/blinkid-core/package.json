@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-core",
-  "version": "8002.0.1",
+  "version": "8003.0.0",
   "description": "BlinkID Core SDK",
   "keywords": [
     "aml",

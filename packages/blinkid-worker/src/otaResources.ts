@@ -108,10 +108,10 @@ export type InspectBlinkIdOtaMemfsParams = {
 };
 
 export function normalizeOtaResourceProviderUrl(resourceProviderUrl: string): string {
-  const trimmed = resourceProviderUrl.trim().replace(/\/+$/, "");
+  const trimmed = resourceProviderUrl.trim().replace(/(?<!\/)\/+$/, "");
 
   if (trimmed.endsWith(OTA_VERSIONS_PATH_SUFFIX)) {
-    return trimmed.slice(0, -OTA_VERSIONS_PATH_SUFFIX.length).replace(/\/+$/, "");
+    return trimmed.slice(0, -OTA_VERSIONS_PATH_SUFFIX.length).replace(/(?<!\/)\/+$/, "");
   }
 
   return trimmed;
@@ -122,7 +122,7 @@ export async function resolveBlinkIdOtaResourcesFromLocation({
   fetchFn = fetch,
   timeoutMs,
 }: ResolveBlinkIdOtaResourcesFromLocationParams): Promise<BlinkIdOtaResource[]> {
-  const normalizedResourcesLocation = resourcesLocation.trim().replace(/\/+$/, "");
+  const normalizedResourcesLocation = resourcesLocation.trim().replace(/(?<!\/)\/+$/, "");
 
   if (!normalizedResourcesLocation) {
     throw new Error("BlinkID OTA resources location is empty");

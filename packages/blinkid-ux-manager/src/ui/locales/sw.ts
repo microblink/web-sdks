@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Endelea",
+    passport_only: {
+      blur: {
+        details: "Jaribu kuhakikisha hati na simu havisongi unaposkani. Ukisogeza chochote picha inaweza kukosa kuonekana vizuri na kufanya data kwenye hati isiweze kusomeka.",
+        details_desktop: "Jaribu kuhakikisha haisongi unaposkani. Ikisonga inaweza kufanya picha isionekane vizuri na kufanya data kwenye hati isiweze kusomeka.",
+        title: "Usisonge unaposkani",
+        title_desktop: "Usisonge unaposkani",
+      },
+      camera_lens: {
+        details_desktop: "Angalia lenzi ya kamera yako kama ina uchafu au madoa. Lenzi chafu hufanya picha ya mwisho isionekane vizuri, na kufanya maelezo ya hati yasiweze kusomeka na kuzuia data kuskanikiwa vizuri.",
+        title_desktop: "Safisha lenzi ya kamera yako",
+      },
+      lighting: {
+        details: "Epuka mwanga mkali wa moja kwa moja kwa sababu huakisiwa kutoka kwenye hati na inaweza kufanya sehemu za hati zisiweze kusomeka. Ikiwa huwezi kusoma data kwenye hati, vilevile haitaonekana kwenye kamera.",
+        details_desktop: "Epuka mwanga mkali wa moja kwa moja kwa sababu huakisiwa kutoka kwenye hati na inaweza kufanya sehemu za hati zisiweze kusomeka. Ikiwa huwezi kusoma data kwenye hati, vilevile haitaonekana kwenye kamera.",
+        title: "Kuwa mwangalifu na mwanga mkali",
+        title_desktop: "Kuwa mwangalifu na mwanga mkali",
+      },
+      open_passport: {
+        details: "Fungua pasipoti yako kwenye ukurasa wenye picha na maelezo yako binafsi. Ukurasa huu unaonyesha jina lako, tarehe ya kuzaliwa, nambari ya pasipoti na maelezo mengine ya utambulisho.",
+        details_desktop: "Fungua pasipoti yako kwenye ukurasa wenye picha yako na maelezo yako binafsi. Ukurasa huu unaonyesha jina lako, tarehe ya kuzaliwa, nambari ya pasipoti, na maelezo mengine ya utambulisho.",
+        title: "Fungua pasipoti kwenye ukurasa wa taarifa",
+        title_desktop: "Fungua pasipoti kwenye ukurasa wa taarifa",
+      },
+      visibility: {
+        details: "Hakikisha hujafunika sehemu za hati kwa kidole, ikijumuisha laini za chini. Pia, kuwa mwangalifu na mwanga unaoakisiwa na hologramu unaopita juu ya sehemu za hati.",
+        details_desktop: "Hakikisha hujafunika sehemu za hati kwa kidole, ikijumuisha laini za chini. Pia, kuwa mwangalifu na mwanga unaoakisiwa na hologramu unaopita juu ya sehemu za hati.",
+        title: "Hakikisha sehemu zote zinaonekana",
+        title_desktop: "Hakikisha sehemu zote zinaonekana",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Maagizo ya kuskani",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Hakikisha lenzi ya kamera yako ni safi na hati iko kwenye mwanga wa kutosha. Sehemu zote za hati zinapaswa kuonekana kwenye skrini ya kamera.",
       title: "Hakikisha kila kitu kinaonekana",
       title_desktop: "Kuwa tayari kuskani",
+    },
+    passport_only: {
+      details: "Andaa pasipoti yako kwa kuifungua kwenye ukurasa wenye picha yako na taarifa zako binafsi. Hakikisha pasipoti imeangaziwa vizuri. Sehemu zote lazima zionekane wazi.",
+      details_desktop: "Andaa pasipoti yako kwa kuifungua kwenye ukurasa wenye picha yako na taarifa zako binafsi. Hakikisha lenzi ya kamera yako ni safi na hati imeangaziwa vizuri. Sehemu zote lazima zionekane kikamilifu.",
+      title: "Fungua pasipoti yako",
+      title_desktop: "Fungua pasipoti yako",
     },
   },
   sdk_aria: "Skrini ya kuskani hati",

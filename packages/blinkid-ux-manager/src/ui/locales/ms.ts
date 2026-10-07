@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Seterusnya",
+    passport_only: {
+      blur: {
+        details: "Cuba kekalkan kedudukan telefon dan dokumen semasa mengimbas. Menggerakkan kedua-duanya boleh mengaburkan imej dan menjadikan data dalam dokumen tidak dapat dibaca.",
+        details_desktop: "Cuba kekalkan kedudukan semasa mengimbas. Pergerakan boleh mengaburkan imej dan menyebabkan data pada dokumen tidak dapat dibaca.",
+        title: "Kekalkan kedudukan semasa mengimbas",
+        title_desktop: "Kekalkan kedudukan semasa mengimbas",
+      },
+      camera_lens: {
+        details_desktop: "Periksa lensa kamera anda untuk memastikan tiada kesan kotoran atau habuk. Lensa yang kotor akan menyebabkan imej akhir menjadi kabur, menyebabkan butiran dokumen sukar dibaca dan imbasan data gagal.",
+        title_desktop: "Bersihkan lensa kamera anda",
+      },
+      lighting: {
+        details: "Jauhi cahaya yang boleh menyilaukan mata kerana cahaya tersebut dipantulkan daripada dokumen dan boleh membuatkan sebahagian daripada dokumen tersebut tidak dapat dibaca. Jika anda tidak dapat membaca data dalam dokumen, data tersebut juga tidak akan kelihatan pada kamera.",
+        details_desktop: "Jauhi cahaya yang boleh menyilaukan mata kerana cahaya tersebut dipantulkan daripada dokumen dan boleh membuatkan sebahagian daripada dokumen tersebut tidak dapat dibaca. Jika anda tidak dapat membaca data dalam dokumen, data tersebut juga tidak akan kelihatan pada kamera.",
+        title: "Jaga-jaga dengan cahaya yang menyilaukan mata",
+        title_desktop: "Jaga-jaga dengan cahaya yang menyilaukan mata",
+      },
+      open_passport: {
+        details: "Buka pasport anda pada halaman yang memaparkan foto dan maklumat peribadi anda. Halaman ini memaparkan nama, tarikh lahir, nombor pasport dan maklumat pengenalan lain.",
+        details_desktop: "Buka pasport anda pada halaman yang memaparkan foto dan maklumat peribadi anda. Halaman ini memaparkan nama, tarikh lahir, nombor pasport dan maklumat pengenalan lain anda.",
+        title: "Buka pasport anda pada halaman biodata",
+        title_desktop: "Buka pasport anda pada halaman biodata",
+      },
+      visibility: {
+        details: "Pastikan anda tidak menutup sebahagian daripada dokumen dengan jari, termasuk baris bawah. Di samping itu, berhati-hati dengan pantulan hologram yang melintasi medan dokumen.",
+        details_desktop: "Pastikan anda tidak menutup sebahagian daripada dokumen dengan jari, termasuk baris bawah. Di samping itu, berhati-hati dengan pantulan hologram yang melintasi medan dokumen.",
+        title: "Pastikan semua medan kelihatan",
+        title_desktop: "Pastikan semua medan kelihatan",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Arahan Mengimbas",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Pastikan lensa kamera anda bersih dan dokumen anda menerima pencahayaan yang cukup. Semua medan dokumen hendaklah kelihatan pada skrin kamera.",
       title: "Pastikan semua butiran kelihatan",
       title_desktop: "Sedia untuk imbas",
+    },
+    passport_only: {
+      details: "Sediakan pasport anda dengan membukanya pada halaman yang mengandungi foto dan maklumat peribadi anda. Pastikan pasport mendapat pencahayaan yang baik. Semua medan mesti kelihatan sepenuhnya.",
+      details_desktop: "Sediakan pasport anda dengan membukanya pada halaman yang mengandungi foto dan maklumat peribadi anda. Pastikan lensa kamera anda bersih dan dokumen mendapat pencahayaan yang baik. Semua medan mesti kelihatan sepenuhnya.",
+      title: "Buka pasport anda",
+      title_desktop: "Buka pasport anda",
     },
   },
   sdk_aria: "Skrin mengimbas dokumen",

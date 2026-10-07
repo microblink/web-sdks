@@ -1,5 +1,6 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import type { BlinkIdSessionSettingsInput } from "@microblink/blinkid-core";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 // ============================================================================
@@ -213,7 +214,7 @@ describe("createBlinkId", () => {
   test("calls createScanningSession with scanningSettings and scanningMode when provided", async () => {
     const scanningSettings = {
       blur: { detectionThreshold: 0.5 },
-    } as unknown as BlinkIdComponentOptions["scanningSettings"];
+    } as unknown as BlinkIdSessionSettingsInput["scanningSettings"];
 
     await createBlinkId({
       licenseKey: "test-key",
@@ -226,6 +227,23 @@ describe("createBlinkId", () => {
       scanningMode: "single-side",
       scanningSettings,
     });
+  });
+
+  test("uses presetScanningSettingsBuilder to resolve session settings", async () => {
+    const sessionSettings = {
+      scanningMode: "single-side",
+      scanningSettings: {},
+    } as unknown as BlinkIdSessionSettingsInput;
+    const presetScanningSettingsBuilder = vi.fn().mockResolvedValue(sessionSettings);
+
+    await createBlinkId({
+      licenseKey: "test-key",
+      presetScanningSettingsBuilder,
+    });
+
+    expect(presetScanningSettingsBuilder).toHaveBeenCalledOnce();
+    expect(presetScanningSettingsBuilder).toHaveBeenCalledWith(expect.any(Object));
+    expect(mockCreateSession).toHaveBeenCalledWith(sessionSettings);
   });
 
   test("forwards redactionSettingsResolver to createScanningSession options", async () => {

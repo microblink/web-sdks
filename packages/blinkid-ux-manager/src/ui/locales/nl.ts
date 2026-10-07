@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Volgende",
+    passport_only: {
+      blur: {
+        details: "Probeer de telefoon en het document tijdens het scannen stil te houden. Als u een van beide beweegt, kan de afbeelding wazig worden en kunnen gegevens op het document onleesbaar worden.",
+        details_desktop: "Probeer niet te bewegen tijdens het scannen. Door beweging kan de afbeelding onscherp worden en de gegevens op het document onleesbaar.",
+        title: "Beweeg niet tijdens het scannen",
+        title_desktop: "Beweeg niet tijdens het scannen",
+      },
+      camera_lens: {
+        details_desktop: "Controleer dat er geen vlekken of stof op de lens van uw camera zitten. Een vuile lens zorgt ervoor dat de uiteindelijke afbeelding wazig wordt, waardoor de documentgegevens onleesbaar worden en de gegevens niet goed kunnen worden gescand.",
+        title_desktop: "Maak de lens van uw camera schoon",
+      },
+      lighting: {
+        details: "Vermijd direct fel licht, omdat dat vanaf het document weerspiegelt en delen van het document onleesbaar kan maken. Als u gegevens op het document niet kunt lezen, zijn ze voor de camera ook niet zichtbaar.",
+        details_desktop: "Vermijd direct fel licht, omdat dat vanaf het document weerspiegelt en delen van het document onleesbaar kan maken. Als u gegevens op het document niet kunt lezen, zijn ze voor de camera ook niet zichtbaar.",
+        title: "Pas op voor fel licht",
+        title_desktop: "Pas op voor fel licht",
+      },
+      open_passport: {
+        details: "Open uw paspoort op de pagina met uw foto en persoonsgegevens. Op deze pagina staan uw naam, geboortedatum, paspoortnummer en andere identificerende gegevens.",
+        details_desktop: "Open uw paspoort op de pagina met uw foto en persoonsgegevens. Op deze pagina staan uw naam, geboortedatum, paspoortnummer en andere identificerende gegevens.",
+        title: "Open uw paspoort op de gegevenspagina",
+        title_desktop: "Open uw paspoort op de gegevenspagina",
+      },
+      visibility: {
+        details: "Zorg ervoor dat u onderdelen van het document niet afdekt met een vinger, dus ook niet de onderste regels. Waak ook voor hologramreflecties op de documentvelden.",
+        details_desktop: "Zorg ervoor dat u onderdelen van het document niet afdekt met een vinger, dus ook niet de onderste regels. Waak ook voor hologramreflecties op de documentvelden.",
+        title: "Zorg ervoor dat alle velden zichtbaar zijn",
+        title_desktop: "Zorg ervoor dat alle velden zichtbaar zijn",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Instructies voor scannen",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Zorg ervoor dat de cameralens schoon is en het document goed verlicht is. Alle velden op het document moeten zichtbaar zijn op het camerascherm.",
       title: "Zorg ervoor dat alle gegevens zichtbaar zijn",
       title_desktop: "Voorbereiden om te scannen",
+    },
+    passport_only: {
+      details: "Open uw paspoort op de pagina met uw foto en persoonsgegevens. Zorg dat het paspoort goed verlicht is. Alle velden moeten volledig zichtbaar zijn.",
+      details_desktop: "Open uw paspoort op de pagina met uw foto en persoonsgegevens. Houd de cameralens schoon en zorg dat het document goed verlicht is. Alle velden moeten volledig zichtbaar zijn.",
+      title: "Open uw paspoort",
+      title_desktop: "Open uw paspoort",
     },
   },
   sdk_aria: "Scherm voor documenten scannen",

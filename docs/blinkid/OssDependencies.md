@@ -142,7 +142,7 @@ This report includes:
 | Package | License | URL | Description |
 |---------|---------|-----|-------------|
 | concurrentqueue/1.0.4.mb.1 | BSD-2-Clause,BSL-1.0 | N/A | N/A |
-| ConfigEx/25.0.4 | MIT | [Link](https://github.com/microblink/config_ex) | N/A |
+| ConfigEx/27.0.1 | MIT | [Link](https://github.com/microblink/config_ex) | N/A |
 | core-identity++http_archive+adv-obfuscator | BSD-3-Clause-Clear | [Link](https://github.com/microblink/ADVObfuscator) | N/A |
 | core-identity++http_archive+kiwaku | BSL-1.0 | [Link](https://github.com/microblink/kiwaku) | N/A |
 | core-identity++http_archive+micro-ecc | BSD-2-Clause | [Link](https://github.com/microblink/micro-ecc) | N/A |
@@ -152,18 +152,18 @@ This report includes:
 | core-identity++http_archive+zxing-cpp | Apache-2.0 | [Link](https://github.com/microblink/zxing-cpp) | N/A |
 | cpuinfo/0.0.0-20260312-7607ca5.mb.1 | BSD-2-Clause | N/A | N/A |
 | eigen/5.0.1.bcr.2 | MPL-2.0 | N/A | N/A |
-| Err/25.0.4 | BSL-1.0 | [Link](https://github.com/microblink/err) | N/A |
-| Functionoid/25.0.4 | BSL-1.0 | [Link](https://github.com/microblink/functionoid) | N/A |
-| Hash/25.0.4 | Zlib | [Link](https://github.com/stbrumme/hash-library) | N/A |
+| Err/27.0.1 | BSL-1.0 | [Link](https://github.com/microblink/err) | N/A |
+| Functionoid/27.0.1 | BSL-1.0 | [Link](https://github.com/microblink/functionoid) | N/A |
+| Hash/27.0.1 | Zlib | [Link](https://github.com/stbrumme/hash-library) | N/A |
 | libbacktrace/1.0.0-20250926-7939218.mb.1 | BSD-3-Clause | N/A | N/A |
 | libdeflate/1.25 | MIT | N/A | N/A |
 | libjpeg_turbo/3.1.3.bcr.6 | BSD-3-Clause-Modification,IJG,Zlib | N/A | N/A |
-| libpng/1.6.54 | libpng-2.0 | N/A | N/A |
-| MMap/25.0.4 | BSL-1.0 | [Link](https://github.com/microblink/mmap) | N/A |
-| opencv/5.0.0.mb.2 | Apache-2.0 | N/A | N/A |
-| pimpl/25.0.4 | BSD-2-Clause | [Link](https://github.com/microblink/pimpl) | N/A |
+| libpng/1.6.58.bcr.1 | libpng-2.0 | N/A | N/A |
+| MMap/27.0.1 | BSL-1.0 | [Link](https://github.com/microblink/mmap) | N/A |
+| opencv/5.0.0.mb.4 | Apache-2.0 | N/A | N/A |
+| pimpl/27.0.1 | BSD-2-Clause | [Link](https://github.com/microblink/pimpl) | N/A |
 | pthreadpool/0.0.0-20250926-560c60d.mb.1 | BSD-2-Clause | N/A | N/A |
 | rapidjson/1.1.0.mb.20250205 | MIT | N/A | N/A |
-| sweater/25.0.4 | MIT | [Link](https://github.com/microblink/sweater) | N/A |
+| sweater/27.0.1 | MIT | [Link](https://github.com/microblink/sweater) | N/A |
 | xnnpack/20230525.6.0 | BSD-3-Clause | [Link](https://github.com/microblink/XNNPACK) | N/A |
-| zlib/1.3.2.mb.1 | Zlib | N/A | N/A |
+| zlib/1.3.2.mb.2 | Zlib | N/A | N/A |

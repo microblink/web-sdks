@@ -19,6 +19,7 @@ describe("modal extraction mode content", () => {
       "document-with-barcode": "document_with_barcode",
       "barcode-only": "barcode_only",
       "document-with-mrz": "document_with_mrz",
+      "passport-only": "passport_only",
     });
   });
 
@@ -35,13 +36,25 @@ describe("modal extraction mode content", () => {
       "document-with-barcode": "document_with_barcode",
       "barcode-only": "barcode_only",
       "document-with-mrz": "document_with_mrz",
+      "passport-only": "passport_only",
     });
   });
 
   test("keeps the expected help scan-step order for each extraction mode", () => {
-    for (const content of Object.values(helpModalContentByExtractionMode)) {
-      expect(content.scanSteps.map(({ localeKey }) => localeKey)).toEqual(["visibility", "lighting", "blur"]);
-    }
+    expect(
+      Object.fromEntries(
+        Object.entries(helpModalContentByExtractionMode).map(([extractionMode, content]) => [
+          extractionMode,
+          content.scanSteps.map(({ localeKey }) => localeKey),
+        ]),
+      ),
+    ).toEqual({
+      "full-document": ["visibility", "lighting", "blur"],
+      "document-with-barcode": ["visibility", "lighting", "blur"],
+      "barcode-only": ["visibility", "lighting", "blur"],
+      "document-with-mrz": ["visibility", "lighting", "blur"],
+      "passport-only": ["open_passport", "visibility", "lighting", "blur"],
+    });
   });
 });
 

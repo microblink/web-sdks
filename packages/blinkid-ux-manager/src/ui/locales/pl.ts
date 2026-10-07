@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Dalej",
+    passport_only: {
+      blur: {
+        details: "Staraj się trzymać telefon i dokument nieruchomo podczas skanowania. Poruszanie którymkolwiek z nich może spowodować rozmazanie obrazu i uniemożliwić odczyt danych z dokumentu.",
+        details_desktop: "Staraj się nie ruszać podczas skanowania. Ruch może rozmyć obraz i sprawić, że dane na dokumencie staną się nieczytelne.",
+        title: "Nie ruszaj się podczas skanowania",
+        title_desktop: "Nie ruszaj się podczas skanowania",
+      },
+      camera_lens: {
+        details_desktop: "Sprawdź, czy obiektyw aparatu nie jest zabrudzony lub zakurzony. Zabrudzenia mogą powodować rozmycie obrazu, przez co szczegóły dokumentu stają się nieczytelne, a ich zeskanowanie niemożliwe.",
+        title_desktop: "Wyczyść obiektyw aparatu",
+      },
+      lighting: {
+        details: "Unikaj bezpośredniego silnego światła, ponieważ odbija się od dokumentu i niektóre jego części mogą stać się nieczytelne. Jeśli nie możesz odczytać danych z dokumentu, nie będą one widoczne również dla aparatu.",
+        details_desktop: "Unikaj bezpośredniego silnego światła, ponieważ odbija się od dokumentu i niektóre jego części mogą stać się nieczytelne. Jeśli nie możesz odczytać danych z dokumentu, nie będą one widoczne również dla aparatu.",
+        title: "Uważaj na silne światło",
+        title_desktop: "Uważaj na silne światło",
+      },
+      open_passport: {
+        details: "Otwórz paszport na stronie ze zdjęciem i danymi osobowymi. Na tej stronie znajdują się Twoje imię i nazwisko, data urodzenia, numer paszportu oraz inne dane identyfikacyjne.",
+        details_desktop: "Otwórz paszport na stronie ze zdjęciem i danymi osobowymi. Na tej stronie znajdują się Twoje imię i nazwisko, data urodzenia, numer paszportu oraz inne dane identyfikacyjne.",
+        title: "Otwórz paszport na stronie z danymi",
+        title_desktop: "Otwórz paszport na stronie z danymi",
+      },
+      visibility: {
+        details: "Upewnij się, że nie zasłaniasz dokumentu, w tym jego dolnych krawędzi, palcem. Zwróć też uwagę na refleksy z hologramu na polach dokumentu.",
+        details_desktop: "Upewnij się, że nie zasłaniasz dokumentu, w tym jego dolnych krawędzi, palcem. Zwróć też uwagę na refleksy z hologramu na polach dokumentu.",
+        title: "Wszystkie pola powinny być widoczne",
+        title_desktop: "Wszystkie pola powinny być widoczne",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Instrukcje skanowania",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Upewnij się, że obiektyw aparatu jest czysty, a dokument dobrze oświetlony. Wszystkie pola dokumentu powinny być widoczne na ekranie aparatu.",
       title: "Wszystkie szczegóły powinny być widoczne",
       title_desktop: "Przygotuj się do skanowania",
+    },
+    passport_only: {
+      details: "Otwórz paszport na stronie ze zdjęciem i danymi osobowymi. Upewnij się, że paszport jest dobrze oświetlony. Wszystkie pola muszą być w pełni widoczne.",
+      details_desktop: "Przygotuj paszport, otwierając go na stronie ze zdjęciem i danymi osobowymi. Wyczyść obiektyw kamery i upewnij się, że dokument jest dobrze oświetlony. Wszystkie pola muszą być w pełni widoczne.",
+      title: "Otwórz paszport",
+      title_desktop: "Otwórz paszport",
     },
   },
   sdk_aria: "Ekran skanowania dokumentów",

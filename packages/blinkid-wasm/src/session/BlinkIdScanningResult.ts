@@ -171,6 +171,15 @@ export type BlinkIdScanningResult = {
   /** Scanning side matching the returned barcode image. */
   barcodeImageScanningSide: ScanningSide | undefined;
 
+  /** The vehicle number of the document owner. */
+  vehicleNumber: StringResult | null;
+
+  /** The passport number of the document owner. */
+  passportNumber: StringResult | null;
+
+  /** The traffic participant number of the document owner. */
+  trafficParticipantNumber: StringResult | null;
+
   /** The results of scanning each side of the document */
   subResults: SingleSideScanningResult[];
 };

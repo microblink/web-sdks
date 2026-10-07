@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Seguinte",
+    passport_only: {
+      blur: {
+        details: "Tente manter o telefone e o documento imóveis enquanto digitaliza. A deslocação de qualquer um deles pode desfocar a imagem e tornar ilegíveis os dados no documento.",
+        details_desktop: "Tente manter-se imóvel enquanto digitaliza, caso contrário a imagem poderá ficar desfocada e os dados do documento poderão tornar-se ilegíveis.",
+        title: "Mantenha-se imóvel enquanto digitaliza",
+        title_desktop: "Mantenha-se imóvel enquanto digitaliza",
+      },
+      camera_lens: {
+        details_desktop: "Verifique se não há manchas ou poeiras na lente da sua câmara. Uma lente suja torna a imagem final desfocada, deixando os detalhes do documento ilegíveis e impedindo a digitalização correta dos dados.",
+        title_desktop: "Limpe a lente da câmara",
+      },
+      lighting: {
+        details: "Evite a luz direta e intensa porque reflete a partir do documento e pode tornar ilegíveis partes do documento. Se não conseguir ler os dados no documento, também não serão visíveis para a câmara.",
+        details_desktop: "Evite a luz direta e intensa porque reflete a partir do documento e pode tornar ilegíveis partes do documento. Se não conseguir ler os dados no documento, também não serão visíveis para a câmara.",
+        title: "Cuidado com a luz intensa",
+        title_desktop: "Cuidado com a luz intensa",
+      },
+      open_passport: {
+        details: "Abra o passaporte na página com a sua fotografia e os seus dados pessoais. Esta página apresenta o seu nome, a data de nascimento, o número do passaporte e outras informações de identificação.",
+        details_desktop: "Abra o passaporte na página com a sua fotografia e os seus dados pessoais. Esta página contém o seu nome, a data de nascimento, o número do passaporte e outras informações de identificação.",
+        title: "Abra o passaporte na página de dados",
+        title_desktop: "Abra o passaporte na página de dados",
+      },
+      visibility: {
+        details: "Certifique-se de que não está a cobrir partes do documento com um dedo, incluindo as linhas de fundo. Tenha também em atenção os reflexos de holograma que passam por cima dos campos do documento.",
+        details_desktop: "Certifique-se de que não está a cobrir partes do documento com um dedo, incluindo as linhas de fundo. Tenha também em atenção os reflexos de holograma que passam por cima dos campos do documento.",
+        title: "Mantenha todos os campos visíveis",
+        title_desktop: "Mantenha todos os campos visíveis",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Instruções de digitalização",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Assegure-se de que mantém a lente da câmara limpa e o documento bem iluminado. Todos os campos do documento devem estar visíveis no ecrã da câmara.",
       title: "Mantenha todos os pormenores visíveis",
       title_desktop: "Prepare-se para digitalizar",
+    },
+    passport_only: {
+      details: "Prepare o seu passaporte, abrindo-o na página que contém a sua fotografia e os seus dados pessoais. Certifique-se de que o passaporte está bem iluminado. Todos os campos devem estar totalmente visíveis.",
+      details_desktop: "Prepare o seu passaporte, abrindo-o na página que contém a sua fotografia e informações pessoais. Mantenha a lente da câmara limpa e certifique-se de que o documento está bem iluminado. Todos os campos devem estar totalmente visíveis.",
+      title: "Abra o seu passaporte",
+      title_desktop: "Abra o seu passaporte",
     },
   },
   sdk_aria: "Ecrã de digitalização de documentos",

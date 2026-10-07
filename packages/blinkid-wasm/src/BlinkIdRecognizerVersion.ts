@@ -2,4 +2,4 @@
 
 // This file is auto-generated. Do not edit manually.
 
-export const BLINK_ID_RECOGNIZER_VERSION = "25.0.4";
+export const BLINK_ID_RECOGNIZER_VERSION = "27.0.1";

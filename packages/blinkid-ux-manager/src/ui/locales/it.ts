@@ -150,11 +150,41 @@ export default {
       visibility: {
         details: "Controlla di non stare coprendo parte del documento, comprese le ultime righe, con un dito. Fai attenzione anche ai riflessi olografici situati sui campi del documento.",
         details_desktop: "Controlla di non stare coprendo parte del documento, comprese le ultime righe, con un dito. Fai attenzione anche ai riflessi olografici situati sui campi del documento.",
-        title: "Fai in modo tutti i campi siano visibili",
-        title_desktop: "Fai in modo tutti i campi siano visibili",
+        title: "Mantieni tutti i campi visibili",
+        title_desktop: "Mantieni tutti i campi visibili",
       },
     },
     next_btn: "Avanti",
+    passport_only: {
+      blur: {
+        details: "Cerca di tenere fermi il telefono e il documento durante la scansione. Muoverli può rendere l'immagine sfocata e i dati sul documento illeggibili.",
+        details_desktop: "Cerca di tenere fermo il documento durante la scansione. Muoverlo può rendere l'immagine sfocata e i dati sul documento illeggibili.",
+        title: "Resta immobile durante la scansione",
+        title_desktop: "Resta immobile durante la scansione",
+      },
+      camera_lens: {
+        details_desktop: "Controlla che la lente della fotocamera sia priva di macchie o polvere. Una lente sporca sfoca l'immagine finale, rendendo illeggibili le informazioni riportate sul documento e impedendo la corretta scansione dei dati.",
+        title_desktop: "Pulisci la lente della fotocamera",
+      },
+      lighting: {
+        details: "Evita la luce intensa diretta, perché questa si riflette sul documento e può rendere illeggibili alcune sue parti. Se non riesci a leggere i dati sul documento, neanche la fotocamera potrà vederli.",
+        details_desktop: "Evita la luce intensa diretta, perché questa si riflette sul documento e può rendere illeggibili alcune sue parti. Se non riesci a leggere i dati sul documento, neanche la fotocamera potrà vederli.",
+        title: "Attenzione alla luce intensa",
+        title_desktop: "Attenzione alla luce intensa",
+      },
+      open_passport: {
+        details: "Apri il passaporto alla pagina con la foto e i dati personali. Questa pagina riporta il tuo nome, la data di nascita, il numero di passaporto e altre informazioni identificative.",
+        details_desktop: "Apri il passaporto alla pagina con la foto e i dati personali. Questa pagina riporta il nome, la data di nascita, il numero di passaporto e altre informazioni identificative.",
+        title: "Apri il passaporto alla pagina dei dati",
+        title_desktop: "Apri il passaporto alla pagina dei dati",
+      },
+      visibility: {
+        details: "Controlla di non stare coprendo parte del documento, comprese le ultime righe, con un dito. Fai attenzione anche ai riflessi olografici situati sui campi del documento.",
+        details_desktop: "Controlla di non stare coprendo parte del documento, comprese le ultime righe, con un dito. Fai attenzione anche ai riflessi olografici situati sui campi del documento.",
+        title: "Mantieni tutti i campi visibili",
+        title_desktop: "Mantieni tutti i campi visibili",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Istruzioni per la scansione",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Controlla che la lente della fotocamera sua pulita e che il documento sia ben illuminato. Tutti i campi del documento devono essere visibili sullo schermo della fotocamera.",
       title: "Fai in modo tutti i dati siano visibili",
       title_desktop: "Preparati per la scansione",
+    },
+    passport_only: {
+      details: "Apri il passaporto alla pagina con la foto e i dati personali. Assicurati che il passaporto sia ben illuminato. Tutti i campi devono essere completamente visibili.",
+      details_desktop: "Prepara il passaporto aprendolo alla pagina con la foto e i dati personali. Pulisci l'obiettivo della fotocamera e assicurati che il documento sia ben illuminato. Tutti i campi devono essere completamente visibili.",
+      title: "Apri il passaporto",
+      title_desktop: "Apri il passaporto",
     },
   },
   sdk_aria: "Schermata di scansione del documento",

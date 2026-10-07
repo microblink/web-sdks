@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-ux-manager",
-  "version": "8002.0.1",
+  "version": "8003.0.0",
   "description": "BlinkID UX Manager provides user feedback based on the blinkid process results.",
   "keywords": [],
   "license": "ISC",

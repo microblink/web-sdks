@@ -1,10 +1,18 @@
 # @microblink/blinkid-core
 
+## 8003.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@8003.0.0
+  - @microblink/blinkid-worker@8003.0.0
+
 ## 8002.0.1
 
 ### Patch Changes
 
-- Update declaration bundles
+- Updated declaration bundles
 - Updated dependencies
   - @microblink/blinkid-wasm@8002.0.1
   - @microblink/blinkid-worker@8002.0.1

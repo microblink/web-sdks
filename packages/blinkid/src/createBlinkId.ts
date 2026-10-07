@@ -1,6 +1,7 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import {
+  BlinkIdSessionSettings,
   BlinkIdSessionSettingsInput,
   loadBlinkIdCore,
   type BlinkIdCore,
@@ -17,13 +18,28 @@ import {
 } from "@microblink/camera-manager/ui";
 import { Simplify } from "type-fest";
 
+import { SessionSettingsBuilder } from "./sessionSettingsBuilder";
+
+export { SessionSettingsBuilder };
+
+/** Initialization and mutually exclusive scanning configuration for the BlinkID component. */
+export type BlinkIdScanningOptions<Mode extends "preset" | "settings" = "preset" | "settings"> = BlinkIdInitSettings &
+  Partial<Omit<BlinkIdSessionSettingsInput, "inputImageSource" | "scanningSettings">> &
+  (Mode extends "preset"
+    ? {
+        presetScanningSettingsBuilder: (builder: SessionSettingsBuilder) => Promise<BlinkIdSessionSettings>;
+      }
+    : {
+        scanningSettings?: BlinkIdSessionSettingsInput["scanningSettings"];
+      });
+
 /**
  * Configuration options for creating a BlinkID component.
  *
  * This type combines options with core initialization and session settings. It allows customization of the UI elements,
  * localization, and scanning behavior.
  */
-export type BlinkIdComponentOptions = Simplify<
+export type BlinkIdComponentOptions<Mode extends "preset" | "settings" = "preset" | "settings"> = Simplify<
   {
     /**
      * The HTML element where the BlinkID UI will be mounted. If not provided, the UI will be mounted to the document
@@ -52,8 +68,7 @@ export type BlinkIdComponentOptions = Simplify<
      * Return `null` or `undefined` to keep the SDK default redaction behavior.
      */
     redactionSettingsResolver?: RedactionSettingsResolver;
-  } & BlinkIdInitSettings &
-    Partial<Omit<BlinkIdSessionSettingsInput, "inputImageSource">>
+  } & BlinkIdScanningOptions<Mode>
 >;
 
 /** The BlinkId UX Manager type. */
@@ -149,23 +164,25 @@ export type BlinkIdComponent = {
  * @param options - Configuration options for the BlinkID component
  * @returns Promise that resolves to a BlinkIdComponent with all SDK instances and UI elements
  */
-export const createBlinkId = async ({
-  licenseKey,
-  microblinkProxyUrl,
-  targetNode,
-  cameraManagerUiOptions,
-  initialMemory,
-  otaResources,
-  resourceDownloadTimeoutMs,
-  resourcesLocation,
-  scanningSettings,
-  useLightweightBuild,
-  wasmVariant,
-  scanningMode,
-  redactionSettingsResolver,
-  feedbackUiOptions,
-  uxManagerOptions,
-}: BlinkIdComponentOptions) => {
+export function createBlinkId(options: BlinkIdComponentOptions<"preset">): Promise<BlinkIdComponent>;
+export function createBlinkId(options: BlinkIdComponentOptions<"settings">): Promise<BlinkIdComponent>;
+export async function createBlinkId(options: BlinkIdComponentOptions) {
+  const {
+    licenseKey,
+    microblinkProxyUrl,
+    targetNode,
+    cameraManagerUiOptions,
+    initialMemory,
+    otaResources,
+    resourceDownloadTimeoutMs,
+    resourcesLocation,
+    useLightweightBuild,
+    wasmVariant,
+    scanningMode,
+    redactionSettingsResolver,
+    feedbackUiOptions,
+    uxManagerOptions,
+  } = options;
   let blinkIdCore: BlinkIdCore | undefined;
   let scanningSession: Awaited<ReturnType<BlinkIdCore["createScanningSession"]>> | undefined;
 
@@ -184,10 +201,25 @@ export const createBlinkId = async ({
 
     blinkIdCore = await loadBlinkIdCore(initSettings);
 
-    const sessionSettings = {
-      scanningMode,
-      scanningSettings,
+    if (!blinkIdCore) {
+      throw new Error("BlinkID core not initialized");
+    }
+
+    const loadedBlinkIdCore = blinkIdCore;
+
+    const getScanningSettings = (): Promise<BlinkIdSessionSettingsInput> => {
+      if ("presetScanningSettingsBuilder" in options) {
+        const builder = new SessionSettingsBuilder(loadedBlinkIdCore);
+
+        return options.presetScanningSettingsBuilder(builder);
+      }
+
+      return Promise.resolve({
+        scanningMode,
+        scanningSettings: options.scanningSettings,
+      });
     };
+    const sessionSettings = await getScanningSettings();
 
     scanningSession = redactionSettingsResolver
       ? await blinkIdCore.createScanningSession(sessionSettings, {
@@ -222,12 +254,6 @@ export const createBlinkId = async ({
 
     // selects the camera and starts the stream
     await cameraManager.startCameraStream();
-
-    if (!blinkIdCore) {
-      throw new Error("BlinkID core not initialized");
-    }
-
-    const loadedBlinkIdCore = blinkIdCore;
 
     const destroy = async () => {
       cameraUi.dismount();
@@ -277,4 +303,4 @@ export const createBlinkId = async ({
 
     throw error;
   }
-};
+}

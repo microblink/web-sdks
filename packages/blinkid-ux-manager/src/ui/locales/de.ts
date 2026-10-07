@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Weiter",
+    passport_only: {
+      blur: {
+        details: "Versuchen Sie, das Telefon und das Dokument während des Scanvorgangs ruhig zu halten. Jede Bewegung kann das Bild unscharf und die Daten auf dem Dokument unlesbar machen.",
+        details_desktop: "Vermeiden Sie Bewegungen während des Scanvorgangs. Jede Bewegung kann das Bild unscharf und die Daten auf dem Dokument unlesbar machen.",
+        title: "Halten Sie während des Scanvorgangs still",
+        title_desktop: "Halten Sie während des Scanvorgangs still",
+      },
+      camera_lens: {
+        details_desktop: "Überprüfen Sie Ihr Kameraobjektiv auf Verschmutzungen oder Staub. Ein verschmutztes Objektiv führt dazu, dass das endgültige Bild unscharf wird, wodurch die Dokumentendetails unleserlich werden und ein erfolgreiches Scannen der Daten verhindert wird.",
+        title_desktop: "Reinigen Sie Ihr Kameraobjektiv",
+      },
+      lighting: {
+        details: "Meiden Sie direktes, grelles Licht, da dieses vom Dokument reflektiert wird und so Teile des Dokuments unkenntlich machen kann. Wenn Sie keine Daten auf dem Dokument lesen können, sind diese auch für die Kamera nicht sichtbar.",
+        details_desktop: "Meiden Sie direktes, grelles Licht, da dieses vom Dokument reflektiert wird und so Teile des Dokuments unkenntlich machen kann. Wenn Sie keine Daten auf dem Dokument lesen können, sind diese auch für die Kamera nicht sichtbar.",
+        title: "Achten Sie auf grelles Licht",
+        title_desktop: "Achten Sie auf grelles Licht",
+      },
+      open_passport: {
+        details: "Öffnen Sie Ihren Reisepass auf der Seite mit Ihrem Foto und Ihren persönlichen Daten. Auf dieser Seite stehen Ihr Name, Ihr Geburtsdatum, Ihre Reisepassnummer und weitere Angaben zu Ihrer Person.",
+        details_desktop: "Öffnen Sie Ihren Reisepass auf der Seite mit Ihrem Foto und Ihren persönlichen Daten. Auf dieser Seite stehen Ihr Name, Ihr Geburtsdatum, Ihre Reisepassnummer und weitere Angaben zu Ihrer Identität.",
+        title: "Öffnen Sie den Reisepass auf der Datenseite",
+        title_desktop: "Öffnen Sie den Reisepass auf der Datenseite",
+      },
+      visibility: {
+        details: "Gehen Sie auf Nummer sicher, indem Sie Teile des Dokuments nicht mit dem Finger verdecken, insbesondere nicht die unteren Zeilen. Vermeiden Sie außerdem Spiegelungen von Hologrammen, die über die Felder des Dokuments hinausgehen.",
+        details_desktop: "Gehen Sie auf Nummer sicher, indem Sie Teile des Dokuments nicht mit dem Finger verdecken, insbesondere nicht die unteren Zeilen. Vermeiden Sie außerdem Spiegelungen von Hologrammen, die über die Felder des Dokuments hinausgehen.",
+        title: "Machen Sie alle Felder sichtbar",
+        title_desktop: "Machen Sie alle Felder sichtbar",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Anweisungen zum Scannen",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Sorgen Sie dafür, dass Ihr Kameraobjektiv sauber ist und das Dokument gut belichtet ist. Alle Bereiche des Dokuments sollten auf dem Kamerabildschirm sichtbar sein.",
       title: "Machen Sie alle Informationen sichtbar",
       title_desktop: "Machen Sie sich bereit zum Scannen",
+    },
+    passport_only: {
+      details: "Öffnen Sie Ihren Reisepass auf der Seite mit Ihrem Foto und Ihren persönlichen Daten. Achten Sie auf eine gute Beleuchtung des Reisepasses. Alle Felder müssen vollständig sichtbar sein.",
+      details_desktop: "Öffnen Sie Ihren Reisepass auf der Seite mit Ihrem Foto und Ihren persönlichen Daten. Halten Sie Ihre Kameralinse sauber und sorgen Sie für eine gute Beleuchtung des Dokuments. Alle Angaben müssen vollständig sichtbar sein.",
+      title: "Öffnen Sie Ihren Reisepass",
+      title_desktop: "Öffnen Sie Ihren Reisepass",
     },
   },
   sdk_aria: "Dokumentenscanner-Bildschirm",

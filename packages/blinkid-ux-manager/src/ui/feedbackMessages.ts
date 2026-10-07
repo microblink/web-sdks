@@ -22,6 +22,7 @@ export const feedbackMessages: Partial<
     match<BlinkIdExtractionMode | undefined, keyof LocalizationStrings["feedback_messages"]>(blinkIdExtractionMode)
       .with("document-with-barcode", () => "scan_the_barcode_side")
       .with("document-with-mrz", () => "scan_the_mrz_side")
+      .with("passport-only", () => "scan_data_page")
       .otherwise(() => "scan_the_front_side"),
   INTRO_BACK_PAGE: () => "scan_the_back_side",
   INTRO_TOP_PAGE: () => "scan_top_page",
@@ -59,6 +60,7 @@ export const feedbackMessages: Partial<
     match<BlinkIdExtractionMode | undefined, keyof LocalizationStrings["feedback_messages"]>(blinkIdExtractionMode)
       .with("document-with-barcode", () => "scan_the_barcode_side")
       .with("document-with-mrz", () => "scan_the_mrz_side")
+      .with("passport-only", () => "scan_data_page")
       .otherwise(() => "scan_the_front_side"),
   BACK_PAGE_NOT_IN_FRAME: () => "scan_the_back_side",
   DATA_PAGE_NOT_IN_FRAME: () => "scan_data_page",

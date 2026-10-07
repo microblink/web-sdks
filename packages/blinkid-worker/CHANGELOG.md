@@ -1,5 +1,30 @@
 # @microblink/blinkid-worker
 
+## 8003.0.0
+
+### Minor Changes
+
+- Adds scanning setting presets to `BlinkIdWorker`. Build preset settings after initialization and pass them to
+  `createScanningSession`:
+
+  ```ts
+  import { loadBlinkIdCore } from "@microblink/blinkid-core";
+
+  const blinkIdCore = await loadBlinkIdCore({ licenseKey: "your-license-key" });
+  const sessionSettings = await blinkIdCore.buildDocumentVideoSettings({
+    scenario: "general",
+    quality: "high-accuracy",
+    captureEnvironment: "hand-held",
+  });
+
+  const scanningSession = await blinkIdCore.createScanningSession(sessionSettings);
+  ```
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-wasm@8003.0.0
+
 ## 8002.0.1
 
 ### Patch Changes

@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Nākamais",
+    passport_only: {
+      blur: {
+        details: "Skenēšanas laikā mēģiniet tālruni un dokumentu turēt nekustīgu. Pārvietojot vienu vai otru, attēls var būt izplūdis, un dokumenta dati var kļūt nesalasāmi.",
+        details_desktop: "Skenēšanas laikā nekustieties. Pretējā gadījumā attēls var būt izplūdis, un dokumenta dati var kļūt nesalasāmi.",
+        title: "Skenēšanas laikā turēt nekustīgu",
+        title_desktop: "Skenēšanas laikā turēt nekustīgu",
+      },
+      camera_lens: {
+        details_desktop: "Pārbaudiet, vai uz kameras objektīva nav traipu vai putekļu. Ar netīru objektīvu uzņemts attēls būs izplūdis, un informācija dokumentā nebūs salasāma un noskenējama.",
+        title_desktop: "Notīriet kameras objektīvu",
+      },
+      lighting: {
+        details: "Izvairieties no tiešas spilgtas gaismas, jo tā atstarojas no dokumenta un var padarīt atsevišķas dokumenta daļas nelasāmas. Ja nevarat izlasīt dokumentā esošos datus, tos neredz arī kamera.",
+        details_desktop: "Izvairieties no tiešas spilgtas gaismas, jo tā atstarojas no dokumenta un var padarīt atsevišķas dokumenta daļas nelasāmas. Ja nevarat izlasīt dokumentā esošos datus, tos neredz arī kamera.",
+        title: "Uzmanieties no spilgtas gaismas",
+        title_desktop: "Uzmanieties no spilgtas gaismas",
+      },
+      open_passport: {
+        details: "Atveriet pasi lapā ar savu fotoattēlu un personas datiem. Šajā lapā ir norādīts jūsu vārds, dzimšanas datums, pases numurs un cita identifikācijas informācija.",
+        details_desktop: "Atveriet pasi lapā ar savu fotoattēlu un personas datiem. Šajā lapā ir redzams jūsu vārds, dzimšanas datums, pases numurs un cita identificējoša informācija.",
+        title: "Atveriet pasi datu lapā",
+        title_desktop: "Atveriet pasi datu lapā",
+      },
+      visibility: {
+        details: "Raugieties, lai neaizsegtu dokumenta daļas ar pirkstu, ieskaitot apakšējās līnijas. Uzmanieties arī no hologrammas atspulgiem virs dokumenta laukiem.",
+        details_desktop: "Raugieties, lai neaizsegtu dokumenta daļas ar pirkstu, ieskaitot apakšējās līnijas. Uzmanieties arī no hologrammas atspulgiem virs dokumenta laukiem.",
+        title: "Paturēt visus laukus redzamus",
+        title_desktop: "Paturēt visus laukus redzamus",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Skenēšanas norādījumi",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Pārliecinieties, ka kameras objektīvs ir tīrs un dokuments ir labi apgaismots. Kameras ekrānā jābūt redzamiem visiem dokumenta laukiem.",
       title: "Paturēt redzamu visu detalizēto informāciju",
       title_desktop: "Sagatavojieties skenēšanai",
+    },
+    passport_only: {
+      details: "Atveriet pasi lappusē, kurā ir jūsu fotoattēls un personas informācija. Pārliecinieties, ka pase ir labi apgaismota. Visiem laukiem jābūt pilnībā redzamiem.",
+      details_desktop: "Sagatavojiet pasi, atverot to lappusē ar jūsu fotoattēlu un personas informāciju. Uzturiet kameras objektīvu tīru un nodrošiniet, lai dokuments būtu labi apgaismots. Visiem laukiem jābūt pilnībā redzamiem.",
+      title: "Atveriet pasi",
+      title_desktop: "Atveriet pasi",
     },
   },
   sdk_aria: "Dokumenta skenēšanas ekrāns",

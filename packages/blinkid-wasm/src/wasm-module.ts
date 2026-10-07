@@ -3,8 +3,10 @@
 import type { EmscriptenModule, WasmBindings } from "@microblink/wasm-common";
 
 import { DocumentClassInfo } from "./result";
-import { BlinkIdScanningSession, BlinkIdSessionSettingsInput } from "./session";
+import { BlinkIdScanningSession, BlinkIdSessionSettings, BlinkIdSessionSettingsInput } from "./session";
+import { ScanningSettings } from "./settings";
 import { RedactionSettings } from "./settings/RedactionSettings";
+import { DocumentPhotoUseCase, DocumentVideoUseCase } from "./settings/ScanningUseCase";
 
 /**
  * The BlinkID Wasm module.
@@ -12,6 +14,10 @@ import { RedactionSettings } from "./settings/RedactionSettings";
  * @ignore
  */
 export interface BlinkIdWasmModule extends BlinkIdBindings, EmscriptenModule, MemFSModule {
+  buildDocumentVideoSettings: (useCase: DocumentVideoUseCase) => BlinkIdSessionSettings;
+  buildDocumentPhotoSettings: (useCase: DocumentPhotoUseCase) => BlinkIdSessionSettings;
+  buildStandaloneBarcodeSettings: () => BlinkIdSessionSettings;
+  buildVerifyCaptureSettings: () => BlinkIdSessionSettings;
   getDefaultRedactionSettings: (documentType: DocumentClassInfo) => RedactionSettings;
   getRecognizerVersion: () => string;
 }

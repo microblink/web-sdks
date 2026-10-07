@@ -2,21 +2,21 @@
   "resources": [
     {
       "filename": "serialized-embedder-database.bin",
-      "version": "1.0.14",
+      "version": "1.0.18",
       "url": "serialized-embedder-database.bin",
-      "contentLength": 3831312
+      "contentLength": 4148860
     },
     {
       "filename": "template-database.zzip",
-      "version": "1.0.1",
+      "version": "1.0.3",
       "url": "template-database.zzip",
-      "contentLength": 761242
+      "contentLength": 1859338
     },
     {
       "filename": "knowledge-database.zzip",
-      "version": "2.0.1",
+      "version": "2.0.4",
       "url": "knowledge-database.zzip",
-      "contentLength": 93004
+      "contentLength": 98288
     }
   ]
 }

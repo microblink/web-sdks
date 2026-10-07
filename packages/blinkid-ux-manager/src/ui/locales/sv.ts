@@ -88,7 +88,7 @@ export default {
         title_desktop: "Håll stilla medan du skannar",
       },
       camera_lens: {
-        details_desktop: "Kontrollera om kameralinsen är smutsig eller dammig. Om linsen är smutsig blir den färdiga bilden suddig, vilket innebär att kortuppgifterna blir oläsliga och skanningen misslyckas.",
+        details_desktop: "Kontrollera om det finns fläckar eller damm på kameralinsen. En smutsig lins gör slutbilden suddig, vilket kan göra dokumentuppgifterna oläsliga och förhindra en lyckad skanning av uppgifterna.",
         title_desktop: "Rengör kameralinsen",
       },
       lighting: {
@@ -112,7 +112,7 @@ export default {
         title_desktop: "Håll stilla medan du skannar",
       },
       camera_lens: {
-        details_desktop: "Kontrollera om kameralinsen är smutsig eller dammig. Om linsen är smutsig blir den färdiga bilden suddig, vilket innebär att kortuppgifterna blir oläsliga och skanningen misslyckas.",
+        details_desktop: "Kontrollera om det finns fläckar eller damm på kameralinsen. En smutsig lins gör slutbilden suddig, vilket kan göra dokumentuppgifterna oläsliga och förhindra en lyckad skanning av uppgifterna.",
         title_desktop: "Rengör kameralinsen",
       },
       lighting: {
@@ -138,7 +138,7 @@ export default {
         title_desktop: "Håll stilla medan du skannar",
       },
       camera_lens: {
-        details_desktop: "Kontrollera om kameralinsen är smutsig eller dammig. Om linsen är smutsig blir den färdiga bilden suddig, vilket innebär att kortuppgifterna blir oläsliga och skanningen misslyckas.",
+        details_desktop: "Kontrollera om det finns fläckar eller damm på kameralinsen. En smutsig lins gör slutbilden suddig, vilket kan göra dokumentuppgifterna oläsliga och förhindra en lyckad skanning av uppgifterna.",
         title_desktop: "Rengör kameralinsen",
       },
       lighting: {
@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Nästa",
+    passport_only: {
+      blur: {
+        details: "Försök att hålla telefonen och dokumentet stilla under skanningen. Om du rör någotdera kan bilden bli suddig och informationen på dokumentet oläslig.",
+        details_desktop: "Försök att stå stilla medan du skannar. Rörelse kan göra bilden suddig och göra informationen i dokumentet oläslig.",
+        title: "Håll stilla medan du skannar",
+        title_desktop: "Håll stilla medan du skannar",
+      },
+      camera_lens: {
+        details_desktop: "Kontrollera om det finns fläckar eller damm på kameralinsen. En smutsig lins gör slutbilden suddig, vilket kan göra dokumentuppgifterna oläsliga och förhindra en lyckad skanning av uppgifterna.",
+        title_desktop: "Rengör kameralinsen",
+      },
+      lighting: {
+        details: "Undvik starkt direktljus eftersom det reflekteras från dokumentet och kan göra delar av det oläsliga. Om du inte kan läsa informationen på dokumentet kommer den inte heller att synas för kameran.",
+        details_desktop: "Undvik starkt direktljus eftersom det reflekteras från dokumentet och kan göra delar av det oläsliga. Om du inte kan läsa informationen på dokumentet kommer den inte heller att synas för kameran.",
+        title: "Se upp för skarpt ljus",
+        title_desktop: "Se upp för skarpt ljus",
+      },
+      open_passport: {
+        details: "Öppna passet på sidan med ditt foto och dina personuppgifter. På den här sidan finns ditt namn, födelsedatum, passnummer och annan identifierande information.",
+        details_desktop: "Öppna passet på sidan med ditt foto och dina personuppgifter. På sidan finns ditt namn, födelsedatum, passnummer och annan identifierande information.",
+        title: "Öppna passet på sidan med personuppgifter",
+        title_desktop: "Öppna passet på sidan med personuppgifter",
+      },
+      visibility: {
+        details: "Se till att du inte täcker delar av dokumentet med fingret, inklusive de nedre raderna. Se också upp för hologramreflektioner som löper över dokumentets fält.",
+        details_desktop: "Se till att du inte täcker delar av dokumentet med fingret, inklusive de nedre raderna. Se också upp för hologramreflektioner som löper över dokumentets fält.",
+        title: "Håll alla fält synliga",
+        title_desktop: "Håll alla fält synliga",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Skanningsinstruktioner",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Se till att hålla kameralinsen ren och dokumentet väl belyst. Alla fält i dokumentet ska synas på kameraskärmen.",
       title: "Håll alla uppgifter synliga",
       title_desktop: "Förbered skanningen",
+    },
+    passport_only: {
+      details: "Öppna ditt pass på sidan med ditt foto och dina personuppgifter. Se till att passet är väl upplyst. Alla fält måste vara helt synliga.",
+      details_desktop: "Förbered ditt pass genom att öppna det på sidan med ditt foto och dina personuppgifter. Håll kameralinsen ren och se till att dokumentet är väl belyst. Alla fält måste vara helt synliga.",
+      title: "Öppna ditt pass",
+      title_desktop: "Öppna ditt pass",
     },
   },
   sdk_aria: "Skärm för dokumentskanning",

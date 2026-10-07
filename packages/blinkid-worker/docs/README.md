@@ -18,6 +18,7 @@
 - [DownloadProgress](type-aliases/DownloadProgress.md)
 - [GetDefaultRedactionSettingsOptions](type-aliases/GetDefaultRedactionSettingsOptions.md)
 - [LoadWasmParams](type-aliases/LoadWasmParams.md)
+- [NonNullSessionSettings](type-aliases/NonNullSessionSettings.md)
 - [ProcessResultWithBuffer](type-aliases/ProcessResultWithBuffer.md)
 - [ProgressStatusCallback](type-aliases/ProgressStatusCallback.md)
 - [RedactionSettingsResolver](type-aliases/RedactionSettingsResolver.md)

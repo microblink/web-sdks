@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Áfram",
+    passport_only: {
+      blur: {
+        details: "Reynið að halda símanum og skjalinu kyrrum á meðan skannað er. Að færa annað hvort getur gert myndina óskýra og gert gögnin í skjalinu ólæsileg.",
+        details_desktop: "Reyndu að halda kyrru meðan verið er að skanna. Hreyfing getur gert myndina óskýra og gert gögn á skjalinu ólæsileg.",
+        title: "Verið kyrr á meðan skannað er",
+        title_desktop: "Verið kyrr á meðan skannað er",
+      },
+      camera_lens: {
+        details_desktop: "Athugið hvort blettir eða ryk séu á myndavélalinsunni. Skítug linsa veldur því að lokamyndin verður óskýr, sem gerir skjalupplýsingarnar ólæsilegar og kemur í veg fyrir að hægt sé að skanna gögnin með góðum árangri.",
+        title_desktop: "Hreinsið myndavélalinsuna",
+      },
+      lighting: {
+        details: "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
+        details_desktop: "Forðist beint sterkt ljós því það endurkastast frá skjalinu og getur gert hluta skjalsins ólæsilega. Ef ekki er hægt að lesa gögnin í skjalinu mun myndavélin ekki heldur sjá þau.",
+        title: "Gætið að sterku ljósi",
+        title_desktop: "Gætið að sterku ljósi",
+      },
+      open_passport: {
+        details: "Opnaðu vegabréfið á síðunni með myndinni þinni og persónuupplýsingum. Á þessari síðu eru nafn þitt, fæðingardagur, vegabréfsnúmer og aðrar upplýsingar sem auðkenna þig.",
+        details_desktop: "Opnaðu vegabréfið á síðunni með myndinni þinni og persónuupplýsingum. Á þessari síðu eru nafn þitt, fæðingardagur, vegabréfsnúmer og aðrar upplýsingar sem auðkenna þig.",
+        title: "Opnaðu vegabréfið á upplýsingasíðunni",
+        title_desktop: "Opnaðu vegabréfið á upplýsingasíðunni",
+      },
+      visibility: {
+        details: "Gangið úr skugga um að hlutar skjalsins séu ekki huldir með fingri, þar á meðal neðstu línurnar. Gætið einnig að endurspeglunum heilmyndar sem fara yfir reiti skjalsins.",
+        details_desktop: "Gangið úr skugga um að hlutar skjalsins séu ekki huldir með fingri, þar á meðal neðstu línurnar. Gætið einnig að endurspeglunum heilmyndar sem fara yfir reiti skjalsins.",
+        title: "Haldið öllum reitum sýnilegum",
+        title_desktop: "Haldið öllum reitum sýnilegum",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Skönnunarleiðbeiningar",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Gangið úr skugga um að myndavélarlinsan sé hrein og að skjalið sé vel lýst. Allir reitir skjals ættu að vera sýnilegir á skjá myndavélarinnar.",
       title: "Haldið öllum upplýsingunum sýnilegum",
       title_desktop: "Verið tilbúin að skanna",
+    },
+    passport_only: {
+      details: "Opnaðu vegabréfið á síðunni með myndinni þinni og persónuupplýsingum. Gakktu úr skugga um að vegabréfið sé vel upplýst. Allir reitir verða að sjást að fullu.",
+      details_desktop: "Opnaðu vegabréfið á síðunni með myndinni þinni og persónuupplýsingum. Hafðu myndavélarlinsuna hreina og tryggðu góða lýsingu á skjalinu. Allir reitir verða að vera að fullu sýnilegir.",
+      title: "Opnaðu vegabréfið",
+      title_desktop: "Opnaðu vegabréfið",
     },
   },
   sdk_aria: "Skjalaskönnunarskjár",

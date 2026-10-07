@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Következő",
+    passport_only: {
+      blur: {
+        details: "A szkennelés során próbálja mozdulatlanul tartani a telefont és a dokumentumot. Mozgás hatására a kép elmosódhat, a dokumentumon lévő adatok pedig olvashatatlanná válhatnak.",
+        details_desktop: "Próbáljon mozdulatlan maradni a beolvasás közben. A mozgás elhomályosíthatja a képet, és olvashatatlanná teheti a dokumentumon lévő adatokat.",
+        title: "Maradjon mozdulatlan a szkennelés során",
+        title_desktop: "Maradjon mozdulatlan a szkennelés során",
+      },
+      camera_lens: {
+        details_desktop: "Ellenőrizze, hogy nincs-e folt vagy por a kamera lencséjén. A piszkos lencse elhomályosítja a végső képet, így a dokumentum részletei olvashatatlanná válnak, ami megakadályozza az adatok sikeres beolvasását.",
+        title_desktop: "Tisztítsa meg a kameralencsét",
+      },
+      lighting: {
+        details: "Kerülje a közvetlen, erős fényt, mivel visszaverődik a dokumentumról, és ennek hatására a dokumentum egyes részei olvashatatlanná válhatnak. Ha nem tudja leolvasni a dokumentumon lévő adatokat, akkor a kamera számára sem lesznek láthatók.",
+        details_desktop: "Kerülje a közvetlen, erős fényt, mivel visszaverődik a dokumentumról, és ennek hatására a dokumentum egyes részei olvashatatlanná válhatnak. Ha nem tudja leolvasni a dokumentumon lévő adatokat, akkor a kamera számára sem lesznek láthatók.",
+        title: "Ügyeljen az erős fényre",
+        title_desktop: "Ügyeljen az erős fényre",
+      },
+      open_passport: {
+        details: "Nyissa ki az útlevelét a fényképét és személyes adatait tartalmazó oldalnál. Ezen az oldalon szerepel a neve, születési ideje, útlevélszáma és más azonosító adatai.",
+        details_desktop: "Nyissa ki az útlevelét a fényképét és személyes adatait tartalmazó oldalnál. Ezen az oldalon a neve, születési dátuma, útlevélszáma és egyéb azonosító adatai szerepelnek.",
+        title: "Nyissa ki az útlevelét az adatokat tartalmazó oldalnál",
+        title_desktop: "Nyissa ki az útlevelét az adatokat tartalmazó oldalnál",
+      },
+      visibility: {
+        details: "Ügyeljen arra, hogy ne takarja le az ujjával a dokumentum részeit (az alsó sorokat is beleértve). Ügyeljen továbbá a hologramokra is, amelyek visszatükröződnek a dokumentummezőkön.",
+        details_desktop: "Ügyeljen arra, hogy ne takarja le az ujjával a dokumentum részeit (az alsó sorokat is beleértve). Ügyeljen továbbá a hologramokra is, amelyek visszatükröződnek a dokumentummezőkön.",
+        title: "Az összes mező legyen teljes egészében látható",
+        title_desktop: "Az összes mező legyen teljes egészében látható",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Szkennelési utasítások",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Ügyeljen a kameralencse tisztán tartására és a dokumentum megfelelő megvilágítására. Minden dokumentummezőnek láthatónak kell lennie a kameraképernyőn.",
       title: "Az összes adat legyen látható",
       title_desktop: "Készüljön fel a szkennelésre",
+    },
+    passport_only: {
+      details: "Nyissa ki az útlevelét annál az oldalnál, amelyen a fényképe és személyes adatai szerepelnek. Gondoskodjon róla, hogy az útlevél jól meg legyen világítva. Minden mezőnek teljesen láthatónak kell lennie.",
+      details_desktop: "Készítse elő az útlevelét: nyissa ki a fényképét és személyes adatait tartalmazó oldalnál. Tartsa tisztán a kamera lencséjét, és gondoskodjon róla, hogy a dokumentum jól meg legyen világítva. Minden mezőnek teljesen láthatónak kell lennie.",
+      title: "Nyissa ki az útlevelét",
+      title_desktop: "Nyissa ki az útlevelét",
     },
   },
   sdk_aria: "Dokumentumszkennelés képernyő",

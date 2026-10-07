@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Berikutnya",
+    passport_only: {
+      blur: {
+        details: "Pastikan ponsel dan dokumen tidak bergerak saat pemindaian. Jika bergerak, gambar bisa kabur atau data di dokumen tidak terbaca.",
+        details_desktop: "Usahakan tidak bergerak saat memindai. Jika bergerak, gambar menjadi buram dan data di dokumen tidak terbaca.",
+        title: "Pastikan dokumen tidak bergerak saat pemindaian",
+        title_desktop: "Pastikan dokumen tidak bergerak saat pemindaian",
+      },
+      camera_lens: {
+        details_desktop: "Pastikan tidak ada noda atau debu pada lensa kamera. Jika lensa kotor, hasil gambar menjadi buram. Akibatnya, detail dokumen tidak dapat terbaca dan data gagal dipindai.",
+        title_desktop: "Bersihkan lensa kamera",
+      },
+      lighting: {
+        details: "Hindari sorot cahaya tajam karena dapat memantul dari dokumen dan menyebabkan bagian dokumen tidak terbaca. Akibatnya, data di dokumen juga tidak akan terlihat di kamera.",
+        details_desktop: "Hindari sorot cahaya tajam karena dapat memantul dari dokumen dan menyebabkan bagian dokumen tidak terbaca. Akibatnya, data di dokumen juga tidak akan terlihat di kamera.",
+        title: "Waspadai cahaya tajam",
+        title_desktop: "Waspadai cahaya tajam",
+      },
+      open_passport: {
+        details: "Buka paspor Anda pada halaman yang memuat foto dan data pribadi Anda. Halaman ini menampilkan nama, tanggal lahir, nomor paspor, dan informasi identitas lainnya.",
+        details_desktop: "Buka paspor Anda pada halaman yang memuat foto dan data pribadi Anda. Halaman ini memuat nama, tanggal lahir, nomor paspor, dan informasi identitas lainnya.",
+        title: "Buka paspor pada halaman data",
+        title_desktop: "Buka paspor pada halaman data",
+      },
+      visibility: {
+        details: "Pastikan jari Anda tidak menutupi bagian mana pun dari dokumen, termasuk baris paling bawah. Waspadai juga pantulan hologram yang menerpa bagian dokumen.",
+        details_desktop: "Pastikan jari Anda tidak menutupi bagian mana pun dari dokumen, termasuk baris paling bawah. Waspadai juga pantulan hologram yang menerpa bagian dokumen.",
+        title: "Pastikan semua bagian terlihat",
+        title_desktop: "Pastikan semua bagian terlihat",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Petunjuk Pemindaian",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Pastikan lensa kamera bersih dan dokumen cukup terang. Semua bagian dokumen harus terlihat di layar kamera.",
       title: "Pastikan semua detail terlihat",
       title_desktop: "Bersiap memindai",
+    },
+    passport_only: {
+      details: "Buka paspor Anda pada halaman yang berisi foto dan informasi pribadi Anda. Pastikan paspor mendapatkan pencahayaan yang cukup. Semua kolom harus terlihat sepenuhnya.",
+      details_desktop: "Siapkan paspor Anda dengan membukanya pada halaman yang memuat foto dan informasi pribadi Anda. Bersihkan lensa kamera dan pastikan dokumen mendapat pencahayaan yang cukup. Semua bidang harus terlihat sepenuhnya.",
+      title: "Buka paspor Anda",
+      title_desktop: "Buka paspor Anda",
     },
   },
   sdk_aria: "Layar pemindaian dokumen",

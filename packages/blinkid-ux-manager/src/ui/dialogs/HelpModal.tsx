@@ -24,33 +24,42 @@ import HelpDocumentCaptureBarcodeFieldsVisible from "../assets/help/help_documen
 import HelpDocumentWithMrzVisible from "../assets/help/help_document_with_mrz_visible.svg?component-solid";
 import HelpLighting from "../assets/help/help_lighting.svg?component-solid";
 import HelpOcclusion from "../assets/help/help_occlusion.svg?component-solid";
+import HelpOpenPassport from "../assets/help/help_open_passport.svg?component-solid";
+import HelpPassportBlur from "../assets/help/help_passport_blur.svg?component-solid";
+import HelpPassportLighting from "../assets/help/help_passport_lighting.svg?component-solid";
+import HelpPassportVisible from "../assets/help/help_passport_visible.svg?component-solid";
 import QuestionIcon from "../assets/icons/icon-question.svg?component-solid";
 import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
-import { useLocalization } from "../LocalizationContext";
+import { LocalizationStrings, useLocalization } from "../LocalizationContext";
 import { type BlinkIdModalExtractionMode, type BlinkIdModalLocaleGroup } from "./modalExtractionMode";
 
 type HelpImageComponent = typeof HelpOcclusion;
-type HelpStepLocaleKey = "visibility" | "lighting" | "blur";
-type HelpScanStepContent = {
-  localeKey: HelpStepLocaleKey;
+type HelpScanStepContent<TLocaleGroup extends BlinkIdModalLocaleGroup> = {
+  localeKey: keyof LocalizationStrings["help_modal"][TLocaleGroup];
   image: HelpImageComponent;
 };
 
-type HelpModalContent = {
-  localeGroup: BlinkIdModalLocaleGroup;
-  scanSteps: readonly [HelpScanStepContent, HelpScanStepContent, HelpScanStepContent];
+type HelpModalContent<TLocaleGroup extends BlinkIdModalLocaleGroup> = {
+  localeGroup: TLocaleGroup;
+  scanSteps: readonly HelpScanStepContent<TLocaleGroup>[];
 };
 
+function createHelpModalContent<const TLocaleGroup extends BlinkIdModalLocaleGroup>(
+  content: HelpModalContent<TLocaleGroup>,
+) {
+  return content;
+}
+
 export const helpModalContentByExtractionMode = {
-  "full-document": {
+  "full-document": createHelpModalContent({
     localeGroup: "full_document",
     scanSteps: [
       { localeKey: "visibility", image: HelpOcclusion },
       { localeKey: "lighting", image: HelpLighting },
       { localeKey: "blur", image: HelpBlur },
     ],
-  },
-  "document-with-barcode": {
+  }),
+  "document-with-barcode": createHelpModalContent({
     localeGroup: "document_with_barcode",
     scanSteps: [
       {
@@ -60,24 +69,41 @@ export const helpModalContentByExtractionMode = {
       { localeKey: "lighting", image: HelpLighting },
       { localeKey: "blur", image: HelpBlur },
     ],
-  },
-  "barcode-only": {
+  }),
+  "barcode-only": createHelpModalContent({
     localeGroup: "barcode_only",
     scanSteps: [
       { localeKey: "visibility", image: HelpBarcodeOnlyVisible },
       { localeKey: "lighting", image: HelpBarcodeOnlyLighting },
       { localeKey: "blur", image: HelpBarcodeOnlyBlur },
     ],
-  },
-  "document-with-mrz": {
+  }),
+  "document-with-mrz": createHelpModalContent({
     localeGroup: "document_with_mrz",
     scanSteps: [
       { localeKey: "visibility", image: HelpDocumentWithMrzVisible },
       { localeKey: "lighting", image: HelpLighting },
       { localeKey: "blur", image: HelpBlur },
     ],
-  },
-} as const satisfies Record<BlinkIdModalExtractionMode, HelpModalContent>;
+  }),
+  "passport-only": createHelpModalContent({
+    localeGroup: "passport_only",
+    scanSteps: [
+      { localeKey: "open_passport", image: HelpOpenPassport },
+      { localeKey: "visibility", image: HelpPassportVisible },
+      { localeKey: "lighting", image: HelpPassportLighting },
+      { localeKey: "blur", image: HelpPassportBlur },
+    ],
+  }),
+} as const satisfies Record<BlinkIdModalExtractionMode, unknown>;
+
+function getLocaleGroupValue<const TLocaleGroup extends keyof LocalizationStrings["help_modal"]>(
+  helpModalLocalization: LocalizationStrings["help_modal"],
+  localeGroup: TLocaleGroup,
+  key: keyof LocalizationStrings["help_modal"][TLocaleGroup],
+) {
+  return helpModalLocalization[localeGroup][key];
+}
 
 /**
  * The HelpModal component.
@@ -113,7 +139,9 @@ export const HelpModal: Component<{
         ]
       : []),
     ...scanSteps().map((scanStep) => {
-      const stepContent = localeGroup()[scanStep.localeKey];
+      const stepContent =
+        localeGroup()[scanStep.localeKey as Exclude<keyof ReturnType<typeof localeGroup>, "camera_lens">];
+
       return {
         title: props.isDesktop ? stepContent.title_desktop : stepContent.title,
         img: scanStep.image,
