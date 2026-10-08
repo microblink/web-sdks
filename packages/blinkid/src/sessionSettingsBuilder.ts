@@ -14,23 +14,19 @@ export class SessionSettingsBuilder {
     this.#core = core;
   }
 
-  async buildDocumentPhotoSettings(useCase?: DocumentPhotoUseCase): Promise<NonNullSessionSettings> {
-    const settings = await this.#core.buildDocumentPhotoSettings(useCase);
-    return settings;
+  buildDocumentPhotoSettings(useCase?: DocumentPhotoUseCase): Promise<NonNullSessionSettings> {
+    return this.#core.buildDocumentPhotoSettings(useCase);
   }
 
-  async buildDocumentVideoSettings(useCase?: DocumentVideoUseCase): Promise<NonNullSessionSettings> {
-    const settings = await this.#core.buildDocumentVideoSettings(useCase);
-    return settings;
+  buildDocumentVideoSettings(useCase?: DocumentVideoUseCase): Promise<NonNullSessionSettings> {
+    return this.#core.buildDocumentVideoSettings(useCase);
   }
 
-  async buildStandaloneBarcodeSettings(): Promise<NonNullSessionSettings> {
-    const settings = await this.#core.buildStandaloneBarcodeSettings();
-    return settings;
+  buildStandaloneBarcodeSettings(): Promise<NonNullSessionSettings> {
+    return this.#core.buildStandaloneBarcodeSettings();
   }
 
-  async buildVerifyCaptureSettings(): Promise<NonNullSessionSettings> {
-    const settings = await this.#core.buildVerifyCaptureSettings();
-    return settings;
+  buildVerifyCaptureSettings(): Promise<NonNullSessionSettings> {
+    return this.#core.buildVerifyCaptureSettings();
   }
 }
