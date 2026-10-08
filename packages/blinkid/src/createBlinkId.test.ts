@@ -1,6 +1,6 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import type { BlinkIdSessionSettingsInput } from "@microblink/blinkid-core";
+import type { BlinkIdSessionSettingsInput, ScanningMode } from "@microblink/blinkid-core";
 import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 // ============================================================================
@@ -218,7 +218,7 @@ describe("createBlinkId", () => {
 
     await createBlinkId({
       licenseKey: "test-key",
-      scanningMode: "single-side" as BlinkIdComponentOptions["scanningMode"],
+      scanningMode: "single-side" as ScanningMode,
       scanningSettings,
     });
 

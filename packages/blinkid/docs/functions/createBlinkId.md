@@ -119,23 +119,6 @@ The timer resets whenever data arrives, so this does not limit the total duratio
 The parent directory where the `/resources` directory is hosted. Defaults to `window.location.href`, at the root of
 the current page.
 
-##### scanningMode?
-
-[`ScanningMode`](../type-aliases/ScanningMode.md)
-
-The scanning mode to be used during the scanning session.
-
-Specifies whether the scanning is for a single side of a document or multiple sides, as defined in `ScanningMode`.
-The default is set to `automatic`, which automatically determines the number of sides to scan based on the detected
-document type.
-
-- `automatic` - Automatically determines required sides
-- `single` - Scans only one side
-
-**Default Value**
-
-`automatic`
-
 ##### targetNode?
 
 `HTMLElement`
@@ -318,19 +301,6 @@ the current page.
 ##### scanningMode?
 
 [`ScanningMode`](../type-aliases/ScanningMode.md)
-
-The scanning mode to be used during the scanning session.
-
-Specifies whether the scanning is for a single side of a document or multiple sides, as defined in `ScanningMode`.
-The default is set to `automatic`, which automatically determines the number of sides to scan based on the detected
-document type.
-
-- `automatic` - Automatically determines required sides
-- `single` - Scans only one side
-
-**Default Value**
-
-`automatic`
 
 ##### scanningSettings?
 

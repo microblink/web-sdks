@@ -24,13 +24,14 @@ export { SessionSettingsBuilder };
 
 /** Initialization and mutually exclusive scanning configuration for the BlinkID component. */
 export type BlinkIdScanningOptions<Mode extends "preset" | "settings" = "preset" | "settings"> = BlinkIdInitSettings &
-  Partial<Omit<BlinkIdSessionSettingsInput, "inputImageSource" | "scanningSettings">> &
+  Partial<Omit<BlinkIdSessionSettingsInput, "inputImageSource" | "scanningSettings" | "scanningMode">> &
   (Mode extends "preset"
     ? {
         presetScanningSettingsBuilder: (builder: SessionSettingsBuilder) => Promise<BlinkIdSessionSettings>;
       }
     : {
         scanningSettings?: BlinkIdSessionSettingsInput["scanningSettings"];
+        scanningMode?: BlinkIdSessionSettingsInput["scanningMode"];
       });
 
 /**
@@ -178,7 +179,6 @@ export async function createBlinkId(options: BlinkIdComponentOptions) {
     resourcesLocation,
     useLightweightBuild,
     wasmVariant,
-    scanningMode,
     redactionSettingsResolver,
     feedbackUiOptions,
     uxManagerOptions,
@@ -215,7 +215,7 @@ export async function createBlinkId(options: BlinkIdComponentOptions) {
       }
 
       return Promise.resolve({
-        scanningMode,
+        scanningMode: options.scanningMode,
         scanningSettings: options.scanningSettings,
       });
     };
