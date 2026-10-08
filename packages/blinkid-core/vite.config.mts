@@ -3,7 +3,7 @@ import { stripIndents } from "common-tags";
 import { defineConfig } from "vite";
 import { fs, path } from "zx";
 
-import { dependencies } from "./package.json";
+import { dependencies } from "./package.json" with { type: "json" };
 
 let ranOnce = false;
 const resourcesDir = path.resolve(__dirname, "public", "resources");

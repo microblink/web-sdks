@@ -91,4 +91,8 @@ export type DocumentType =
   | "mysss-card"
   | "gendarmerie-id"
   | "police-id"
-  | "origin-card";
+  | "origin-card"
+  | "specified-residence-card"
+  | "golden-card"
+  | "vehicle-ownership-certificate"
+  | "byid-card";

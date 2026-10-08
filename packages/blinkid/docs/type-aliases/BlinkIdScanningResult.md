@@ -399,6 +399,14 @@ The parents info
 
 ***
 
+### passportNumber
+
+> **passportNumber**: [`StringResult`](StringResult.md) \| `null`
+
+The passport number of the document owner.
+
+***
+
 ### personalIdNumber
 
 > **personalIdNumber**: [`StringResult`](StringResult.md) \| `undefined`
@@ -548,6 +556,22 @@ The state of the document owner
 > **subResults**: [`SingleSideScanningResult`](SingleSideScanningResult.md)[]
 
 The results of scanning each side of the document
+
+***
+
+### trafficParticipantNumber
+
+> **trafficParticipantNumber**: [`StringResult`](StringResult.md) \| `null`
+
+The traffic participant number of the document owner.
+
+***
+
+### vehicleNumber
+
+> **vehicleNumber**: [`StringResult`](StringResult.md) \| `null`
+
+The vehicle number of the document owner.
 
 ***
 

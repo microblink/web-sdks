@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Suivant",
+    passport_only: {
+      blur: {
+        details: "Essayez de garder le téléphone et le document immobiles pendant le scan. Tout mouvement de l'un ou l'autre peut brouiller l'image et rendre les données du document illisibles.",
+        details_desktop: "Essayez de rester immobile pendant le scan. Tout mouvement peut brouiller l’image et rendre les données du document illisibles.",
+        title: "Restez immobile pendant le scan",
+        title_desktop: "Restez immobile pendant le scan",
+      },
+      camera_lens: {
+        details_desktop: "Vérifiez que l’objectif de votre appareil photo ne présente aucune trace ni poussière. Un objectif sale rend l’image finale floue, ce qui empêche la lecture des informations du document ainsi que le scan des données.",
+        title_desktop: "Nettoyez l’objectif de votre appareil photo",
+      },
+      lighting: {
+        details: "Évitez toute lumière directe et vive, car elle se reflète sur le document et peut rendre certaines parties du document illisibles. Si les données ne sont pas lisibles sur le document, elles ne le seront pas non plus pour la caméra.",
+        details_desktop: "Évitez toute lumière directe et vive, car elle se reflète sur le document et peut rendre certaines parties du document illisibles. Si les données ne sont pas lisibles sur le document, elles ne le seront pas non plus pour la caméra.",
+        title: "Faites attention aux lumières trop vives",
+        title_desktop: "Faites attention aux lumières trop vives",
+      },
+      open_passport: {
+        details: "Ouvrez votre passeport à la page comportant votre photo et vos informations personnelles. Cette page indique votre nom, votre date de naissance, votre numéro de passeport et d’autres informations d’identité.",
+        details_desktop: "Ouvrez votre passeport à la page avec votre photo et vos informations personnelles. Cette page indique votre nom, votre date de naissance, votre numéro de passeport et d’autres informations d’identification.",
+        title: "Ouvrez votre passeport à la page d’identité",
+        title_desktop: "Ouvrez votre passeport à la page d’identité",
+      },
+      visibility: {
+        details: "Veillez à ne pas recouvrir certaines parties du document avec un doigt, notamment les lignes de fond. Faites également attention aux reflets de l'hologramme qui recouvrent les champs du document.",
+        details_desktop: "Veillez à ne pas recouvrir certaines parties du document avec un doigt, notamment les lignes de fond. Faites également attention aux reflets de l'hologramme qui recouvrent les champs du document.",
+        title: "Gardez tous les champs visibles",
+        title_desktop: "Gardez tous les champs visibles",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Instructions relatives à le scan",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Assurez-vous que l’objectif de votre caméra est propre et que le document est bien éclairé. Tous les champs du document doivent être visibles sur l’écran de la caméra.",
       title: "Gardez tous les détails visibles",
       title_desktop: "Préparez-vous à le scan",
+    },
+    passport_only: {
+      details: "Ouvrez votre passeport à la page contenant votre photo et vos informations personnelles. Assurez-vous que le passeport est bien éclairé. Tous les champs doivent être entièrement visibles.",
+      details_desktop: "Ouvrez votre passeport à la page contenant votre photo et vos informations personnelles. Gardez l’objectif de votre caméra propre et assurez-vous que le document est bien éclairé. Tous les champs doivent être entièrement visibles.",
+      title: "Ouvrez votre passeport",
+      title_desktop: "Ouvrez votre passeport",
     },
   },
   sdk_aria: "Écran de numérisation du document",

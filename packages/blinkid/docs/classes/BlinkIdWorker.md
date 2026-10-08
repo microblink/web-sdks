@@ -40,6 +40,58 @@ This method is called when the worker is terminated.
 
 ***
 
+### buildDocumentPhotoSettings()
+
+> **buildDocumentPhotoSettings**(`useCase?`): [`NonNullSessionSettings`](../type-aliases/NonNullSessionSettings.md)
+
+#### Parameters
+
+##### useCase?
+
+[`DocumentPhotoUseCase`](../type-aliases/DocumentPhotoUseCase.md)
+
+#### Returns
+
+[`NonNullSessionSettings`](../type-aliases/NonNullSessionSettings.md)
+
+***
+
+### buildDocumentVideoSettings()
+
+> **buildDocumentVideoSettings**(`useCase?`): [`NonNullSessionSettings`](../type-aliases/NonNullSessionSettings.md)
+
+#### Parameters
+
+##### useCase?
+
+[`DocumentVideoUseCase`](../type-aliases/DocumentVideoUseCase.md)
+
+#### Returns
+
+[`NonNullSessionSettings`](../type-aliases/NonNullSessionSettings.md)
+
+***
+
+### buildStandaloneBarcodeSettings()
+
+> **buildStandaloneBarcodeSettings**(): [`NonNullSessionSettings`](../type-aliases/NonNullSessionSettings.md)
+
+#### Returns
+
+[`NonNullSessionSettings`](../type-aliases/NonNullSessionSettings.md)
+
+***
+
+### buildVerifyCaptureSettings()
+
+> **buildVerifyCaptureSettings**(): [`NonNullSessionSettings`](../type-aliases/NonNullSessionSettings.md)
+
+#### Returns
+
+[`NonNullSessionSettings`](../type-aliases/NonNullSessionSettings.md)
+
+***
+
 ### createScanningSession()
 
 > **createScanningSession**(`sessionSettings?`, `options?`): `Omit`\<[`BlinkIdScanningSession`](../type-aliases/BlinkIdScanningSession.md), `"process"` \| `"getResult"` \| `"deleteLater"` \| `"isAliasOf"`\> & `object` & `ProxyMarked`

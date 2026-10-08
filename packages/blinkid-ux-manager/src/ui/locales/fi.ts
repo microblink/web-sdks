@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Seuraava",
+    passport_only: {
+      blur: {
+        details: "Yritä pitää puhelin ja asiakirja paikallaan skannauksen aikana. Jommankumman liikkuminen voi tehdä kuvasta epäselvän ja asiakirjan tiedoista lukukelvottomia.",
+        details_desktop: "Yritä pysyä liikkumatta skannauksen aikana. Liikkuminen voi sumentaa kuvaa ja tehdä asiakirjan tiedoista lukukelvottomia.",
+        title: "Pysy paikallasi skannauksen aikana",
+        title_desktop: "Pysy paikallasi skannauksen aikana",
+      },
+      camera_lens: {
+        details_desktop: "Tarkista kameran linssi tahrojen tai pölyn varalta. Likainen linssi aiheuttaa lopullisen kuvan sumenemista ja tekee asiakirjan tiedoista lukukelvottomia, jolloin tietojen skannaus ei onnistu.",
+        title_desktop: "Puhdista kameran linssi",
+      },
+      lighting: {
+        details: "Vältä suoraa voimakasta valoa, koska se heijastuu asiakirjasta ja voi tehdä osia siitä lukukelvottomiksi. Jos et pysty lukemaan asiakirjan tietoja, ne eivät näy myöskään kameralle.",
+        details_desktop: "Vältä suoraa voimakasta valoa, koska se heijastuu asiakirjasta ja voi tehdä osia siitä lukukelvottomiksi. Jos et pysty lukemaan asiakirjan tietoja, ne eivät näy myöskään kameralle.",
+        title: "Varo voimakasta valoa",
+        title_desktop: "Varo voimakasta valoa",
+      },
+      open_passport: {
+        details: "Avaa passi sivulle, jolla ovat valokuvasi ja henkilötietosi. Sivulla näkyvät nimesi, syntymäaikasi, passinumerosi ja muut tunnistetietosi.",
+        details_desktop: "Avaa passi sivulle, jolla on kuvasi ja henkilötietosi. Sivulla näkyvät nimesi, syntymäaikasi, passinumerosi ja muut tunnistetietosi.",
+        title: "Avaa passi tietosivun kohdalta",
+        title_desktop: "Avaa passi tietosivun kohdalta",
+      },
+      visibility: {
+        details: "Varmista, ettet peitä sormella mitään asiakirjan osia, myöskään alarivejä. Varo myös asiakirjan kenttien päälle tulevia hologrammien heijastuksia.",
+        details_desktop: "Varmista, ettet peitä sormella mitään asiakirjan osia, myöskään alarivejä. Varo myös asiakirjan kenttien päälle tulevia hologrammien heijastuksia.",
+        title: "Pidä kaikki kentät näkyvissä",
+        title_desktop: "Pidä kaikki kentät näkyvissä",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Skannausohjeet",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Varmista, että pidät kameran linssin puhtaana ja että asiakirja on hyvin valaistu. Kaikkien asiakirjan kenttien on näyttävä kameran näytössä.",
       title: "Pidä kaikki tiedot näkyvissä",
       title_desktop: "Valmistaudu skannaukseen",
+    },
+    passport_only: {
+      details: "Avaa passi sivulle, jolla ovat kuvasi ja henkilötietosi. Varmista, että passi on hyvin valaistu. Kaikkien kenttien on oltava kokonaan näkyvissä.",
+      details_desktop: "Avaa passi sivulta, jolla ovat valokuvasi ja henkilötietosi. Pidä kameran linssi puhtaana ja varmista, että asiakirja on hyvin valaistu. Kaikkien tietojen on oltava kokonaan näkyvissä.",
+      title: "Avaa passi",
+      title_desktop: "Avaa passi",
     },
   },
   sdk_aria: "Asiakirjan skannausnäyttö",

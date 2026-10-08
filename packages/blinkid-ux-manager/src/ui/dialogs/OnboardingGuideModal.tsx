@@ -13,6 +13,8 @@ import DocumentWithBarcode from "../assets/onboarding/document_with_barcode.svg?
 import DocumentWithBarcodeDesktop from "../assets/onboarding/document_with_barcode_desktop.svg?component-solid";
 import DocumentWithMrz from "../assets/onboarding/document_with_mrz.svg?component-solid";
 import DocumentWithMrzDesktop from "../assets/onboarding/document_with_mrz_desktop.svg?component-solid";
+import OpenPassport from "../assets/onboarding/open_passport.svg?component-solid";
+import OpenPassportDesktop from "../assets/onboarding/open_passport_desktop.svg?component-solid";
 import { useBlinkIdUiStore } from "../BlinkIdUiStoreContext";
 import { useLocalization } from "../LocalizationContext";
 import { type BlinkIdModalExtractionMode, type BlinkIdModalLocaleGroup } from "./modalExtractionMode";
@@ -55,6 +57,13 @@ export const onboardingModalContentByExtractionMode = {
     images: {
       mobile: DocumentWithMrz,
       desktop: DocumentWithMrzDesktop,
+    },
+  },
+  "passport-only": {
+    localeGroup: "passport_only",
+    images: {
+      mobile: OpenPassport,
+      desktop: OpenPassportDesktop,
     },
   },
 } as const satisfies Record<BlinkIdModalExtractionMode, OnboardingModalContent>;

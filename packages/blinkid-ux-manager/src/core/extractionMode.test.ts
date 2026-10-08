@@ -123,6 +123,11 @@ describe("getBlinkIdExtractionMode", () => {
       },
       "full-document",
     ],
+    [
+      "passport only",
+      { scanningMode: "automatic", scanningSettings: {}, enablePassportOnlyExtractionMode: true },
+      "passport-only",
+    ],
   ] as const)("returns %s extraction mode", (_label, sessionSettings, expected) => {
     expect(getBlinkIdExtractionMode(sessionSettings)).toBe(expected);
   });

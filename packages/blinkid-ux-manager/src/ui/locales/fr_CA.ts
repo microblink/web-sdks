@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Suivant",
+    passport_only: {
+      blur: {
+        details: "Essayez de maintenir le téléphone et le document immobiles pendant la numérisation. Tout mouvement peut rendre l'image floue et les données du document illisibles.",
+        details_desktop: "Essayez de rester immobile pendant la numérisation. Tout mouvement peut rendre l'image floue et les données du document illisibles.",
+        title: "Restez immobile pendant le scan.",
+        title_desktop: "Restez immobile pendant le scan.",
+      },
+      camera_lens: {
+        details_desktop: "Vérifiez que l'objectif de votre appareil photo ne présente pas de trace ou de poussière. Un objectif sale rend l'image finale floue, les détails du document illisibles et empêche la bonne numérisation des données.",
+        title_desktop: "Nettoyez l'objectif de votre appareil photo",
+      },
+      lighting: {
+        details: "Évitez la lumière directe et intense, car elle se reflète sur le document et peut rendre certaines parties illisibles. Si vous ne pouvez pas lire les données sur le document, elles ne seront pas visibles non plus pour l'appareil photo.",
+        details_desktop: "Évitez la lumière directe et intense, car elle se reflète sur le document et peut rendre certaines parties illisibles. Si vous ne pouvez pas lire les données sur le document, elles ne seront pas visibles non plus pour l'appareil photo.",
+        title: "Faites attention à la lumière vive",
+        title_desktop: "Faites attention à la lumière vive",
+      },
+      open_passport: {
+        details: "Ouvrez votre passeport à la page où figurent votre photo et vos renseignements personnels. Cette page indique votre nom, votre date de naissance, votre numéro de passeport et d’autres renseignements d’identification.",
+        details_desktop: "Ouvrez votre passeport à la page contenant votre photo et vos renseignements personnels. Cette page indique votre nom, votre date de naissance, votre numéro de passeport et d’autres renseignements permettant de vous identifier.",
+        title: "Ouvrez votre passeport à la page de renseignements personnels",
+        title_desktop: "Ouvrez votre passeport à la page de renseignements personnels",
+      },
+      visibility: {
+        details: "Assurez-vous de ne pas couvrir certaines parties du document avec votre doigt, y compris les lignes du bas. Faites également attention aux reflets holographiques qui apparaissent sur les champs du document.",
+        details_desktop: "Assurez-vous de ne pas couvrir certaines parties du document avec votre doigt, y compris les lignes du bas. Faites également attention aux reflets holographiques qui apparaissent sur les champs du document.",
+        title: "Veillez à ce que tous les champs soient visibles.",
+        title_desktop: "Veillez à ce que tous les champs soient visibles.",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Instructions de numérisation",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Assurez-vous que l'objectif de votre caméra est propre et que le document est bien éclairé. Tous les champs du document doivent être visibles sur l'écran de l'appareil photo.",
       title: "Veillez à ce que tous les détails soient visibles.",
       title_desktop: "Préparez-vous à la numérisation",
+    },
+    passport_only: {
+      details: "Ouvrez votre passeport à la page contenant votre photo et vos renseignements personnels. Assurez-vous que le passeport est bien éclairé. Tous les champs doivent être entièrement visibles.",
+      details_desktop: "Préparez votre passeport en l’ouvrant à la page contenant votre photo et vos renseignements personnels. Gardez l’objectif de votre caméra propre et assurez-vous que le document est bien éclairé. Tous les champs doivent être entièrement visibles.",
+      title: "Ouvrez votre passeport",
+      title_desktop: "Ouvrez votre passeport",
     },
   },
   sdk_aria: "Écran de numérisation du document",

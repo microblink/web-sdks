@@ -1,6 +1,6 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-import { BlinkIdProcessResult, DocumentClassInfo } from "@microblink/blinkid-core";
+import { BlinkIdProcessResult, DocumentClassInfo, DocumentType } from "@microblink/blinkid-core";
 
 /**
  * Extracts the document class info from the process result.
@@ -38,6 +38,23 @@ export function getDocumentRotation(processResult: BlinkIdProcessResult) {
 export function isPassport(docClass: DocumentClassInfo | undefined) {
   return docClass?.documentType?.id === "passport";
 }
+
+const bookletPassportTypes: readonly DocumentType[] = [
+  "passport",
+  "alien-passport",
+  "consular-passport",
+  "minors-passport",
+  "refugee-passport",
+  "emergency-passport",
+  "temporary-passport",
+] as const;
+
+export function isBookletPassport(docClass: DocumentClassInfo | undefined) {
+  const docTypeId = docClass?.documentType?.id;
+
+  return !!docTypeId && bookletPassportTypes.includes(docTypeId);
+}
+
 /**
  * Checks if the document is a passport and has a barcode on the last page (USA or India).
  *

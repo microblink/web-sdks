@@ -150,4 +150,5 @@ export type Region =
   | "rio-grande-do-norte"
   | "tocantins"
   | "odisha"
-  | "uttarakhand";
+  | "uttarakhand"
+  | "northern-ireland";

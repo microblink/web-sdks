@@ -5,3 +5,4 @@ export type * from "./RedactionMode";
 export type * from "./RedactionSettings";
 export type * from "./SensitivityLevel";
 export type * from "./ScanningSettings";
+export type * from "./ScanningUseCase";

@@ -1,5 +1,16 @@
 # @microblink/blinkid-wasm
 
+## 8003.0.0
+
+### Major Changes
+
+- Updated the BlinkID result enums. Added `vehicleNumber`, `passportNumber`, and `trafficParticipantNumber` to `VizResult` and `BlinkIdScanningResult`.
+- Renamed the `Country` value `"virgin-islands-british"` to `"british-virgin-islands"`. Existing integrations that matched British Virgin Islands results needed to replace the old value.
+
+### Minor Changes
+
+- Adds types for configuring BlinkID scanning presets.
+
 ## 8002.0.1
 
 ## 8002.0.0

@@ -75,4 +75,7 @@ export type FieldType =
   | "husbandName"
   | "cardAccessNumber"
   | "parentFullName"
-  | "ethnicity";
+  | "ethnicity"
+  | "vehicleNumber"
+  | "passportNumber"
+  | "trafficParticipantNumber";

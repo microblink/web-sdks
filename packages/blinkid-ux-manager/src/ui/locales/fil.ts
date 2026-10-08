@@ -82,7 +82,7 @@ export default {
     },
     document_with_barcode: {
       blur: {
-        details: "Panatilihing ito gumagalaw ang telepono at dokumento habang nag-i-scan. Puwedeng maging malabo at hindi nababasa ang data sa dokumento kapag gumalaw.",
+        details: "Panatilihing hindi gumagalaw ang telepono at dokumento habang nag-scan. Maaaring lumabo ang larawan kapag gumalaw ang alinman sa mga ito at hindi mabasa ang impormasyon sa dokumento.",
         details_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan. Puwedeng maging malabo at hindi mabasa ang data sa dokumento kapag gumagalaw.",
         title: "Panatilihing hindi gumagalaw habang nag-i-scan",
         title_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan",
@@ -92,8 +92,8 @@ export default {
         title_desktop: "Linisin ang mga lens ng camera mo",
       },
       lighting: {
-        details: "Iwasan ang direktang nakakasilaw na liwanag dahil umaaninag ito mula sa dokumento at puwedeng gawing hindi nababasa ang mga bahagi ng dokumento. Kung hindi mo mabasa ang data sa dokuemnto, hindi rin ito makikita ng camera.",
-        details_desktop: "Iwasan ang direktang nakakasilaw na liwanag dahil umaaninag ito mula sa dokumento at puwedeng gawing hindi nababasa ang mga bahagi ng dokumento. Kung hindi mo mabasa ang data sa dokuemnto, hindi rin ito makikita ng camera.",
+        details: "Iwasan ang matinding direktang liwanag dahil maaari itong magdulot ng silaw sa dokumento at hindi mabasa ang ilang bahagi nito. Kung hindi mo mabasa ang impormasyon sa dokumento, hindi rin ito makikita ng camera.",
+        details_desktop: "Iwasan ang matinding direktang liwanag dahil maaari itong magdulot ng silaw sa dokumento at hindi mabasa ang ilang bahagi nito. Kung hindi mo mabasa ang impormasyon sa dokumento, hindi rin ito makikita ng camera.",
         title: "Tingnan kung may nakakasilaw na liwanag",
         title_desktop: "Tingnan kung may nakakasilaw na liwanag",
       },
@@ -106,7 +106,7 @@ export default {
     },
     document_with_mrz: {
       blur: {
-        details: "Panatilihing ito gumagalaw ang telepono at dokumento habang nag-i-scan. Puwedeng maging malabo at hindi nababasa ang data sa dokumento kapag gumalaw.",
+        details: "Panatilihing hindi gumagalaw ang telepono at dokumento habang nag-scan. Maaaring lumabo ang larawan kapag gumalaw ang alinman sa mga ito at hindi mabasa ang impormasyon sa dokumento.",
         details_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan. Puwedeng maging malabo at hindi mabasa ang data sa dokumento kapag gumagalaw.",
         title: "Panatilihing hindi gumagalaw habang nag-i-scan",
         title_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan",
@@ -116,8 +116,8 @@ export default {
         title_desktop: "Linisin ang mga lens ng camera mo",
       },
       lighting: {
-        details: "Iwasan ang direktang nakakasilaw na liwanag dahil umaaninag ito mula sa dokumento at puwedeng gawing hindi nababasa ang mga bahagi ng dokumento. Kung hindi mo mabasa ang data sa dokuemnto, hindi rin ito makikita ng camera.",
-        details_desktop: "Iwasan ang direktang nakakasilaw na liwanag dahil umaaninag ito mula sa dokumento at puwedeng gawing hindi nababasa ang mga bahagi ng dokumento. Kung hindi mo mabasa ang data sa dokuemnto, hindi rin ito makikita ng camera.",
+        details: "Iwasan ang matinding direktang liwanag dahil maaari itong magdulot ng silaw sa dokumento at hindi mabasa ang ilang bahagi nito. Kung hindi mo mabasa ang impormasyon sa dokumento, hindi rin ito makikita ng camera.",
+        details_desktop: "Iwasan ang matinding direktang liwanag dahil maaari itong magdulot ng silaw sa dokumento at hindi mabasa ang ilang bahagi nito. Kung hindi mo mabasa ang impormasyon sa dokumento, hindi rin ito makikita ng camera.",
         title: "Tingnan kung may nakakasilaw na liwanag",
         title_desktop: "Tingnan kung may nakakasilaw na liwanag",
       },
@@ -132,7 +132,7 @@ export default {
     done_btn_aria: "I-resume ang pag-scan",
     full_document: {
       blur: {
-        details: "Panatilihing ito gumagalaw ang telepono at dokumento habang nag-i-scan. Puwedeng maging malabo at hindi nababasa ang data sa dokumento kapag gumalaw.",
+        details: "Panatilihing hindi gumagalaw ang telepono at dokumento habang nag-scan. Maaaring lumabo ang larawan kapag gumalaw ang alinman sa mga ito at hindi mabasa ang impormasyon sa dokumento.",
         details_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan. Puwedeng maging malabo at hindi mabasa ang data sa dokumento kapag gumagalaw.",
         title: "Panatilihing hindi gumagalaw habang nag-i-scan",
         title_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan",
@@ -142,8 +142,8 @@ export default {
         title_desktop: "Linisin ang mga lens ng camera mo",
       },
       lighting: {
-        details: "Iwasan ang direktang nakakasilaw na liwanag dahil umaaninag ito mula sa dokumento at puwedeng gawing hindi nababasa ang mga bahagi ng dokumento. Kung hindi mo mabasa ang data sa dokuemnto, hindi rin ito makikita ng camera.",
-        details_desktop: "Iwasan ang direktang nakakasilaw na liwanag dahil umaaninag ito mula sa dokumento at puwedeng gawing hindi nababasa ang mga bahagi ng dokumento. Kung hindi mo mabasa ang data sa dokuemnto, hindi rin ito makikita ng camera.",
+        details: "Iwasan ang matinding direktang liwanag dahil maaari itong magdulot ng silaw sa dokumento at hindi mabasa ang ilang bahagi nito. Kung hindi mo mabasa ang impormasyon sa dokumento, hindi rin ito makikita ng camera.",
+        details_desktop: "Iwasan ang matinding direktang liwanag dahil maaari itong magdulot ng silaw sa dokumento at hindi mabasa ang ilang bahagi nito. Kung hindi mo mabasa ang impormasyon sa dokumento, hindi rin ito makikita ng camera.",
         title: "Tingnan kung may nakakasilaw na liwanag",
         title_desktop: "Tingnan kung may nakakasilaw na liwanag",
       },
@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Susunod",
+    passport_only: {
+      blur: {
+        details: "Panatilihing hindi gumagalaw ang telepono at dokumento habang nag-scan. Maaaring lumabo ang larawan kapag gumalaw ang alinman sa mga ito at hindi mabasa ang impormasyon sa dokumento.",
+        details_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan. Puwedeng maging malabo at hindi mabasa ang data sa dokumento kapag gumagalaw.",
+        title: "Panatilihing hindi gumagalaw habang nag-i-scan",
+        title_desktop: "Panatilihing hindi gumagalaw habang nag-i-scan",
+      },
+      camera_lens: {
+        details_desktop: "Suriin kung may mga mantsa o alikabok ang lens ng camera mo. Nagdudulot ng paglabo ng pinal na larawan ang maruruming lens, na dahilan para hindi mabasa ang mga detalye ng dokumento at hindi pag-scan sa data.",
+        title_desktop: "Linisin ang mga lens ng camera mo",
+      },
+      lighting: {
+        details: "Iwasan ang matinding direktang liwanag dahil maaari itong magdulot ng silaw sa dokumento at hindi mabasa ang ilang bahagi nito. Kung hindi mo mabasa ang impormasyon sa dokumento, hindi rin ito makikita ng camera.",
+        details_desktop: "Iwasan ang matinding direktang liwanag dahil maaari itong magdulot ng silaw sa dokumento at hindi mabasa ang ilang bahagi nito. Kung hindi mo mabasa ang impormasyon sa dokumento, hindi rin ito makikita ng camera.",
+        title: "Tingnan kung may nakakasilaw na liwanag",
+        title_desktop: "Tingnan kung may nakakasilaw na liwanag",
+      },
+      open_passport: {
+        details: "Buksan ang iyong pasaporte sa pahinang may larawan at personal na detalye. Makikita sa pahinang ito ang iyong pangalan, petsa ng kapanganakan, numero ng pasaporte, at iba pang impormasyong tumutukoy sa iyong pagkakakilanlan.",
+        details_desktop: "Buksan ang iyong pasaporte sa pahinang may larawan at personal na detalye mo. Nakalagay sa pahinang ito ang iyong pangalan, petsa ng kapanganakan, numero ng pasaporte, at iba pang impormasyong nagpapakilala sa iyo.",
+        title: "Buksan ang pasaporte sa pahina ng datos",
+        title_desktop: "Buksan ang pasaporte sa pahina ng datos",
+      },
+      visibility: {
+        details: "Siguraduhin na hindi natatakpak ng iyong daliri ang mga bahagi ng dokumento, pati na ang pinakababang mga linya. Gayon rin, tingnan rin kung may mga hologram reflection na maaaring makatakip sa mga field ng dokumento.",
+        details_desktop: "Siguraduhin na hindi natatakpak ng iyong daliri ang mga bahagi ng dokumento, pati na ang pinakababang mga linya. Gayon rin, tingnan rin kung may mga hologram reflection na maaaring makatakip sa mga field ng dokumento.",
+        title: "Panatilihing nakikita ang lahat ng field",
+        title_desktop: "Panatilihing nakikita ang lahat ng field",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Mga Tagubilin sa Pag-scan",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Tiyaking malinis ang lens ng camera mo at lubos na naiilawan ang dokumento. Dapat nakikita sa screen ng camera ang lahat ng field ng dokumento.",
       title: "Panatilihing nakikita ang lahat ng detalye",
       title_desktop: "Maghandang mag-scan",
+    },
+    passport_only: {
+      details: "Ihanda ang iyong pasaporte sa pamamagitan ng pagbubukas nito sa pahinang may larawan at personal mong impormasyon. Tiyaking maliwanag ang pasaporte. Dapat ganap na nakikita ang lahat ng field.",
+      details_desktop: "Ihanda ang iyong pasaporte. Buksan ito sa pahinang naglalaman ng iyong larawan at personal na impormasyon. Panatilihing malinis ang lente ng iyong camera at tiyaking naiilawan nang mabuti ang dokumento. Dapat na ganap na nakikita ang lahat ng field.",
+      title: "Buksan ang iyong pasaporte",
+      title_desktop: "Buksan ang iyong pasaporte",
     },
   },
   sdk_aria: "Screen ng pag-scan ng dokumento",

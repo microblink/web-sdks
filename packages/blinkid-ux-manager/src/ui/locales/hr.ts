@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Dalje",
+    passport_only: {
+      blur: {
+        details: "Pokušajte za vrijeme skeniranja što mirnije držati telefon i dokument. Pomicanjem može doći do zamućenja slike zbog čega podaci postaju nečitljivi.",
+        details_desktop: "Pokušajte za vrijeme skeniranja biti što mirniji. Pomicanjem može doći do zamućenja slike zbog čega podaci postaju nečitljivi.",
+        title: "Mirno držite dokument",
+        title_desktop: "Mirno držite dokument",
+      },
+      camera_lens: {
+        details_desktop: "Provjerite je li kamera čista. Prljava kamera uzrokuje zamućenje slike pa podaci na dokumentu postaju nečitljivi i nemoguće ih je uspješno skenirati.",
+        title_desktop: "Očistite kameru",
+      },
+      lighting: {
+        details: "Izbjegavajte izravnu jaku svjetlost jer se reflektira s dokumenta i može učiniti dijelove dokumenta nečitljivima. Ako vi ne možete pročitati podatke na dokumentu, ni kamera ih neće moći vidjeti.",
+        details_desktop: "Izbjegavajte izravnu jaku svjetlost jer se reflektira s dokumenta i može učiniti dijelove dokumenta nečitljivima. Ako vi ne možete pročitati podatke na dokumentu, ni kamera ih neće moći vidjeti.",
+        title: "Pazite na direktno osvjetljenje",
+        title_desktop: "Pazite na direktno osvjetljenje",
+      },
+      open_passport: {
+        details: "Otvorite putovnicu na stranici s fotografijom i osobnim podacima. Na toj se stranici nalaze vaše ime, datum rođenja, broj putovnice i drugi identifikacijski podaci.",
+        details_desktop: "Otvorite putovnicu na stranici s vašom fotografijom i osobnim podacima. Na toj se stranici nalaze vaše ime, datum rođenja, broj putovnice i ostali identifikacijski podaci.",
+        title: "Otvorite putovnicu na stranici s podacima",
+        title_desktop: "Otvorite putovnicu na stranici s podacima",
+      },
+      visibility: {
+        details: "Pripazite kako držite dokument. Nemojte prekrivati dijelove dokumenta prstom, uključujući donje linije. Također, pazite na refleksije holograma koje prelaze preko polja dokumenta.",
+        details_desktop: "Pripazite kako držite dokument. Nemojte prekrivati dijelove dokumenta prstom, uključujući donje linije. Također, pazite na refleksije holograma koje prelaze preko polja dokumenta.",
+        title: "Pazite da su sva polja vidljiva",
+        title_desktop: "Pazite da su sva polja vidljiva",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Upute za skeniranje",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Pripazite da kamera bude čista i dokument dovoljno osvijetljen. Svi podaci s dokumenta trebaju biti vidljivi na ekranu vašeg uređaja.",
       title: "Pazite da su svi detalji vidljivi",
       title_desktop: "Pripremite se za skeniranje",
+    },
+    passport_only: {
+      details: "Otvorite putovnicu na stranici s fotografijom i osobnim podacima. Provjerite je li putovnica dobro osvijetljena. Svi podaci s dokumenta trebaju biti vidljivi.",
+      details_desktop: "Pripremite putovnicu tako da je otvorite na stranici s vašom fotografijom i osobnim podacima. Provjerite je li kamera čista i dokument dobro osvijetljen. Svi podaci s dokumenta trebaju biti vidljivi.",
+      title: "Otvorite putovnicu",
+      title_desktop: "Otvorite putovnicu",
     },
   },
   sdk_aria: "Zaslon za skeniranje dokumenta",

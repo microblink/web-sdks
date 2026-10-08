@@ -12,10 +12,13 @@ import type {
   BlinkIdSessionSettingsInput,
   BlinkIdWasmModule,
   DocumentClassInfo,
+  DocumentPhotoUseCase,
   DocumentRotation,
+  DocumentVideoUseCase,
   EmscriptenModuleFactory,
   MemFSModule,
   RedactionSettings,
+  ScanningSettings,
   ScanningStatus,
   WasmVariant,
 } from "@microblink/blinkid-wasm";
@@ -58,6 +61,14 @@ export type { DownloadProgress } from "@microblink/worker-common/downloadResourc
 const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
 export const DEFAULT_BLINK_ID_OTA_RESOURCE_PROVIDER_URL = "https://blinkid-ota.microblink.com";
 export const DEFAULT_BLINK_ID_RESOURCE_DOWNLOAD_TIMEOUT_MS = 60_000;
+
+type NonNullableProps<T> = {
+  [P in keyof T]: NonNullable<T[P]>;
+};
+
+export type NonNullSessionSettings = Omit<BlinkIdSessionSettings, "scanningSettings"> & {
+  scanningSettings: NonNullableProps<ScanningSettings>;
+};
 
 export type BlinkIdOtaResourceSettings = {
   /**
@@ -216,6 +227,12 @@ export class BlinkIdWorker {
         this.sendPinglets();
       },
     });
+  }
+
+  #wasmModuleOrThrow() {
+    if (!this.#wasmModule) throw new Error("Wasm module not loaded");
+
+    return this.#wasmModule;
   }
 
   /** This method loads the Wasm module. */
@@ -663,6 +680,26 @@ export class BlinkIdWorker {
         cause: error,
       });
     }
+  }
+
+  buildDocumentPhotoSettings(useCase?: DocumentPhotoUseCase): NonNullSessionSettings {
+    const wasmModule = this.#wasmModuleOrThrow();
+    return wasmModule.buildDocumentPhotoSettings(useCase ?? {}) as NonNullSessionSettings;
+  }
+
+  buildDocumentVideoSettings(useCase?: DocumentVideoUseCase): NonNullSessionSettings {
+    const wasmModule = this.#wasmModuleOrThrow();
+    return wasmModule.buildDocumentVideoSettings(useCase ?? {}) as NonNullSessionSettings;
+  }
+
+  buildStandaloneBarcodeSettings(): NonNullSessionSettings {
+    const wasmModule = this.#wasmModuleOrThrow();
+    return wasmModule.buildStandaloneBarcodeSettings() as NonNullSessionSettings;
+  }
+
+  buildVerifyCaptureSettings(): NonNullSessionSettings {
+    const wasmModule = this.#wasmModuleOrThrow();
+    return wasmModule.buildVerifyCaptureSettings() as NonNullSessionSettings;
   }
 
   /**

@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Próximo",
+    passport_only: {
+      blur: {
+        details: "Tente manter o celular e o documento imóveis durante a digitalização. Mover qualquer um deles poderá borrar a imagem e tornar os dados do documento ilegíveis.",
+        details_desktop: "Tente manter o celular imóvel durante a digitalização. Movimentos podem desfocar a imagem e tornar os dados do documento ilegíveis.",
+        title: "Mantenha-se imóvel durante a digitalização",
+        title_desktop: "Mantenha-se imóvel durante a digitalização",
+      },
+      camera_lens: {
+        details_desktop: "Verifique se a lente da câmera está limpa e sem poeira. Uma lente suja pode desfocar a imagem final, tornando os detalhes do documento ilegíveis e impedindo o escaneamento correto dos dados.",
+        title_desktop: "Limpe a lente da câmera",
+      },
+      lighting: {
+        details: "Evite luz forte direta, pois ela reflete no documento e pode tornar partes dele ilegíveis. Se você não conseguir ler os dados no documento, ele também não ficará visível para a câmera.",
+        details_desktop: "Evite luz forte direta, pois ela reflete no documento e pode tornar partes dele ilegíveis. Se você não conseguir ler os dados no documento, ele também não ficará visível para a câmera.",
+        title: "Cuidado com a luz forte",
+        title_desktop: "Cuidado com a luz forte",
+      },
+      open_passport: {
+        details: "Abra seu passaporte na página com sua foto e seus dados pessoais. Essa página mostra seu nome, data de nascimento, número do passaporte e outras informações de identificação.",
+        details_desktop: "Abra o passaporte na página com sua foto e seus dados pessoais. Essa página mostra seu nome, data de nascimento, número do passaporte e outras informações de identificação.",
+        title: "Abra o passaporte na página de dados",
+        title_desktop: "Abra o passaporte na página de dados",
+      },
+      visibility: {
+        details: "Certifique-se de não cobrir partes do documento com o dedo, incluindo as linhas inferiores. Além disso, fique atento aos reflexos do holograma que ultrapassam os campos do documento.",
+        details_desktop: "Certifique-se de não cobrir partes do documento com o dedo, incluindo as linhas inferiores. Além disso, fique atento aos reflexos do holograma que ultrapassam os campos do documento.",
+        title: "Mantenha todos os campos visíveis",
+        title_desktop: "Mantenha todos os campos visíveis",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Instruções de escaneamento",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Certifique-se de manter a lente da câmera limpa e o documento bem iluminado. Todos os campos do documento devem estar visíveis na tela da câmera.",
       title: "Mantenha todos os detalhes visíveis",
       title_desktop: "Prepare-se para escanear",
+    },
+    passport_only: {
+      details: "Prepare seu passaporte, abrindo-o na página que contém sua foto e informações pessoais. Verifique se o passaporte está bem iluminado. Todos os campos devem estar totalmente visíveis.",
+      details_desktop: "Abra o passaporte na página com sua foto e informações pessoais. Mantenha a lente da câmera limpa e verifique se o documento está bem iluminado. Todos os campos devem estar totalmente visíveis.",
+      title: "Abra seu passaporte",
+      title_desktop: "Abra seu passaporte",
     },
   },
   sdk_aria: "Tela de escaneamento de documento",

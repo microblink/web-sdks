@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Keyingisi",
+    passport_only: {
+      blur: {
+        details: "Skanerlaganda telefon va hujjatni qimirlatmang. Ulardan istalgan birining qimirlashi rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        details_desktop: "Skanerlaganda qimirlamang. Qimirlash rasm xira olinishiga va hujjatdagi maʼlumotlar tushunarsiz chiqishiga sabab boʻlishi mumkin.",
+        title: "Skanerlayotganda qimirlatmang",
+        title_desktop: "Skanerlayotganda qimirlatmang",
+      },
+      camera_lens: {
+        details_desktop: "Kamera linzasida dog‘ yoki chang yo‘qligini tekshiring. Kirlangan linza yakuniy tasvirni xiralashtiradi, bu hujjatdagi maʼlumotlarni o‘qib bo‘lmaydigan qiladi va ma’lumotlarni muvaffaqiyatli skanerlashga to‘sqinlik qiladi.",
+        title_desktop: "Kamerangiz obyektivini tozalang",
+      },
+      lighting: {
+        details: "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
+        details_desktop: "Yorqin yorugʻlik bevosita tushmasin, chunki u hujjatda aks etadi va hujjatning ayrim qismlari tushunarsiz boʻlib qolishi mumkin. Hujjatdagi maʼlumotlarni oʻqish imkoni boʻlmasa, ular kamerada ham koʻrinmaydi.",
+        title: "Kuchli yorugʻlik tushmasin",
+        title_desktop: "Kuchli yorugʻlik tushmasin",
+      },
+      open_passport: {
+        details: "Pasportingizning fotosuratingiz va shaxsiy ma’lumotlaringiz joylashgan sahifasini oching. Bu sahifada ismingiz, tug‘ilgan sanangiz, pasport raqamingiz va shaxsni aniqlovchi boshqa ma’lumotlar ko‘rsatilgan.",
+        details_desktop: "Pasportingizning fotosuratingiz va shaxsiy ma’lumotlaringiz ko‘rsatilgan sahifasini oching. Bu sahifada ismingiz, tug‘ilgan sanangiz, pasport raqamingiz va shaxsingizni aniqlovchi boshqa ma’lumotlar ko‘rsatilgan.",
+        title: "Pasportning ma’lumotlar sahifasini oching",
+        title_desktop: "Pasportning ma’lumotlar sahifasini oching",
+      },
+      visibility: {
+        details: "Barmogʻingiz hujjatning ayrim qismlarini, jumladan, pastki qatorlarni berkitib qoʻymasin. Hujjat maydoni boʻylab oʻtadigan gologramma aks etishiga ham diqqat qarating.",
+        details_desktop: "Barmogʻingiz hujjatning ayrim qismlarini, jumladan, pastki qatorlarni berkitib qoʻymasin. Hujjat maydoni boʻylab oʻtadigan gologramma aks etishiga ham diqqat qarating.",
+        title: "Barcha maydonlar koʻrinib tursin",
+        title_desktop: "Barcha maydonlar koʻrinib tursin",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Skanerlash yo‘riqnomasi",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Kamera linzasi tozaligiga, hujjat esa yaxshi yoritilganligiga ishonch hosil qiling. Kamera ekranida barcha hujjat satrlari ko‘rinib turishi kerak.",
       title: "Barcha tafsilotlar koʻrinib tursin",
       title_desktop: "Skanerlashga tayyorlaning",
+    },
+    passport_only: {
+      details: "Pasportingizni fotosuratingiz va shaxsiy ma’lumotlaringiz bor sahifasidan ochib tayyorlang. Pasport yaxshi yoritilganiga ishonch hosil qiling. Barcha maydonlar to‘liq ko‘rinishi kerak.",
+      details_desktop: "Pasportingizning surat va shaxsiy ma’lumotlaringiz joylashgan sahifasini ochib, tayyorlab qo‘ying. Kamera obyektivini toza tuting va hujjat yaxshi yoritilganiga ishonch hosil qiling. Barcha maydonlar to‘liq ko‘rinishi kerak.",
+      title: "Pasportingizni oching",
+      title_desktop: "Pasportingizni oching",
     },
   },
   sdk_aria: "Hujjat skanerlash ekrani",

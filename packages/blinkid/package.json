@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid",
-  "version": "8002.0.1",
+  "version": "8003.0.0",
   "description": "All-in-one BlinkID browser SDK for fast and accurate ID document scanning and recognition in web applications.",
   "keywords": [],
   "license": "ISC",

@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Tiếp theo",
+    passport_only: {
+      blur: {
+        details: "Cố gắng giữ cố định điện thoại và tài liệu trong khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên tài liệu không thể đọc được.",
+        details_desktop: "Cố gắng giữ yên khi quét. Việc di chuyển có thể làm mờ hình ảnh và làm cho dữ liệu trên giấy tờ không thể đọc được.",
+        title: "Giữ cố định trong khi quét",
+        title_desktop: "Giữ cố định trong khi quét",
+      },
+      camera_lens: {
+        details_desktop: "Kiểm tra ống kính camera xem có vết bẩn hoặc bụi không. Ống kính bẩn sẽ khiến hình ảnh cuối bị mờ, làm cho thông tin trên tài liệu không thể đọc được và ngăn cản việc quét dữ liệu thành công.",
+        title_desktop: "Làm sạch ống kính camera",
+      },
+      lighting: {
+        details: "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
+        details_desktop: "Tránh ánh sáng gay gắt trực tiếp vì ánh sáng đó phản chiếu từ tài liệu và có thể làm cho các phần của tài liệu không thể đọc được. Nếu bạn không thể đọc dữ liệu trên tài liệu, chúng cũng sẽ không nhìn thấy rõ trên camera.",
+        title: "Đề phòng ánh sáng gay gắt",
+        title_desktop: "Đề phòng ánh sáng gay gắt",
+      },
+      open_passport: {
+        details: "Mở hộ chiếu đến trang có ảnh và thông tin cá nhân của bạn. Trang này có họ tên, ngày sinh, số hộ chiếu và các thông tin nhận dạng khác.",
+        details_desktop: "Mở hộ chiếu ở trang có ảnh và thông tin cá nhân của bạn. Trang này có họ tên, ngày sinh, số hộ chiếu và các thông tin nhận dạng khác.",
+        title: "Mở hộ chiếu đến trang thông tin",
+        title_desktop: "Mở hộ chiếu đến trang thông tin",
+      },
+      visibility: {
+        details: "Đảm bảo rằng bạn không dùng ngón tay che các phần của tài liệu, kể cả các dòng dưới cùng. Ngoài ra, hãy để ý các phản xạ ảnh ba chiều đi qua các trường tài liệu.",
+        details_desktop: "Đảm bảo rằng bạn không dùng ngón tay che các phần của tài liệu, kể cả các dòng dưới cùng. Ngoài ra, hãy để ý các phản xạ ảnh ba chiều đi qua các trường tài liệu.",
+        title: "Đảm bảo nhìn thấy rõ tất cả các trường",
+        title_desktop: "Đảm bảo nhìn thấy rõ tất cả các trường",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Hướng dẫn quét",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Đảm bảo rằng bạn giữ ống kính camera sạch sẽ và tài liệu được chiếu sáng tốt. Tất cả các trường tài liệu sẽ hiển thị trên màn hình camera.",
       title: "Đảm bảo nhìn thấy rõ tất cả các chi tiết",
       title_desktop: "Sẵn sàng quét",
+    },
+    passport_only: {
+      details: "Mở hộ chiếu đến trang có ảnh và thông tin cá nhân của bạn. Đảm bảo hộ chiếu đủ sáng. Tất cả các trường thông tin phải hiển thị đầy đủ.",
+      details_desktop: "Chuẩn bị hộ chiếu bằng cách mở đến trang có ảnh và thông tin cá nhân. Giữ sạch ống kính máy ảnh và đảm bảo hộ chiếu được chiếu sáng đầy đủ. Đảm bảo tất cả các trường thông tin đều hiển thị đầy đủ.",
+      title: "Mở hộ chiếu của bạn",
+      title_desktop: "Mở hộ chiếu của bạn",
     },
   },
   sdk_aria: "Màn hình quét tài liệu",

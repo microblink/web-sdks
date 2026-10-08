@@ -59,6 +59,7 @@ import {
   extractDocumentClassInfo,
   getDocumentPaginationType,
   getDocumentRotation,
+  isBookletPassport,
   isDocumentClassified,
 } from "./ui-state-utils";
 import { mapErrorStateKeyToAnalyticsType, type PingableErrorUiStateKey } from "./uxAnalyticsMappers";
@@ -184,6 +185,8 @@ export class BlinkIdUxManager {
   #cleanupCallbacks = new Set<() => void>();
   /** The document class filter. */
   #documentClassFilter?: DocumentClassFilter;
+  /** Internal document class filter */
+  #internalDocumentClassFilter?: DocumentClassFilter;
   /** The haptic feedback manager. */
   #hapticFeedbackManager = new HapticFeedbackManager();
   /** The UX analytics service. */
@@ -223,7 +226,14 @@ export class BlinkIdUxManager {
     this.showDemoOverlay = showDemoOverlay;
     this.showProductionOverlay = showProductionOverlay;
     this.deviceInfo = deviceInfo;
-    this.#extractionMode = getBlinkIdExtractionMode(sessionSettings);
+    this.#extractionMode = getBlinkIdExtractionMode({
+      ...sessionSettings,
+      enablePassportOnlyExtractionMode: options.enablePassportOnlyExtractionMode,
+    });
+
+    if (this.extractionMode === "passport-only") {
+      this.#addInternalDocumentClassFilter(isBookletPassport);
+    }
 
     this.#timeoutHandler = new UxTimeoutHandler({
       defaults: this.#isDesktop ? defaultBlinkIdDesktopTimeoutConfiguration : defaultBlinkIdTimeoutConfiguration,
@@ -527,6 +537,10 @@ export class BlinkIdUxManager {
 
   #clearCameraInputAnalyticsSync(): void {
     this.#debouncedCameraInputSyncToAnalytics.cancel();
+  }
+
+  #addInternalDocumentClassFilter(filter: DocumentClassFilter): void {
+    this.#internalDocumentClassFilter = filter;
   }
 
   #buildCameraInputPingData(): PingCameraInputInfoData | undefined {
@@ -852,14 +866,18 @@ export class BlinkIdUxManager {
    */
   #handleDocumentClassFiltering(processResult: ProcessResultWithBuffer): boolean {
     // Skip filtering if no filter is configured
-    if (this.#documentClassFilter === undefined) {
+    if (this.#documentClassFilter === undefined && this.#internalDocumentClassFilter === undefined) {
       return true;
     }
 
     const documentClassInfo = extractDocumentClassInfo(processResult);
 
     // If document is not classified or passes the filter, continue processing
-    if (!isDocumentClassified(documentClassInfo) || this.#documentClassFilter(documentClassInfo)) {
+    if (
+      !isDocumentClassified(documentClassInfo) ||
+      ((this.#internalDocumentClassFilter?.(documentClassInfo) ?? true) &&
+        (this.#documentClassFilter?.(documentClassInfo) ?? true))
+    ) {
       return true;
     }
 

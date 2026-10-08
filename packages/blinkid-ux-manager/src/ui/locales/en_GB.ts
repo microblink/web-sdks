@@ -11,14 +11,14 @@ export default {
     title: "Document not recognised",
   },
   error_modal: {
-    cancel_btn: "Cancel scanning",
+    cancel_btn: "Cancel Scanning",
     retry_btn: "Retry",
   },
   feedback_messages: {
     blur_detected: "Keep the document and phone still",
     camera_angle_too_steep: "Keep the document parallel to the phone",
     document_scanned_aria: "Success! Document scanned",
-    document_too_close_to_edge: "Move farther",
+    document_too_close_to_edge: "Move farther away",
     face_photo_not_fully_visible: "Keep the face photo fully visible",
     flip_document: "Flip the document",
     flip_to_back_side: "Flip to the back side",
@@ -27,20 +27,20 @@ export default {
     keep_document_parallel: "Keep the document parallel to the screen",
     keep_still: "Keep still",
     move_closer: "Move closer",
-    move_farther: "Move farther",
+    move_farther: "Move farther away",
     move_left: "Move to the page on the left",
     move_right: "Move to the page on the right",
     move_top: "Move to the page on top",
     occluded: "Keep the document fully visible",
-    scan_data_page: "Scan the data page of the document",
+    scan_data_page: "Scan the data page of a document",
     scan_last_page_barcode: "Scan barcode from the last page",
     scan_left_page: "Scan the left page",
     scan_right_page: "Scan the right page",
-    scan_the_back_side: "Scan the back side of the document",
+    scan_the_back_side: "Scan the back side of a document",
     scan_the_barcode: "Scan the barcode",
     scan_the_barcode_side: "Scan the barcode side of a document",
-    scan_the_front_side: "Scan the front side of the document",
-    scan_the_mrz_side: "Scan the side of the document containing the MRZ.",
+    scan_the_front_side: "Scan the front side of a document",
+    scan_the_mrz_side: "Scan the MRZ side of a document",
     scan_top_page: "Scan the top page",
     too_bright: "Move to spot with less lighting",
     too_dark: "Move to brighter spot",
@@ -48,7 +48,7 @@ export default {
     wrong_right: "Move to the right page",
     wrong_top: "Move to the top page",
   },
-  flashlight_warning_message: "Watch out for flashlight glare.\nGently move your ID around to avoid it.",
+  flashlight_warning_message: "Watch out for torch glare.\nGently move your ID around to avoid it.",
   help_button: {
     aria_label: "Help",
     tooltip: "Need help?",
@@ -58,13 +58,13 @@ export default {
     back_btn: "Back",
     barcode_only: {
       blur: {
-        details: "Try to keep the phone and the barcode still while scanning. Moving may either blur the image or make the barcode difficult to read.",
+        details: "Try to keep the phone and the barcode still while scanning. Moving either can blur the image and make the barcode difficult to read.",
         details_desktop: "Try to keep still while scanning. Moving can blur the image and make the barcode difficult to read.",
         title: "Keep still while scanning",
         title_desktop: "Keep still while scanning",
       },
       camera_lens: {
-        details_desktop: "Check your camera lens for smudges or dust. A dirty lens may cause blurring in the final image, making the barcode unreadable and preventing successful scan of the data.",
+        details_desktop: "Check your camera lens for smudges or dust. A dirty lens causes the final image to blur, making the barcode unreadable and preventing successful scan of the data.",
         title_desktop: "Clean your camera lens",
       },
       lighting: {
@@ -83,12 +83,12 @@ export default {
     document_with_barcode: {
       blur: {
         details: "Try to keep the phone and document still while scanning. Moving either can blur the image and make data on the document unreadable.",
-        details_desktop: "Try to keep still while scanning. Moving may blur the image and make data on the document unreadable.",
+        details_desktop: "Try to keep still while scanning. Moving can blur the image and make data on the document unreadable.",
         title: "Keep still while scanning",
         title_desktop: "Keep still while scanning",
       },
       camera_lens: {
-        details_desktop: "Check the camera lens for smudges or dust. A dirty lens can blur the image and make the document details unreadable, preventing a successful scan.",
+        details_desktop: "Check your camera lens for smudges or dust. A dirty lens causes the final image to blur, making the document details unreadable and preventing successful scan of the data.",
         title_desktop: "Clean your camera lens",
       },
       lighting: {
@@ -107,12 +107,12 @@ export default {
     document_with_mrz: {
       blur: {
         details: "Try to keep the phone and document still while scanning. Moving either can blur the image and make data on the document unreadable.",
-        details_desktop: "Try to keep still while scanning. Moving may blur the image and make data on the document unreadable.",
+        details_desktop: "Try to keep still while scanning. Moving can blur the image and make data on the document unreadable.",
         title: "Keep still while scanning",
         title_desktop: "Keep still while scanning",
       },
       camera_lens: {
-        details_desktop: "Check the camera lens for smudges or dust. A dirty lens can blur the image and make the document details unreadable, preventing a successful scan.",
+        details_desktop: "Check your camera lens for smudges or dust. A dirty lens causes the final image to blur, making the document details unreadable and preventing successful scan of the data.",
         title_desktop: "Clean your camera lens",
       },
       lighting: {
@@ -122,8 +122,8 @@ export default {
         title_desktop: "Watch out for harsh light",
       },
       visibility: {
-        details: "Make sure you are not covering any part of the MRZ with a finger. Also, watch out for glare across the MRZ, as it may make it unreadable.",
-        details_desktop: "Make sure you are not covering any part of the MRZ with a finger. Also, watch out for glare across the MRZ, as it may make it unreadable.",
+        details: "Make sure you aren’t covering parts of the MRZ with a finger. Also, watch out for reflections that go over the MRZ and could make it unreadable.",
+        details_desktop: "Make sure you aren’t covering parts of the MRZ with a finger. Also, watch out for reflections that go over the MRZ and could make it unreadable.",
         title: "Keep the MRZ visible",
         title_desktop: "Keep the MRZ visible",
       },
@@ -133,12 +133,12 @@ export default {
     full_document: {
       blur: {
         details: "Try to keep the phone and document still while scanning. Moving either can blur the image and make data on the document unreadable.",
-        details_desktop: "Try to keep still while scanning. Moving may blur the image and make data on the document unreadable.",
+        details_desktop: "Try to keep still while scanning. Moving can blur the image and make data on the document unreadable.",
         title: "Keep still while scanning",
         title_desktop: "Keep still while scanning",
       },
       camera_lens: {
-        details_desktop: "Check the camera lens for smudges or dust. A dirty lens can blur the image and make the document details unreadable, preventing a successful scan.",
+        details_desktop: "Check your camera lens for smudges or dust. A dirty lens causes the final image to blur, making the document details unreadable and preventing successful scan of the data.",
         title_desktop: "Clean your camera lens",
       },
       lighting: {
@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Next",
+    passport_only: {
+      blur: {
+        details: "Try to keep the phone and document still while scanning. Moving either can blur the image and make data on the document unreadable.",
+        details_desktop: "Try to keep still while scanning. Moving can blur the image and make data on the document unreadable.",
+        title: "Keep still while scanning",
+        title_desktop: "Keep still while scanning",
+      },
+      camera_lens: {
+        details_desktop: "Check your camera lens for smudges or dust. A dirty lens causes the final image to blur, making the document details unreadable and preventing successful scan of the data.",
+        title_desktop: "Clean your camera lens",
+      },
+      lighting: {
+        details: "Avoid direct harsh light because it reflects from the document and can make parts of the document unreadable. If you can’t read data on the document, it won’t be visible to the camera either.",
+        details_desktop: "Avoid direct harsh light because it reflects from the document and can make parts of the document unreadable. If you can’t read data on the document, it won’t be visible to the camera either.",
+        title: "Watch out for harsh light",
+        title_desktop: "Watch out for harsh light",
+      },
+      open_passport: {
+        details: "Open your passport to the page with your photo and personal details. This page shows your name, date of birth, passport number and other identifying information.",
+        details_desktop: "Open your passport to the page with your photo and personal details. This page shows your name, date of birth, passport number and other identifying information.",
+        title: "Open passport to show data page",
+        title_desktop: "Open passport to show data page",
+      },
+      visibility: {
+        details: "Make sure you aren’t covering parts of the document with a finger, including the bottom lines. Also, watch out for hologram reflections that go over the document fields.",
+        details_desktop: "Make sure you aren’t covering parts of the document with a finger, including the bottom lines. Also, watch out for hologram reflections that go over the document fields.",
+        title: "Keep all the fields visible",
+        title_desktop: "Keep all the fields visible",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Scanning Instructions",
@@ -164,24 +194,30 @@ export default {
       title: "Locate and scan the barcode",
       title_desktop: "Clean your lens and locate barcode",
     },
-    btn: "Start Scanning",
+    btn: "Start scanning",
     document_with_barcode: {
-      details: "Different types of document may have different barcode formats and locations. Check both the front and back of the document for a barcode.",
-      details_desktop: "Check the front and back of the document for a barcode. Make sure your camera lens is clean and the document is well lit.",
-      title: "Locate the barcode on the document",
+      details: "Different types of documents may have different barcode formats and locations. Look at the front and back of the document for a barcode.",
+      details_desktop: "Check the front and back of the document for a barcode. Make sure you keep your camera lens clean and the document well lit.",
+      title: "Locate barcode on the document",
       title_desktop: "Clean your lens and locate barcode",
     },
     document_with_mrz: {
-      details: "You'll find a long string of characters at the bottom of the front or back of the document, arranged in 2 or 3 lines and separated by chevrons (<< or >>).",
-      details_desktop: "Check the front and back of the document for an MRZ. Look for 2 or 3 lines of characters and chevrons (<<) at the bottom of the document. Make sure your camera lens is clean and the document is well lit.",
-      title: "Locate the MRZ on the document.",
-      title_desktop: "Clean your lens and locate the MRZ",
+      details: "You’ll find a long string of characters at the bottom of the front or back of the document, split into 2 or 3 lines and separated by arrows (<< or >>).",
+      details_desktop: "Check the front and back of the document for an MRZ. Look for 2–3 lines of characters and arrow symbols (<<) at the bottom of the document. Make sure you keep your camera lens clean and the document well lit.",
+      title: "Locate MRZ on the document",
+      title_desktop: "Clean your lens and locate MRZ",
     },
     full_document: {
       details: "Make sure you keep the document well lit. All document fields should be visible on the camera screen.",
-      details_desktop: "Make sure the camera lens is clean and the document is well lit. Ensure all document fields are visible on the screen.",
+      details_desktop: "Make sure you keep your camera lens clean and the document well lit. All document fields should be visible on the camera screen.",
       title: "Keep all the details visible",
       title_desktop: "Get ready to scan",
+    },
+    passport_only: {
+      details: "Prepare your passport by opening it to the page that contains your photo and personal information. Make sure the passport is well lit. All fields must be fully visible.",
+      details_desktop: "Prepare your passport by opening it to the page that contains your photo and personal information. Keep your camera lens clean and ensure the document is well lit. All fields must be fully visible.",
+      title: "Open your passport",
+      title_desktop: "Open your passport",
     },
   },
   sdk_aria: "Document scanning screen",

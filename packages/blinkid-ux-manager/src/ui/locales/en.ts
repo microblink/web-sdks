@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Next",
+    passport_only: {
+      blur: {
+        details: "Try to keep the phone and document still while scanning. Moving either can blur the image and make data on the document unreadable.",
+        details_desktop: "Try to keep still while scanning. Moving can blur the image and make data on the document unreadable.",
+        title: "Keep still while scanning",
+        title_desktop: "Keep still while scanning",
+      },
+      camera_lens: {
+        details_desktop: "Check your camera lens for smudges or dust. A dirty lens causes the final image to blur, making the document details unreadable and preventing successful scan of the data.",
+        title_desktop: "Clean your camera lens",
+      },
+      lighting: {
+        details: "Avoid direct harsh light because it reflects from the document and can make parts of the document unreadable. If you can’t read data on the document, it won’t be visible to the camera either.",
+        details_desktop: "Avoid direct harsh light because it reflects from the document and can make parts of the document unreadable. If you can’t read data on the document, it won’t be visible to the camera either.",
+        title: "Watch out for harsh light",
+        title_desktop: "Watch out for harsh light",
+      },
+      open_passport: {
+        details: "Open your passport to the page with your photo and personal details. This page shows your name, date of birth, passport number, and other identifying information.",
+        details_desktop: "Open your passport to the page with your photo and personal details. This page shows your name, date of birth, passport number, and other identifying information.",
+        title: "Open passport to show data page",
+        title_desktop: "Open passport to show data page",
+      },
+      visibility: {
+        details: "Make sure you aren’t covering parts of the document with a finger, including the bottom lines. Also, watch out for hologram reflections that go over the document fields.",
+        details_desktop: "Make sure you aren’t covering parts of the document with a finger, including the bottom lines. Also, watch out for hologram reflections that go over the document fields.",
+        title: "Keep all the fields visible",
+        title_desktop: "Keep all the fields visible",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Scanning Instructions",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Make sure you keep your camera lens clean and the document well lit. All document fields should be visible on the camera screen.",
       title: "Keep all the details visible",
       title_desktop: "Get ready to scan",
+    },
+    passport_only: {
+      details: "Prepare your passport by opening it to the page that contains your photo and personal information. Make sure the passport is well lit. All fields must be fully visible.",
+      details_desktop: "Prepare your passport by opening it to the page that contains your photo and personal information. Keep your camera lens clean and ensure the document is well lit. All fields must be fully visible.",
+      title: "Open your passport",
+      title_desktop: "Open your passport",
     },
   },
   sdk_aria: "Document scanning screen",

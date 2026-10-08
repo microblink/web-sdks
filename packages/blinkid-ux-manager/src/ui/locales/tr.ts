@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Sonraki",
+    passport_only: {
+      blur: {
+        details: "Tarama sırasında telefonu ve belgeyi sabit tutmaya çalış. Telefon veya belgenin hareket etmesi görüntüyü bulanıklaştırabilir ve belgedeki verileri okunmaz hâle getirebilir.",
+        details_desktop: "Tarama sırasında cihazı sabit tutmaya çalışın. Hareket ettirmek görüntüyü bulanıklaştırarak belgedeki bilgilerin okunmasını zorlaştırabilir.",
+        title: "Tarama sırasında hareketsiz kal",
+        title_desktop: "Tarama sırasında hareketsiz kal",
+      },
+      camera_lens: {
+        details_desktop: "Kamera lensinizin lekeli veya tozlu olup olmadığını kontrol edin. Lens kirliyse görüntü bulanık çıkar; bu da belge üzerindeki bilgilerin okunamamasına ve verilerin başarıyla taranamamasına yol açar.",
+        title_desktop: "Kamera lenslerinizi temizleyin",
+      },
+      lighting: {
+        details: "Doğrudan gelen sert ışık belgeden yansıyarak belgenin bazı kısımlarını okunmaz hâle getirebileceği için bu tür ışık kullanmaktan kaçın. Belgedeki verileri okuyamıyorsan bu veriler kamerada da görünmeyecektir.",
+        details_desktop: "Doğrudan gelen sert ışık belgeden yansıyarak belgenin bazı kısımlarını okunmaz hâle getirebileceği için bu tür ışık kullanmaktan kaçın. Belgedeki verileri okuyamıyorsan bu veriler kamerada da görünmeyecektir.",
+        title: "Sert ışığa dikkat et",
+        title_desktop: "Sert ışığa dikkat et",
+      },
+      open_passport: {
+        details: "Pasaportunuzu, fotoğrafınızın ve kişisel bilgilerinizin bulunduğu sayfayı gösterecek şekilde açın. Bu sayfada adınız, doğum tarihiniz, pasaport numaranız ve diğer kimlik bilgileriniz yer alır.",
+        details_desktop: "Pasaportunuzu fotoğrafınızın ve kişisel bilgilerinizin bulunduğu sayfayı açacak şekilde açın. Bu sayfada adınız, doğum tarihiniz, pasaport numaranız ve diğer kimlik bilgileriniz yer alır.",
+        title: "Pasaportu bilgi sayfası görünecek şekilde açın",
+        title_desktop: "Pasaportu bilgi sayfası görünecek şekilde açın",
+      },
+      visibility: {
+        details: "Alt satırlar da dâhil olmak üzere, belgenin hiçbir bölümünü parmağınla kapatmadığından emin ol. Ayrıca, belge alanlarının üzerini kapatan hologram yansımalarına da dikkat et.",
+        details_desktop: "Alt satırlar da dâhil olmak üzere, belgenin hiçbir bölümünü parmağınla kapatmadığından emin ol. Ayrıca, belge alanlarının üzerini kapatan hologram yansımalarına da dikkat et.",
+        title: "Tüm alanları görünür hâlde tut",
+        title_desktop: "Tüm alanları görünür hâlde tut",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Tarama Talimatları",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Kamera lensinizin temiz olduğundan ve belgenin iyi aydınlatıldığından emin olun. Belgenin her yeri kamera ekranında görünür olmalıdır.",
       title: "Tüm ayrıntıları görünür hâlde tut",
       title_desktop: "Taramaya hazırlanın",
+    },
+    passport_only: {
+      details: "Pasaportunuzu fotoğrafınızın ve kişisel bilgilerinizin bulunduğu sayfayı açarak hazırlayın. Pasaportun iyi aydınlatıldığından emin olun. Tüm alanlar tamamen görünür olmalıdır.",
+      details_desktop: "Pasaportunuzu fotoğrafınızın ve kişisel bilgilerinizin bulunduğu sayfayı açarak hazırlayın. Kamera lensinizi temiz tutun ve belgenin iyi aydınlatıldığından emin olun. Tüm alanlar tamamen görünür olmalıdır.",
+      title: "Pasaportunuzu açın",
+      title_desktop: "Pasaportunuzu açın",
     },
   },
   sdk_aria: "Belge tarama ekranı",

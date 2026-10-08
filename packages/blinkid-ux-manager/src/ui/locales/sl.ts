@@ -155,6 +155,36 @@ export default {
       },
     },
     next_btn: "Naprej",
+    passport_only: {
+      blur: {
+        details: "Potrudite se, da bosta med optičnim branjem telefon in dokument pri miru. Če se kateri od njiju premakne, se lahko slika razmaže in dokument postane neberljiv.",
+        details_desktop: "Med skeniranjem poskusite mirovati. Premikanje lahko zamegli sliko in oteži branje podatkov na dokumentu.",
+        title: "Držite pri miru med optičnim branjem",
+        title_desktop: "Držite pri miru med optičnim branjem",
+      },
+      camera_lens: {
+        details_desktop: "Preverite, da ni morda na objektivu kamere kakšna umazanija ali prah. Če je objektiv umazan, dobite zamegljeno končno sliko, zato je potem vsebina dokumenta neberljiva in podatkov ni mogoče uspešno optično prebrati.",
+        title_desktop: "Očistite objektiv kamere",
+      },
+      lighting: {
+        details: "Izogibajte se neposredni močni svetlobi, saj se ta odbija od dokumenta in lahko dele dokumenta naredi neberljive. Če ne morete prebrati podatkov na dokumentu, jih niti kamera ne bo mogla videti.",
+        details_desktop: "Izogibajte se neposredni močni svetlobi, saj se ta odbija od dokumenta in lahko dele dokumenta naredi neberljive. Če ne morete prebrati podatkov na dokumentu, jih niti kamera ne bo mogla videti.",
+        title: "Svetloba ne sme biti premočna",
+        title_desktop: "Svetloba ne sme biti premočna",
+      },
+      open_passport: {
+        details: "Odprite potni list na strani s fotografijo in osebnimi podatki. Na tej strani so vaše ime, datum rojstva, številka potnega lista in drugi identifikacijski podatki.",
+        details_desktop: "Odprite potni list na strani s fotografijo in osebnimi podatki. Na tej strani so vaše ime, datum rojstva, številka potnega lista in drugi identifikacijski podatki.",
+        title: "Odprite potni list na strani s podatki",
+        title_desktop: "Odprite potni list na strani s podatki",
+      },
+      visibility: {
+        details: "Poskrbite, da s prstom ne boste prekrivali delov dokumenta, to velja tudi za spodnjo linijo. Prav tako bodite pozorni na hologramske znake, ki gredo preko polj na dokumentu.",
+        details_desktop: "Poskrbite, da s prstom ne boste prekrivali delov dokumenta, to velja tudi za spodnjo linijo. Prav tako bodite pozorni na hologramske znake, ki gredo preko polj na dokumentu.",
+        title: "Vidna morajo biti vsa polja",
+        title_desktop: "Vidna morajo biti vsa polja",
+      },
+    },
   },
   onboarding_modal: {
     aria: "Navodila za optično branje",
@@ -182,6 +212,12 @@ export default {
       details_desktop: "Poskrbite, da bo objektiv vaše kamere čist, dokument pa dobro osvetljen. Na zaslonu kamere morajo biti vidna vsa polja dokumenta.",
       title: "Vidni morajo biti vsi podatki",
       title_desktop: "Pripravite se na optično branje",
+    },
+    passport_only: {
+      details: "Pripravite potni list tako, da ga odprete na strani s fotografijo in osebnimi podatki. Poskrbite, da je potni list dobro osvetljen. Vsa polja morajo biti v celoti vidna.",
+      details_desktop: "Pripravite potni list tako, da ga odprete na strani s fotografijo in osebnimi podatki. Objektiv kamere naj bo čist, dokument pa dobro osvetljen. Vsa polja morajo biti v celoti vidna.",
+      title: "Odprite potni list",
+      title_desktop: "Odprite potni list",
     },
   },
   sdk_aria: "Zaslon za optično branje dokumentov",

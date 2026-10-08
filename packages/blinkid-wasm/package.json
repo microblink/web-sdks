@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-wasm",
-  "version": "8002.0.1",
+  "version": "8003.0.0",
   "private": true,
   "description": "BlinkID Wasm runtime",
   "files": [

@@ -4,4 +4,9 @@ import type { BlinkIdExtractionMode } from "../../core/extractionMode";
 
 export type BlinkIdModalExtractionMode = BlinkIdExtractionMode;
 
-export type BlinkIdModalLocaleGroup = "full_document" | "document_with_barcode" | "document_with_mrz" | "barcode_only";
+export type BlinkIdModalLocaleGroup =
+  | "full_document"
+  | "document_with_barcode"
+  | "document_with_mrz"
+  | "barcode_only"
+  | "passport_only";

@@ -248,7 +248,7 @@ export type Country =
   | "uzbekistan"
   | "vanuatu"
   | "vatican-city"
-  | "virgin-islands-british"
+  | "british-virgin-islands"
   | "wallis-and-futuna"
   | "western-sahara"
   | "yemen"

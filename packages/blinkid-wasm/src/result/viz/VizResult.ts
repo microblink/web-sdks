@@ -138,4 +138,10 @@ export type VizResult = {
   dateOfExpiryPermanent: boolean;
   /** The localized name of the document owner */
   localizedName: StringResult | null;
+  /** The vehicle number of the document owner. */
+  vehicleNumber: StringResult | null;
+  /** The passport number of the document owner. */
+  passportNumber: StringResult | null;
+  /** The traffic participant number of the document owner. */
+  trafficParticipantNumber: StringResult | null;
 };
