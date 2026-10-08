@@ -49,7 +49,7 @@ const defaultFeedbackUiOptions: Required<FeedbackUiOptions> = {
   localizationStrings: {},
   showOnboardingGuide: true,
   showHelpButton: true,
-  helpTooltipShowDelay: 5000,
+  helpTooltipShowDelay: 10_000,
   helpTooltipHideDelay: 5000,
   showTimeoutModal: true,
 };
