@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkcard-ux-manager",
-  "version": "3001.0.1",
+  "version": "3001.0.2",
   "description": "BlinkCard UX Manager provides user feedback based on the blinkcard process results.",
   "keywords": [
     "blinkcard",

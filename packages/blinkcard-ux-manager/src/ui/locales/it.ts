@@ -48,7 +48,7 @@ export default {
     next_btn: "Avanti",
     occlusion: {
       details: "Controlla di non stare coprendo parte della scheda, comprese le ultime righe, con un dito. Fai attenzione anche ai riflessi olografici situati sui campi della scheda.",
-      title: "Fai in modo tutti i campi siano visibili",
+      title: "Mantieni tutti i campi visibili",
     },
   },
   onboarding_modal: {
