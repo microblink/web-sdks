@@ -14,6 +14,8 @@ import { SmartEnvironmentProvider } from "./SmartEnvironmentProvider";
 
 export type ModalAction = {
   label: JSX.Element;
+  /** Button visual style. Defaults to the action role (`primary` / `secondary`). */
+  variant?: ModalActionType;
 } & JSX.ButtonHTMLAttributes<HTMLButtonElement>;
 
 export type ModalActionType = "primary" | "secondary";
@@ -33,6 +35,9 @@ export type ModalProps = {
   showCloseButton?: boolean;
   /** Additional class applied to the modal content. */
   contentClass?: string;
+
+  /** Additional class applied to the modal main content. */
+  mainContentClass?: string;
   /** Layout used for modal actions. */
   actionsLayout?: "inline" | "stacked" | "responsive";
 
@@ -86,8 +91,7 @@ export const Modal: ParentComponent<ModalProps> = (props) => {
     const secondary: { type: ModalActionType; action: ModalAction }[] = props.actions?.secondary
       ? [{ type: "secondary", action: props.actions.secondary }]
       : [];
-
-    return [...secondary, ...primary];
+    return props.actionsLayout === "stacked" ? [...primary, ...secondary] : [...secondary, ...primary];
   };
 
   return (
@@ -141,6 +145,8 @@ export const Modal: ParentComponent<ModalProps> = (props) => {
                     <Show when={props.showCloseButton}>
                       <Dialog.CloseTrigger
                         aria-label={props.closeButtonAriaLabel ?? "Close"}
+                        // Safari omits buttons from sequential focus navigation unless the tab index is explicit.
+                        tabIndex={0}
                         class="close-button-focus absolute top-2.5 right-2.5 size-11 flex
                           items-center justify-center bg-transparent border-none
                           transition-colors transition-duration-100
@@ -153,7 +159,7 @@ export const Modal: ParentComponent<ModalProps> = (props) => {
 
                     {/* Main content */}
                     <div
-                      class="grid min-h-0"
+                      class={`grid min-h-0 ${props.mainContentClass ?? ""}`}
                       classList={{
                         "overflow-y-auto": props.scrollable !== false,
                         "overflow-hidden": props.scrollable === false,
@@ -176,8 +182,9 @@ export const Modal: ParentComponent<ModalProps> = (props) => {
                           {(item) => {
                             // a derived accessor is required for reactivity
                             const buttonProps = () => {
-                              const { label, class: actionClass, ...others } = item().action;
-                              return { actionClass, others };
+                              const { label, class: actionClass, variant, ...others } = item().action;
+                              const btnClass = (variant ?? item().type) === "primary" ? "btn-primary" : "btn-secondary";
+                              return { actionClass, others, btnClass };
                             };
 
                             // full class name needs to be evaluated for UnoCSS extraction
@@ -194,8 +201,10 @@ export const Modal: ParentComponent<ModalProps> = (props) => {
 
                             return (
                               <Dialog.CloseTrigger
-                                class={`btn ${btnClass} ${sizingClass()} min-w-0
+                                class={`btn ${buttonProps().btnClass} ${sizingClass()} min-w-0
                                 ${buttonProps().actionClass ?? ""}`}
+                                // Safari omits buttons from sequential focus navigation unless the tab index is explicit.
+                                tabIndex={0}
                                 {...buttonProps().others}
                               >
                                 <span class="block truncate">{item().action.label}</span>

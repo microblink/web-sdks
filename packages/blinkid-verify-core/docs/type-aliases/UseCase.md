@@ -6,4 +6,6 @@
 
 # Type Alias: UseCase
 
-> **UseCase** = `Partial`\<\{ `captureConditions`: [`CaptureConditions`](CaptureConditions.md); `manualReviewSensitivity`: [`ManualReviewSensitivity`](ManualReviewSensitivity.md); `manualReviewStrategy`: [`ManualReviewStrategy`](ManualReviewStrategy.md); `verificationContext`: [`VerificationContext`](VerificationContext.md); `verificationPolicy`: [`VerificationPolicy`](VerificationPolicy.md); \}\>
+> **UseCase** = `Partial`\<\{ `manualReviewStrategy`: [`ManualReviewStrategy`](ManualReviewStrategy.md); `verificationContext`: [`VerificationContext`](VerificationContext.md); `verificationPolicy`: [`VerificationPolicy`](VerificationPolicy.md); \}\>
+
+Defines the verification policy and context for a scan.

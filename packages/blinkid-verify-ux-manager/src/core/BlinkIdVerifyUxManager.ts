@@ -6,9 +6,10 @@ import {
   AnalyticService,
   DeviceInfo,
   DocumentRotation,
+  type VerifyApiError,
   type BlinkIdVerifyProcessResult,
-  type BlinkIdVerifyScanningResult,
   type BlinkIdVerifySessionSettings,
+  type Consent,
   type PingCameraInputInfoData,
   type ProcessResultWithBuffer,
   type RemoteScanningSession,
@@ -39,12 +40,49 @@ import {
   getUiStateKey,
 } from "./blinkid-verify-ui-state";
 import { BlinkIdVerifyProcessingError } from "./BlinkIdVerifyProcessingError";
-import { BlinkIdVerifyUxManagerOptions } from "./createBlinkIdVerifyUxManager";
+import type {
+  CaptureCompletedCallback,
+  CaptureResultResolver,
+  VerifyOnScanningCompletionCallbacks,
+} from "./capture-result-resolver";
+import { createCaptureResultResolver } from "./capture-result-resolver";
+import type { BlinkIdVerifyUxManagerOptions } from "./createBlinkIdVerifyUxManager";
 import { ChainedUiStateProps, getChainedUiStateKey } from "./getChainedUiStateKey";
 import { DocumentPagination, getDocumentPaginationType, getDocumentRotation } from "./ui-state-utils";
 import { mapErrorStateKeyToAnalyticsType, type PingableErrorUiStateKey } from "./uxAnalyticsMappers";
 
 type ProcessingLifecycleState = "ready" | "busy" | "terminal";
+
+const requireConsentAcceptors = new WeakMap<BlinkIdVerifyUxManager, (consent: Consent) => void>();
+
+/**
+ * Records accepted `RequireConsent` and allows frame processing.
+ *
+ * Used by `BlinkIdVerifyConsentGate`. This is not part of the public manager API.
+ */
+export function acceptRequireConsent(manager: BlinkIdVerifyUxManager, consent: Consent): void {
+  const accept = requireConsentAcceptors.get(manager);
+  if (!accept) {
+    return;
+  }
+
+  accept(consent);
+  requireConsentAcceptors.delete(manager);
+}
+
+const invokeAsyncCallbacks = async <T extends unknown[]>(
+  callbacks: Iterable<(...args: T) => void | Promise<void>>,
+  name: string,
+  ...args: T
+): Promise<void> => {
+  for (const callback of callbacks) {
+    try {
+      await callback(...args);
+    } catch (error) {
+      console.error(`Error in ${name} callback`, error);
+    }
+  }
+};
 
 /**
  * The BlinkIdVerifyUxManager class. This is the main class that manages the UX of the BlinkID Verify SDK. It is
@@ -94,6 +132,12 @@ export class BlinkIdVerifyUxManager {
 
   /** Protects worker message channel from concurrent/terminal process calls. */
   #processingLifecycleState: ProcessingLifecycleState = "ready";
+  /**
+   * Identifies the capture whose completion handler may still be running.
+   *
+   * Reset and destroy bump it so that handler cannot force the lifecycle back to terminal after scanning has moved on.
+   */
+  #captureEpoch = 0;
   /** The scanning session timeout ID. */
   #timeoutId?: number;
   /** Timeout duration in ms for the scanning session. If null, timeout won't be triggered ever. */
@@ -101,12 +145,18 @@ export class BlinkIdVerifyUxManager {
 
   /** The callbacks for when the UI state changes. */
   #onUiStateChangedCallbacks = new Set<(uiState: BlinkIdVerifyUiState) => void>();
-  /** The callbacks for when a scan result is available. */
-  #onResultCallbacks = new Set<(result: BlinkIdVerifyScanningResult) => void>();
+  /** The callbacks invoked with a lazy capture resolver after document capture. */
+  #onCaptureCompletedCallbacks = new Set<CaptureCompletedCallback>();
+  /** Automatic Verify API submit registrations. */
+  #verifyOnScanningCompletionRegistrations = new Set<VerifyOnScanningCompletionCallbacks>();
   /** The callbacks for when a frame is processed. */
   #onFrameProcessCallbacks = new Set<(frameResult: ProcessResultWithBuffer) => void>();
   /** The callbacks for when an error occurs during processing. */
   #onErrorCallbacks = new Set<(errorState: BlinkIdVerifyProcessingError) => void>();
+  /** Consent handed to the session when the result payload is generated. */
+  #consent?: Consent;
+  /** `RequireConsent` blocks frame processing until {@link acceptRequireConsent} runs. */
+  #awaitingConsent = false;
 
   /** Clean up observers, store subscriptions and event listeners. */
   #cleanupCallbacks = new Set<() => void>();
@@ -138,7 +188,7 @@ export class BlinkIdVerifyUxManager {
   constructor(
     cameraManager: CameraManager,
     scanningSession: RemoteScanningSession,
-    options: BlinkIdVerifyUxManagerOptions = {},
+    options: BlinkIdVerifyUxManagerOptions,
     sessionSettings: BlinkIdVerifySessionSettings,
     showDemoOverlay: boolean,
     showProductionOverlay: boolean,
@@ -150,6 +200,16 @@ export class BlinkIdVerifyUxManager {
     this.showDemoOverlay = showDemoOverlay;
     this.showProductionOverlay = showProductionOverlay;
     this.deviceInfo = deviceInfo;
+
+    if (options.consentUxConfig.consentMode === "ProvideExternalConsent") {
+      this.#consent = options.consentUxConfig.consent;
+    } else if (options.consentUxConfig.consentMode === "RequireConsent") {
+      this.#awaitingConsent = true;
+      requireConsentAcceptors.set(this, (consent) => {
+        this.#consent = consent;
+        this.#awaitingConsent = false;
+      });
+    }
 
     if (options.initialUiStateKey) {
       this.#initialUiStateKey = options.initialUiStateKey;
@@ -496,24 +556,67 @@ export class BlinkIdVerifyUxManager {
   }
 
   /**
-   * Registers a callback function to be called when a scan result is available.
+   * Registers a callback invoked after document capture with a lazy {@link CaptureResultResolver}.
+   *
+   * Runs after the capture success animation and does not wait for the Verify API. Hosts can tear down scanning UI
+   * here. Capture itself does not copy session results or submit to the Verify API; call resolver methods for the data
+   * you need. If {@link BlinkIdVerifyUxManager.verifyOnScanningCompletion} is also registered, keep the session alive
+   * until those success or error callbacks run.
    *
    * @example
-   *   const cleanup = manager.addOnResultCallback((result) => {
-   *     console.log("Scan result:", result);
+   *   const cleanup = manager.addOnCaptureCompletedCallback(async (resolver) => {
+   *     const result = await resolver.getCaptureResult();
+   *     console.log(result.typedPayload);
    *   });
    *
-   *   // Later, to remove the callback:
    *   cleanup();
    *
-   * @param callback - A function that will be called with the scan result.
-   * @returns A cleanup function that, when called, will remove the registered
-   * callback.
+   * @param callback - Called with a resolver bound to this capture.
+   * @returns A cleanup function that removes the callback.
    */
-  addOnResultCallback(callback: (result: BlinkIdVerifyScanningResult) => void) {
-    this.#onResultCallbacks.add(callback);
+  addOnCaptureCompletedCallback(callback: CaptureCompletedCallback) {
+    this.#onCaptureCompletedCallbacks.add(callback);
     return () => {
-      this.#onResultCallbacks.delete(callback);
+      this.#onCaptureCompletedCallbacks.delete(callback);
+    };
+  }
+
+  /**
+   * Submits the captured session to the Verify API when scanning completes, then invokes success or error callbacks.
+   *
+   * Submit starts after the capture success animation. {@link BlinkIdVerifyUxManager.addOnCaptureCompletedCallback} runs
+   * first and does not wait for the network; these success or error callbacks run when submit settles. Keep the session
+   * alive until then if both APIs are used. Network submit is available on every session. The SDK posts to the base URL
+   * configured at core init and sends no API key.
+   *
+   * API failures are delivered to `onError` with the same resolver. From `onError`, call
+   * {@link CaptureResultResolver.verifyCaptureResult} again to resubmit that capture while the scanning session is still
+   * alive. That later call is not delivered to `onSuccess`.
+   *
+   * @example
+   *   const cleanup = manager.verifyOnScanningCompletion({
+   *     onSuccess: (apiResult) => {
+   *       console.log(apiResult);
+   *     },
+   *     onError: async (error, resolver) => {
+   *       console.error(error);
+   *       const retry = await resolver.verifyCaptureResult();
+   *       if (!retry.ok) {
+   *         console.error(retry.error);
+   *       }
+   *     },
+   *   });
+   *
+   *   cleanup();
+   *
+   * @param callbacks - `onSuccess` receives the API result and capture resolver. `onError` receives a
+   *   {@link VerifyApiError} and the capture resolver. The client chooses whether to resubmit.
+   * @returns A cleanup function that removes both callbacks.
+   */
+  verifyOnScanningCompletion(callbacks: VerifyOnScanningCompletionCallbacks) {
+    this.#verifyOnScanningCompletionRegistrations.add(callbacks);
+    return () => {
+      this.#verifyOnScanningCompletionRegistrations.delete(callbacks);
     };
   }
 
@@ -569,15 +672,6 @@ export class BlinkIdVerifyUxManager {
   #invokeOnErrorCallbacks = (errorState: BlinkIdVerifyProcessingError) => {
     this.#hapticFeedbackManager.triggerLong();
     invokeCallbacks(this.#onErrorCallbacks, errorState, "onError");
-  };
-
-  /**
-   * Invokes the onResult callbacks.
-   *
-   * @param result - The result.
-   */
-  #invokeOnResultCallbacks = (result: BlinkIdVerifyScanningResult) => {
-    invokeCallbacks(this.#onResultCallbacks, result, "onResult");
   };
 
   /**
@@ -676,7 +770,7 @@ export class BlinkIdVerifyUxManager {
    * @returns The processed frame's ArrayBuffer, or undefined if not applicable.
    */
   #frameCaptureCallback = async (imageData: ImageData): Promise<ArrayBuffer | void> => {
-    if (this.#processingLifecycleState === "terminal") {
+    if (this.#awaitingConsent || this.#processingLifecycleState === "terminal") {
       return;
     }
 
@@ -840,7 +934,7 @@ export class BlinkIdVerifyUxManager {
 
   /**
    * Handles side effects triggered by a UI state transition: restarts the scan timeout, resumes frame capture on intro
-   * states, and orchestrates result retrieval on DOCUMENT_CAPTURED.
+   * states, and delivers a capture resolver on DOCUMENT_CAPTURED.
    *
    * @param uiState - The UI state.
    */
@@ -863,25 +957,71 @@ export class BlinkIdVerifyUxManager {
 
     // handle DOCUMENT_CAPTURED
     if (uiState.key === "DOCUMENT_CAPTURED") {
+      const captureEpoch = this.#captureEpoch;
       console.debug("Handling DOCUMENT_CAPTURED state from #handleUiStateChange");
       // Scanning is complete — cancel any running timeout before the animation sleep
       // to prevent it from firing and triggering a spurious reset during result retrieval.
       this.clearScanTimeout();
       try {
         await sleep(uiState.minDuration); // allow checkbox success animation to play out
-
-        const result = await this.getSessionResult();
-
-        this.#invokeOnResultCallbacks(result);
+        if (captureEpoch !== this.#captureEpoch) {
+          return;
+        }
+        await this.#deliverCaptureResult();
       } catch (err) {
+        if (captureEpoch !== this.#captureEpoch) {
+          return;
+        }
         console.error("Failed to retrieve scan result after document capture:", err);
         this.#invokeOnErrorCallbacks("result_retrieval_failed");
 
         void this.#analytics.sendPinglets();
       } finally {
-        this.#processingLifecycleState = "terminal";
+        // A reset from a capture or Verify API callback has already started a new scan.
+        if (captureEpoch === this.#captureEpoch) {
+          this.#processingLifecycleState = "terminal";
+        }
       }
     }
+  };
+
+  #createCaptureResultResolver(): CaptureResultResolver {
+    return createCaptureResultResolver(this.scanningSession, () => this.#consent);
+  }
+
+  #deliverCaptureResult = async () => {
+    const resolver = this.#createCaptureResultResolver();
+    const registrations =
+      this.#verifyOnScanningCompletionRegistrations.size > 0
+        ? [...this.#verifyOnScanningCompletionRegistrations]
+        : undefined;
+    const verifyPromise = registrations ? resolver.verifyCaptureResult() : undefined;
+
+    if (this.#onCaptureCompletedCallbacks.size > 0) {
+      await invokeAsyncCallbacks([...this.#onCaptureCompletedCallbacks], "onCaptureCompleted", resolver);
+    }
+
+    if (!verifyPromise || !registrations) {
+      return;
+    }
+
+    const outcome = await verifyPromise;
+    if (outcome.ok) {
+      await invokeAsyncCallbacks(
+        registrations.map((registration) => registration.onSuccess),
+        "verifyOnScanningCompletionSuccess",
+        outcome.result,
+        resolver,
+      );
+      return;
+    }
+
+    await invokeAsyncCallbacks(
+      registrations.map((registration) => registration.onError),
+      "verifyOnScanningCompletionError",
+      outcome.error,
+      resolver,
+    );
   };
 
   /** Returns the initial UI state key used when resetting UX state. */
@@ -902,8 +1042,13 @@ export class BlinkIdVerifyUxManager {
     }
   }
 
+  #invalidateCaptureCompletion() {
+    this.#captureEpoch += 1;
+  }
+
   /** Resets the feedback stabilizer and invokes the onUiStateChanged callbacks. */
   #resetUiState = (uiStateKey: BlinkIdVerifyUiStateKey = this.#initialUiStateKey) => {
+    this.#invalidateCaptureCompletion();
     this.feedbackStabilizer.reset(uiStateKey);
     this.#uiState = this.feedbackStabilizer.currentState;
     this.#mappedUiStateKey = this.uiState.key;
@@ -922,25 +1067,6 @@ export class BlinkIdVerifyUxManager {
     console.debug("⏳🔴 clearing timeout");
     window.clearTimeout(this.#timeoutId);
     this.#timeoutId = undefined;
-  }
-
-  /**
-   * Gets the result from the scanning session.
-   *
-   * @returns The result.
-   */
-  async getSessionResult(): Promise<BlinkIdVerifyScanningResult> {
-    try {
-      return await this.scanningSession.getResult();
-    } catch (error) {
-      await this.#analytics.logErrorEvent({
-        origin: "ux.getSessionResult",
-        error,
-        errorType: "NonFatal",
-      });
-      await this.#analytics.sendPinglets();
-      throw error;
-    }
   }
 
   /**
@@ -968,7 +1094,8 @@ export class BlinkIdVerifyUxManager {
     console.debug("🧹 Clearing all BlinkIdVerifyUxManager user callbacks");
 
     this.#onUiStateChangedCallbacks.clear();
-    this.#onResultCallbacks.clear();
+    this.#onCaptureCompletedCallbacks.clear();
+    this.#verifyOnScanningCompletionRegistrations.clear();
     this.#onFrameProcessCallbacks.clear();
     this.#onErrorCallbacks.clear();
   }
@@ -987,6 +1114,7 @@ export class BlinkIdVerifyUxManager {
    */
   reset() {
     console.debug("🔁 Resetting BlinkIdVerifyUxManager");
+    this.#invalidateCaptureCompletion();
     this.clearScanTimeout();
     this.#clearCameraInputAnalyticsSync();
     this.#processingLifecycleState = "ready";
@@ -1004,7 +1132,10 @@ export class BlinkIdVerifyUxManager {
    */
   destroy() {
     console.debug("💥 Destroying BlinkIdVerifyUxManager");
+    this.#invalidateCaptureCompletion();
     this.#processingLifecycleState = "terminal";
+    this.#awaitingConsent = false;
+    requireConsentAcceptors.delete(this);
     this.clearScanTimeout();
     this.cleanupAllObservers();
     this.clearUserCallbacks();

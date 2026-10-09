@@ -5,6 +5,7 @@ import { spawnSync } from "node:child_process";
 import { randomUUID } from "node:crypto";
 import { existsSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import ts from "typescript";
 
@@ -62,7 +63,7 @@ function groupFilesByWorkspace(filePaths: string[]): Map<string, string[]> {
   return filesByWorkspace;
 }
 
-function getDeclarationFiles(workspaceRoot: string): string[] {
+function parseWorkspaceConfig(workspaceRoot: string): ts.ParsedCommandLine {
   const configPath = path.join(workspaceRoot, "tsconfig.json");
   const { config, error } = ts.readConfigFile(configPath, ts.sys.readFile);
 
@@ -79,14 +80,37 @@ function getDeclarationFiles(workspaceRoot: string): string[] {
     throw new Error(message);
   }
 
-  return parsedConfig.fileNames.filter((filePath) => declarationFilePattern.test(filePath));
+  return parsedConfig;
+}
+
+function isUnderRootDir(filePath: string, rootDir: string | undefined): boolean {
+  if (rootDir === undefined) {
+    return true;
+  }
+
+  return isInsideDirectory(filePath, rootDir);
+}
+
+export function selectStagedTypecheckFiles(workspaceRoot: string, filePaths: string[]): string[] {
+  return selectTypecheckFiles(parseWorkspaceConfig(workspaceRoot), filePaths);
+}
+
+function selectTypecheckFiles(parsedConfig: ts.ParsedCommandLine, filePaths: string[]): string[] {
+  return filePaths.filter((filePath) => isUnderRootDir(filePath, parsedConfig.options.rootDir));
 }
 
 function typecheckWorkspace(workspaceRoot: string, filePaths: string[]): number {
+  const parsedConfig = parseWorkspaceConfig(workspaceRoot);
+  const sourceFiles = selectTypecheckFiles(parsedConfig, filePaths);
+
+  if (sourceFiles.length === 0) {
+    return 0;
+  }
+
   const temporaryConfigPath = path.join(workspaceRoot, `.tsconfig.staged-${randomUUID()}.json`);
-  const files = [...new Set([...filePaths, ...getDeclarationFiles(workspaceRoot)])].map((filePath) =>
-    path.relative(workspaceRoot, filePath).replaceAll(path.sep, "/"),
-  );
+  const files = [
+    ...new Set([...sourceFiles, ...parsedConfig.fileNames.filter((filePath) => declarationFilePattern.test(filePath))]),
+  ].map((filePath) => path.relative(workspaceRoot, filePath).replaceAll(path.sep, "/"));
 
   writeFileSync(
     temporaryConfigPath,
@@ -124,18 +148,29 @@ function typecheckWorkspace(workspaceRoot: string, filePaths: string[]): number 
   }
 }
 
-try {
-  const filesByWorkspace = groupFilesByWorkspace(process.argv.slice(2));
+export function typecheckStagedFiles(filePaths: string[]): number {
+  const filesByWorkspace = groupFilesByWorkspace(filePaths);
 
-  for (const [workspaceRoot, filePaths] of filesByWorkspace) {
-    const status = typecheckWorkspace(workspaceRoot, filePaths);
+  for (const [workspaceRoot, workspaceFilePaths] of filesByWorkspace) {
+    const status = typecheckWorkspace(workspaceRoot, workspaceFilePaths);
+
+    if (status !== 0) {
+      return status;
+    }
+  }
+
+  return 0;
+}
+
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  try {
+    const status = typecheckStagedFiles(process.argv.slice(2));
 
     if (status !== 0) {
       process.exitCode = status;
-      break;
     }
+  } catch (error) {
+    console.error(error instanceof Error ? error.message : error);
+    process.exitCode = 1;
   }
-} catch (error) {
-  console.error(error instanceof Error ? error.message : error);
-  process.exitCode = 1;
 }

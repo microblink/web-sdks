@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-verify-ux-manager",
-  "version": "4000.0.0-next.1",
+  "version": "4000.0.0",
   "description": "BlinkID Verify UX Manager provides user feedback based on the blinkid-verify process results.",
   "keywords": [
     "aml",
@@ -90,6 +90,7 @@
     "@microblink/feedback-stabilizer": "workspace:^",
     "@microblink/repo-utils": "workspace:*",
     "@microblink/shared-components": "workspace:^",
+    "@microblink/test-utils": "workspace:*",
     "@microblink/tsconfig": "workspace:*",
     "@microblink/unocss-config": "workspace:*",
     "@microblink/ux-common": "workspace:^",

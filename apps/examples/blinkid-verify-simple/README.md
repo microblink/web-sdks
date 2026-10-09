@@ -8,9 +8,9 @@ The application performs the following actions:
 
 1.  **Initializes BlinkID Verify**: It calls the `createBlinkIdVerify` function, which handles the entire setup process, including loading the SDK, setting up the camera, and creating the UI.
 
-2.  **Sets up a Result Callback**: It registers a callback function that will be invoked when a document is successfully scanned.
+2.  **Submits the capture**: After a successful scan, `verifyOnScanningCompletion` posts the capture to this page's origin at `/api/v3/verify`. The dev server forwards that request.
 
-3.  **Logs the Result**: When the callback is triggered, it logs the scanning result to the console.
+3.  **Logs the Verify response**: The success callback logs the Verify API result. The error callback logs the failure and retries once when the status is 500–599.
 
 4.  **Cleans up Resources**: After logging the result, it calls the `destroy` method to release all resources used by the SDK.
 
@@ -23,4 +23,6 @@ The application performs the following actions:
 
 ## How to Run
 
-For detailed instructions on how to install dependencies and run this example, please refer to the [main README file](./../README.md).
+Copy `.env.example` to `.env.local`. Set `VITE_LICENCE_KEY`, and set `VERIFY_API_URL` to the https origin of your Verify API. `VERIFY_API_KEY` is optional. When set, it is sent as the `Authorization` value. The example leaves `verifyApiBaseUrl` unset, so the SDK posts to `/api/v3/verify` on this dev server.
+
+For install and start commands, see the [examples README](./../README.md).

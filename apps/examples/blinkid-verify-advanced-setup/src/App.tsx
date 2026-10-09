@@ -4,8 +4,10 @@
 
 import {
   BlinkIdVerifyProcessResult,
-  BlinkIdVerifyScanningResult,
   loadBlinkIdVerifyCore,
+  type BlinkIdVerifySessionResult,
+  type VerifyApiError,
+  type VerifyApiResult,
 } from "@microblink/blinkid-verify-core";
 import {
   BlinkIdVerifyUxManager,
@@ -13,10 +15,7 @@ import {
   createBlinkIdVerifyUxManager,
 } from "@microblink/blinkid-verify-ux-manager";
 import { CameraManager, createCameraManagerUi } from "@microblink/camera-manager";
-import { Component, createEffect, createMemo, createSignal, onMount, Show } from "solid-js";
-
-/** Debug info will be displayed in the UI. */
-const SHOW_DEBUG = true;
+import { Component, createEffect, createMemo, createSignal, Match, onMount, Show, Switch } from "solid-js";
 
 /**
  * If you are using a portal, you can set this to true. Portal is a way to render the UI outside of the root element.
@@ -25,30 +24,30 @@ const SHOW_DEBUG = true;
 const USE_PORTAL = true;
 
 /** If the onboarding guide should be shown. */
-const SHOW_ONBOARDING = false;
+const SHOW_ONBOARDING = true;
 
 /** This is the target node for the UI. */
 const targetNode = !USE_PORTAL ? document.getElementById("root")! : undefined;
 
+/** Result of the Verify API request started after capture, or pending while that request is in flight. */
+type VerifyOutcome =
+  | { status: "pending" }
+  | { status: "success"; result: VerifyApiResult }
+  | { status: "error"; error: VerifyApiError };
+
 /** This is the main component of the application. */
 export const App: Component = () => {
-  const [result, setResult] = createSignal<BlinkIdVerifyScanningResult>();
+  const [result, setResult] = createSignal<BlinkIdVerifySessionResult>();
+  const [verifyOutcome, setVerifyOutcome] = createSignal<VerifyOutcome>();
   const [blinkIdVerifyUxManager, setBlinkIdVerifyUxManager] = createSignal<BlinkIdVerifyUxManager>();
   const [loadState, setLoadState] = createSignal<"not-loaded" | "loading" | "ready">("not-loaded");
-
-  /**
-   * This function removes the images from the result object. This is done only so we don't display raw images data in
-   * the UI.
-   */
-  const resultWithoutImages = () => {
-    const resultCopy = structuredClone(result());
-
-    return resultCopy;
-  };
+  let captureGeneration = 0;
 
   async function init() {
+    const generation = ++captureGeneration;
     setLoadState("loading");
     setResult(undefined);
+    setVerifyOutcome(undefined);
 
     /*
      * We first initialize the direct API. This loads the WASM module and initializes the engine.
@@ -58,8 +57,6 @@ export const App: Component = () => {
     const blinkIdVerifyCore = await loadBlinkIdVerifyCore({
       licenseKey: import.meta.env.VITE_LICENCE_KEY,
     });
-
-    console.log("creating new session");
 
     /*
      * Initialize the session with the default settings.
@@ -74,13 +71,17 @@ export const App: Component = () => {
     const cameraManager = new CameraManager();
 
     /*
-     * Create the UX manager.
+     * Create the consent gate. RequireConsent does not return a manager until the user accepts.
      */
-    const uxManager = await createBlinkIdVerifyUxManager(cameraManager, session);
-    // set the timeout duration to null to disable the timeout.
-    uxManager.setTimeoutDuration(null);
-
-    setBlinkIdVerifyUxManager(uxManager);
+    const consentGate = await createBlinkIdVerifyUxManager(cameraManager, session, {
+      consentUxConfig: {
+        consentMode: "RequireConsent",
+        consent: {
+          userId: "example-user",
+          durationDays: 365,
+        },
+      },
+    });
 
     /*
      * This creates the UI and attaches it to the DOM.
@@ -92,22 +93,62 @@ export const App: Component = () => {
     });
 
     /*
-     * This callback is called when the UI is dismounted.
-     * This is useful if you want to perform some actions when the UI is dismounted.
+     * A finished capture closes the camera immediately, but the core has to stay alive until the Verify API request
+     * settles. Terminating it here would cancel that request.
      */
+    let preserveCoreForResult = false;
     cameraUi.addOnDismountCallback(() => {
-      void blinkIdVerifyCore.terminate();
+      if (!preserveCoreForResult) {
+        void blinkIdVerifyCore.terminate();
+      }
       setBlinkIdVerifyUxManager(undefined);
       setLoadState("not-loaded");
     });
 
+    const uxManager = await consentGate.consentUiResponse(cameraUi);
+    if (!uxManager) {
+      await blinkIdVerifyCore.terminate();
+      setLoadState("not-loaded");
+      return;
+    }
+
+    // set the timeout duration to null to disable the timeout.
+    uxManager.setTimeoutDuration(null);
+
+    setBlinkIdVerifyUxManager(uxManager);
+
     /*
-     * This callback is called when the result is ready.
-     * This is useful if you want to perform some actions when the result is ready.
+     * Capture is already complete when this runs, after the success animation. Close the camera right away and let the
+     * Verify API request finish in the background.
      */
-    uxManager.addOnResultCallback((result) => {
-      setResult(result);
+    uxManager.addOnCaptureCompletedCallback(async (resolver) => {
+      preserveCoreForResult = true;
+      setVerifyOutcome({ status: "pending" });
       cameraUi.dismount();
+
+      const captureResultPromise = resolver.getCaptureResult().then(
+        (captureResult) => {
+          if (generation === captureGeneration) {
+            setResult(captureResult);
+          }
+        },
+        (error: unknown) => {
+          console.error("Failed to load capture result", error);
+        },
+      );
+
+      try {
+        const outcome = await resolver.verifyCaptureResult();
+        if (generation !== captureGeneration) {
+          return;
+        }
+        setVerifyOutcome(
+          outcome.ok ? { status: "success", result: outcome.result } : { status: "error", error: outcome.error },
+        );
+      } finally {
+        await captureResultPromise;
+        void blinkIdVerifyCore.terminate();
+      }
     });
 
     /*
@@ -115,7 +156,7 @@ export const App: Component = () => {
      * This is useful if you want to perform some actions on certain results.
      */
     uxManager.addOnFrameProcessCallback((frameProcessResult: BlinkIdVerifyProcessResult) => {
-      console.log("frame processed", frameProcessResult);
+      //console.log("frame processed", frameProcessResult);
     });
 
     /*
@@ -186,11 +227,12 @@ export const App: Component = () => {
 
       {/* Results */}
       <Show when={result()}>{(trimmedResult) => <DisplayBlinkIdVerifyResult result={trimmedResult()} />}</Show>
+      <Show when={verifyOutcome()}>{(outcome) => <DisplayVerifyApiResult outcome={outcome()} />}</Show>
     </div>
   );
 };
 
-function DisplayBlinkIdVerifyResult(props: { result: BlinkIdVerifyScanningResult }) {
+function DisplayBlinkIdVerifyResult(props: { result: BlinkIdVerifySessionResult }) {
   createEffect(() => {
     console.log(props.result);
   });
@@ -214,15 +256,46 @@ function DisplayBlinkIdVerifyResult(props: { result: BlinkIdVerifyScanningResult
 
   return (
     <div>
-      <Show when={props.result.frontFrame}>
-        <CreateImageSection title="Front Frame" bytes={props.result.frontFrame!.jpegBytes} />
+      <Show when={props.result.serializedPayload.imageFirstSide}>
+        {(image) => <CreateImageSection title="First Side" bytes={image().jpegBytes} />}
       </Show>
-      <Show when={props.result.backFrame}>
-        <CreateImageSection title="Back Frame" bytes={props.result.backFrame!.jpegBytes} />
+      <Show when={props.result.serializedPayload.imageSecondSide}>
+        {(image) => <CreateImageSection title="Second Side" bytes={image().jpegBytes} />}
       </Show>
-      <Show when={props.result.barcodeFrame}>
-        <CreateImageSection title="Barcode Frame" bytes={props.result.barcodeFrame!.jpegBytes} />
+      <Show when={props.result.serializedPayload.imageBarcode}>
+        {(image) => <CreateImageSection title="Barcode" bytes={image().jpegBytes} />}
       </Show>
     </div>
+  );
+}
+
+function DisplayVerifyApiResult(props: { outcome: VerifyOutcome }) {
+  return (
+    <Switch>
+      <Match when={props.outcome.status === "pending"}>
+        <p>Submitting to the Verify API…</p>
+      </Match>
+      <Match when={props.outcome.status === "success" ? props.outcome.result : undefined}>
+        {(result) => (
+          <div>
+            <h2>{result().verification.verdict}</h2>
+            <pre>{JSON.stringify(result(), null, 2)}</pre>
+          </div>
+        )}
+      </Match>
+      <Match when={props.outcome.status === "error" ? props.outcome.error : undefined}>
+        {(error) => (
+          <div>
+            <p>{error().message}</p>
+            <Show when={error().status !== undefined}>
+              <p>Status: {error().status}</p>
+            </Show>
+            <Show when={error().body !== undefined}>
+              <pre>{JSON.stringify(error().body, null, 2)}</pre>
+            </Show>
+          </div>
+        )}
+      </Match>
+    </Switch>
   );
 }

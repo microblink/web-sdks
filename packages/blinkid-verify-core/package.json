@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-verify-core",
-  "version": "4000.0.0-next.1",
+  "version": "4000.0.0",
   "description": "BlinkID Verify Core SDK",
   "keywords": [
     "aml",
@@ -61,6 +61,7 @@
     "prepack": "pnpm prepare-publish",
     "prepare-publish": "tsx scripts/prepare-publish.mts",
     "publish-test": "pnpm prepare-publish && pnpm pack-check",
+    "test": "vitest run",
     "type-rollup": "bundle-declarations --entry index --bundle @microblink/analytics --bundle @microblink/blinkid-verify-wasm --bundle @microblink/blinkid-verify-worker --bundle @microblink/core-common --bundle @microblink/wasm-common --bundle @microblink/worker-common",
     "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
     "watch:js": "pnpm run build:js --watch --mode development",

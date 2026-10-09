@@ -8,6 +8,7 @@
 
 ## Classes
 
+- [BlinkIdVerifyConsentGate](classes/BlinkIdVerifyConsentGate.md)
 - [FeedbackStabilizer](classes/FeedbackStabilizer.md)
 - [HapticFeedbackManager](classes/HapticFeedbackManager.md)
 
@@ -17,6 +18,7 @@
 
 ## Type Aliases
 
+- [BlinkIdVerifyConsentUxConfiguration](type-aliases/BlinkIdVerifyConsentUxConfiguration.md)
 - [BlinkIdVerifyPageTransitionKey](type-aliases/BlinkIdVerifyPageTransitionKey.md)
 - [BlinkIdVerifyProcessingError](type-aliases/BlinkIdVerifyProcessingError.md)
 - [BlinkIdVerifyReticleType](type-aliases/BlinkIdVerifyReticleType.md)
@@ -28,15 +30,25 @@
 - [BlinkIdVerifyUiStateMap](type-aliases/BlinkIdVerifyUiStateMap.md)
 - [BlinkIdVerifyUiStepSuccessKey](type-aliases/BlinkIdVerifyUiStepSuccessKey.md)
 - [BlinkIdVerifyUxManagerOptions](type-aliases/BlinkIdVerifyUxManagerOptions.md)
+- [CaptureCompletedCallback](type-aliases/CaptureCompletedCallback.md)
+- [CaptureResultResolver](type-aliases/CaptureResultResolver.md)
+- [ConsentUiInput](type-aliases/ConsentUiInput.md)
 - [FeedbackUiOptions](type-aliases/FeedbackUiOptions.md)
 - [HapticFeedbackType](type-aliases/HapticFeedbackType.md)
 - [LocaleRecord](type-aliases/LocaleRecord.md)
 - [LocalizationStrings](type-aliases/LocalizationStrings.md)
+- [NoConsentUI](type-aliases/NoConsentUI.md)
 - [PartialLocalizationStrings](type-aliases/PartialLocalizationStrings.md)
 - [PartialProcessResult](type-aliases/PartialProcessResult.md)
+- [ProvideExternalConsent](type-aliases/ProvideExternalConsent.md)
+- [RequireConsent](type-aliases/RequireConsent.md)
 - [UiState](type-aliases/UiState.md)
 - [UiStateEvent](type-aliases/UiStateEvent.md)
 - [UiStateMap](type-aliases/UiStateMap.md)
+- [VerifyCaptureResult](type-aliases/VerifyCaptureResult.md)
+- [VerifyOnScanningCompletionCallbacks](type-aliases/VerifyOnScanningCompletionCallbacks.md)
+- [VerifyOnScanningCompletionErrorCallback](type-aliases/VerifyOnScanningCompletionErrorCallback.md)
+- [VerifyOnScanningCompletionSuccessCallback](type-aliases/VerifyOnScanningCompletionSuccessCallback.md)
 
 ## Variables
 

@@ -56,6 +56,9 @@ export default defineConfig((config) => {
       browser: {
         enabled: true,
         provider: playwright(),
+        commands: {
+          ariaSnapshot: ({ iframe }, selector: string) => iframe.locator(selector).ariaSnapshot(),
+        },
         screenshotFailures: false,
         headless: true,
         instances: [

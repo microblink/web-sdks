@@ -7,7 +7,7 @@ type Promisable<T> = T | Promise<T>;
 
 type SharedProcess<TProcessResult> = (image: ImageData) => Promisable<TProcessResult>;
 type SharedGetSettings<TSettings> = () => Promisable<TSettings>;
-type SharedGetResult<TResult> = () => Promisable<TResult>;
+type SharedGetResult<TResult> = (...args: unknown[]) => Promisable<TResult>;
 type SharedResolveCurrentStep = () => Promisable<void>;
 type SharedGetScanningStatus<TScanningStatus> = () => Promisable<TScanningStatus>;
 

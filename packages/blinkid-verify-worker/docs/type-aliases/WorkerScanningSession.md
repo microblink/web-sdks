@@ -6,7 +6,7 @@
 
 # Type Alias: WorkerScanningSession
 
-> **WorkerScanningSession** = `Omit`\<`BlinkIdVerifyScanningSession`, `"process"` \| `"deleteLater"` \| `"isAliasOf"` \| `"clone"`\> & `object`
+> **WorkerScanningSession** = `Omit`\<`BlinkIdVerifyScanningSession`, `"process"` \| `"deleteLater"` \| `"isAliasOf"` \| `"clone"` \| `"setVerifyApiBaseUrl"`\> & `object`
 
 The worker scanning session.
 

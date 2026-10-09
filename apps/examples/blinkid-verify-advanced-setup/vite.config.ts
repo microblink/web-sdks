@@ -3,6 +3,7 @@
 import dns from "dns";
 
 import { moveResources } from "@microblink/repo-utils";
+import { verifyApiDevProxy } from "@microblink/repo-utils/vite/verifyApiDevProxy.mts";
 import { ServerOptions, defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import { qrcode } from "vite-plugin-qrcode";
@@ -29,6 +30,7 @@ export default defineConfig((config) => {
       target: "es2022",
     },
     plugins: [
+      verifyApiDevProxy(),
       // symlink wasm resources to public/resources
       {
         name: "move-resources",

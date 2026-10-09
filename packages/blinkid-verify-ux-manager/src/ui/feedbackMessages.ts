@@ -33,6 +33,7 @@ export const feedbackMessages: Partial<
   WRONG_LAST_PAGE: () => "scan_last_page_barcode",
 
   // occlusion
+  SCREEN_DETECTED: () => "screen_detected",
   BLUR_DETECTED: (isDesktop?: boolean) => (isDesktop ? "keep_document_still" : "blur_detected"),
   GLARE_DETECTED: () => "glare_detected",
   OCCLUDED: () => "occluded",

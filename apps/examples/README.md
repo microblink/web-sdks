@@ -73,7 +73,23 @@ Replace `your-license-key` with the actual license key you obtained.
 
 **Note:** The `camera-manager` and `camera-selection` examples do not require a license key.
 
-### 4. Run an Example Application
+### 4. Set up BlinkID Verify
+
+The [simple](./blinkid-verify-simple/) and [advanced](./blinkid-verify-advanced-setup/) BlinkID Verify examples leave `verifyApiBaseUrl` unset, so the SDK posts each capture to this page's origin at `/api/v3/verify`. The SDK sends no API key. While `pnpm dev` is running, the dev server forwards that route to your Verify host and adds `Authorization`.
+
+In the same `.env.local` file, set:
+
+```env
+VITE_LICENCE_KEY=
+VERIFY_API_URL=https://your-verify-api.example.com
+VERIFY_API_KEY=
+```
+
+`VERIFY_API_URL` is the https origin. The forwarded request always uses `/api/v3/verify` on that host. `VERIFY_API_KEY` is optional. When it is set, that string is the `Authorization` header value. Keep the `VERIFY_API_` prefix. Vite inlines only names that start with `VITE_`, so these values stay on the dev server.
+
+The [custom UI](./blinkid-verify-custom-ui/) example stops after capture, so it needs only the license key.
+
+### 5. Run an Example Application
 
 Navigate to the directory of the example you want to run and start the development server.
 

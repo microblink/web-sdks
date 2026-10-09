@@ -1,5 +1,16 @@
 # @microblink/blinkid-verify-worker
 
+## 4000.0.0
+
+### Major Changes
+
+- Changed `getResult` so it returns a v3 `BlinkIdVerifySessionResult`. Sessions always expose `prepareVerifyRequest` and `submitResult`.
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/blinkid-verify-wasm@4000.0.0
+
 ## 4000.0.0-next.1
 
 ### Patch Changes

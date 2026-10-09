@@ -119,6 +119,7 @@ export const blinkIdVerifyUiErrorStateKeys = [
   "DOCUMENT_FRAMING_CAMERA_ANGLE_TOO_STEEP",
   "DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE",
   // image quality
+  "SCREEN_DETECTED",
   "BLUR_DETECTED",
   "GLARE_DETECTED",
   "TOO_DARK",
@@ -340,6 +341,11 @@ export const blinkIdVerifyUiStateMap: BlinkIdVerifyUiStateMap = {
     singleEmit: true,
   },
   // image quality checks
+  SCREEN_DETECTED: {
+    key: "SCREEN_DETECTED",
+    reticleType: "error",
+    minDuration: ERROR_DURATION,
+  },
   BLUR_DETECTED: {
     key: "BLUR_DETECTED",
     reticleType: "error",
@@ -591,6 +597,21 @@ export function getUiStateKey(frameProcessResult: PartialProcessResult) {
           },
         },
         () => "DOCUMENT_TOO_CLOSE_TO_FRAME_EDGE",
+      )
+      // screen presence (before glare: photographing a screen commonly also sets glareDetected)
+      .with(
+        {
+          inputImageAnalysisResult: {
+            screenPresenceDetected: true,
+            extractionInputImageAnalysisResult: {
+              detectionStatus: "sucess",
+            },
+          },
+          resultCompleteness: {
+            scanningStatus: P.when((status) => status !== "scanning-barcode"),
+          },
+        },
+        () => "SCREEN_DETECTED",
       )
       // glare
       .with(

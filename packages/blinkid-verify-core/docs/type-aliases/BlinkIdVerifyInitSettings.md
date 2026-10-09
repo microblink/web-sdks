@@ -6,9 +6,8 @@
 
 # Type Alias: BlinkIdVerifyInitSettings
 
-> **BlinkIdVerifyInitSettings** = `SetOptional`\<[`BlinkIdVerifyWorkerInitSettings`](BlinkIdVerifyWorkerInitSettings.md), `"userId"`\>
+> **BlinkIdVerifyInitSettings** = `Simplify`\<`Omit`\<[`BlinkIdVerifyWorkerInitSettings`](BlinkIdVerifyWorkerInitSettings.md), `"userId"` \| `"verifyApi"` \| `"verifyApiBaseUrl"`\> & `object`\>
 
 Configuration options for initializing the BlinkIdVerify core.
 
-This type extends the BlinkIdVerifyWorkerInitSettings type by making the userId and useLightweightBuild properties
-optional. It allows for partial configuration of the initialization settings.
+Ping `userId` is generated and persisted by the SDK. It is not part of the public initialization settings.

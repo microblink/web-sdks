@@ -6,30 +6,107 @@
 
 # Function: createBlinkIdVerifyUxManager()
 
-> **createBlinkIdVerifyUxManager**(`cameraManager`, `scanningSession`, `options?`): `Promise`\<[`BlinkIdVerifyUxManager`](../interfaces/BlinkIdVerifyUxManager.md)\>
+## Call Signature
 
-Creates a BlinkIdVerifyUxManager.
+> **createBlinkIdVerifyUxManager**(`cameraManager`, `scanningSession`, `options`): `Promise`\<[`BlinkIdVerifyConsentGate`](../classes/BlinkIdVerifyConsentGate.md)\>
 
-## Parameters
+Creates a BlinkID Verify UX manager, or a consent gate when scanning must wait for consent.
 
-### cameraManager
+### Parameters
+
+#### cameraManager
 
 `CameraManager`
 
 The camera manager.
 
-### scanningSession
+#### scanningSession
 
 `RemoteScanningSession`
 
 The scanning session.
 
-### options?
+#### options
 
-[`BlinkIdVerifyUxManagerOptions`](../type-aliases/BlinkIdVerifyUxManagerOptions.md) = `{}`
+`ManagerOptionsWithRequireConsent`
 
-## Returns
+UX manager options. `RequireConsent` returns a [BlinkIdVerifyConsentGate](../classes/BlinkIdVerifyConsentGate.md). Call
+  `consentUiResponse` before using the manager. Omitting `consentUxConfig`, `NoConsentUI`, and
+  `ProvideExternalConsent` return a [BlinkIdVerifyUxManager](../interfaces/BlinkIdVerifyUxManager.md) directly. `ProvideExternalConsent` stores its
+  consent object before the frame callback is registered.
+
+### Returns
+
+`Promise`\<[`BlinkIdVerifyConsentGate`](../classes/BlinkIdVerifyConsentGate.md)\>
+
+The UX manager, or a consent gate when `consentMode` is `RequireConsent`.
+
+## Call Signature
+
+> **createBlinkIdVerifyUxManager**(`cameraManager`, `scanningSession`, `options?`): `Promise`\<[`BlinkIdVerifyUxManager`](../interfaces/BlinkIdVerifyUxManager.md)\>
+
+Creates a BlinkID Verify UX manager, or a consent gate when scanning must wait for consent.
+
+### Parameters
+
+#### cameraManager
+
+`CameraManager`
+
+The camera manager.
+
+#### scanningSession
+
+`RemoteScanningSession`
+
+The scanning session.
+
+#### options?
+
+`ManagerOptionsWithoutRequireConsent`
+
+UX manager options. `RequireConsent` returns a [BlinkIdVerifyConsentGate](../classes/BlinkIdVerifyConsentGate.md). Call
+  `consentUiResponse` before using the manager. Omitting `consentUxConfig`, `NoConsentUI`, and
+  `ProvideExternalConsent` return a [BlinkIdVerifyUxManager](../interfaces/BlinkIdVerifyUxManager.md) directly. `ProvideExternalConsent` stores its
+  consent object before the frame callback is registered.
+
+### Returns
 
 `Promise`\<[`BlinkIdVerifyUxManager`](../interfaces/BlinkIdVerifyUxManager.md)\>
 
-The BlinkIdVerifyUxManager instance.
+The UX manager, or a consent gate when `consentMode` is `RequireConsent`.
+
+## Call Signature
+
+> **createBlinkIdVerifyUxManager**(`cameraManager`, `scanningSession`, `options?`): `Promise`\<[`BlinkIdVerifyUxManager`](../interfaces/BlinkIdVerifyUxManager.md) \| [`BlinkIdVerifyConsentGate`](../classes/BlinkIdVerifyConsentGate.md)\>
+
+Creates a BlinkID Verify UX manager, or a consent gate when scanning must wait for consent.
+
+### Parameters
+
+#### cameraManager
+
+`CameraManager`
+
+The camera manager.
+
+#### scanningSession
+
+`RemoteScanningSession`
+
+The scanning session.
+
+#### options?
+
+`Partial`\<[`BlinkIdVerifyUxManagerOptions`](../type-aliases/BlinkIdVerifyUxManagerOptions.md)\>
+
+UX manager options. `RequireConsent` returns a [BlinkIdVerifyConsentGate](../classes/BlinkIdVerifyConsentGate.md). Call
+  `consentUiResponse` before using the manager. Omitting `consentUxConfig`, `NoConsentUI`, and
+  `ProvideExternalConsent` return a [BlinkIdVerifyUxManager](../interfaces/BlinkIdVerifyUxManager.md) directly. `ProvideExternalConsent` stores its
+  consent object before the frame callback is registered.
+
+### Returns
+
+`Promise`\<[`BlinkIdVerifyUxManager`](../interfaces/BlinkIdVerifyUxManager.md) \| [`BlinkIdVerifyConsentGate`](../classes/BlinkIdVerifyConsentGate.md)\>
+
+The UX manager, or a consent gate when `consentMode` is `RequireConsent`.

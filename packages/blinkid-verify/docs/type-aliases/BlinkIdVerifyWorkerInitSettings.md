@@ -71,7 +71,17 @@ the current page.
 
 > **userId**: `string`
 
-A unique identifier for the user/session. Used for analytics and tracking purposes.
+SDK-generated ping identifier. Generated and persisted by the core SDK before worker initialization.
+
+***
+
+### verifyApiBaseUrl
+
+> **verifyApiBaseUrl**: `string`
+
+Absolute base URL for Verify API requests.
+
+Applied once when a scanning session is created. Requests are POSTed to `{verifyApiBaseUrl}/api/v3/verify`.
 
 ***
 

@@ -2,12 +2,17 @@
 
 import type { Ping } from "@microblink/analytics/ping";
 import type {
-  BlinkIdVerifyScanningResult,
   BlinkIdVerifyScanningSession,
+  BlinkIdVerifySessionResult,
   BlinkIdVerifySessionSettings,
   BlinkIdVerifyWasmModule,
-  CapturedFrame,
+  Consent,
   EmscriptenModuleFactory,
+  PayloadImage,
+  PreparedVerifyRequest,
+  ResultDataMode,
+  SerializedPayload,
+  VerifyApiResult,
   WasmVariant,
   BlinkIdVerifyProcessResult,
 } from "@microblink/blinkid-verify-wasm";
@@ -28,13 +33,31 @@ import {
   validateLicenseProxyPermissions,
 } from "@microblink/worker-common/proxy-url-validator";
 import { detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
-import { getSdkInitPlatformDetails } from "@microblink/worker-common/wasmVariant";
+import { getSdkInitPlatformDetails, isThreadedWasmVariant } from "@microblink/worker-common/wasmVariant";
 import { installWorkerCrashReporter } from "@microblink/worker-common/workerCrashReporter";
 import { expose, finalizer, proxy, ProxyMarked, transfer } from "comlink";
 
 export type { DownloadProgress } from "@microblink/worker-common/downloadResourceBuffer";
 
 const FRAME_TRANSFER_ERROR_NAME = "FrameTransferError";
+
+const callOptionalSessionMethod = <T>(
+  session: BlinkIdVerifyScanningSession,
+  methodName: "prepareVerifyRequest" | "submitResult",
+  consent?: Consent,
+): Promise<T> => {
+  const method = (session as unknown as Record<string, unknown>)[methodName];
+  if (typeof method !== "function") {
+    return Promise.reject(new Error(`BlinkID Verify ${methodName} is not available in this runtime`));
+  }
+
+  return Promise.resolve((method as (consent?: Consent) => T | Promise<T>).call(session, consent));
+};
+
+type CachedPayloadSession = BlinkIdVerifyScanningSession & {
+  prepareVerifyRequestFromPayload?(payload: SerializedPayload): Promise<PreparedVerifyRequest>;
+  submitResultFromPayload?(payload: SerializedPayload): Promise<VerifyApiResult>;
+};
 
 const createFrameTransferError = (message: string, error: unknown) => {
   const causeMessage = error instanceof Error && error.message ? `: ${error.message}` : "";
@@ -68,6 +91,9 @@ export class BlinkIdVerifyWorker {
 
   /** Sanitized proxy URLs for Microblink services. */
   #proxyUrls?: SanitizedProxyUrls;
+
+  /** Absolute Verify API base URL applied to each scanning session. */
+  #verifyApiBaseUrl!: string;
 
   #userId!: string;
 
@@ -127,7 +153,7 @@ export class BlinkIdVerifyWorker {
     const wasmMemory = new WebAssembly.Memory({
       initial: mbToWasmPages(initialMemory),
       maximum: mbToWasmPages(2048),
-      shared: wasmVariant === "simd-threads",
+      shared: isThreadedWasmVariant(wasmVariant),
     });
 
     // Create progress trackers for each download
@@ -221,7 +247,8 @@ export class BlinkIdVerifyWorker {
     /** https://emscripten.org/docs/api_reference/module.html#module-object */
     this.#wasmModule = await createModule({
       locateFile: (path) => {
-        return `${variantUrl}/${wasmVariant}/${path}`;
+        // variantUrl already ends with the wasm variant segment
+        return `${variantUrl}/${path}`;
       },
       onAbort: (what) => {
         if (!this.#wasmModule) {
@@ -317,6 +344,7 @@ export class BlinkIdVerifyWorker {
 
     this.progressStatusCallback = progressCallback;
     this.#userId = settings.userId;
+    this.#verifyApiBaseUrl = settings.verifyApiBaseUrl;
 
     const wasmVariant = settings.wasmVariant ?? (await detectWasmFeatures());
 
@@ -342,7 +370,6 @@ export class BlinkIdVerifyWorker {
       data: {
         packageName: self.location.hostname,
         platform: "Emscripten",
-        // TODO: update this after pinglets schema is updated
         platformDetails: getSdkInitPlatformDetails(false, wasmVariant),
         product: "DocumentVerification",
         userId: this.#userId,
@@ -431,6 +458,7 @@ export class BlinkIdVerifyWorker {
         sessionSettings,
         this.#userId,
       );
+      session.setVerifyApiBaseUrl(this.#verifyApiBaseUrl);
 
       this.#currentSessionNumber++;
 
@@ -465,44 +493,58 @@ export class BlinkIdVerifyWorker {
     sessionSettings?: BlinkIdVerifySessionSettings,
   ): WorkerScanningSession & ProxyMarked {
     this.#activeSession = session;
+    const cachedPayloadSession = session as CachedPayloadSession;
+    let cachedPayload: { consentKey: string; payload: SerializedPayload } | undefined;
+
+    const getConsentKey = (consent?: Consent) => JSON.stringify(consent ?? null);
+
+    const getSerializedPayload = (consent?: Consent): SerializedPayload => {
+      const consentKey = getConsentKey(consent);
+      if (cachedPayload?.consentKey === consentKey) {
+        return cachedPayload.payload;
+      }
+
+      const result = session.getResult(consent, "serialized-only");
+      cachedPayload = { consentKey, payload: result.serializedPayload };
+      return result.serializedPayload;
+    };
+
     /** This is a custom session that will be proxied it handles the transfer of the image data buffer */
     const customSession: InternalWorkerScanningSession = {
-      getResult: () => {
+      getResult: (consent?: Consent, resultDataMode?: ResultDataMode) => {
         try {
-          const result: BlinkIdVerifyScanningResult = session.getResult();
-          const cloneFrame = (frame?: {
-            jpegBytes: Uint8Array;
-            orientation: CapturedFrame["orientation"];
-          }): CapturedFrame | undefined => {
-            if (!frame) return undefined;
+          const consentKey = getConsentKey(consent);
+          const result: BlinkIdVerifySessionResult =
+            resultDataMode !== "include-typed-payload" && cachedPayload?.consentKey === consentKey
+              ? { serializedPayload: cachedPayload.payload }
+              : session.getResult(consent, resultDataMode);
+          cachedPayload = {
+            consentKey,
+            payload: result.serializedPayload,
+          };
+          const transferables: ArrayBuffer[] = [];
 
-            if (!frame.orientation) return undefined; // required by CapturedFrame
+          // Wasm hands back views onto its heap, so every image is copied before it leaves the worker.
+          const detachImage = (image?: PayloadImage): PayloadImage | undefined => {
+            if (!image) return undefined;
 
-            const clonedBytes = new Uint8Array(frame.jpegBytes); // fresh ArrayBuffer
+            const clonedBytes = new Uint8Array(image.jpegBytes); // fresh ArrayBuffer
+            transferables.push(clonedBytes.buffer);
 
-            return {
-              jpegBytes: clonedBytes,
-              orientation: frame.orientation,
-            };
+            return { jpegBytes: clonedBytes };
           };
 
-          const front = cloneFrame(result.frontFrame);
-          const back = cloneFrame(result.backFrame);
-          const barcode = cloneFrame(result.barcodeFrame);
-
-          const transferPackage: BlinkIdVerifyScanningResult = transfer(
-            {
-              frontFrame: front,
-              backFrame: back,
-              barcodeFrame: barcode,
+          const transferPackage: BlinkIdVerifySessionResult = {
+            serializedPayload: {
+              ...result.serializedPayload,
+              imageFirstSide: detachImage(result.serializedPayload.imageFirstSide),
+              imageSecondSide: detachImage(result.serializedPayload.imageSecondSide),
+              imageBarcode: detachImage(result.serializedPayload.imageBarcode),
             },
-            [front?.jpegBytes.buffer, back?.jpegBytes.buffer, barcode?.jpegBytes.buffer].filter(
-              Boolean,
-            ) as ArrayBuffer[],
-          ) as BlinkIdVerifyScanningResult;
+            ...(result.typedPayload ? { typedPayload: result.typedPayload } : {}),
+          };
 
-          result.delete();
-          return transferPackage;
+          return transfer(transferPackage, transferables);
         } catch (error) {
           if (!this.#wasmModule) {
             throw error;
@@ -522,8 +564,21 @@ export class BlinkIdVerifyWorker {
           throw error;
         }
       },
+      prepareVerifyRequest: (consent?: Consent) => {
+        if (cachedPayloadSession.prepareVerifyRequestFromPayload) {
+          return cachedPayloadSession.prepareVerifyRequestFromPayload(getSerializedPayload(consent));
+        }
+        return callOptionalSessionMethod<PreparedVerifyRequest>(session, "prepareVerifyRequest", consent);
+      },
+      submitResult: (consent?: Consent) => {
+        if (cachedPayloadSession.submitResultFromPayload) {
+          return cachedPayloadSession.submitResultFromPayload(getSerializedPayload(consent));
+        }
+        return callOptionalSessionMethod<VerifyApiResult>(session, "submitResult", consent);
+      },
       process: (image: ImageData): ProcessResultWithBuffer => {
         try {
+          cachedPayload = undefined;
           const processResult = session.process(image);
 
           let transferPackage: ProcessResultWithBuffer;
@@ -592,6 +647,7 @@ export class BlinkIdVerifyWorker {
       reset: () => {
         try {
           session.reset();
+          cachedPayload = undefined;
         } catch (error) {
           this.reportPinglet({
             schemaName: "ping.error",
@@ -608,6 +664,7 @@ export class BlinkIdVerifyWorker {
         }
       },
       delete: () => {
+        cachedPayload = undefined;
         if (!session.isDeleted()) {
           session.delete();
         }
@@ -616,6 +673,7 @@ export class BlinkIdVerifyWorker {
         }
       },
       deleteLater: () => {
+        cachedPayload = undefined;
         if (!session.isDeleted()) {
           session.deleteLater();
         }
@@ -711,7 +769,7 @@ export class BlinkIdVerifyWorker {
 }
 
 /** For type extractor This is a workaround for the fact that the types are not exported. */
-type _BlinkIdVerifyScanningResult = BlinkIdVerifyScanningResult;
+type _BlinkIdVerifySessionResult = BlinkIdVerifySessionResult;
 
 /** The process result with buffer. */
 export type ProcessResultWithBuffer = BlinkIdVerifyProcessResult & {
@@ -721,7 +779,7 @@ export type ProcessResultWithBuffer = BlinkIdVerifyProcessResult & {
 /** The worker scanning session. */
 export type WorkerScanningSession = Omit<
   BlinkIdVerifyScanningSession,
-  "process" | "deleteLater" | "isAliasOf" | "clone"
+  "process" | "deleteLater" | "isAliasOf" | "clone" | "setVerifyApiBaseUrl"
 > & {
   process: (image: ImageData) => ProcessResultWithBuffer;
   /**
@@ -782,12 +840,19 @@ export type BlinkIdVerifyWorkerInitSettings = {
   microblinkProxyUrl?: string;
 
   /**
+   * Absolute base URL for Verify API requests.
+   *
+   * Applied once when a scanning session is created. Requests are POSTed to `{verifyApiBaseUrl}/api/v3/verify`.
+   */
+  verifyApiBaseUrl: string;
+
+  /**
    * The parent directory where the `/resources` directory is hosted. Defaults to `window.location.href`, at the root of
    * the current page.
    */
   resourcesLocation?: string;
 
-  /** A unique identifier for the user/session. Used for analytics and tracking purposes. */
+  /** SDK-generated ping identifier. Generated and persisted by the core SDK before worker initialization. */
   userId: string;
 
   /** The WebAssembly module variant to use. Different variants may offer different performance/size tradeoffs. */

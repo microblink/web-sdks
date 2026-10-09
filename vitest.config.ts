@@ -42,6 +42,7 @@ export default defineConfig({
       project("@microblink/blinkid-core", "packages/blinkid-core", "vitest.config.ts"),
       project("@microblink/blinkid-ux-manager", "packages/blinkid-ux-manager", "vite.config.mts"),
       project("@microblink/blinkid-verify", "packages/blinkid-verify", "vite.config.mts"),
+      project("@microblink/blinkid-verify-core", "packages/blinkid-verify-core", "vitest.config.ts"),
       project("@microblink/blinkid-verify-ux-manager", "packages/blinkid-verify-ux-manager", "vite.config.mts"),
       project("@microblink/blinkid-verify-wasm", "packages/blinkid-verify-wasm", "vite.config.mts"),
       project("@microblink/blinkid-worker", "packages/blinkid-worker", "vite.config.mts"),

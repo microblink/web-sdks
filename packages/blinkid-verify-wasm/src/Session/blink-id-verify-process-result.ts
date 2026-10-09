@@ -64,11 +64,16 @@ export type DocumentOrientation = "not-available" | "horizontal" | "vertical";
 
 export type DocumentRotation = "not-available" | "zero" | "clockwise-90" | "counter-clockwise-90" | "upside-down";
 
+/** The side of the document represented by the processed frame. */
+export type ScanningSide = "first" | "second" | "barcode";
+
 export type InputImageAnalysisResult = {
   blurDetected: boolean;
   glareDetected: boolean;
   occlusionDetected: boolean;
   tiltDetected: boolean;
+  screenPresenceDetected: boolean;
+  scanningSide: ScanningSide;
   hasBarcodeReadingIssue: boolean;
 
   /** Information extracted from the currently processed frame */

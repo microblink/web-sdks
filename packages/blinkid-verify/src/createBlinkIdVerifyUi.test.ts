@@ -18,9 +18,11 @@ const {
   mockSendPinglets,
   mockCreateBlinkIdVerifyUxManager,
   mockCreateBlinkIdVerifyFeedbackUi,
-  mockAddOnResultCallback,
+  mockAddOnCaptureCompletedCallback,
+  mockVerifyOnScanningCompletion,
   mockAddOnErrorCallback,
   mockAddOnFrameProcessCallback,
+  MockConsentGate,
   mockDismount,
   mockCameraUi,
   mockCreateCameraManagerUi,
@@ -29,13 +31,21 @@ const {
   const mockCreateSession = vi.fn();
   const mockReportPinglet = vi.fn().mockResolvedValue(undefined);
   const mockSendPinglets = vi.fn().mockResolvedValue(undefined);
-  const mockAddOnResultCallback = vi.fn();
+  const mockAddOnCaptureCompletedCallback = vi.fn();
+  const mockVerifyOnScanningCompletion = vi.fn();
   const mockAddOnErrorCallback = vi.fn();
   const mockAddOnFrameProcessCallback = vi.fn();
+  const mockConsentUiResponse = vi.fn().mockResolvedValue(undefined);
+  class MockConsentGate {
+    consentUiResponse = mockConsentUiResponse;
+    destroy = vi.fn();
+  }
   const mockCreateBlinkIdVerifyUxManager = vi.fn().mockResolvedValue({
-    addOnResultCallback: mockAddOnResultCallback,
+    addOnCaptureCompletedCallback: mockAddOnCaptureCompletedCallback,
+    verifyOnScanningCompletion: mockVerifyOnScanningCompletion,
     addOnErrorCallback: mockAddOnErrorCallback,
     addOnFrameProcessCallback: mockAddOnFrameProcessCallback,
+    destroy: vi.fn(),
   });
   const mockCreateBlinkIdVerifyFeedbackUi = vi.fn();
   const mockDismount = vi.fn();
@@ -49,9 +59,12 @@ const {
     mockSendPinglets,
     mockCreateBlinkIdVerifyUxManager,
     mockCreateBlinkIdVerifyFeedbackUi,
-    mockAddOnResultCallback,
+    mockAddOnCaptureCompletedCallback,
+    mockVerifyOnScanningCompletion,
     mockAddOnErrorCallback,
     mockAddOnFrameProcessCallback,
+    mockConsentUiResponse,
+    MockConsentGate,
     mockDismount,
     mockCameraUi,
     mockCreateCameraManagerUi,
@@ -73,6 +86,7 @@ vi.mock("@microblink/blinkid-verify-core", () => ({
 }));
 
 vi.mock("@microblink/blinkid-verify-ux-manager/core", () => ({
+  BlinkIdVerifyConsentGate: MockConsentGate,
   get createBlinkIdVerifyUxManager() {
     return mockCreateBlinkIdVerifyUxManager;
   },
@@ -103,7 +117,11 @@ vi.mock("@microblink/camera-manager/ui", () => ({
 
 import { createFakeScanningSession } from "@microblink/test-utils";
 
-import { createBlinkIdVerify, type BlinkIdVerifyComponentOptions } from "./createBlinkIdVerify";
+import {
+  BlinkIdVerifyConsentDeclinedError,
+  createBlinkIdVerify,
+  type BlinkIdVerifyComponentOptions,
+} from "./createBlinkIdVerify";
 
 /**
  * Test file role:
@@ -120,14 +138,18 @@ describe("createBlinkIdVerify", () => {
     fakeCameraManagerRef.current = null;
     mockCreateSession.mockResolvedValue(createFakeScanningSession());
     mockCreateBlinkIdVerifyUxManager.mockResolvedValue({
-      addOnResultCallback: mockAddOnResultCallback,
+      addOnCaptureCompletedCallback: mockAddOnCaptureCompletedCallback,
+      verifyOnScanningCompletion: mockVerifyOnScanningCompletion,
       addOnErrorCallback: mockAddOnErrorCallback,
       addOnFrameProcessCallback: mockAddOnFrameProcessCallback,
+      destroy: vi.fn(),
     });
     mockCreateCameraManagerUi.mockResolvedValue(mockCameraUi);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await Promise.resolve();
+    await Promise.resolve();
     fakeCameraManagerRef.current = null;
   });
 
@@ -139,13 +161,13 @@ describe("createBlinkIdVerify", () => {
     expect(component).toHaveProperty("blinkIdVerifyUxManager");
     expect(component).toHaveProperty("cameraUi", mockCameraUi);
     expect(component).toHaveProperty("destroy");
-    expect(component).toHaveProperty("addOnResultCallback");
+    expect(component).toHaveProperty("addOnCaptureCompletedCallback");
+    expect(component).toHaveProperty("verifyOnScanningCompletion");
     expect(component).toHaveProperty("addOnErrorCallback");
     expect(component).toHaveProperty("addOnFrameProcessCallback");
     expect(typeof component.destroy).toBe("function");
-    expect(typeof component.addOnResultCallback).toBe("function");
-    expect(typeof component.addOnErrorCallback).toBe("function");
-    expect(typeof component.addOnFrameProcessCallback).toBe("function");
+    expect(typeof component.addOnCaptureCompletedCallback).toBe("function");
+    expect(typeof component.verifyOnScanningCompletion).toBe("function");
   });
 
   test("calls loadBlinkIdVerifyCore with init options (licenseKey and optional fields)", async () => {
@@ -169,20 +191,25 @@ describe("createBlinkIdVerify", () => {
     });
   });
 
-  test("calls createScanningSession with scanningSettings when provided", async () => {
-    const scanningSettings = {
-      blur: { detectionThreshold: 0.5 },
-    } as unknown as BlinkIdVerifyComponentOptions["scanningSettings"];
+  test("calls createScanningSession with native session settings when provided", async () => {
+    const configuration = {
+      verification: {
+        settings: {
+          rejectExpiredDocuments: true,
+        },
+      },
+    } satisfies NonNullable<BlinkIdVerifyComponentOptions["configuration"]>;
 
     await createBlinkIdVerify({
       licenseKey: "test-key",
-
-      scanningSettings,
+      configuration,
+      traceId: "verify-trace-id",
     });
 
     expect(mockCreateSession).toHaveBeenCalledTimes(1);
     expect(mockCreateSession).toHaveBeenCalledWith({
-      scanningSettings,
+      configuration,
+      traceId: "verify-trace-id",
     });
   });
 
@@ -192,7 +219,8 @@ describe("createBlinkIdVerify", () => {
     expect(component).toBeDefined();
     expect(component.blinkIdVerifyCore).toBeDefined();
     expect(mockCreateSession).toHaveBeenCalledWith({
-      scanningSettings: undefined,
+      configuration: undefined,
+      traceId: undefined,
     });
   });
 
@@ -204,6 +232,46 @@ describe("createBlinkIdVerify", () => {
     expect(cameraManagerArg).toBe(fakeCameraManagerRef.current);
     expect(sessionArg).toBeDefined();
     expect(sessionArg).toHaveProperty("process");
+    expect(mockCreateBlinkIdVerifyUxManager).toHaveBeenCalledWith(fakeCameraManagerRef.current, sessionArg, undefined);
+  });
+
+  test("passes uxManagerOptions to createBlinkIdVerifyUxManager", async () => {
+    const uxManagerOptions = {
+      consentUxConfig: {
+        consentMode: "ProvideExternalConsent",
+        consent: {
+          durationDays: 30,
+          userId: "pre-supplied-user",
+          givenOn: "2026-02-01T00:00:00.000Z",
+        },
+      },
+    } satisfies NonNullable<BlinkIdVerifyComponentOptions["uxManagerOptions"]>;
+
+    await createBlinkIdVerify({
+      licenseKey: "test-key",
+      uxManagerOptions,
+    });
+
+    expect(mockCreateBlinkIdVerifyUxManager).toHaveBeenCalledTimes(1);
+    expect(mockCreateBlinkIdVerifyUxManager.mock.calls[0]?.[2]).toEqual(uxManagerOptions);
+  });
+
+  test("forwards verifyApiBaseUrl to loadBlinkIdVerifyCore", async () => {
+    const { loadBlinkIdVerifyCore } = await import("@microblink/blinkid-verify-core");
+
+    const component = await createBlinkIdVerify({
+      licenseKey: "test-key",
+      verifyApiBaseUrl: "https://verify.example.com",
+    });
+
+    expect(loadBlinkIdVerifyCore).toHaveBeenCalledWith(
+      expect.objectContaining({
+        licenseKey: "test-key",
+        verifyApiBaseUrl: "https://verify.example.com",
+      }),
+    );
+    expect(mockCreateBlinkIdVerifyUxManager.mock.calls[0]?.[2]).toBeUndefined();
+    expect(typeof component.verifyOnScanningCompletion).toBe("function");
   });
 
   test("calls createCameraManagerUi with cameraManager, targetNode, and cameraManagerUiOptions", async () => {
@@ -286,10 +354,103 @@ describe("createBlinkIdVerify", () => {
     expect(fakeCameraManagerRef.current!.startFrameCapture).not.toHaveBeenCalled();
   });
 
-  test("calls startCameraStream after setup", async () => {
-    await createBlinkIdVerify({ licenseKey: "test-key" });
+  test("awaits the consent gate before starting the camera stream", async () => {
+    const manager = {
+      addOnCaptureCompletedCallback: mockAddOnCaptureCompletedCallback,
+      verifyOnScanningCompletion: mockVerifyOnScanningCompletion,
+      addOnErrorCallback: mockAddOnErrorCallback,
+      addOnFrameProcessCallback: mockAddOnFrameProcessCallback,
+    };
+    let resolveConsent!: (value: typeof manager | undefined) => void;
+    const gate = new MockConsentGate();
+    gate.consentUiResponse = vi.fn(
+      () =>
+        new Promise((resolve) => {
+          resolveConsent = resolve;
+        }),
+    );
+    mockCreateBlinkIdVerifyUxManager.mockResolvedValueOnce(gate);
 
+    const pendingComponent = createBlinkIdVerify({
+      licenseKey: "test-key",
+      uxManagerOptions: {
+        consentUxConfig: {
+          consentMode: "RequireConsent",
+          consent: {
+            userId: "ui-user",
+            durationDays: 30,
+          },
+        },
+      },
+    });
+
+    await vi.waitFor(() => {
+      expect(gate.consentUiResponse).toHaveBeenCalledWith(mockCameraUi, undefined);
+    });
+    expect(fakeCameraManagerRef.current!.startCameraStream).not.toHaveBeenCalled();
+
+    resolveConsent(manager);
+    const component = await pendingComponent;
+
+    expect(component.blinkIdVerifyUxManager).toBe(manager);
     expect(fakeCameraManagerRef.current!.startCameraStream).toHaveBeenCalledTimes(1);
+  });
+
+  test("passes feedback localization strings to the consent dialog", async () => {
+    const localizationStrings = {
+      consent_modal: {
+        title: "Custom consent title",
+      },
+    };
+    const gate = new MockConsentGate();
+    gate.consentUiResponse = vi.fn().mockResolvedValue({
+      addOnCaptureCompletedCallback: mockAddOnCaptureCompletedCallback,
+      verifyOnScanningCompletion: mockVerifyOnScanningCompletion,
+      addOnErrorCallback: mockAddOnErrorCallback,
+      addOnFrameProcessCallback: mockAddOnFrameProcessCallback,
+    });
+    mockCreateBlinkIdVerifyUxManager.mockResolvedValueOnce(gate);
+
+    await createBlinkIdVerify({
+      licenseKey: "test-key",
+      feedbackUiOptions: { localizationStrings },
+      uxManagerOptions: {
+        consentUxConfig: {
+          consentMode: "RequireConsent",
+          consent: {
+            userId: "ui-user",
+            durationDays: 30,
+          },
+        },
+      },
+    });
+
+    expect(gate.consentUiResponse).toHaveBeenCalledWith(mockCameraUi, localizationStrings);
+  });
+
+  test("throws when consent is declined and does not start the camera stream", async () => {
+    const gate = new MockConsentGate();
+    gate.consentUiResponse = vi.fn().mockResolvedValue(undefined);
+    mockCreateBlinkIdVerifyUxManager.mockResolvedValueOnce(gate);
+
+    await expect(
+      createBlinkIdVerify({
+        licenseKey: "test-key",
+        uxManagerOptions: {
+          consentUxConfig: {
+            consentMode: "RequireConsent",
+            consent: {
+              userId: "ui-user",
+              durationDays: 30,
+            },
+          },
+        },
+      }),
+    ).rejects.toBeInstanceOf(BlinkIdVerifyConsentDeclinedError);
+
+    expect(mockTerminate).toHaveBeenCalledTimes(1);
+    expect(fakeCameraManagerRef.current!.startCameraStream).not.toHaveBeenCalled();
+    expect(mockReportPinglet).not.toHaveBeenCalled();
   });
 
   test("best-effort reports crashes through the core before a session exists", async () => {
@@ -364,17 +525,24 @@ describe("createBlinkIdVerify", () => {
     consoleWarnSpy.mockRestore();
   });
 
-  test("addOnResultCallback, addOnErrorCallback, and addOnFrameProcessCallback invoke UX manager methods", async () => {
+  test("addOnCaptureCompletedCallback, verifyOnScanningCompletion, addOnErrorCallback, and addOnFrameProcessCallback invoke UX manager methods", async () => {
     const component = await createBlinkIdVerify({ licenseKey: "test-key" });
-    const resultCb = vi.fn();
+    const captureCompletedCb = vi.fn();
+    const verifySuccessCb = vi.fn();
+    const verifyErrorCb = vi.fn();
     const errorCb = vi.fn();
     const frameCb = vi.fn();
 
-    component.addOnResultCallback(resultCb);
+    component.addOnCaptureCompletedCallback(captureCompletedCb);
+    component.verifyOnScanningCompletion({ onSuccess: verifySuccessCb, onError: verifyErrorCb });
     component.addOnErrorCallback(errorCb);
     component.addOnFrameProcessCallback(frameCb);
 
-    expect(mockAddOnResultCallback).toHaveBeenCalledWith(resultCb);
+    expect(mockAddOnCaptureCompletedCallback).toHaveBeenCalledWith(captureCompletedCb);
+    expect(mockVerifyOnScanningCompletion).toHaveBeenCalledWith({
+      onSuccess: verifySuccessCb,
+      onError: verifyErrorCb,
+    });
     expect(mockAddOnErrorCallback).toHaveBeenCalledWith(errorCb);
     expect(mockAddOnFrameProcessCallback).toHaveBeenCalledWith(frameCb);
   });

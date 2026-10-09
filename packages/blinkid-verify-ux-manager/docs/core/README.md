@@ -8,6 +8,18 @@
 
 ## References
 
+### BlinkIdVerifyConsentGate
+
+Re-exports [BlinkIdVerifyConsentGate](../index/classes/BlinkIdVerifyConsentGate.md)
+
+***
+
+### BlinkIdVerifyConsentUxConfiguration
+
+Re-exports [BlinkIdVerifyConsentUxConfiguration](../index/type-aliases/BlinkIdVerifyConsentUxConfiguration.md)
+
+***
+
 ### BlinkIdVerifyPageTransitionKey
 
 Re-exports [BlinkIdVerifyPageTransitionKey](../index/type-aliases/BlinkIdVerifyPageTransitionKey.md)
@@ -110,6 +122,24 @@ Re-exports [BlinkIdVerifyUxManagerOptions](../index/type-aliases/BlinkIdVerifyUx
 
 ***
 
+### CaptureCompletedCallback
+
+Re-exports [CaptureCompletedCallback](../index/type-aliases/CaptureCompletedCallback.md)
+
+***
+
+### CaptureResultResolver
+
+Re-exports [CaptureResultResolver](../index/type-aliases/CaptureResultResolver.md)
+
+***
+
+### ConsentUiInput
+
+Re-exports [ConsentUiInput](../index/type-aliases/ConsentUiInput.md)
+
+***
+
 ### createBlinkIdVerifyUxManager
 
 Re-exports [createBlinkIdVerifyUxManager](../index/functions/createBlinkIdVerifyUxManager.md)
@@ -146,9 +176,27 @@ Re-exports [HapticFeedbackType](../index/type-aliases/HapticFeedbackType.md)
 
 ***
 
+### NoConsentUI
+
+Re-exports [NoConsentUI](../index/type-aliases/NoConsentUI.md)
+
+***
+
 ### PartialProcessResult
 
 Re-exports [PartialProcessResult](../index/type-aliases/PartialProcessResult.md)
+
+***
+
+### ProvideExternalConsent
+
+Re-exports [ProvideExternalConsent](../index/type-aliases/ProvideExternalConsent.md)
+
+***
+
+### RequireConsent
+
+Re-exports [RequireConsent](../index/type-aliases/RequireConsent.md)
 
 ***
 
@@ -167,3 +215,27 @@ Re-exports [UiStateEvent](../index/type-aliases/UiStateEvent.md)
 ### UiStateMap
 
 Re-exports [UiStateMap](../index/type-aliases/UiStateMap.md)
+
+***
+
+### VerifyCaptureResult
+
+Re-exports [VerifyCaptureResult](../index/type-aliases/VerifyCaptureResult.md)
+
+***
+
+### VerifyOnScanningCompletionCallbacks
+
+Re-exports [VerifyOnScanningCompletionCallbacks](../index/type-aliases/VerifyOnScanningCompletionCallbacks.md)
+
+***
+
+### VerifyOnScanningCompletionErrorCallback
+
+Re-exports [VerifyOnScanningCompletionErrorCallback](../index/type-aliases/VerifyOnScanningCompletionErrorCallback.md)
+
+***
+
+### VerifyOnScanningCompletionSuccessCallback
+
+Re-exports [VerifyOnScanningCompletionSuccessCallback](../index/type-aliases/VerifyOnScanningCompletionSuccessCallback.md)

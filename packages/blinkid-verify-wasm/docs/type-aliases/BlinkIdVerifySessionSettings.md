@@ -6,6 +6,6 @@
 
 # Type Alias: BlinkIdVerifySessionSettings
 
-> **BlinkIdVerifySessionSettings** = `Partial`\<\{ `inputImageSource`: [`InputImageSource`](InputImageSource.md); `scanningSettings`: [`ScanningSettings`](ScanningSettings.md); \}\>
+> **BlinkIdVerifySessionSettings** = `Partial`\<\{ `configuration`: [`DocumentVerificationConfiguration`](DocumentVerificationConfiguration.md); `inputImageSource`: [`InputImageSource`](InputImageSource.md); `traceId`: `string`; \}\>
 
 Settings configuring the whole session

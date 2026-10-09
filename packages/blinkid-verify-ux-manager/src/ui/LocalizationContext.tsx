@@ -5,40 +5,16 @@ import { ParentComponent, createContext, createEffect, useContext } from "solid-
 import { SetStoreFunction, createStore } from "solid-js/store";
 
 import enLocaleStrings from "./locales/en";
+import type { LocalizationStrings, PartialLocalizationStrings } from "./localization-strings";
 
-/** The locale record type. */
-export type LocaleRecord = typeof enLocaleStrings;
+export type { LocaleRecord, LocalizationStrings, PartialLocalizationStrings } from "./localization-strings";
 
-/** Recursively transforms a locale record to allow string overrides at any level. */
-export type LocalizedValue<T> =
-  T extends Record<string, unknown>
-    ?
-        | {
-            [K in keyof T]: LocalizedValue<T[K]>;
-          }
-        | (string & Record<string, never>)
-    : T | (string & Record<string, never>);
+/** Plain copy so a store proxy never attaches to the shared locale module. */
+function cloneLocale<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
 
-/**
- * Deep partial type that allows any string to be assigned to override values. This type is permissive to allow any
- * partial override structure.
- */
-// oxlint-disable typescript/ban-types
-type DeepPartialLocalized<T> =
-  T extends Record<string, unknown>
-    ? {
-        -readonly [K in keyof T]?: T[K] extends Record<string, unknown> ? DeepPartialLocalized<T[K]> | string : string;
-      }
-    : never;
-
-/**
- * The localization strings type. This allows for autocomplete for defaults, but also overriding with strings at any
- * level. https://twitter.com/mattpocockuk/status/1709281782325977101
- */
-export type LocalizationStrings = LocalizedValue<LocaleRecord>;
-
-/** Partial version of LocalizationStrings that allows any string to be assigned. */
-export type PartialLocalizationStrings = DeepPartialLocalized<LocaleRecord>;
+const defaultLocaleStrings = cloneLocale(enLocaleStrings);
 
 /** The localization context. */
 const LocalizationContext = createContext<{
@@ -51,7 +27,7 @@ export const LocalizationProvider: ParentComponent<{
   userStrings?: PartialLocalizationStrings;
 }> = (props) => {
   const mergedStrings = (): LocalizationStrings =>
-    merge(enLocaleStrings, props.userStrings ?? {}) as LocalizationStrings;
+    cloneLocale(merge(defaultLocaleStrings, props.userStrings ?? {})) as LocalizationStrings;
 
   const [localizationStore, updateLocalizationStore] = createStore<LocalizationStrings>(mergedStrings());
 
