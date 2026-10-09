@@ -34,7 +34,7 @@
     "blinkid-verify": {
       "selected": true,
       "changed": true,
-      "newVersion": "4000.3.0",
+      "newVersion": "4000.0.0",
       "baselineVersion": "4000.0.0-next.1"
     }
   }

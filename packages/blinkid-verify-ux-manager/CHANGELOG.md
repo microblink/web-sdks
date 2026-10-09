@@ -1,6 +1,6 @@
 # @microblink/blinkid-verify-ux-manager
 
-## 4000.3.0
+## 4000.0.0
 
 ### Major Changes
 
@@ -63,7 +63,7 @@
 
 - Updated the default `helpTooltipShowDelay` from 5 seconds to 10 seconds.
 - Updated dependencies
-  - @microblink/blinkid-verify-core@4000.3.0
+  - @microblink/blinkid-verify-core@4000.0.0
 
 ## 4000.0.0-next.1
 

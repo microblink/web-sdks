@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-verify-ux-manager",
-  "version": "4000.3.0",
+  "version": "4000.0.0",
   "description": "BlinkID Verify UX Manager provides user feedback based on the blinkid-verify process results.",
   "keywords": [
     "aml",

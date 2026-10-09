@@ -1,6 +1,6 @@
 # @microblink/blinkid-verify-core
 
-## 4000.3.0
+## 4000.0.0
 
 ### Major Changes
 
@@ -87,8 +87,8 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @microblink/blinkid-verify-wasm@4000.3.0
-  - @microblink/blinkid-verify-worker@4000.3.0
+  - @microblink/blinkid-verify-wasm@4000.0.0
+  - @microblink/blinkid-verify-worker@4000.0.0
 
 ## 4000.0.0-next.1
 
