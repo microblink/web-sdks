@@ -81,6 +81,18 @@ The status of the processing. Beeing either `success` or a potential `issue in t
 
 ***
 
+### scanningSide
+
+> **scanningSide**: [`ScanningSide`](ScanningSide.md)
+
+***
+
+### screenPresenceDetected
+
+> **screenPresenceDetected**: `boolean`
+
+***
+
 ### tiltDetected
 
 > **tiltDetected**: `boolean`

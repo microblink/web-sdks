@@ -19,6 +19,7 @@ export type FeedbackUiOptions = {
    * @defaultValue true
    */
   showOnboardingGuide?: boolean;
+
   /**
    * If set to `true`, the help button will be shown.
    *
@@ -63,7 +64,7 @@ const defaultFeedbackUiOptions: DefaultFeedbackUiOptions = {
   localizationStrings: {},
   showOnboardingGuide: true,
   showHelpButton: true,
-  helpTooltipShowDelay: 5000,
+  helpTooltipShowDelay: 10_000,
   helpTooltipHideDelay: 5000,
   showDocumentFilteredModal: true,
   showTimeoutModal: true,

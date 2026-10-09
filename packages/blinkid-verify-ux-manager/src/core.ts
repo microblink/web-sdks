@@ -9,7 +9,16 @@ export type * from "@microblink/feedback-stabilizer";
 export type * from "@microblink/ux-common/hapticFeedback";
 export * from "./core/blinkid-verify-ui-state";
 export type { BlinkIdVerifyProcessingError } from "./core/BlinkIdVerifyProcessingError";
+export { BlinkIdVerifyConsentGate } from "./core/BlinkIdVerifyConsentGate";
 export type { BlinkIdVerifyUxManager } from "./core/BlinkIdVerifyUxManager";
+export type {
+  CaptureCompletedCallback,
+  CaptureResultResolver,
+  VerifyCaptureResult,
+  VerifyOnScanningCompletionCallbacks,
+  VerifyOnScanningCompletionErrorCallback,
+  VerifyOnScanningCompletionSuccessCallback,
+} from "./core/capture-result-resolver";
 export * from "./core/createBlinkIdVerifyUxManager";
 
 const testSymbol = Symbol();

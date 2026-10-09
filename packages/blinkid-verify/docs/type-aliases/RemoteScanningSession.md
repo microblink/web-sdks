@@ -8,4 +8,6 @@
 
 > **RemoteScanningSession** = `Remote`\<[`WorkerScanningSession`](WorkerScanningSession.md)\>
 
-Represents a remote scanning session.
+Remote scanning session returned by BlinkIdVerifyCore.createScanningSession.
+
+Includes `submitResult` and `prepareVerifyRequest`.

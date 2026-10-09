@@ -34,6 +34,12 @@ Configuration options for the BlinkIdVerify component
 Customization options for the camera manager UI. Controls camera-related UI elements like the video feed
 container and camera selection.
 
+#### configuration?
+
+`Partial`\<\{ `extraction`: [`VerificationExtractionConfiguration`](../type-aliases/VerificationExtractionConfiguration.md); `imageAssessment`: [`ImageAssessmentConfiguration`](../type-aliases/ImageAssessmentConfiguration.md); `verification`: [`VerificationConfiguration`](../type-aliases/VerificationConfiguration.md); \}\>
+
+Verification, extraction, and image-assessment settings.
+
 #### feedbackUiOptions?
 
 `Partial`\<[`FeedbackUiOptions`](../type-aliases/FeedbackUiOptions.md)\>
@@ -84,12 +90,6 @@ The URL of the Microblink proxy server. This proxy handles requests to Microblin
 The parent directory where the `/resources` directory is hosted. Defaults to `window.location.href`, at the root of
 the current page.
 
-#### scanningSettings?
-
-`Partial`\<\{ `barcodeAnomalyMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `dataMatchMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `imageQualitySettings`: [`ImageQualitySettings`](../type-aliases/ImageQualitySettings.md); `scanPassportDataPageOnly`: `boolean`; `scanUnsupportedBack`: `boolean`; `screenAnalysisMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `staticSecurityFeaturesMatchLevel`: [`MatchLevel`](../type-aliases/MatchLevel.md); `treatExpirationAsFraud`: `boolean`; `useCase`: [`UseCase`](../type-aliases/UseCase.md); \}\>
-
-Specific settings for the scanning process. If no settings are provided, defaults will be used.
-
 #### targetNode?
 
 `HTMLElement`
@@ -97,11 +97,27 @@ Specific settings for the scanning process. If no settings are provided, default
 The HTML element where the BlinkIdVerify UI will be mounted. If not provided, the UI will be mounted to the
 document body.
 
-#### userId?
+#### traceId?
 
 `string`
 
-A unique identifier for the user/session. Used for analytics and tracking purposes.
+Optional caller-supplied trace ID included in generated payloads.
+
+#### uxManagerOptions?
+
+`Partial`\<[`BlinkIdVerifyUxManagerOptions`](../type-aliases/BlinkIdVerifyUxManagerOptions.md)\>
+
+Customization options for BlinkIdVerify UX manager behavior. Controls consent gating and other headless UX flow
+details.
+
+#### verifyApiBaseUrl?
+
+`string`
+
+Base URL for Verify API requests.
+
+Omitted means the page origin. The SDK POSTs to `{resolved}/api/v3/verify` and sends no API key. The customer's
+server adds Authorization.
 
 #### wasmVariant?
 
@@ -113,7 +129,7 @@ The WebAssembly module variant to use. Different variants may offer different pe
 
 `Promise`\<[`BlinkIdVerifyComponent`](../type-aliases/BlinkIdVerifyComponent.md)\>
 
-Promise that resolves to a BlinkIdVerifyComponent with all SDK instances and UI elements
+Promise that resolves to a [BlinkIdVerifyComponent](../type-aliases/BlinkIdVerifyComponent.md)
 
 ## Example
 
@@ -126,9 +142,18 @@ Promise that resolves to a BlinkIdVerifyComponent with all SDK instances and UI 
     },
   });
 
-  // Add result callback
-  blinkIdVerify.addOnResultCallback((result) => {
-    console.log("Scanning result:", result);
+  blinkIdVerify.addOnCaptureCompletedCallback(async (resolver) => {
+    const result = await resolver.getCaptureResult();
+    console.log("Typed payload:", result.typedPayload);
+  });
+
+  blinkIdVerify.verifyOnScanningCompletion({
+    onSuccess: (apiResult) => {
+      console.log(apiResult);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
   });
 
   // Clean up when done

@@ -10,6 +10,12 @@
 
 ## Properties
 
+### consentUxConfig
+
+> **consentUxConfig**: [`BlinkIdVerifyConsentUxConfiguration`](BlinkIdVerifyConsentUxConfiguration.md)
+
+***
+
 ### initialUiStateKey?
 
 > `optional` **initialUiStateKey?**: [`BlinkIdVerifyUiStateKey`](BlinkIdVerifyUiStateKey.md)

@@ -31,9 +31,13 @@ export {
 export { getCrossOriginWorkerURL } from "@microblink/core-common/getCrossOriginWorkerURL";
 export { getUserId } from "@microblink/core-common/getUserId";
 export * from "./BlinkIdVerifyCore";
-export * from "./generatePayloadForBlinkIdVerifyCloudApi";
+export { VerifyApiError, toVerifyApiError } from "./VerifyApiError";
 
-/** Represents a remote scanning session. */
+/**
+ * Remote scanning session returned by {@link BlinkIdVerifyCore.createScanningSession}.
+ *
+ * Includes `submitResult` and `prepareVerifyRequest`.
+ */
 export type RemoteScanningSession = Remote<WorkerScanningSession>;
 
 // https://newsletter.daishikato.com/p/detecting-dual-module-issues-in-jotai

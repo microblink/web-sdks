@@ -6,9 +6,11 @@
 
 # Function: loadBlinkIdVerifyCore()
 
-> **loadBlinkIdVerifyCore**(`settings`, `progressCallback?`): `Promise`\<\{ `progressStatusCallback?`: `Promise`\<`undefined`\> \| `Remote`\<[`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)\>; `createScanningSession`: `Promise`\<`Remote`\<`Omit`\<[`BlinkIdVerifyScanningSession`](../type-aliases/BlinkIdVerifyScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"` \| `"clone"`\> & `object` & `ProxyMarked`\>\>; `initBlinkIdVerify`: `Promise`\<`void`\>; `reportPinglet`: `Promise`\<`void`\>; `sendPinglets`: `Promise`\<`void`\>; `terminate`: `Promise`\<`void`\>; \}\>
+> **loadBlinkIdVerifyCore**(`settings`, `progressCallback?`): `Promise`\<\{ `progressStatusCallback?`: `Promise`\<`undefined`\> \| `Remote`\<[`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)\>; `createScanningSession`: `Promise`\<`Remote`\<`Omit`\<[`BlinkIdVerifyScanningSession`](../type-aliases/BlinkIdVerifyScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"` \| `"clone"` \| `"setVerifyApiBaseUrl"`\> & `object` & `ProxyMarked`\>\>; `initBlinkIdVerify`: `Promise`\<`void`\>; `reportPinglet`: `Promise`\<`void`\>; `sendPinglets`: `Promise`\<`void`\>; `terminate`: `Promise`\<`void`\>; \}\>
 
 Creates and initializes a BlinkIdVerify core instance.
+
+Resolves `verifyApiBaseUrl` to an absolute URL on the main thread and passes that string to the worker.
 
 ## Parameters
 
@@ -60,11 +62,15 @@ The URL of the Microblink proxy server. This proxy handles requests to Microblin
 The parent directory where the `/resources` directory is hosted. Defaults to `window.location.href`, at the root of
 the current page.
 
-#### userId?
+#### verifyApiBaseUrl?
 
 `string`
 
-A unique identifier for the user/session. Used for analytics and tracking purposes.
+Base URL for Verify API requests.
+
+Omitted means `window.location.origin`. Relative values resolve against the page URL. The SDK always POSTs to
+`{resolved}/api/v3/verify`. The customer's server owns the real Verify host and the API key; the SDK sends no
+Authorization header. This is not `microblinkProxyUrl` (that remains ping/Baltazar only).
 
 #### wasmVariant?
 
@@ -80,9 +86,9 @@ Optional callback for tracking resource download progress (WASM, data files)
 
 ## Returns
 
-`Promise`\<\{ `progressStatusCallback?`: `Promise`\<`undefined`\> \| `Remote`\<[`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)\>; `createScanningSession`: `Promise`\<`Remote`\<`Omit`\<[`BlinkIdVerifyScanningSession`](../type-aliases/BlinkIdVerifyScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"` \| `"clone"`\> & `object` & `ProxyMarked`\>\>; `initBlinkIdVerify`: `Promise`\<`void`\>; `reportPinglet`: `Promise`\<`void`\>; `sendPinglets`: `Promise`\<`void`\>; `terminate`: `Promise`\<`void`\>; \}\>
+`Promise`\<\{ `progressStatusCallback?`: `Promise`\<`undefined`\> \| `Remote`\<[`ProgressStatusCallback`](../type-aliases/ProgressStatusCallback.md)\>; `createScanningSession`: `Promise`\<`Remote`\<`Omit`\<[`BlinkIdVerifyScanningSession`](../type-aliases/BlinkIdVerifyScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"` \| `"clone"` \| `"setVerifyApiBaseUrl"`\> & `object` & `ProxyMarked`\>\>; `initBlinkIdVerify`: `Promise`\<`void`\>; `reportPinglet`: `Promise`\<`void`\>; `sendPinglets`: `Promise`\<`void`\>; `terminate`: `Promise`\<`void`\>; \}\>
 
-Promise that resolves with initialized BlinkIdVerify core instance
+Promise that resolves with the initialized BlinkID Verify core
 
 ## Throws
 

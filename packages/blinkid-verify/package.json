@@ -1,6 +1,6 @@
 {
   "name": "@microblink/blinkid-verify",
-  "version": "4000.0.0-next.1",
+  "version": "4000.3.0",
   "description": "All-in-one BlinkID Verify browser SDK for fast and accurate ID verification in web applications.",
   "keywords": [
     "aml",

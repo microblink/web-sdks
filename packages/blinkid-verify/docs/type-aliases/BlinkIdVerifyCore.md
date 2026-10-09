@@ -8,7 +8,7 @@
 
 > **BlinkIdVerifyCore** = `Simplify`\<`Remote`\<[`BlinkIdVerifyWorkerProxy`](BlinkIdVerifyWorkerProxy.md)\>\>
 
-Represents the BlinkIdVerify core instance.
+BlinkID Verify core.
 
-This type extends the Remote type from Comlink, which is used to proxy calls to the BlinkIdVerify worker. It
-simplifies the type to remove unnecessary complexity.
+[BlinkIdVerifyCore.createScanningSession](../functions/loadBlinkIdVerifyCore.md#loadblinkidverifycore) returns a session that always has `submitResult` and
+`prepareVerifyRequest`.

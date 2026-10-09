@@ -1,0 +1,9 @@
+[**@microblink/blinkid-verify-core**](../README.md)
+
+***
+
+[@microblink/blinkid-verify-core](../README.md) / VerifyApiFieldTypeEnum
+
+# Type Alias: VerifyApiFieldTypeEnum
+
+> **VerifyApiFieldTypeEnum** = `"AdditionalAddressInformation"` \| `"AdditionalNameInformation"` \| `"AdditionalOptionalAddressInformation"` \| `"AdditionalPersonalIdNumber"` \| `"Address"` \| `"BloodType"` \| `"ClassEffectiveDate"` \| `"ClassExpiryDate"` \| `"Conditions"` \| `"DateOfBirth"` \| `"DateOfExpiry"` \| `"DateOfIssue"` \| `"DocumentAdditionalNumber"` \| `"DocumentNumber"` \| `"DocumentOptionalAdditionalNumber"` \| `"Employer"` \| `"Endorsements"` \| `"FathersName"` \| `"FirstName"` \| `"FullName"` \| `"IssuingAuthority"` \| `"LastName"` \| `"LicenceType"` \| `"MaritalStatus"` \| `"MothersName"` \| `"Mrz"` \| `"Nationality"` \| `"PersonalIdNumber"` \| `"PlaceOfBirth"` \| `"Profession"` \| `"Race"` \| `"Religion"` \| `"ResidentialStatus"` \| `"Restrictions"` \| `"Sex"` \| `"Sponsor"` \| `"VehicleClass"` \| `"VisaType"` \| `"CertificateNumber"` \| `"CountryCode"` \| `"DependentDateOfBirth"` \| `"DependentDocumentNumber"` \| `"DependentFullName"` \| `"DependentSex"` \| `"DocumentSubtype"` \| `"EligibilityCategory"` \| `"ManufacturingYear"` \| `"NationalInsuranceNumber"` \| `"Remarks"` \| `"ResidencePermitType"` \| `"SpecificDocumentValidity"` \| `"VehicleOwner"` \| `"VehicleType"` \| `"LocalizedName"` \| `"StateName"` \| `"StateCode"` \| `"SectionCode"` \| `"RegistrationCenterCode"` \| `"MaidenName"` \| `"MunicipalityOfRegistration"` \| `"LocalityCode"` \| `"DateOfEntry"` \| `"MunicipalityCode"` \| `"PollingStationCode"` \| `"EffectiveDate"` \| `"ParentsLastName"` \| `"WorkRestriction"` \| `"ParentsFirstName"` \| `"SocialSecurityStatus"` \| `"LegalStatus"` \| `"HusbandName"` \| `"ParentFullName"` \| `"Ethnicity"` \| `"CardAccessNumber"` \| `"VehicleNumber"` \| `"PassportNumber"` \| `"TrafficParticipantNumber"`

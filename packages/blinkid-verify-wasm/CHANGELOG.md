@@ -1,5 +1,15 @@
 # @microblink/blinkid-verify-wasm
 
+## 4000.3.0
+
+### Major Changes
+
+- Replaced the scanning session bindings with the v3 payload. `getResult` returns `serializedPayload` and an optional `typedPayload`, and sessions expose `prepareVerifyRequest` and `submitResult`.
+
+### Minor Changes
+
+- Added the `simd-relaxed` and `simd-relaxed-threads` WebAssembly variants. Browsers that support relaxed SIMD now load these faster builds automatically, while other browsers keep using `simd` or `simd-threads`. The `wasmVariant` setting accepts the new variant names, and the shipped `resources/` tree contains the new variant directories.
+
 ## 4000.0.0-next.1
 
 ### Minor Changes

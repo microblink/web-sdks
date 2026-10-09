@@ -7,6 +7,11 @@
   "main": "utils.mts",
   "module": "utils.mts",
   "types": "utils.mts",
+  "exports": {
+    ".": "./utils.mts",
+    "./vite/copyPackageResources.mts": "./vite/copyPackageResources.mts",
+    "./vite/verifyApiDevProxy.mts": "./vite/verifyApiDevProxy.mts"
+  },
   "scripts": {
     "lint:browserslist": "tsx browser-support.mts",
     "test": "vitest run --silent",

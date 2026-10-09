@@ -8,9 +8,23 @@
 
 > **BlinkIdVerifyComponent** = `object`
 
-Represents the BlinkIdVerify component with all SDK instances and UI elements.
+BlinkID Verify component.
+
+Sessions always expose `submitResult` and `prepareVerifyRequest`. Capture callbacks receive the full resolver,
+including `verifyCaptureResult`, and [BlinkIdVerifyComponent.verifyOnScanningCompletion](#verifyonscanningcompletion) is always available.
 
 ## Properties
+
+### addOnCaptureCompletedCallback
+
+> **addOnCaptureCompletedCallback**: [`BlinkIdVerifyUxManager`](../interfaces/BlinkIdVerifyUxManager.md)\[`"addOnCaptureCompletedCallback"`\]
+
+Adds a callback invoked after document capture with a lazy result resolver.
+
+The resolver includes `getCaptureResult` and `verifyCaptureResult`. Capture does not copy session results or submit
+to the Verify API until a resolver method is called.
+
+***
 
 ### addOnErrorCallback
 
@@ -28,19 +42,11 @@ Adds a callback function to be called on each processed frame.
 
 ***
 
-### addOnResultCallback
-
-> **addOnResultCallback**: [`BlinkIdVerifyUxManager`](../interfaces/BlinkIdVerifyUxManager.md)\[`"addOnResultCallback"`\]
-
-Adds a callback function to be called when a result is obtained.
-
-***
-
 ### blinkIdVerifyCore
 
 > **blinkIdVerifyCore**: [`BlinkIdVerifyCore`](BlinkIdVerifyCore.md)
 
-The BlinkIdVerify Core SDK instance.
+Core initialized with Verify API submit. Its sessions can prepare and submit a Verify API request.
 
 ***
 
@@ -77,3 +83,13 @@ Destroys the BlinkIdVerify component and releases all resources.
 #### Returns
 
 `Promise`\<`void`\>
+
+***
+
+### verifyOnScanningCompletion
+
+> **verifyOnScanningCompletion**: [`BlinkIdVerifyUxManager`](../interfaces/BlinkIdVerifyUxManager.md)\[`"verifyOnScanningCompletion"`\]
+
+Submits the captured session to the Verify API when scanning completes.
+
+Pass `{ onSuccess, onError }`. API failures are delivered to `onError` with the capture resolver.

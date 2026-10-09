@@ -208,9 +208,14 @@ You can customize UI strings when creating the feedback UI:
 createBlinkIdVerifyFeedbackUi(uxManager, cameraUi, {
   localizationStrings: {
     flashlight_warning_message: "Move your ID to avoid flashlight glare.",
+    consent_modal: {
+      title: "We need your consent to:",
+    },
   },
 });
 ```
+
+`createBlinkIdVerify` applies the same `feedbackUiOptions.localizationStrings` to the consent dialog. Consent copy lives under `consent_modal` in `src/ui/locales/en.ts`.
 
 #### Provided Translations
 

@@ -16,9 +16,9 @@ The application performs the following actions:
 
 5.  **Renders the UI**: The application creates and mounts the camera and feedback UI components to the DOM, rendered as a portal outside the root element. It provides an option to show or hide an onboarding guide for the user.
 
-6.  **Handles Results**: Upon successful scanning, the application displays the captured front, back, and barcode frame images. It also includes an optional debug overlay that shows live feedback stabilizer scores as a bar chart, the current UX state key, and the processing status.
+6.  **Handles Results**: Upon successful scanning, the camera UI closes immediately. The capture resolver loads the session result and submits it with `verifyCaptureResult()`. That request goes to this page's origin at `/api/v3/verify`, and the dev server forwards it. The application then displays the captured front, back, and barcode frame images and the Verify API response (the verdict and full JSON, or the error message with status and body when the request fails). It also includes an optional debug overlay that shows live feedback stabilizer scores as a bar chart, the current UX state key, and the processing status.
 
-7.  **Cleanup**: When the UI is dismounted, the application terminates the BlinkID Verify Core instance to free up resources.
+7.  **Cleanup**: When the UI is dismounted before a capture result, the application terminates the BlinkID Verify Core instance. After a successful scan, the core stays alive until the Verify API request settles, then terminates.
 
 ## Key Features Demonstrated
 
@@ -26,8 +26,10 @@ The application performs the following actions:
 - **Manual Control**: Demonstrates how to manually control the initialization, scanning process, and UI components.
 - **Custom UI**: Provides an example of how to integrate the SDK's UI components into a custom application layout.
 - **Event Handling**: Shows how to subscribe to events from the `CameraManager` and `BlinkIdVerifyUxManager` to create a responsive user experience.
-- **Result Handling**: Illustrates how to receive and display scanning results, including captured document frame images.
+- **Result Handling**: Illustrates how to receive and display scanning results, including captured document frame images and the Verify API response from `verifyCaptureResult()`.
 
 ## How to Run
 
-For detailed instructions on how to install dependencies and run this example, please refer to the [main README file](./../README.md).
+Copy `.env.example` to `.env.local`. Set `VITE_LICENCE_KEY`, and set `VERIFY_API_URL` to the https origin of your Verify API. `VERIFY_API_KEY` is optional. When set, it is sent as the `Authorization` value. The example leaves `verifyApiBaseUrl` unset, so the SDK posts to `/api/v3/verify` on this dev server.
+
+For install and start commands, see the [examples README](./../README.md).

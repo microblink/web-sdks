@@ -2,12 +2,13 @@
 
 import {
   loadBlinkIdVerifyCore,
-  type BlinkIdVerifyScanningResult,
-  type CapturedFrame,
+  type BlinkIdVerifySessionResult,
+  type PayloadImage,
   type RemoteScanningSession,
 } from "@microblink/blinkid-verify-core";
 import {
   createBlinkIdVerifyUxManager,
+  type BlinkIdVerifyConsentGate,
   type BlinkIdVerifyUiStateKey,
   type BlinkIdVerifyUxManager,
 } from "@microblink/blinkid-verify-ux-manager/core";
@@ -81,12 +82,12 @@ function clearImages(): void {
   imagesElement.replaceChildren();
 }
 
-function renderFrame(label: string, frame: CapturedFrame | undefined): void {
-  if (!frame) {
+function renderImage(label: string, payloadImage: PayloadImage | undefined): void {
+  if (!payloadImage) {
     return;
   }
 
-  const jpegBytes = frame.jpegBytes.slice();
+  const jpegBytes = payloadImage.jpegBytes.slice();
   const imageUrl = URL.createObjectURL(new Blob([jpegBytes.buffer], { type: "image/jpeg" }));
   imageUrls.push(imageUrl);
 
@@ -101,17 +102,17 @@ function renderFrame(label: string, frame: CapturedFrame | undefined): void {
   imagesElement.append(figure);
 }
 
-function renderResult(result: BlinkIdVerifyScanningResult): void {
+function renderResult(result: BlinkIdVerifySessionResult): void {
   clearImages();
-  renderFrame("Front frame", result.frontFrame);
-  renderFrame("Back frame", result.backFrame);
-  renderFrame("Barcode frame", result.barcodeFrame);
+  renderImage("First side", result.serializedPayload.imageFirstSide);
+  renderImage("Second side", result.serializedPayload.imageSecondSide);
+  renderImage("Barcode", result.serializedPayload.imageBarcode);
 
   resultElement.textContent = JSON.stringify(
     {
-      frontFrame: result.frontFrame?.orientation,
-      backFrame: result.backFrame?.orientation,
-      barcodeFrame: result.barcodeFrame?.orientation,
+      configuration: result.typedPayload?.configuration,
+      consent: result.typedPayload?.consent,
+      traceId: result.typedPayload?.traceId,
     },
     null,
     2,
@@ -124,6 +125,8 @@ class BlinkIdVerifyCustomUiExample {
   #session?: RemoteScanningSession;
   #cameraManager = new CameraManager();
   #uxManager?: BlinkIdVerifyUxManager;
+  #consentGate?: BlinkIdVerifyConsentGate;
+  #removeConsentOverlay?: () => void;
   #removeCallbacks: RemoveCallback[] = [];
   #sessionStop?: Promise<void>;
   #runId = 0;
@@ -203,9 +206,46 @@ class BlinkIdVerifyCustomUiExample {
 
       const cameraManager = this.#cameraManager;
 
-      const uxManager = await createBlinkIdVerifyUxManager(cameraManager, session);
+      const consentGate = await createBlinkIdVerifyUxManager(cameraManager, session, {
+        consentUxConfig: {
+          consentMode: "RequireConsent",
+          consent: {
+            userId: "example-user",
+            durationDays: 365,
+          },
+        },
+      });
       if (!this.#isCurrent(runId)) {
-        uxManager.destroy();
+        consentGate.destroy();
+        return;
+      }
+      this.#consentGate = consentGate;
+
+      const consentOverlay = document.createElement("div");
+      reticleElement.append(consentOverlay);
+      this.#removeConsentOverlay = () => {
+        consentOverlay.remove();
+        this.#removeConsentOverlay = undefined;
+      };
+
+      statusElement.textContent = "Review the consent dialog to continue.";
+      const uxManager = await consentGate.consentUiResponse({
+        overlayLayerNode: consentOverlay,
+        owner: null,
+        dismount: () => {
+          this.#removeConsentOverlay?.();
+        },
+      } as unknown as Parameters<BlinkIdVerifyConsentGate["consentUiResponse"]>[0]);
+      this.#consentGate = undefined;
+      this.#removeConsentOverlay?.();
+
+      if (!this.#isCurrent(runId)) {
+        uxManager?.destroy();
+        return;
+      }
+      if (!uxManager) {
+        statusElement.textContent = "Consent was declined.";
+        await this.#finish(runId);
         return;
       }
       this.#uxManager = uxManager;
@@ -224,11 +264,12 @@ class BlinkIdVerifyCustomUiExample {
             showError(error);
           }
         }),
-        uxManager.addOnResultCallback((result) => {
+        uxManager.addOnCaptureCompletedCallback(async (resolver) => {
           if (!this.#isCurrent(runId)) {
             return;
           }
 
+          const result = await resolver.getCaptureResult();
           renderResult(result);
           statusElement.textContent = "Capture complete.";
           void this.#finish(runId, { clearCapturedImages: false });
@@ -417,10 +458,14 @@ class BlinkIdVerifyCustomUiExample {
   async #disposeSession(): Promise<void> {
     const session = this.#session;
     const uxManager = this.#uxManager;
+    const consentGate = this.#consentGate;
     const removeCallbacks = this.#removeCallbacks.splice(0);
 
     this.#session = undefined;
     this.#uxManager = undefined;
+    this.#consentGate = undefined;
+    this.#removeConsentOverlay?.();
+    consentGate?.destroy();
 
     for (const removeCallback of removeCallbacks) {
       removeCallback();

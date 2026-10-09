@@ -16,6 +16,7 @@ export function mapErrorStateKeyToAnalyticsType(
   errorKey: PingableErrorUiStateKey,
 ): PingUxEventData["errorMessageType"] {
   return match<PingableErrorUiStateKey, PingUxEventData["errorMessageType"]>(errorKey)
+    .with("SCREEN_DETECTED", () => "KeepVisible")
     .with("BLUR_DETECTED", () => "EliminateBlur")
     .with("GLARE_DETECTED", () => "EliminateGlare")
     .with("TOO_DARK", () => "IncreaseLighting")

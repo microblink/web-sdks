@@ -6,7 +6,7 @@
 
 # Type Alias: BlinkIdVerifyComponentOptions
 
-> **BlinkIdVerifyComponentOptions** = `Simplify`\<`object` & [`BlinkIdVerifyInitSettings`](BlinkIdVerifyInitSettings.md) & `Partial`\<`Omit`\<[`BlinkIdVerifySessionSettings`](BlinkIdVerifySessionSettings.md), `"inputImageSource"`\>\>\>
+> **BlinkIdVerifyComponentOptions** = `Simplify`\<`object` & `Omit`\<[`BlinkIdVerifyInitSettings`](BlinkIdVerifyInitSettings.md), `"verifyApiBaseUrl"`\> & `Partial`\<`Omit`\<[`BlinkIdVerifySessionSettings`](BlinkIdVerifySessionSettings.md), `"inputImageSource"`\>\>\>
 
 Configuration options for creating a BlinkIdVerify component.
 

@@ -1,5 +1,70 @@
 # @microblink/blinkid-verify-ux-manager
 
+## 4000.3.0
+
+### Major Changes
+
+- Replaced the BlinkID Verify capture pipeline with a v3 session, consent, and Verify API surface.
+- Removed `addOnResultCallback` and `getSessionResult()`. Register `addOnCaptureCompletedCallback` and call `resolver.getCaptureResult()`. `resolver.verifyCaptureResult()` posts the capture when you submit it yourself. Neither method runs until you call it. If `verifyOnScanningCompletion` is also registered, keep the session alive until its success or error callback finishes.
+- ```ts
+  const cleanup = manager.addOnCaptureCompletedCallback(async (resolver) => {
+    const result = await resolver.getCaptureResult();
+    console.log(result.typedPayload);
+  });
+  ```
+- `createBlinkIdVerifyUxManager` takes a `RemoteScanningSession`. That session always includes `submitResult` and `prepareVerifyRequest`. Omitting `consentUxConfig` still returns a `BlinkIdVerifyUxManager` and defaults to `{ consentMode: "NoConsentUI" }`. `"ProvideExternalConsent"` stores a full `Consent` before capture. `"RequireConsent"` returns a `BlinkIdVerifyConsentGate` instead of a manager: call `consentUiResponse`, which returns the manager on accept and `undefined` on decline. `RequireConsent.consent` is a `ConsentUiInput` (`userId`, `durationDays`, and optional `customerContext`). Call `destroy()` to abandon the gate before acceptance.
+- ```ts
+  const created = await createBlinkIdVerifyUxManager(
+    cameraManager,
+    scanningSession,
+    {
+      consentUxConfig: {
+        consentMode: "RequireConsent",
+        consent: { userId: "user-123", durationDays: 30 },
+      },
+    }
+  );
+  if (!(created instanceof BlinkIdVerifyConsentGate)) {
+    return;
+  }
+  const manager = await created.consentUiResponse(
+    cameraManagerComponent,
+    localizationStrings
+  );
+  if (!manager) {
+    return;
+  }
+  ```
+- Added `verifyOnScanningCompletion({ onSuccess, onError })`. It is always available, and the capture resolver always includes `verifyCaptureResult`. Submit uses the `verifyApiBaseUrl` passed to `loadBlinkIdVerifyCore`. Omitted means the page origin. The SDK POSTs `{resolved}/api/v3/verify` with `Content-Type` only and `credentials` set to `"same-origin"`. It sends no API key and no `Authorization` header. Submit requests time out after 20 seconds and are aborted by `reset()`, session deletion, and SDK termination. `onSuccess` receives `VerifyApiResult` and the capture resolver. `onError` receives `VerifyApiError` and the same resolver. API failures are not reported as `result_retrieval_failed`. This method does not retry. Call `resolver.verifyCaptureResult()` again from `onError` to resubmit that capture while the scanning session is still alive. That call resolves with `{ ok: true, result }` or `{ ok: false, error }` and does not reject for API failures. A later resubmit is not delivered to `onSuccess`.
+- ```ts
+  const manager = await createBlinkIdVerifyUxManager(
+    cameraManager,
+    scanningSession,
+    {
+      consentUxConfig: { consentMode: "NoConsentUI" },
+    }
+  );
+  manager.verifyOnScanningCompletion({
+    onSuccess: (apiResult) => {
+      console.log(apiResult);
+    },
+    onError: async (error, resolver) => {
+      console.error(error);
+      const retry = await resolver.verifyCaptureResult();
+      if (!retry.ok) {
+        console.error(retry.error);
+      }
+    },
+  });
+  ```
+- Added `SCREEN_DETECTED` to `BlinkIdVerifyUiStateKey`. It uses the existing `feedback_messages.screen_detected` string. Localization key names in this release are otherwise unchanged.
+
+### Patch Changes
+
+- Updated the default `helpTooltipShowDelay` from 5 seconds to 10 seconds.
+- Updated dependencies
+  - @microblink/blinkid-verify-core@4000.3.0
+
 ## 4000.0.0-next.1
 
 ### Major Changes
@@ -29,8 +94,8 @@
 
 ### Patch Changes
 
-- Update declaration bundles
-- Turning on the flashlight now shows a glare warning message
+- Updated declaration bundles
+- Added a glare warning when the flashlight is turned on
 - Updated package dependencies.
 - Fixed an issue where frame processing wouldnt stop if showTimeoutModal was configured to false
 - Improves keyboard focus visibility for controls shown over light and dark backgrounds.

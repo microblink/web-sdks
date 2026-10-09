@@ -6,7 +6,7 @@ This report lists all open source dependencies used in the BlinkID Verify SDK pa
 
 This report includes:
 - **NPM Dependencies**: Production dependencies from all packages in the monorepo (124 packages)
-- **C++ Dependencies**: Native dependencies for WebAssembly builds (25 unique packages)
+- **C++ Dependencies**: Native dependencies for WebAssembly builds (26 unique packages)
 
 ## NPM Dependencies
 
@@ -141,28 +141,29 @@ This report includes:
 
 | Package | License | URL | Description |
 |---------|---------|-----|-------------|
-| adv-obfuscator | BSD-3-Clause-Clear | [Link](https://github.com/microblink/ADVObfuscator/archive/refs/tags/mb.20170904.2.tar.gz) | N/A |
 | concurrentqueue/1.0.4.mb.1 | BSD-2-Clause,BSL-1.0 | N/A | N/A |
-| ConfigEx/0.1.0-docver.alpha.8 | MIT | [Link](https://github.com/microblink/config_ex) | N/A |
+| ConfigEx/27.0.1 | MIT | [Link](https://github.com/microblink/config_ex) | N/A |
+| core-identity++http_archive+adv-obfuscator | BSD-3-Clause-Clear | [Link](https://github.com/microblink/ADVObfuscator) | N/A |
+| core-identity++http_archive+kiwaku | BSL-1.0 | [Link](https://github.com/microblink/kiwaku) | N/A |
+| core-identity++http_archive+micro-ecc | BSD-2-Clause | [Link](https://github.com/microblink/micro-ecc) | N/A |
+| core-identity++http_archive+qoixx | MIT | [Link](https://github.com/wx257osn2/qoixx) | N/A |
+| core-identity++http_archive+utfcpp | BSL-1.0 | [Link](https://github.com/nemtrif/utfcpp) | N/A |
+| core-identity++http_archive+zxing | Apache-2.0 | [Link](https://github.com/microblink/zxing) | N/A |
+| core-identity++http_archive+zxing-cpp | Apache-2.0 | [Link](https://github.com/microblink/zxing-cpp) | N/A |
 | cpuinfo/0.0.0-20260312-7607ca5.mb.1 | BSD-2-Clause | N/A | N/A |
-| eigen/5.0.1.bcr.1 | MPL-2.0 | N/A | N/A |
-| Err/0.1.0-docver.alpha.8 | BSL-1.0 | [Link](https://github.com/microblink/err) | N/A |
-| Functionoid/0.1.0-docver.alpha.8 | BSL-1.0 | [Link](https://github.com/microblink/functionoid) | N/A |
-| Hash/0.1.0-docver.alpha.8 | Zlib | [Link](https://github.com/stbrumme/hash-library) | N/A |
-| kiwaku | BSL-1.0 | [Link](https://github.com/microblink/kiwaku/archive/refs/tags/mb.20230809.4.tar.gz) | N/A |
+| eigen/5.0.1.bcr.2 | MPL-2.0 | N/A | N/A |
+| Err/27.0.1 | BSL-1.0 | [Link](https://github.com/microblink/err) | N/A |
+| Functionoid/27.0.1 | BSL-1.0 | [Link](https://github.com/microblink/functionoid) | N/A |
+| Hash/27.0.1 | Zlib | [Link](https://github.com/stbrumme/hash-library) | N/A |
+| libbacktrace/1.0.0-20250926-7939218.mb.1 | BSD-3-Clause | N/A | N/A |
 | libdeflate/1.25 | MIT | N/A | N/A |
-| libjpeg_turbo/3.1.3.bcr.4 | BSD-3-Clause-Modification,IJG,Zlib | N/A | N/A |
-| libpng/1.6.54 | libpng-2.0 | N/A | N/A |
-| micro-ecc | BSD-2-Clause | [Link](https://github.com/microblink/micro-ecc/archive/refs/tags/v1.0-mb.1.tar.gz) | N/A |
-| MMap/0.1.0-docver.alpha.8 | BSL-1.0 | [Link](https://github.com/microblink/mmap) | N/A |
-| opencv/4.13.0.mb.2 | Apache-2.0 | N/A | N/A |
-| pimpl/0.1.0-docver.alpha.8 | BSD-2-Clause | [Link](https://github.com/microblink/pimpl) | N/A |
+| libjpeg_turbo/3.1.3.bcr.6 | BSD-3-Clause-Modification,IJG,Zlib | N/A | N/A |
+| libpng/1.6.58.bcr.1 | libpng-2.0 | N/A | N/A |
+| MMap/27.0.1 | BSL-1.0 | [Link](https://github.com/microblink/mmap) | N/A |
+| opencv/5.0.0.mb.4 | Apache-2.0 | N/A | N/A |
+| pimpl/27.0.1 | BSD-2-Clause | [Link](https://github.com/microblink/pimpl) | N/A |
 | pthreadpool/0.0.0-20250926-560c60d.mb.1 | BSD-2-Clause | N/A | N/A |
-| qoixx | MIT | [Link](https://github.com/wx257osn2/qoixx/archive/refs/tags/v0.1.7.tar.gz) | N/A |
 | rapidjson/1.1.0.mb.20250205 | MIT | N/A | N/A |
-| sweater/0.1.0-docver.alpha.8 | MIT | [Link](https://github.com/microblink/sweater) | N/A |
-| utfcpp | BSL-1.0 | [Link](https://github.com/nemtrif/utfcpp/archive/refs/tags/v4.0.9.tar.gz) | N/A |
-| xnnpack/20230525.5.0 | BSD-3-Clause | [Link](https://github.com/microblink/XNNPACK) | N/A |
-| zlib/1.3.2.mb.1 | Zlib | N/A | N/A |
-| zxing | Apache-2.0 | [Link](https://github.com/microblink/zxing/archive/2fb1595417c4dd5604f36e10bad74cb934819ccf.zip) | N/A |
-| zxing-cpp | Apache-2.0 | [Link](https://github.com/microblink/zxing-cpp/archive/refs/tags/3.0.2.mb.1.zip) | N/A |
+| sweater/27.0.1 | MIT | [Link](https://github.com/microblink/sweater) | N/A |
+| xnnpack/20230525.6.0 | BSD-3-Clause | [Link](https://github.com/microblink/XNNPACK) | N/A |
+| zlib/1.3.2.mb.2 | Zlib | N/A | N/A |

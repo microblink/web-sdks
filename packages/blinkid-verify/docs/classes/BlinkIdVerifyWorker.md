@@ -42,7 +42,7 @@ This method is called when the worker is terminated.
 
 ### createScanningSession()
 
-> **createScanningSession**(`sessionSettings?`): `Omit`\<[`BlinkIdVerifyScanningSession`](../type-aliases/BlinkIdVerifyScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"` \| `"clone"`\> & `object` & `ProxyMarked`
+> **createScanningSession**(`sessionSettings?`): `Omit`\<[`BlinkIdVerifyScanningSession`](../type-aliases/BlinkIdVerifyScanningSession.md), `"process"` \| `"deleteLater"` \| `"isAliasOf"` \| `"clone"` \| `"setVerifyApiBaseUrl"`\> & `object` & `ProxyMarked`
 
 This method creates a BlinkIdVerify scanning session.
 
@@ -50,7 +50,7 @@ This method creates a BlinkIdVerify scanning session.
 
 ##### sessionSettings?
 
-`Partial`\<\{ `inputImageSource`: [`InputImageSource`](../type-aliases/InputImageSource.md); `scanningSettings`: [`ScanningSettings`](../type-aliases/ScanningSettings.md); \}\>
+`Partial`\<\{ `configuration`: [`DocumentVerificationConfiguration`](../type-aliases/DocumentVerificationConfiguration.md); `inputImageSource`: [`InputImageSource`](../type-aliases/InputImageSource.md); `traceId`: `string`; \}\>
 
 The options for the session.
 

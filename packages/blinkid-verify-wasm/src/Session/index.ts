@@ -3,5 +3,8 @@
 export type * from "./session-settings";
 export type * from "./blink-id-verify-scanning-result";
 export type * from "./blink-id-verify-process-result";
-export type * from "./scanning-settings";
 export type * from "./blink-id-verify-scanning-session";
+export type * from "./consent";
+export type * from "./session-result";
+export type * from "./verify-api";
+export type * from "./verify-api-response";

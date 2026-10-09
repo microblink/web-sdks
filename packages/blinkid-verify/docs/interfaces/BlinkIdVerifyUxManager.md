@@ -127,6 +127,44 @@ The currently applied UI state key.
 
 ## Methods
 
+### addOnCaptureCompletedCallback()
+
+> **addOnCaptureCompletedCallback**(`callback`): () => `void`
+
+Registers a callback invoked after document capture with a lazy [CaptureResultResolver](../type-aliases/CaptureResultResolver.md).
+
+Runs after the capture success animation and does not wait for the Verify API. Hosts can tear down scanning UI
+here. Capture itself does not copy session results or submit to the Verify API; call resolver methods for the data
+you need. If [BlinkIdVerifyUxManager.verifyOnScanningCompletion](#verifyonscanningcompletion) is also registered, keep the session alive
+until those success or error callbacks run.
+
+#### Parameters
+
+##### callback
+
+[`CaptureCompletedCallback`](../type-aliases/CaptureCompletedCallback.md)
+
+Called with a resolver bound to this capture.
+
+#### Returns
+
+A cleanup function that removes the callback.
+
+() => `void`
+
+#### Example
+
+```ts
+const cleanup = manager.addOnCaptureCompletedCallback(async (resolver) => {
+    const result = await resolver.getCaptureResult();
+    console.log(result.typedPayload);
+  });
+
+  cleanup();
+```
+
+***
+
 ### addOnErrorCallback()
 
 > **addOnErrorCallback**(`callback`): () => `void`
@@ -187,40 +225,6 @@ callback.
 ```ts
 const cleanup = manager.addOnFrameProcessCallback((frameResult) => {
     console.log("Frame processed:", frameResult);
-  });
-
-  // Later, to remove the callback:
-  cleanup();
-```
-
-***
-
-### addOnResultCallback()
-
-> **addOnResultCallback**(`callback`): () => `void`
-
-Registers a callback function to be called when a scan result is available.
-
-#### Parameters
-
-##### callback
-
-(`result`) => `void`
-
-A function that will be called with the scan result.
-
-#### Returns
-
-A cleanup function that, when called, will remove the registered
-callback.
-
-() => `void`
-
-#### Example
-
-```ts
-const cleanup = manager.addOnResultCallback((result) => {
-    console.log("Scan result:", result);
   });
 
   // Later, to remove the callback:
@@ -332,20 +336,6 @@ Returns the initial UI state key used when resetting UX state.
 #### Returns
 
 [`BlinkIdVerifyUiStateKey`](../type-aliases/BlinkIdVerifyUiStateKey.md)
-
-***
-
-### getSessionResult()
-
-> **getSessionResult**(): `Promise`\<[`BlinkIdVerifyScanningResult`](../type-aliases/BlinkIdVerifyScanningResult.md)\>
-
-Gets the result from the scanning session.
-
-#### Returns
-
-`Promise`\<[`BlinkIdVerifyScanningResult`](../type-aliases/BlinkIdVerifyScanningResult.md)\>
-
-The result.
 
 ***
 
@@ -511,3 +501,54 @@ Throws an error if duration is less than or equal to 0 when not null.
 #### Returns
 
 `void`
+
+***
+
+### verifyOnScanningCompletion()
+
+> **verifyOnScanningCompletion**(`callbacks`): () => `void`
+
+Submits the captured session to the Verify API when scanning completes, then invokes success or error callbacks.
+
+Submit starts after the capture success animation. [BlinkIdVerifyUxManager.addOnCaptureCompletedCallback](#addoncapturecompletedcallback) runs
+first and does not wait for the network; these success or error callbacks run when submit settles. Keep the session
+alive until then if both APIs are used. Network submit is available on every session. The SDK posts to the base URL
+configured at core init and sends no API key.
+
+API failures are delivered to `onError` with the same resolver. From `onError`, call
+[CaptureResultResolver.verifyCaptureResult](../type-aliases/CaptureResultResolver.md#verifycaptureresult) again to resubmit that capture while the scanning session is still
+alive. That later call is not delivered to `onSuccess`.
+
+#### Parameters
+
+##### callbacks
+
+[`VerifyOnScanningCompletionCallbacks`](../type-aliases/VerifyOnScanningCompletionCallbacks.md)
+
+`onSuccess` receives the API result and capture resolver. `onError` receives a
+  [VerifyApiError](../classes/VerifyApiError.md) and the capture resolver. The client chooses whether to resubmit.
+
+#### Returns
+
+A cleanup function that removes both callbacks.
+
+() => `void`
+
+#### Example
+
+```ts
+const cleanup = manager.verifyOnScanningCompletion({
+    onSuccess: (apiResult) => {
+      console.log(apiResult);
+    },
+    onError: async (error, resolver) => {
+      console.error(error);
+      const retry = await resolver.verifyCaptureResult();
+      if (!retry.ok) {
+        console.error(retry.error);
+      }
+    },
+  });
+
+  cleanup();
+```
