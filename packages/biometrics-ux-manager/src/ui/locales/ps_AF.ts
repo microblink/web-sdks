@@ -34,10 +34,10 @@ export default {
     ok: "ښه! بې‌حرکته پاتې شئ",
     too_blurry: "بې‌حرکته پاتې شئ",
     too_bright: "داسې ځای ته لاړ شئ چې رڼا یې نرمه وي",
-    too_close: "نور لاړ شه",
+    too_close: "لرې شئ",
     too_close_to_border: "خپل مخ په منځ کې ونیسئ",
     too_dark: "روښانه ځای ته لاړ شئ",
-    too_far: "نږدې شه",
+    too_far: "نږدې شئ",
   },
   help_button: {
     aria_label: "مرسته",

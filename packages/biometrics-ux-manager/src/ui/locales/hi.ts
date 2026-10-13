@@ -34,10 +34,10 @@ export default {
     ok: "बिल्कुल सही! स्थिर रहें",
     too_blurry: "स्थिर रहें",
     too_bright: "नरम रोशनी वाली जगह पर जाएँ",
-    too_close: "दूर जाएँ",
+    too_close: "थोड़ा दूर जाएँ",
     too_close_to_border: "अपने चेहरे को बीच में रखें",
     too_dark: "ज़्यादा रोशनी वाली जगह पर जाएँ",
-    too_far: "पास आएँ",
+    too_far: "थोड़ा पास आएँ",
   },
   help_button: {
     aria_label: "सहायता",

@@ -34,10 +34,10 @@ export default {
     ok: "מצוין! הישארו ללא תזוזה",
     too_blurry: "הישארו ללא תזוזה",
     too_bright: "עברו למקום עם תאורה רכה יותר",
-    too_close: "התרחק/י",
+    too_close: "התרחקו",
     too_close_to_border: "מרכזו את פניכם",
     too_dark: "עברו למקום מואר יותר",
-    too_far: "קרב/י",
+    too_far: "התקרבו",
   },
   help_button: {
     aria_label: "עזרה",

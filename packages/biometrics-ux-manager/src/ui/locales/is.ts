@@ -34,10 +34,10 @@ export default {
     ok: "Fullkomið! Haltu kyrru fyrir",
     too_blurry: "Haltu kyrru fyrir",
     too_bright: "Farðu á stað með mýkri lýsingu",
-    too_close: "Færið fjær",
+    too_close: "Færðu þig fjær",
     too_close_to_border: "Settu andlit þitt í miðjuna",
     too_dark: "Farðu á bjartari stað",
-    too_far: "Færið nær",
+    too_far: "Færðu þig nær",
   },
   help_button: {
     aria_label: "Hjálp",

@@ -34,10 +34,10 @@ export default {
     ok: "Ɛyɛ pɛ! Mma wo ho nhinhim",
     too_blurry: "Mma wo ho nhinhim",
     too_bright: "Kɔ baabi a hann no nyɛ den pii",
-    too_close: "Kɔ akyirikyiri",
+    too_close: "Kɔ akyiri",
     too_close_to_border: "Fa w'anim hyɛ mfinimfini",
     too_dark: "Kɔ baabi a hann wɔ hɔ pii",
-    too_far: "Bɛn ho",
+    too_far: "Bra bɛn",
   },
   help_button: {
     aria_label: "Mmoa",

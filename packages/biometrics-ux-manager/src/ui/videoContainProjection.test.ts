@@ -52,6 +52,14 @@ describe("videoContainProjection", () => {
     });
   });
 
+  test("scales the face anchor with the rendered video height on large displays", () => {
+    const faceBounds = { x: 0.25, y: 0.25, width: 0.5, height: 0.5 };
+    const laptop = faceAnchorPercent(faceBounds, { width: 1440, height: 810 }, 1920, 1080, false);
+    const largeMonitor = faceAnchorPercent(faceBounds, { width: 3840, height: 2160 }, 1920, 1080, false);
+
+    expect(largeMonitor?.scale).toBeCloseTo((laptop?.scale ?? 0) * (2160 / 900));
+  });
+
   test("projects a landmark center inside a pillarboxed video", () => {
     const anchor = faceAnchorPercent(
       { x: 0.25, y: 0.25, width: 0.5, height: 0.5 },

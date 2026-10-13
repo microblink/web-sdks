@@ -34,10 +34,10 @@ export default {
     ok: "ठीक छ! नचल्नुहोस्",
     too_blurry: "नचल्नुहोस्",
     too_bright: "नरम प्रकाश भएको ठाउँमा जानुहोस्",
-    too_close: "पर जानुहोस्",
+    too_close: "अलि टाढा जानुहोस्",
     too_close_to_border: "आफ्नो अनुहार बीचमा राख्नुहोस्",
     too_dark: "उज्यालो ठाउँमा जानुहोस्",
-    too_far: "नजिक जानुहोस्",
+    too_far: "अलि नजिक आउनुहोस्",
   },
   help_button: {
     aria_label: "मद्दत",

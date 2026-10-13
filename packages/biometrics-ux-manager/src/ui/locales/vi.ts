@@ -34,10 +34,10 @@ export default {
     ok: "Hoàn hảo! Giữ yên",
     too_blurry: "Giữ yên",
     too_bright: "Di chuyển đến nơi có ánh sáng dịu hơn",
-    too_close: "Di chuyển xa hơn",
+    too_close: "Lùi ra xa hơn",
     too_close_to_border: "Đưa khuôn mặt vào giữa",
     too_dark: "Di chuyển đến nơi sáng hơn",
-    too_far: "Di chuyển gần hơn",
+    too_far: "Lại gần hơn",
   },
   help_button: {
     aria_label: "Trợ giúp",

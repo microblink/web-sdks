@@ -34,10 +34,10 @@ export default {
     ok: "Sempurna! Tetap diam",
     too_blurry: "Tetap diam",
     too_bright: "Pindah ke tempat dengan pencahayaan yang lebih lembut",
-    too_close: "Mohon jauhkan",
+    too_close: "Menjauh",
     too_close_to_border: "Posisikan wajah Anda di tengah",
     too_dark: "Pindah ke tempat yang lebih terang",
-    too_far: "Mohon dekatkan",
+    too_far: "Mendekat",
   },
   help_button: {
     aria_label: "Bantuan",

@@ -1,5 +1,13 @@
 # @microblink/biometrics-ux-manager
 
+## 1000.0.2
+
+### Patch Changes
+
+- Fixed success animation not scaling properly on large monitors
+- Updated dependencies
+  - @microblink/biometrics-core@1000.0.2
+
 ## 1000.0.1
 
 ### Patch Changes

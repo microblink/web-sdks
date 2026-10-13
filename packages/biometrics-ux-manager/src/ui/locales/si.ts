@@ -34,10 +34,10 @@ export default {
     ok: "හොඳයි! නිශ්චලව සිටින්න",
     too_blurry: "නිශ්චලව සිටින්න",
     too_bright: "මෘදු ආලෝකයක් ඇති ස්ථානයකට යන්න",
-    too_close: "මදක් ඈත් කරන්න",
+    too_close: "තව ඈතට යන්න",
     too_close_to_border: "ඔබේ මුහුණ මැදට ගෙන එන්න",
     too_dark: "වැඩි ආලෝකයක් ඇති ස්ථානයකට යන්න",
-    too_far: "මදක් ළං කරන්න",
+    too_far: "තව ළඟට එන්න",
   },
   help_button: {
     aria_label: "උදව්",

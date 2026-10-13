@@ -34,10 +34,10 @@ export default {
     ok: "Perfeito! Fique imóvel",
     too_blurry: "Fique imóvel",
     too_bright: "Vá para um local com iluminação mais suave",
-    too_close: "Afaste",
+    too_close: "Afaste-se",
     too_close_to_border: "Centralize seu rosto",
     too_dark: "Vá para um local mais iluminado",
-    too_far: "Aproxime",
+    too_far: "Aproxime-se",
   },
   help_button: {
     aria_label: "Ajuda",

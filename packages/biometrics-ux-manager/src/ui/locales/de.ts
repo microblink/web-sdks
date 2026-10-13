@@ -34,10 +34,10 @@ export default {
     ok: "Perfekt. Halten Sie still",
     too_blurry: "Halten Sie still",
     too_bright: "Gehen Sie an einen Ort mit weniger grellem Licht",
-    too_close: "Bewegen Sie sich weiter weg",
+    too_close: "Gehen Sie weiter zurück",
     too_close_to_border: "Positionieren Sie Ihr Gesicht in der Mitte",
     too_dark: "Gehen Sie an einen helleren Ort",
-    too_far: "Kommen Sie näher",
+    too_far: "Gehen Sie näher heran",
   },
   help_button: {
     aria_label: "Hilfe",

@@ -1,5 +1,11 @@
 # @microblink/biometrics-core
 
+## 1000.0.2
+
+### Patch Changes
+
+- Improved face detector performance and liveness frame sampling
+
 ## 1000.0.1
 
 ### Patch Changes

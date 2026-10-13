@@ -1,10 +1,10 @@
 {
   "baselineRef": "origin/main",
   "selected": [
-    "blinkid-verify"
+    "biometrics"
   ],
   "changed": [
-    "blinkid-verify"
+    "biometrics"
   ],
   "products": {
     "camera-manager": {
@@ -26,16 +26,16 @@
       "baselineVersion": "3001.0.2"
     },
     "biometrics": {
-      "selected": false,
-      "changed": false,
-      "newVersion": "1000.0.1",
+      "selected": true,
+      "changed": true,
+      "newVersion": "1000.0.2",
       "baselineVersion": "1000.0.1"
     },
     "blinkid-verify": {
-      "selected": true,
-      "changed": true,
+      "selected": false,
+      "changed": false,
       "newVersion": "4000.0.0",
-      "baselineVersion": "4000.0.0-next.1"
+      "baselineVersion": "4000.0.0"
     }
   }
 }

@@ -34,10 +34,10 @@ export default {
     ok: "Bagus! Jangan bergerak",
     too_blurry: "Jangan bergerak",
     too_bright: "Bergerak ke tempat dengan pencahayaan yang lebih lembut",
-    too_close: "Jauhkan lagi",
+    too_close: "Jauhkan wajah daripada kamera",
     too_close_to_border: "Letakkan wajah anda di tengah",
     too_dark: "Bergerak ke tempat yang lebih terang",
-    too_far: "Dekatkan lagi",
+    too_far: "Dekatkan wajah kepada kamera",
   },
   help_button: {
     aria_label: "Bantuan",

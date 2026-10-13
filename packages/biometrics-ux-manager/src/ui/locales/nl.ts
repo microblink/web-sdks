@@ -34,10 +34,10 @@ export default {
     ok: "Perfect! Blijf stil",
     too_blurry: "Blijf stil",
     too_bright: "Ga naar een plek met zachter licht",
-    too_close: "Beweeg verder weg",
+    too_close: "Ga verder weg",
     too_close_to_border: "Centreer je gezicht",
     too_dark: "Ga naar een lichtere plek",
-    too_far: "Beweeg dichterbij",
+    too_far: "Kom dichterbij",
   },
   help_button: {
     aria_label: "Help",

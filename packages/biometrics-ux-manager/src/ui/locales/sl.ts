@@ -34,10 +34,10 @@ export default {
     ok: "Odlično! Ostanite pri miru",
     too_blurry: "Ostanite pri miru",
     too_bright: "Premaknite se na mesto z blažjo osvetlitvijo",
-    too_close: "Oddaljite",
+    too_close: "Odmaknite se",
     too_close_to_border: "Postavite obraz na sredino",
     too_dark: "Premaknite se na svetlejše mesto",
-    too_far: "Približajte",
+    too_far: "Pomaknite se bližje",
   },
   help_button: {
     aria_label: "Pomoč",

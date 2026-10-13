@@ -34,10 +34,10 @@ export default {
     ok: "Výborně! Nehýbejte se",
     too_blurry: "Nehýbejte se",
     too_bright: "Přejděte na místo s mírnějším osvětlením",
-    too_close: "Kousek dál",
+    too_close: "Odstupte dál",
     too_close_to_border: "Umístěte obličej doprostřed",
     too_dark: "Přejděte na světlejší místo",
-    too_far: "Kousek blíž",
+    too_far: "Přibližte se",
   },
   help_button: {
     aria_label: "Nápověda",
