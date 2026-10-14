@@ -2,6 +2,8 @@
 
 ## 1000.0.2
 
-### Major Changes
+## 1000.0.1
 
-- Added face capture processing in a Web Worker to keep the main browser thread responsive
+## 1000.0.0
+
+Added face capture processing in a Web Worker to keep the main browser thread responsive

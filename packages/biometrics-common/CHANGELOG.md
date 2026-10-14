@@ -2,6 +2,8 @@
 
 ## 1000.0.2
 
-### Minor Changes
+## 1000.0.1
 
-- Added shared face capture types, errors, diagnostics, and utilities for Biometrics packages
+## 1000.0.0
+
+Added shared face capture types, errors, diagnostics, and utilities for Biometrics packages
