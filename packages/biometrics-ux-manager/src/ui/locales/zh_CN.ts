@@ -34,10 +34,10 @@ export default {
     ok: "位置合适！请保持不动",
     too_blurry: "保持不动",
     too_bright: "移至光线较柔和的位置",
-    too_close: "离远一些",
+    too_close: "请离镜头远一些",
     too_close_to_border: "将面部置于中央",
     too_dark: "移至光线更充足的位置",
-    too_far: "靠近一些",
+    too_far: "请靠近一些",
   },
   help_button: {
     aria_label: "帮助",

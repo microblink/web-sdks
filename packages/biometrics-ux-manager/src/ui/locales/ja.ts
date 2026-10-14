@@ -34,10 +34,10 @@ export default {
     ok: "そのまま動かないでください",
     too_blurry: "動かないでください",
     too_bright: "光がやわらかい場所に移動してください",
-    too_close: "遠くへ移動",
+    too_close: "もう少し離れてください",
     too_close_to_border: "顔を中央に合わせてください",
     too_dark: "明るい場所に移動してください",
-    too_far: "近くへ移動",
+    too_far: "もう少し近づいてください",
   },
   help_button: {
     aria_label: "ヘルプ",

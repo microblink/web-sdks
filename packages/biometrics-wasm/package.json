@@ -1,6 +1,6 @@
 {
   "name": "@microblink/biometrics-wasm",
-  "version": "1.0.0",
+  "version": "1000.0.2",
   "private": true,
   "files": [
     "dist",

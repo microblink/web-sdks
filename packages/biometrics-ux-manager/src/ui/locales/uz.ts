@@ -34,10 +34,10 @@ export default {
     ok: "Ajoyib! Qimirlamang",
     too_blurry: "Qimirlamang",
     too_bright: "Yorug‘ligi yumshoqroq joyga o‘ting",
-    too_close: "Uzoqlashtiring",
+    too_close: "Orqaroqqa turing",
     too_close_to_border: "Yuzingizni markazga joylashtiring",
     too_dark: "Yorug‘roq joyga o‘ting",
-    too_far: "Yaqinlashtiring",
+    too_far: "Yaqinroqqa turing",
   },
   help_button: {
     aria_label: "Yordam",

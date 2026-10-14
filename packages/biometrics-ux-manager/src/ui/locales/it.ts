@@ -34,7 +34,7 @@ export default {
     ok: "Perfetto. Rimani fermo",
     too_blurry: "Rimani fermo",
     too_bright: "Spostati in un punto con luce più soffusa",
-    too_close: "Spostati più lontano",
+    too_close: "Allontanati",
     too_close_to_border: "Centra il viso",
     too_dark: "Spostati in un punto più luminoso",
     too_far: "Avvicinati",

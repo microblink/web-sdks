@@ -34,10 +34,10 @@ export default {
     ok: "Perfect! Nu vă mișcați",
     too_blurry: "Nu vă mișcați",
     too_bright: "Mutați-vă într-un loc cu lumină mai blândă",
-    too_close: "Îndepărtați",
+    too_close: "Îndepărtați-vă",
     too_close_to_border: "Centrați-vă fața",
     too_dark: "Mutați-vă într-un loc mai luminos",
-    too_far: "Apropiați",
+    too_far: "Apropiați-vă",
   },
   help_button: {
     aria_label: "Ajutor",

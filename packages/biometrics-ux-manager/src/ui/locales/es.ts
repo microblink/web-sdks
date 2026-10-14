@@ -34,10 +34,10 @@ export default {
     ok: "Perfecto. No te muevas",
     too_blurry: "No te muevas",
     too_bright: "Muévete a un lugar con luz más suave",
-    too_close: "Alejarse",
+    too_close: "Aléjate",
     too_close_to_border: "Centra tu rostro",
     too_dark: "Muévete a un lugar más iluminado",
-    too_far: "Acercarse",
+    too_far: "Acércate",
   },
   help_button: {
     aria_label: "Ayuda",

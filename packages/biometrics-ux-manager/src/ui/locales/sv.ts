@@ -34,10 +34,10 @@ export default {
     ok: "Perfekt! Håll dig stilla",
     too_blurry: "Håll dig stilla",
     too_bright: "Flytta till en plats med mjukare ljus",
-    too_close: "Flytta längre bort",
+    too_close: "Flytta dig längre bort",
     too_close_to_border: "Centrera ansiktet",
     too_dark: "Flytta till en ljusare plats",
-    too_far: "Flytta närmare",
+    too_far: "Flytta dig närmare",
   },
   help_button: {
     aria_label: "Hjälp",

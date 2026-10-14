@@ -34,10 +34,10 @@ export default {
     ok: "Perfekt! Hold dig i ro",
     too_blurry: "Hold dig i ro",
     too_bright: "Flyt til et sted med blødere belysning",
-    too_close: "Flyt længere væk",
+    too_close: "Flyt dig længere væk",
     too_close_to_border: "Centrer dit ansigt",
     too_dark: "Flyt til et lysere sted",
-    too_far: "Flyt tættere på",
+    too_far: "Flyt dig tættere på",
   },
   help_button: {
     aria_label: "Hjælp",

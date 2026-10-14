@@ -34,10 +34,10 @@ export default {
     ok: "درست! ساکن رہیں",
     too_blurry: "ساکن رہیں",
     too_bright: "نرم روشنی والی جگہ پر جائیں",
-    too_close: "اور دور جائیں",
+    too_close: "مزید دور ہٹیں",
     too_close_to_border: "اپنے چہرے کو درمیان میں رکھیں",
     too_dark: "زیادہ روشن جگہ پر جائیں",
-    too_far: "اور قریب جائیں",
+    too_far: "مزید قریب آئیں",
   },
   help_button: {
     aria_label: "مدد",

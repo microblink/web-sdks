@@ -34,10 +34,10 @@ export default {
     ok: "Sawa kabisa! Usisonge",
     too_blurry: "Usisonge",
     too_bright: "Nenda mahali penye mwanga usio mkali sana",
-    too_close: "Songa mbali",
+    too_close: "Sogea mbali zaidi",
     too_close_to_border: "Weka uso wako katikati",
     too_dark: "Nenda mahali penye mwanga zaidi",
-    too_far: "Songa karibu",
+    too_far: "Sogea karibu zaidi",
   },
   help_button: {
     aria_label: "Usaidizi",

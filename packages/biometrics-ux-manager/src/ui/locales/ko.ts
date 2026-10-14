@@ -34,10 +34,10 @@ export default {
     ok: "좋습니다! 움직이지 마세요",
     too_blurry: "움직이지 마세요",
     too_bright: "조명이 더 부드러운 곳으로 이동하세요",
-    too_close: "더 멀리 이동",
+    too_close: "더 멀리 이동하세요",
     too_close_to_border: "얼굴을 중앙에 맞추세요",
     too_dark: "더 밝은 곳으로 이동하세요",
-    too_far: "더 가까이 이동",
+    too_far: "더 가까이 이동하세요",
   },
   help_button: {
     aria_label: "도움말",

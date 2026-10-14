@@ -34,10 +34,10 @@ export default {
     ok: "ঠিক আছে! স্থির থাকুন",
     too_blurry: "স্থির থাকুন",
     too_bright: "নরম আলো আছে এমন জায়গায় যান",
-    too_close: "আরও দূরে যান",
+    too_close: "আরও দূরে সরুন",
     too_close_to_border: "মুখ মাঝখানে রাখুন",
     too_dark: "আরও উজ্জ্বল জায়গায় যান",
-    too_far: "আরও কাছে যান",
+    too_far: "আরও কাছে আসুন",
   },
   help_button: {
     aria_label: "সহায়তা",

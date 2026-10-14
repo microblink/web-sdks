@@ -34,10 +34,10 @@ export default {
     ok: "Mükemmel! Hareketsiz durun",
     too_blurry: "Hareketsiz durun",
     too_bright: "Daha yumuşak ışıklı bir yere geçin",
-    too_close: "Uzaklaş",
+    too_close: "Uzaklaşın",
     too_close_to_border: "Yüzünüzü ortalayın",
     too_dark: "Daha aydınlık bir yere geçin",
-    too_far: "Yaklaş",
+    too_far: "Yaklaşın",
   },
   help_button: {
     aria_label: "Yardım",

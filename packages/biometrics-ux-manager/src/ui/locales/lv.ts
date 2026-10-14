@@ -34,10 +34,10 @@ export default {
     ok: "Lieliski! Nekustieties",
     too_blurry: "Nekustieties",
     too_bright: "Pārejiet uz vietu ar maigāku apgaismojumu",
-    too_close: "Pārvietot tālāk",
+    too_close: "Pavirzieties tālāk no kameras",
     too_close_to_border: "Novietojiet seju centrā",
     too_dark: "Pārejiet uz gaišāku vietu",
-    too_far: "Pārvietot tuvāk",
+    too_far: "Pavirzieties tuvāk",
   },
   help_button: {
     aria_label: "Palīdzība",

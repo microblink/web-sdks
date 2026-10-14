@@ -34,10 +34,10 @@ export default {
     ok: "በጣም ጥሩ! ሳይንቀሳቀሱ ይቆዩ",
     too_blurry: "ሳይንቀሳቀሱ ይቆዩ",
     too_bright: "ለስላሳ ብርሃን ወዳለበት ቦታ ይሂዱ",
-    too_close: "ራቅ ብለው ይሂዱ",
+    too_close: "ወደ ኋላ ይንቀሳቀሱ",
     too_close_to_border: "ፊትዎን መሃል ያድርጉ",
     too_dark: "ወደ ብሩህ ቦታ ይሂዱ",
-    too_far: "ይቅረቡ",
+    too_far: "ወደ ፊት ይንቀሳቀሱ",
   },
   help_button: {
     aria_label: "እገዛ",

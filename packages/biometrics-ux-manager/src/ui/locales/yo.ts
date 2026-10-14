@@ -34,10 +34,10 @@ export default {
     ok: "Ó dáa! Dúró jẹ́ẹ́",
     too_blurry: "Dúró jẹ́ẹ́",
     too_bright: "Gbe lọ sí ibi tí ìmọ́lẹ̀ kò le gan",
-    too_close: "Sún jìnnà síi",
+    too_close: "Sún kúrò ní kamẹ́rà",
     too_close_to_border: "Gbe ojú rẹ sí àárín",
     too_dark: "Gbe lọ sí ibi tí ìmọ́lẹ̀ pọ̀ síi",
-    too_far: "Sún mọ́ síi",
+    too_far: "Sún mọ́ kamẹ́rà",
   },
   help_button: {
     aria_label: "Ìrànlọ́wọ́",

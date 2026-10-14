@@ -34,10 +34,10 @@ export default {
     ok: "Ayos! Huwag gumalaw",
     too_blurry: "Huwag gumalaw",
     too_bright: "Lumipat sa lugar na mas banayad ang ilaw",
-    too_close: "Ilayo pa",
+    too_close: "Lumayo pa",
     too_close_to_border: "Igitna ang iyong mukha",
     too_dark: "Lumipat sa mas maliwanag na lugar",
-    too_far: "Ilapit pa",
+    too_far: "Lumapit pa",
   },
   help_button: {
     aria_label: "Tulong",

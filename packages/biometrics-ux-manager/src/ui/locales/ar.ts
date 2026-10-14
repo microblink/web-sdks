@@ -34,10 +34,10 @@ export default {
     ok: "ممتاز! ابقَ ثابتًا",
     too_blurry: "ابقَ ثابتًا",
     too_bright: "انتقل إلى مكان بإضاءة أكثر نعومة",
-    too_close: "انقل إلى موضع أبعد",
+    too_close: "ابتعد قليلًا",
     too_close_to_border: "ضع وجهك في الوسط",
     too_dark: "انتقل إلى مكان أكثر إضاءة",
-    too_far: "انقل إلى موضع أقرب",
+    too_far: "اقترب قليلًا",
   },
   help_button: {
     aria_label: "المساعدة",
