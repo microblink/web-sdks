@@ -4,6 +4,7 @@
 
 ### Patch Changes
 
+- Fixed the face guide shrinking relative to the camera video at low browser zoom levels
 - Fixed success animation not scaling properly on large monitors
 - Updated dependencies
   - @microblink/biometrics-core@1000.0.2

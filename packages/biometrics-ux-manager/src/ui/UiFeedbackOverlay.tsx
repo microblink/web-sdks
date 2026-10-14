@@ -29,6 +29,7 @@ export type UiFeedbackOverlayProps = {
   frameWidth: number;
   frameHeight: number;
   mirrorX: boolean;
+  isDesktop: boolean;
   landmarksVisible: boolean;
   showProgress: boolean;
   captureComplete: boolean;
@@ -97,15 +98,7 @@ function SuccessAnimation(props: { onComplete: () => void; anchor?: FaceAnchor }
     <div
       class="mb-bio-success-animation"
       onAnimationEnd={onAnimationEnd}
-      style={
-        props.anchor
-          ? {
-              left: props.anchor.left,
-              top: props.anchor.top,
-              transform: `translate(-50%, -50%) scale(${props.anchor.scale})`,
-            }
-          : undefined
-      }
+      style={props.anchor ? { left: props.anchor.left, top: props.anchor.top } : undefined}
     >
       <SuccessMark class="mb-bio-success-mark" aria-hidden="true" />
     </div>
@@ -240,6 +233,7 @@ export function UiFeedbackOverlay(props: UiFeedbackOverlayProps) {
       props.frameWidth,
       props.frameHeight,
       props.mirrorX,
+      props.isDesktop,
       props.faceCenter,
     ),
   );

@@ -43,6 +43,7 @@ describe("videoContainProjection", () => {
       100,
       100,
       false,
+      false,
     );
 
     expect(anchor).toMatchObject({
@@ -52,12 +53,20 @@ describe("videoContainProjection", () => {
     });
   });
 
-  test("scales the face anchor with the rendered video height on large displays", () => {
+  test("scales the face anchor proportionally with the rendered video height", () => {
     const faceBounds = { x: 0.25, y: 0.25, width: 0.5, height: 0.5 };
-    const laptop = faceAnchorPercent(faceBounds, { width: 1440, height: 810 }, 1920, 1080, false);
-    const largeMonitor = faceAnchorPercent(faceBounds, { width: 3840, height: 2160 }, 1920, 1080, false);
+    const small = faceAnchorPercent(faceBounds, { width: 960, height: 540 }, 1920, 1080, false, true);
+    const large = faceAnchorPercent(faceBounds, { width: 3840, height: 2160 }, 1920, 1080, false, true);
 
-    expect(largeMonitor?.scale).toBeCloseTo((laptop?.scale ?? 0) * (2160 / 900));
+    expect(large?.scale).toBeCloseTo((small?.scale ?? 0) * 4);
+  });
+
+  test("keeps the face anchor size independent of the video height when not scaling with video", () => {
+    const faceBounds = { x: 0.25, y: 0.25, width: 0.5, height: 0.5 };
+    const small = faceAnchorPercent(faceBounds, { width: 960, height: 540 }, 1920, 1080, false, false);
+    const large = faceAnchorPercent(faceBounds, { width: 3840, height: 2160 }, 1920, 1080, false, false);
+
+    expect(large?.scale).toBeCloseTo(small?.scale ?? 0);
   });
 
   test("projects a landmark center inside a pillarboxed video", () => {
@@ -67,6 +76,7 @@ describe("videoContainProjection", () => {
       100,
       200,
       false,
+      false,
       { x: 0.6, y: 0.4 },
     );
 
@@ -74,7 +84,9 @@ describe("videoContainProjection", () => {
     expect(anchor?.top).toBe("40%");
   });
   test("positions an animation from landmarks without a detected box", () => {
-    expect(faceAnchorPercent(undefined, { width: 100, height: 100 }, 100, 100, false, { x: 0.3, y: 0.4 })).toEqual({
+    expect(
+      faceAnchorPercent(undefined, { width: 100, height: 100 }, 100, 100, false, false, { x: 0.3, y: 0.4 }),
+    ).toEqual({
       left: "30%",
       top: "40%",
       scale: 1,

@@ -97,6 +97,7 @@ export function faceAnchorPercent(
   frameWidth: number,
   frameHeight: number,
   mirrorX: boolean,
+  scaleWithVideo: boolean,
   faceCenter?: { x: number; y: number },
 ): FaceAnchor | undefined {
   if ((!faceBounds && !faceCenter) || container.width <= 0 || container.height <= 0) {
@@ -118,7 +119,7 @@ export function faceAnchorPercent(
     : FACE_SCALE_REFERENCE_HEIGHT;
   const sizeRatio = faceHeightFraction / FACE_SCALE_REFERENCE_HEIGHT;
   const faceScale = Math.min(FACE_SCALE_MAX, Math.max(FACE_SCALE_MIN, 1 + (sizeRatio - 1) * FACE_SCALE_INFLUENCE));
-  const displayScale = Math.max(1, rect.height / FACE_VISUAL_REFERENCE_VIDEO_HEIGHT);
+  const displayScale = scaleWithVideo ? rect.height / FACE_VISUAL_REFERENCE_VIDEO_HEIGHT : 1;
 
   return { ...position, scale: faceScale * displayScale };
 }

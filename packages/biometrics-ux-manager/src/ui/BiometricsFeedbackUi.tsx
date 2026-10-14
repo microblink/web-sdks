@@ -203,6 +203,7 @@ export function BiometricsFeedbackUi<DialogKind extends string = never>(props: B
         frameWidth={state().frameSize.width}
         frameHeight={state().frameSize.height}
         mirrorX={state().mirrorX}
+        isDesktop={props.manager.isDesktop}
         landmarksVisible={!!state().landmarks}
         showProgress={showProgress()}
         captureComplete={isCaptureComplete()}
