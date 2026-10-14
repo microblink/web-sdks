@@ -34,7 +34,7 @@ export default {
     ok: "Perfect! Stay still",
     too_blurry: "Keep still",
     too_bright: "Move to a spot with softer lighting",
-    too_close: "Move further away",
+    too_close: "Move farther",
     too_close_to_border: "Centre your face",
     too_dark: "Move to a brighter spot",
     too_far: "Move closer",
@@ -63,7 +63,7 @@ export default {
         title: "Find good lighting",
       },
       obstructions: {
-        details: "Make sure nothing is covering your face. Remove sunglasses, hats or anything that blocks your eyes or facial features.",
+        details: "Make sure nothing is covering your face. Remove sunglasses, hats, or anything that blocks your eyes or facial features.",
         title: "Remove obstructions",
       },
     },
@@ -71,8 +71,8 @@ export default {
   onboarding_modal: {
     aria: "Face capture instructions",
     cancel_btn: "Cancel",
-    details: "Make sure you keep still and centre your face in the camera screen.",
-    start_btn: "Start scanning",
+    details: "Keep still and centre your face in the camera view.",
+    start_btn: "Start Scanning",
     title: "Look straight into the camera",
   },
   processing: "Processing...",
