@@ -160,6 +160,52 @@ const uxManager = await createBlinkIdUxManager(cameraManager, scanningSession);
 uxManager.destroy();
 ```
 
+### Registering Callbacks
+
+The UX Manager exposes these callback registration methods:
+
+- `addOnUiStateChangedCallback` - receives each stabilized UI state change.
+- `addOnResultCallback` - receives the final `BlinkIdScanningResult`.
+- `addOnFrameProcessCallback` - receives every processed frame and controls for advancing or timing out the current
+  scan step.
+- `addOnErrorCallback` - receives processing errors, including scan timeouts.
+- `addOnProgressCallback` - receives live progress and timeout snapshots, capped at 30 FPS.
+- `addOnDocumentFilteredCallback` - receives document class information when a detected document is rejected by the
+  active filter.
+- `addDocumentClassFilter` - registers the document class predicate used to accept or reject detected documents.
+
+Every registration returns a cleanup function. Keep each function and call it when the integration no longer needs the
+callback:
+
+```typescript
+const removeCallbacks = [
+  uxManager.addOnUiStateChangedCallback((state) => {
+    console.log("UI state:", state.key);
+  }),
+  uxManager.addOnResultCallback((result) => {
+    console.log("Scan result:", result);
+  }),
+  uxManager.addOnFrameProcessCallback((frameResult) => {
+    console.log("Frame result:", frameResult);
+  }),
+  uxManager.addOnErrorCallback((error) => {
+    console.error("Processing error:", error);
+  }),
+  uxManager.addOnProgressCallback((progress) => {
+    console.log("Scan progress:", progress);
+  }),
+  uxManager.addOnDocumentFilteredCallback((documentClassInfo) => {
+    console.log("Filtered document:", documentClassInfo);
+  }),
+  uxManager.addDocumentClassFilter((documentClassInfo) => documentClassInfo.country?.id === "usa"),
+];
+
+// Later, before discarding the manager:
+for (const removeCallback of removeCallbacks) {
+  removeCallback();
+}
+```
+
 ### Configuring Scan Timeouts
 
 BlinkID uses three timeout windows during capture:
@@ -204,6 +250,29 @@ uxManager.setTimeoutConfiguration({
   inactivityTimeoutMs: 20000,
 });
 ```
+
+Subscribe to timeout errors through `addOnErrorCallback`. Route each timeout kind explicitly when the integration needs
+different recovery behavior:
+
+```typescript
+const removeTimeoutCallback = uxManager.addOnErrorCallback((error) => {
+  switch (error) {
+    case "inactivity_timeout":
+      handleInactivityTimeout();
+      break;
+    case "scan_step_timeout":
+      handleScanStepTimeout();
+      break;
+  }
+});
+
+// Later:
+removeTimeoutCallback();
+```
+
+`inactivity_timeout` corresponds to `inactivityTimeoutMs`, while `scan_step_timeout` corresponds to
+`scanStepTimeoutMs`. `partiallySupportedBarcodeResolveTimeoutMs` does not emit an error callback: it resolves the
+partially supported barcode step automatically. Use `addOnProgressCallback` to observe that timer.
 
 ### Observing Processed Frames
 

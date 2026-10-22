@@ -104,6 +104,79 @@ ui.close();
 manager.close();
 ```
 
+## Callbacks and Subscriptions
+
+Pass lifecycle callbacks in the third argument to `createBiometricsUxManager`:
+
+- `onEvent` - receives capture workflow events and UX-only onboarding and help events.
+- `onResult` - receives the successful session result after the capture animation is ready.
+- `onError` - receives capture, camera, and post-capture processing errors.
+- `onDiagnostic` - receives diagnostic events forwarded by the session.
+- `onCaptureAnimationComplete` - runs when the manager accepts the capture animation completion signal.
+- `resolveErrorDialogKind` - optionally selects a custom error dialog kind for a session failure.
+
+Use `subscribe` separately to observe every guided UX state. The listener is called immediately with the current state,
+and the returned function removes it:
+
+```ts
+const manager = await createBiometricsUxManager(cameraManager, session, {
+  onEvent(event) {
+    console.log("UX event:", event);
+  },
+  onResult(result) {
+    console.log("Capture result:", result);
+  },
+  onError(error) {
+    console.error("Capture error:", error);
+  },
+  onDiagnostic(event) {
+    console.log("Diagnostic event:", event);
+  },
+  onCaptureAnimationComplete() {
+    console.log("Capture animation complete");
+  },
+});
+
+const removeStateSubscription = manager.subscribe((state) => {
+  console.log("UX state:", state.key);
+});
+
+// Later:
+removeStateSubscription();
+manager.close();
+```
+
+Factory callbacks stay registered for the manager's lifetime and are released by `manager.close()`.
+
+### Configuring and Subscribing to the Capture Timeout
+
+The supplied Biometrics session owns the capture timeout. When using `@microblink/biometrics`, configure it while
+starting the session. The default is 60 seconds; set it to `null` to disable it:
+
+```ts
+const session = sdk.startSession({ captureTimeoutMs: 60_000 });
+```
+
+Register timeout-specific handling through `onEvent` or `onError` when creating the manager:
+
+```ts
+const manager = await createBiometricsUxManager(cameraManager, session, {
+  onEvent(event) {
+    if (event.kind === "captureTimeout") {
+      handleCaptureTimeoutEvent();
+    }
+  },
+  onError(error) {
+    if (error.code === "CAPTURE_TIMEOUT") {
+      handleCaptureTimeoutError(error);
+    }
+  },
+});
+```
+
+The `captureTimeout` event reports that the timer expired. The `CAPTURE_TIMEOUT` error reports the resulting retryable
+capture failure. Help pauses the active timer, and closing Help resumes it after frame capture restarts.
+
 `showHelpButton` defaults to `true`. Set it to `false` to hide both the help
 button and its automatic tooltip nudge.
 
