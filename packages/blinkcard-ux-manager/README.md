@@ -133,6 +133,40 @@ You can use `@microblink/blinkcard-ux-manager` directly in your project for adva
 
 See the example apps in the `apps/examples` directory in the GitHub repository for usage details.
 
+### Registering callbacks
+
+The UX Manager exposes four callback registration methods:
+
+- `addOnUiStateChangedCallback` - receives each stabilized UI state change.
+- `addOnResultCallback` - receives the final `BlinkCardScanningResult`.
+- `addOnFrameProcessCallback` - receives every processed frame result.
+- `addOnErrorCallback` - receives processing errors, including scan timeouts.
+
+Every registration returns a cleanup function. Keep each function and call it when the integration no longer needs the
+callback:
+
+```typescript
+const removeCallbacks = [
+  uxManager.addOnUiStateChangedCallback((state) => {
+    console.log("UI state:", state.key);
+  }),
+  uxManager.addOnResultCallback((result) => {
+    console.log("Scan result:", result);
+  }),
+  uxManager.addOnFrameProcessCallback((frameResult) => {
+    console.log("Frame result:", frameResult);
+  }),
+  uxManager.addOnErrorCallback((error) => {
+    console.error("Processing error:", error);
+  }),
+];
+
+// Later, before discarding the manager:
+for (const removeCallback of removeCallbacks) {
+  removeCallback();
+}
+```
+
 ### Timeout configuration
 
 BlinkCard uses two independent capture timers: a 10-second inactivity timeout that restarts after each stabilized UI-state
@@ -155,7 +189,27 @@ uxManager.getTimeoutConfiguration();
 uxManager.setTimeoutConfiguration({ inactivityTimeoutMs: null });
 ```
 
-Timeouts are reported through `addOnErrorCallback` as `"inactivity_timeout"` or `"scan_step_timeout"`.
+Timeouts are reported through `addOnErrorCallback`. Route each timeout kind explicitly when the integration needs
+different recovery behavior:
+
+```typescript
+const removeTimeoutCallback = uxManager.addOnErrorCallback((error) => {
+  switch (error) {
+    case "inactivity_timeout":
+      handleInactivityTimeout();
+      break;
+    case "scan_step_timeout":
+      handleScanStepTimeout();
+      break;
+  }
+});
+
+// Later:
+removeTimeoutCallback();
+```
+
+`inactivity_timeout` corresponds to `inactivityTimeoutMs`, while `scan_step_timeout` corresponds to
+`scanStepTimeoutMs`.
 
 ## Development
 

@@ -153,6 +153,77 @@ const uxManager = await createBlinkIdVerifyUxManager(cameraManager, scanningSess
 uxManager.destroy();
 ```
 
+### Registering Callbacks
+
+The UX Manager exposes these callback registration methods:
+
+- `addOnUiStateChangedCallback` - receives each stabilized UI state change.
+- `addOnCaptureCompletedCallback` - receives a lazy `CaptureResultResolver` after capture succeeds and the success
+  animation completes.
+- `verifyOnScanningCompletion` - submits the capture to the Verify API and registers separate `onSuccess` and `onError`
+  callbacks for the response.
+- `addOnFrameProcessCallback` - receives every processed frame result.
+- `addOnErrorCallback` - receives local scanning and result-retrieval errors, including the scanning timeout. Verify API
+  failures are delivered to `verifyOnScanningCompletion.onError` instead.
+
+Every registration returns a cleanup function. Keep each function and call it when the integration no longer needs the
+callback:
+
+```typescript
+const removeCallbacks = [
+  uxManager.addOnUiStateChangedCallback((state) => {
+    console.log("UI state:", state.key);
+  }),
+  uxManager.addOnCaptureCompletedCallback(async (resolver) => {
+    console.log("Capture result:", await resolver.getCaptureResult());
+  }),
+  uxManager.verifyOnScanningCompletion({
+    onSuccess: (result) => {
+      console.log("Verify result:", result);
+    },
+    onError: (error) => {
+      console.error("Verify request failed:", error);
+    },
+  }),
+  uxManager.addOnFrameProcessCallback((frameResult) => {
+    console.log("Frame result:", frameResult);
+  }),
+  uxManager.addOnErrorCallback((error) => {
+    console.error("Processing error:", error);
+  }),
+];
+
+// Later, before discarding the manager:
+for (const removeCallback of removeCallbacks) {
+  removeCallback();
+}
+```
+
+### Configuring and Subscribing to the Scanning Timeout
+
+BlinkID Verify uses a 10-second scanning timeout by default. It restarts as scanning advances through UI states and when
+frame capture resumes. Set the duration in milliseconds, or pass `null` to disable it:
+
+```typescript
+uxManager.setTimeoutDuration(15_000);
+uxManager.getTimeoutDuration(); // 15000
+```
+
+Register the timeout-specific callback by filtering `"timeout"` in `addOnErrorCallback`:
+
+```typescript
+const removeTimeoutCallback = uxManager.addOnErrorCallback((error) => {
+  if (error === "timeout") {
+    handleScanningTimeout();
+  }
+});
+
+// Later:
+removeTimeoutCallback();
+```
+
+The manager stops frame capture and resets the scanning session when this timeout fires.
+
 ### Inspecting UI State
 
 Two getters provide visibility into the current UI state:
