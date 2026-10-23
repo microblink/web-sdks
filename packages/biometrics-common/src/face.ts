@@ -96,6 +96,8 @@ export type FaceCaptureResult = {
   livenessFrames: LivenessFrame[];
   livenessBatchSignature?: CaptureSignature;
   livenessMetadata?: string;
+  signatureVersion?: string;
+  captureFrameMetadata?: string;
   details?: {
     boundingBox?: BoundingBox;
     landmarks?: FaceLandmarks;

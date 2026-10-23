@@ -35,7 +35,10 @@ export interface FaceAnalysisSessionSettings {
   facePositionThresholds?: FacePositionThresholds;
   lightingThresholds?: LightingThresholds;
   landmarkStabilityThresholds?: LandmarkStabilityThresholds;
-  /** Number of liveness frames returned by the engine. Must be an integer from 1 to 12. */
+  /**
+   * Number of liveness frames returned by the engine. Must be an integer from 1 to 12. Omit it to use the engine
+   * default.
+   */
   livenessFramesCount?: number;
 }
 
@@ -45,7 +48,7 @@ export interface ResolvedFaceAnalysisSessionSettings {
   facePositionThresholds: ResolvedFacePositionThresholds;
   lightingThresholds: ResolvedLightingThresholds;
   landmarkStabilityThresholds: ResolvedLandmarkStabilityThresholds;
-  livenessFramesCount: number;
+  livenessFramesCount?: number;
 }
 
 export const defaultFaceAnalysisSessionSettings: ResolvedFaceAnalysisSessionSettings = {
@@ -69,7 +72,6 @@ export const defaultFaceAnalysisSessionSettings: ResolvedFaceAnalysisSessionSett
     differenceThreshold: 0.13,
     sharpnessWeight: 0,
   },
-  livenessFramesCount: 1,
 };
 
 const MAXIMUM_INPUT_EDGE = 65_535;
@@ -101,12 +103,18 @@ export function resolveFaceAnalysisSessionSettings(
     facePositionThresholds: withDefaults(base.facePositionThresholds, settings.facePositionThresholds),
     lightingThresholds: withDefaults(base.lightingThresholds, settings.lightingThresholds),
     landmarkStabilityThresholds: withDefaults(base.landmarkStabilityThresholds, settings.landmarkStabilityThresholds),
-    livenessFramesCount: settings.livenessFramesCount ?? base.livenessFramesCount,
   };
+
+  // The engine applies its own default only when the key is absent, so an unset count must not be sent as undefined.
+  const livenessFramesCount = settings.livenessFramesCount ?? base.livenessFramesCount;
+
+  if (livenessFramesCount !== undefined) {
+    resolved.livenessFramesCount = livenessFramesCount;
+    assertIntegerInRange("livenessFramesCount", livenessFramesCount, 1, MAXIMUM_LIVENESS_FRAMES_COUNT);
+  }
 
   assertIntegerInRange("maximumInputLongEdge", resolved.maximumInputLongEdge, 1, MAXIMUM_INPUT_EDGE);
   assertIntegerInRange("maximumInputShortEdge", resolved.maximumInputShortEdge, 1, MAXIMUM_INPUT_EDGE);
-  assertIntegerInRange("livenessFramesCount", resolved.livenessFramesCount, 1, MAXIMUM_LIVENESS_FRAMES_COUNT);
 
   if (resolved.maximumInputLongEdge < resolved.maximumInputShortEdge) {
     throw new TypeError("maximumInputLongEdge must be greater than or equal to maximumInputShortEdge.");

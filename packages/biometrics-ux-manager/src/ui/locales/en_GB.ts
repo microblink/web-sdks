@@ -71,8 +71,8 @@ export default {
   onboarding_modal: {
     aria: "Face capture instructions",
     cancel_btn: "Cancel",
-    details: "Keep still and centre your face in the camera view.",
-    start_btn: "Start Scanning",
+    details: "Make sure you keep still and centre your face in the camera screen.",
+    start_btn: "Start scanning",
     title: "Look straight into the camera",
   },
   processing: "Processing...",

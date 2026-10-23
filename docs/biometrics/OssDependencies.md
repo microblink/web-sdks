@@ -114,7 +114,7 @@ This report includes:
 | proxy-memoize | 3.0.1 | MIT | Daishi Kato | [Link](https://github.com/dai-shi/proxy-memoize#readme) |
 | rad-event-listener | 0.2.4 | MIT | N/A | [Link](https://github.com/JLarky/rad-event-listener#readme) |
 | rvfc-polyfill | 1.0.7 | GPL-3.0 | ThaUnknown | [Link](https://github.com/ThaUnknown/rvfc-polyfill#readme) |
-| seroval | 1.5.6 | MIT | Alexis Munsayac | [Link](https://github.com/lxsmnsyc/seroval/tree/main/packages/seroval) |
+| seroval | 1.6.3 | MIT | Alexis Munsayac | [Link](https://github.com/lxsmnsyc/seroval/tree/main/packages/seroval) |
 | seroval-plugins | 1.5.6 | MIT | Alexis Munsayac | [Link](https://github.com/lxsmnsyc/seroval/tree/main/packages/plugins) |
 | solid-js | 1.9.14 | MIT | Ryan Carniato | [Link](https://solidjs.com) |
 | solid-zustand | 2.0.0 | MIT | N/A | [Link](https://github.com/wobsoriano/solid-zustand#readme) |

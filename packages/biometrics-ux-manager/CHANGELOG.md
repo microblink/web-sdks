@@ -1,5 +1,12 @@
 # @microblink/biometrics-ux-manager
 
+## 1000.0.3
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/biometrics-core@1000.0.3
+
 ## 1000.0.2
 
 ### Patch Changes

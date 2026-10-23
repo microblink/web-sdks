@@ -1,6 +1,6 @@
 {
   "name": "@microblink/biometrics-worker",
-  "version": "1000.0.2",
+  "version": "1000.0.3",
   "private": true,
   "files": [
     "dist",

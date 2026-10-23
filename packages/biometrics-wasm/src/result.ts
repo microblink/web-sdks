@@ -148,6 +148,8 @@ export type WasmSuccessPayload = {
   livenessFrames?: WasmLivenessFrame[];
   /** Optional signature covering the liveness frame batch. */
   livenessBatchSignature?: ArrayBuffer;
+  /** Signature scheme of the frame signatures. Empty when the capture is not signed. */
+  signatureVersion: string;
 };
 
 /**
