@@ -50,6 +50,8 @@ device discovery and permission handling are unreliable there; see
   when available;
 - `livenessFrames`: ordered engine-produced liveness frames as JPEG bytes;
 - `livenessBatchSignature`: optional engine batch signature;
+- `signatureVersion`: signature scheme of the signed frames;
+- `captureFrameMetadata`: JSON metadata for the signed `captureFrame`;
 - `traceId` and `sessionNumber`: session identifiers.
 
 When the native engine does not expose capture or liveness frames, `captureFrame` is

@@ -253,6 +253,8 @@ Every guided and headless capture returns `FaceCaptureResult`:
 - `captureFrame` is the optional engine-produced JPEG frame for face matching.
 - `livenessFrames` contains ordered engine-produced JPEG frames for liveness checks.
 - `livenessBatchSignature` contains the optional batch signature.
+- `signatureVersion` is the signature scheme of the signed frames.
+- `captureFrameMetadata` is the JSON metadata for the signed `captureFrame`.
 
 Frame and batch signatures are present only when the native engine produces them. When the engine does not produce capture or liveness frames, `captureFrame` is undefined and `livenessFrames` is empty.
 

@@ -1,5 +1,13 @@
 # @microblink/biometrics-core
 
+## 1000.0.3
+
+### Patch Changes
+
+- Added missing `signatureVersion` and `captureFrameMetadata` to `FaceCaptureResult`.
+- Fixed liveness frame counts not being propagated properly.
+- Fixed liveness frame `timestamp` values to match their capture time.
+
 ## 1000.0.2
 
 ### Patch Changes

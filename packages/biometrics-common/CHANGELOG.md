@@ -1,5 +1,7 @@
 # @microblink/biometrics-common
 
+## 1000.0.3
+
 ## 1000.0.2
 
 ## 1000.0.1

@@ -24,6 +24,12 @@ Complete result produced by a face capture session.
 
 ***
 
+### captureFrameMetadata?
+
+> `optional` **captureFrameMetadata?**: `string`
+
+***
+
 ### details?
 
 > `optional` **details?**: `object`
@@ -71,6 +77,12 @@ Complete result produced by a face capture session.
 ### sessionNumber
 
 > **sessionNumber**: `number`
+
+***
+
+### signatureVersion?
+
+> `optional` **signatureVersion?**: `string`
 
 ***
 

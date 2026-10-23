@@ -59,6 +59,7 @@ export type AnalysisResult = {
     captureFrame: CaptureFrame;
     livenessFrames: LivenessFrame[];
     livenessBatchSignature?: CaptureSignature;
+    signatureVersion?: string;
   };
 };
 
@@ -221,7 +222,7 @@ function mapLivenessFrames(frames: NonNullable<WasmSuccessPayload["livenessFrame
     mimeType: frame.mimeType,
     frameNumber: frame.frameNumber,
     captureTimeMs: frame.captureTimeMs,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date(frame.captureTimeMs).toISOString(),
     signature: mapCaptureSignature(frame.signature),
     imgQuality: frame.imgQuality,
   }));
@@ -236,6 +237,7 @@ function mapEngineFrames(success: WasmSuccessPayload | undefined): AnalysisResul
     captureFrame: mapCaptureFrame(success.captureFrame),
     livenessFrames: mapLivenessFrames(success.livenessFrames),
     livenessBatchSignature: mapCaptureSignature(success.livenessBatchSignature),
+    signatureVersion: success.signatureVersion || undefined,
   };
 }
 

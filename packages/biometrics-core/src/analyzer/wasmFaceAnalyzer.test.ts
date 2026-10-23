@@ -544,6 +544,7 @@ describe("WasmFaceAnalyzer", () => {
     expect(result.engineFrames?.captureFrame?.signature?.signature).toBe(signatureBytes);
     expect(result.engineFrames?.livenessFrames[0]?.data).toBe(livenessBytes);
     expect(result.engineFrames?.livenessFrames[0]?.mimeType).toBe("image/jpeg");
+    expect(result.engineFrames?.livenessFrames[0]?.timestamp).toBe("1970-01-01T00:00:01.016Z");
   });
 
   it("maps image-data errors to TOO_BLURRY feedback", async () => {

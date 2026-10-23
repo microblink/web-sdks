@@ -39,6 +39,10 @@ describe("resolveFaceAnalysisSessionSettings", () => {
     expect(() => resolveFaceAnalysisSessionSettings(settings)).toThrow();
   });
 
+  it("leaves the liveness frames count to the engine when it is not set", () => {
+    expect(resolveFaceAnalysisSessionSettings()).not.toHaveProperty("livenessFramesCount");
+  });
+
   it.each([0, 1.5, 13])("rejects invalid liveness frames count %s", (livenessFramesCount) => {
     expect(() => resolveFaceAnalysisSessionSettings({ livenessFramesCount })).toThrow();
   });
