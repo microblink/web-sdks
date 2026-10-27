@@ -26,9 +26,9 @@ Production consumer bundle sizes for `@microblink/biometrics-ux-manager`:
 
 | Entrypoint | Minified  | Gzip     |
 | ---------- | --------- | -------- |
-| `root`     | 107.93 kB | 28.89 kB |
-| `/core`    | 32.19 kB  | 8.07 kB  |
-| `/ui`      | 75.49 kB  | 20.98 kB |
+| `root`     | 108.34 kB | 28.97 kB |
+| `/core`    | 32.67 kB  | 8.22 kB  |
+| `/ui`      | 75.43 kB  | 20.94 kB |
 
 External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
 

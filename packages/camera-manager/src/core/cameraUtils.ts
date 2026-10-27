@@ -5,6 +5,7 @@
 import { stripIndents } from "common-tags";
 
 import { Camera, FacingMode, VideoResolutionName, videoResolutions } from "./Camera";
+import { nativeCaptureHooks, type CameraCaptureHooks } from "./CameraCaptureHooks";
 import { CameraError } from "./cameraError";
 import { isBackCameraName, isFrontCameraName } from "./cameraNames";
 import { backDualWideCameraLocalizations } from "./iosCameraNames";
@@ -15,11 +16,9 @@ import { asError, isIOS } from "./utils";
  *
  * @returns Resolves when the camera permission is granted
  */
-export const askForCameraPermission = async () => {
+export const askForCameraPermission = async (captureHooks: CameraCaptureHooks = nativeCaptureHooks) => {
   try {
-    const mediaStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-    });
+    const mediaStream = await captureHooks.getUserMedia(navigator.mediaDevices, { video: true });
 
     closeStreamTracks(mediaStream);
   } catch (error) {
@@ -36,7 +35,7 @@ export const askForCameraPermission = async () => {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/InputDeviceInfo for more details.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/enumerateDevices for more details.
  */
-export const obtainVideoInputDevices = async () => {
+export const obtainVideoInputDevices = async (captureHooks: CameraCaptureHooks = nativeCaptureHooks) => {
   if (!isSecureContext) {
     throw new Error(stripIndents`
       Cameras can only be used in a secure context:
@@ -44,7 +43,7 @@ export const obtainVideoInputDevices = async () => {
     `);
   }
 
-  await askForCameraPermission();
+  await askForCameraPermission(captureHooks);
 
   const allDevices = await navigator.mediaDevices.enumerateDevices();
 
@@ -254,11 +253,13 @@ export const findIdealCamera = async (
  * @param cameras - The input device info to create cameras from.
  * @returns The created cameras.
  */
-export function createCameras(cameras: InputDeviceInfo[]) {
+export function createCameras(cameras: InputDeviceInfo[], captureHooks: CameraCaptureHooks = nativeCaptureHooks) {
   const camerasWithStream: Camera[] = [];
 
   for (const device of cameras) {
     const camera = new Camera(device);
+    camera.setCaptureHooks(captureHooks);
+
     if (camera !== null) {
       camerasWithStream.push(camera);
     }

@@ -4,6 +4,8 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { createMockInputDeviceInfo } from "../media-mock/createInputDeviceInfo";
 import { Camera, VideoResolutionName, videoResolutions } from "./Camera";
+import { nativeCaptureHooks, type CameraCaptureHooks } from "./CameraCaptureHooks";
+import { askForCameraPermission } from "./cameraUtils";
 
 // Mock getUserMedia
 const mockGetUserMedia = vi.fn();
@@ -236,4 +238,33 @@ describe("Camera resolution fallback", () => {
     expect(videoResolutions["1080p"]).toEqual({ width: 1920, height: 1080 });
     expect(videoResolutions["4k"]).toEqual({ width: 3840, height: 2160 });
   });
+});
+
+test("acquires camera streams and reads tracks through installed hooks", async () => {
+  mockGetUserMedia.mockClear();
+
+  const stream = createMockMediaStream();
+  const getUserMedia = vi.fn<CameraCaptureHooks["getUserMedia"]>().mockResolvedValue(stream);
+  const getVideoTracks = vi.fn<CameraCaptureHooks["getVideoTracks"]>((input) => input.getVideoTracks());
+  const camera = new Camera(createMockInputDeviceInfo({ label: "Test Camera" }));
+
+  camera.setCaptureHooks({ ...nativeCaptureHooks, getUserMedia, getVideoTracks });
+
+  expect(await camera.startStream("1080p")).toBe(stream);
+  expect(camera.getVideoTrack()).toBe(stream.getVideoTracks()[0]);
+  expect(getUserMedia).toHaveBeenCalledWith(
+    navigator.mediaDevices,
+    expect.objectContaining({ video: expect.any(Object) }),
+  );
+  expect(getVideoTracks).toHaveBeenCalledWith(stream);
+  expect(mockGetUserMedia).not.toHaveBeenCalled();
+});
+
+test("requests permission through installed acquisition hooks", async () => {
+  const stream = new MediaStream();
+  const getUserMedia = vi.fn<CameraCaptureHooks["getUserMedia"]>().mockResolvedValue(stream);
+
+  await askForCameraPermission({ ...nativeCaptureHooks, getUserMedia });
+
+  expect(getUserMedia).toHaveBeenCalledWith(navigator.mediaDevices, { video: true });
 });

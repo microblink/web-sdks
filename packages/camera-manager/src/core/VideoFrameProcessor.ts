@@ -1,5 +1,7 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import { nativeCaptureHooks, type CameraCaptureHooks } from "./CameraCaptureHooks";
+
 export type CanvasRenderingMode = "2d" | "webgl2";
 export type ImageSource = HTMLVideoElement | HTMLCanvasElement | ImageBitmap;
 
@@ -51,6 +53,7 @@ export class VideoFrameProcessor {
   #cachedHeight = 0;
   #canvasRenderingMode: CanvasRenderingMode;
   #requiredPackAlignment = 4;
+  #captureHooks = nativeCaptureHooks;
 
   /**
    * Creates a new VideoFrameProcessor.
@@ -81,6 +84,15 @@ export class VideoFrameProcessor {
     } else {
       throw new Error(`Unsupported rendering context: ${canvasRenderingMode as CanvasRenderingMode}`);
     }
+  }
+
+  /**
+   * Installs optional hooks for subsequent frame extraction.
+   *
+   * @internal
+   */
+  setCaptureHooks(hooks: CameraCaptureHooks): void {
+    this.#captureHooks = hooks;
   }
 
   /** Initializes the 2D canvas context. */
@@ -207,7 +219,9 @@ export class VideoFrameProcessor {
    * @returns The image data.
    */
   #getImageData2d(source: ImageSource, area?: ExtractionArea): ImageData {
-    if (!this.#context2d) throw new Error("CanvasRenderingContext2D is missing!");
+    if (!this.#context2d) {
+      throw new Error("CanvasRenderingContext2D is missing!");
+    }
 
     const fullWidth = "videoWidth" in source ? source.videoWidth : source.width;
     const fullHeight = "videoHeight" in source ? source.videoHeight : source.height;
@@ -221,9 +235,16 @@ export class VideoFrameProcessor {
     // Resize canvas if source dimensions change, or if the area is different
     this.#updateCanvasSize(w, h);
 
-    // Draw source and extract pixels
-    this.#context2d.drawImage(source, x, y, w, h);
-    return this.#context2d.getImageData(0, 0, w, h);
+    const context = this.#context2d;
+
+    return this.#captureHooks.extractFrame(context, source, (operations) => {
+      const drawImage = operations.drawImage ?? context.drawImage.bind(context);
+      const getImageData = operations.getImageData ?? context.getImageData.bind(context);
+
+      drawImage(source, x, y, w, h);
+
+      return getImageData(0, 0, w, h);
+    });
   }
 
   /**
@@ -234,10 +255,27 @@ export class VideoFrameProcessor {
    * @returns The image data.
    */
   #getImageDataWebGl2(source: ImageSource, area?: ExtractionArea): ImageData {
-    if (!this.#contextWebGl2 || !this.#webGl2Texture || !this.#webGl2Framebuffer) {
+    const gl = this.#contextWebGl2;
+
+    if (!gl || !this.#webGl2Texture || !this.#webGl2Framebuffer) {
       throw new Error("WebGL2 context or resources are missing!");
     }
 
+    return this.#captureHooks.extractFrame(gl, source, (operations) => {
+      const texImage2D = operations.texImage2D ?? gl.texImage2D.bind(gl);
+      const readPixels = operations.readPixels ?? gl.readPixels.bind(gl);
+
+      return this.#extractImageDataWebGl2(gl, source, area, texImage2D, readPixels);
+    });
+  }
+
+  #extractImageDataWebGl2(
+    gl: WebGL2RenderingContext,
+    source: ImageSource,
+    area: ExtractionArea | undefined,
+    texImage2D: WebGL2RenderingContext["texImage2D"],
+    readPixels: WebGL2RenderingContext["readPixels"],
+  ): ImageData {
     const fullWidth = "videoWidth" in source ? source.videoWidth : source.width;
     const fullHeight = "videoHeight" in source ? source.videoHeight : source.height;
 
@@ -266,15 +304,14 @@ export class VideoFrameProcessor {
     }
 
     // Draw source to texture
-    const gl = this.#contextWebGl2;
     gl.bindTexture(gl.TEXTURE_2D, this.#webGl2Texture);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.#webGl2Framebuffer);
 
     // Read pixels
     try {
       gl.pixelStorei(gl.PACK_ALIGNMENT, this.#requiredPackAlignment);
-      gl.readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, this.#buffer);
+      readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, this.#buffer);
     } catch (error) {
       // Try fallback to alignment=1 if not already using it
       if (this.#requiredPackAlignment !== 1) {
@@ -283,13 +320,14 @@ export class VideoFrameProcessor {
 
         // Create fresh buffer since the previous one may be in an undefined state
         const newBuffer = new Uint8ClampedArray(requiredSize);
-        gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, newBuffer);
+        readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, newBuffer);
 
         // Use the new buffer
         this.#buffer = newBuffer;
 
         return new ImageData(newBuffer, w, h);
       }
+
       throw error;
     }
 

@@ -170,6 +170,10 @@ class BiometricsCapture implements BiometricsCaptureClient {
     }
   }
 
+  public getCameraCaptureHooks() {
+    return this.#analyzer.getCameraCaptureHooks();
+  }
+
   public startSession(settings?: FaceAnalysisSessionSettings): Promise<BiometricsCaptureSessionImpl> {
     this.#ensureInitialized();
 

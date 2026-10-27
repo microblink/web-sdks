@@ -1,9 +1,10 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import { useFocusVisible } from "@ark-ui/solid";
 import type { BiometricsUxManager } from "@microblink/biometrics-ux-manager/core";
 import type { CameraManagerComponent } from "@microblink/camera-manager/ui";
 import { renderWithOwner } from "@microblink/shared-components/renderWithOwner";
-import { createEffect } from "solid-js";
+import { createEffect, createRoot } from "solid-js";
 
 import { BiometricsFeedbackUi, type BiometricsFeedbackUiManager } from "./BiometricsFeedbackUi";
 import type { BiometricsErrorDialogs } from "./errorDialogs";
@@ -38,6 +39,24 @@ export type BiometricsFeedbackUiHandle = {
 
 export type BiometricsFeedbackUiController<DialogKind extends string = never> =
   BiometricsFeedbackUiManager<DialogKind> & Pick<BiometricsUxManager, "close">;
+
+/**
+ * Sets up the global focus tracking once when the module loads, so later UI mounts do not change browser prototypes
+ * while a capture runs.
+ */
+function prepareBiometricsFeedbackUi(): void {
+  const dispose = createRoot((disposeRoot) => {
+    useFocusVisible();
+
+    return disposeRoot;
+  });
+
+  dispose();
+}
+
+if (typeof document !== "undefined") {
+  prepareBiometricsFeedbackUi();
+}
 
 function LocalizedFeedbackUi<DialogKind extends string>(props: {
   manager: BiometricsFeedbackUiController<DialogKind>;

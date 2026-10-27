@@ -2,6 +2,7 @@
 
 import type { BiometricsCaptureSession, CaptureFaceConfig } from "@microblink/biometrics-core";
 import { BiometricsError, type FaceCaptureResult, type FaceLandmarks } from "@microblink/biometrics-core";
+import type { CameraCaptureHooks } from "@microblink/camera-manager/core";
 import { describe, expect, it, vi } from "vitest";
 
 import type { BiometricsAnalytics } from "./BiometricsAnalytics";
@@ -112,6 +113,24 @@ describe("BiometricsSession", () => {
       sessionNumber: 2,
     });
     expect(createCaptureSession).toHaveBeenCalledTimes(2);
+  });
+
+  it("provides camera capture hooks while the capture session is still starting", () => {
+    const hooks: CameraCaptureHooks = {
+      getUserMedia: vi.fn(),
+      getVideoTracks: vi.fn(),
+      setSource: vi.fn(),
+      extractFrame: vi.fn(),
+    };
+    const session = new BiometricsSessionImpl(
+      () => new Promise(() => undefined),
+      {},
+      undefined,
+      undefined,
+      () => hooks,
+    );
+
+    expect(session.getCameraCaptureHooks()).toBe(hooks);
   });
 
   it("captures a face and publishes capture events", async () => {

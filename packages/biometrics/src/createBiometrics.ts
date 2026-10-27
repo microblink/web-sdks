@@ -46,6 +46,7 @@ class BiometricsSdkImpl implements BiometricsSdk {
       config,
       this.#analytics,
       this.subscribeDiagnostic,
+      () => this.#capture.getCameraCaptureHooks(),
     );
   }
 

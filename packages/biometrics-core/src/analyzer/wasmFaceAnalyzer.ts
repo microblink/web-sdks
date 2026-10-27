@@ -25,7 +25,12 @@ import {
   resolveFaceAnalysisSessionSettings,
   SessionError as WasmSessionError,
 } from "@microblink/biometrics-wasm";
-import { createCaptureRuntime, type CaptureRuntime } from "@microblink/biometrics-wasm/browser";
+import {
+  createCaptureRuntime,
+  createCaptureLifecycle,
+  type CaptureRuntime,
+  type CaptureLifecycle,
+} from "@microblink/biometrics-wasm/browser";
 import type { ProgressStatusCallback } from "@microblink/biometrics-worker";
 import { proxy } from "comlink";
 
@@ -243,6 +248,7 @@ function mapEngineFrames(success: WasmSuccessPayload | undefined): AnalysisResul
 
 export class WasmFaceAnalyzer {
   private worker?: WorkerBundle;
+  private readonly captureLifecycle: CaptureLifecycle;
   private faceAnalysis?: FaceAnalysisSessionSettings;
   private resolvedSessionSettings: ResolvedFaceAnalysisSessionSettings;
   private imageOrigin: CaptureAnalyzerInitConfig["imageOrigin"] = "canvas2d";
@@ -253,6 +259,7 @@ export class WasmFaceAnalyzer {
   private initializationAttempt?: AnalyzerInitializationAttempt;
 
   constructor(config: WasmFaceAnalyzerConfig = {}) {
+    this.captureLifecycle = createCaptureLifecycle();
     this.faceAnalysis = config.faceAnalysis;
     this.resolvedSessionSettings = resolveFaceAnalysisSessionSettings();
     this.licenseKey = config.licenseKey;
@@ -502,6 +509,10 @@ export class WasmFaceAnalyzer {
     }
   }
 
+  getCameraCaptureHooks() {
+    return this.captureLifecycle.hooks;
+  }
+
   createProcessor(options: {
     source?: { video: HTMLVideoElement; track: MediaStreamTrack };
     mode: "single" | "engineFrames";
@@ -513,7 +524,11 @@ export class WasmFaceAnalyzer {
     }
 
     const ready = this.sessionReady;
-    const runtime = createCaptureRuntime({ ...options, transport: bundle.remote });
+    const runtime = createCaptureRuntime({
+      ...options,
+      transport: bundle.remote,
+      captureLifecycle: this.captureLifecycle,
+    });
 
     return {
       analyze: (image) => this.#analyzeFace(image, runtime, ready),

@@ -9,6 +9,7 @@ import type {
   FaceLandmarks,
   WasmVariant,
 } from "@microblink/biometrics-common";
+import type { CameraCaptureHooks } from "@microblink/biometrics-wasm/browser";
 import type { ProgressStatusCallback } from "@microblink/biometrics-worker";
 
 import type { UnifiedFeedback } from "../analyzer/feedback";
@@ -178,6 +179,8 @@ export type BiometricsCaptureSession = {
 /** Runtime capture client returned by `createBiometricsCapture`. */
 export type BiometricsCaptureClient = {
   startSession(settings?: FaceAnalysisSessionSettings): Promise<BiometricsCaptureSession>;
+  /** @internal */
+  getCameraCaptureHooks(): CameraCaptureHooks;
   close(): Promise<void>;
   ping(pinglet: Ping): Promise<void>;
   sendPinglets(): Promise<void>;

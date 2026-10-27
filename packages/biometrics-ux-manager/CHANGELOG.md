@@ -1,5 +1,14 @@
 # @microblink/biometrics-ux-manager
 
+## 1000.0.4
+
+### Patch Changes
+
+- Improved capture lifecycle hooks.
+- Updated dependencies
+  - @microblink/camera-manager@8.2.0
+  - @microblink/biometrics-core@1000.0.4
+
 ## 1000.0.3
 
 ### Patch Changes

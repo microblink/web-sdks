@@ -2,7 +2,7 @@
 
 import { getDeviceInfo, type DeviceInfo } from "@microblink/biometrics-core";
 import { BiometricsError, ConfigurationError, type BiometricsDiagnosticEvent } from "@microblink/biometrics-core";
-import type { CameraManager, FrameCaptureCallback } from "@microblink/camera-manager/core";
+import { CameraManager, type CameraCaptureHooks, type FrameCaptureCallback } from "@microblink/camera-manager/core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -179,6 +179,7 @@ function createCameraManagerMock() {
 
   const cameraManager = {
     userInitiatedAbort: false,
+    setCaptureHooks: vi.fn().mockResolvedValue(undefined),
     startFrameCapture,
     stopFrameCapture,
     reset,
@@ -495,6 +496,59 @@ describe("BiometricsUxManager", () => {
 
     await manager.closeHelp();
     expect(session.setCaptureTimeoutPaused).toHaveBeenCalledTimes(2);
+  });
+
+  it("acquires the camera through the capture hooks of the session", async () => {
+    const getUserMedia = vi.fn<CameraCaptureHooks["getUserMedia"]>().mockResolvedValue(new MediaStream());
+    const hooks: CameraCaptureHooks = {
+      getUserMedia,
+      getVideoTracks: (stream) => stream.getVideoTracks(),
+      setSource: (video, stream) => {
+        video.srcObject = stream;
+      },
+      extractFrame: (_context, _source, extract) => extract({}),
+    };
+    vi.spyOn(navigator.mediaDevices, "enumerateDevices").mockResolvedValue([]);
+    const session = createSessionMock();
+    const cameraManager = new CameraManager();
+
+    try {
+      await createBiometricsUxManager(cameraManager, { ...session.session, getCameraCaptureHooks: () => hooks });
+      await cameraManager.refreshCameraDevices();
+
+      expect(getUserMedia).toHaveBeenCalledWith(navigator.mediaDevices, { video: true });
+    } finally {
+      cameraManager.reset();
+    }
+  });
+
+  it("acquires the camera through the browser when a later session has no capture hooks", async () => {
+    const hookGetUserMedia = vi.fn<CameraCaptureHooks["getUserMedia"]>().mockResolvedValue(new MediaStream());
+    const hooks: CameraCaptureHooks = {
+      getUserMedia: hookGetUserMedia,
+      getVideoTracks: (stream) => stream.getVideoTracks(),
+      setSource: (video, stream) => {
+        video.srcObject = stream;
+      },
+      extractFrame: (_context, _source, extract) => extract({}),
+    };
+    const browserGetUserMedia = vi.spyOn(navigator.mediaDevices, "getUserMedia").mockResolvedValue(new MediaStream());
+    vi.spyOn(navigator.mediaDevices, "enumerateDevices").mockResolvedValue([]);
+    const cameraManager = new CameraManager();
+
+    try {
+      await createBiometricsUxManager(cameraManager, {
+        ...createSessionMock().session,
+        getCameraCaptureHooks: () => hooks,
+      });
+      await createBiometricsUxManager(cameraManager, createSessionMock().session);
+      await cameraManager.refreshCameraDevices();
+
+      expect(hookGetUserMedia).not.toHaveBeenCalled();
+      expect(browserGetUserMedia).toHaveBeenCalledWith({ video: true });
+    } finally {
+      cameraManager.reset();
+    }
   });
 
   it("does not resume after helpClosed synchronously ends capture", async () => {
