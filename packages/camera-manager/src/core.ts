@@ -8,6 +8,7 @@
 import "rvfc-polyfill";
 
 export * from "./core/Camera";
+export { nativeCaptureHooks, type CameraCaptureHooks, type FrameExtractionOperations } from "./core/CameraCaptureHooks";
 export * from "./core/cameraError";
 export * from "./core/cameraManagerStore";
 export * from "./core/CameraManager";

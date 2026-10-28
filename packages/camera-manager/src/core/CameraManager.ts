@@ -6,6 +6,7 @@ import { radEventListener } from "rad-event-listener";
 import { Promisable } from "type-fest";
 
 import { Camera, FacingMode, VideoResolutionName } from "./Camera";
+import { nativeCaptureHooks, type CameraCaptureHooks } from "./CameraCaptureHooks";
 import { CameraError } from "./cameraError";
 import {
   PlaybackState,
@@ -40,6 +41,7 @@ export class CameraManager {
 
   #videoFrameRequestId: ReturnType<HTMLVideoElement["requestVideoFrameCallback"]> | undefined;
   #videoFrameProcessor: VideoFrameProcessor;
+  #captureHooks = nativeCaptureHooks;
   #mirrorFrontCameras: boolean;
 
   #eventListenerCleanup?: () => void;
@@ -132,6 +134,54 @@ export class CameraManager {
     this.#resolution = preferredResolution;
     this.#videoFrameProcessor = new VideoFrameProcessor(videoFrameProcessorOptions);
     this.#mirrorFrontCameras = mirrorFrontCameras;
+  }
+
+  /**
+   * Installs optional browser operation hooks. An active stream is reacquired through the hooks in the same playback
+   * state as before.
+   *
+   * @internal
+   */
+  async setCaptureHooks(hooks: CameraCaptureHooks): Promise<void> {
+    if (this.#captureHooks === hooks) {
+      return;
+    }
+
+    const state = store.getState();
+    const previousPlaybackState = state.playbackState;
+    const wasStreaming = state.selectedCamera?.activeStream !== undefined;
+
+    if (wasStreaming) {
+      this.stopStream();
+    }
+
+    this.#applyCaptureHooks(hooks);
+
+    if (!wasStreaming) {
+      return;
+    }
+
+    if (previousPlaybackState === "capturing") {
+      await this.startFrameCapture();
+    } else if (previousPlaybackState === "playback") {
+      await this.startPlayback();
+    } else {
+      await this.startCameraStream({ autoplay: false });
+    }
+  }
+
+  #applyCaptureHooks(hooks: CameraCaptureHooks): void {
+    const state = store.getState();
+
+    this.#captureHooks = hooks;
+    this.#videoFrameProcessor.setCaptureHooks(hooks);
+
+    for (const camera of state.cameras) {
+      camera.setCaptureHooks(hooks);
+    }
+
+    // After a device refresh, the selected camera can be an earlier object that is no longer in the camera list.
+    state.selectedCamera?.setCaptureHooks(hooks);
   }
 
   /**
@@ -397,7 +447,7 @@ export class CameraManager {
 
     // clear the video element source
     if (state.videoElement) {
-      state.videoElement.srcObject = null;
+      this.#captureHooks.setSource(state.videoElement, null);
     }
 
     store.setState({
@@ -457,7 +507,7 @@ export class CameraManager {
       }
     }, 100);
 
-    const availableCameras = await obtainVideoInputDevices().catch((err) => {
+    const availableCameras = await obtainVideoInputDevices(this.#captureHooks).catch((err) => {
       if (err instanceof CameraError && err.code === "PERMISSION_DENIED") {
         store.setState({
           errorState: asError(err),
@@ -475,7 +525,7 @@ export class CameraManager {
       cameraPermission: "granted",
     });
 
-    const cameras = createCameras(availableCameras);
+    const cameras = createCameras(availableCameras, this.#captureHooks);
 
     cameras.forEach((camera) => {
       // avoid reassigning listeners
@@ -499,7 +549,7 @@ export class CameraManager {
           let permissionError: Error;
 
           if (cameraState.error?.code === "STREAM_ENDED_UNEXPECTEDLY") {
-            askForCameraPermission()
+            askForCameraPermission(this.#captureHooks)
               .catch((err) => {
                 if (err instanceof CameraError && err.code === "PERMISSION_DENIED") {
                   permissionRevoked = true;
@@ -586,7 +636,7 @@ export class CameraManager {
     // assign new stream if it doesn't exist
     if (!state.selectedCamera.activeStream) {
       const stream = await state.selectedCamera.startStream(this.resolution);
-      state.videoElement.srcObject = stream;
+      this.#captureHooks.setSource(state.videoElement, stream);
     }
 
     try {
@@ -774,7 +824,7 @@ export class CameraManager {
       throw new Error("Video element needs to be in the document!");
     }
 
-    videoElement.srcObject = stream;
+    this.#captureHooks.setSource(videoElement, stream);
 
     store.setState({
       videoElement,
@@ -843,7 +893,7 @@ export class CameraManager {
     state.selectedCamera?.stopStream();
 
     if (state.videoElement) {
-      state.videoElement.srcObject = null;
+      this.#captureHooks.setSource(state.videoElement, null);
     }
   }
 
@@ -895,9 +945,15 @@ export class CameraManager {
 
         // Iterate over all frame capture callbacks
         for (const callback of this.#frameCaptureCallbacks) {
-          const workingFrame = isBufferDetached(capturedFrame.data.buffer)
-            ? this.#videoFrameProcessor.getCurrentImageData()
-            : capturedFrame;
+          let workingFrame = capturedFrame;
+
+          if (isBufferDetached(capturedFrame.data.buffer)) {
+            const usesNativeCapture = this.#captureHooks === nativeCaptureHooks;
+
+            workingFrame = usesNativeCapture
+              ? this.#videoFrameProcessor.getCurrentImageData()
+              : this.#videoFrameProcessor.getImageData(state.videoElement, state.extractionArea);
+          }
 
           // Process the frame and potentially get a new buffer back
           const returnedBuffer = await callback(workingFrame);
@@ -1043,6 +1099,7 @@ export class CameraManager {
     this.#errorCallbacks.clear();
     this.userInitiatedAbort = false;
     this.stopStream();
+    this.#applyCaptureHooks(nativeCaptureHooks);
     resetStore();
   }
 

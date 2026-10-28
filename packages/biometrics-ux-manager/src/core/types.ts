@@ -8,6 +8,7 @@ import type {
   FaceCaptureResult,
   FaceLandmarks,
 } from "@microblink/biometrics-core";
+import type { CameraCaptureHooks } from "@microblink/camera-manager/core";
 
 import type { BiometricsErrorDialogKind } from "./resolveBiometricsErrorDialogKind";
 
@@ -62,6 +63,8 @@ export type BiometricsUxSession<
   getState(): BiometricsUxSessionState<Result, SessionError>;
   subscribe(listener: (state: BiometricsUxSessionState<Result, SessionError>) => void): () => void;
   processFrame(imageData: ImageData): Promise<ArrayBuffer>;
+  /** @internal */
+  getCameraCaptureHooks?(): CameraCaptureHooks | undefined;
   setCameraSource?(videoElement: HTMLVideoElement | undefined, track: MediaStreamTrack | undefined): void;
   run(): Promise<Result>;
   retry(): Promise<Result>;

@@ -17,6 +17,7 @@ import type {
   WasmVariant,
 } from "@microblink/biometrics-core";
 import type { FeedbackUiOptions } from "@microblink/biometrics-ux-manager/ui";
+import type { CameraCaptureHooks } from "@microblink/camera-manager/core";
 import type { CameraManagerUiOptions } from "@microblink/camera-manager/ui";
 
 export type BiometricsCaptureSettings = {
@@ -125,6 +126,12 @@ export type BiometricsSession = {
   processFrame(imageData: ImageData): Promise<ArrayBuffer>;
   /** Set the camera source used by subsequent capture attempts. */
   setCameraSource(videoElement: HTMLVideoElement | undefined, track: MediaStreamTrack | undefined): void;
+  /**
+   * Provides camera operations for SDK-managed capture.
+   *
+   * @internal
+   */
+  getCameraCaptureHooks?(): CameraCaptureHooks | undefined;
   /** Pauses or resumes the active capture attempt's timeout. */
   setCaptureTimeoutPaused(paused: boolean): void;
   /** Starts face capture. */

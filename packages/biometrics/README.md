@@ -10,7 +10,7 @@ Production consumer bundle sizes for `@microblink/biometrics`:
 
 | Entrypoint | Minified | Gzip    |
 | ---------- | -------- | ------- |
-| `root`     | 26.28 kB | 7.26 kB |
+| `root`     | 26.38 kB | 7.28 kB |
 
 External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
 

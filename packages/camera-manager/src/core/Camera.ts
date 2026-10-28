@@ -4,6 +4,7 @@ import { subscribeWithSelector } from "zustand/middleware";
 import { createStore } from "zustand/vanilla";
 import { shallow } from "zustand/vanilla/shallow";
 
+import { nativeCaptureHooks, type CameraCaptureHooks } from "./CameraCaptureHooks";
 import { CameraError } from "./cameraError";
 import { isBackCameraName, isFrontCameraName } from "./cameraNames";
 import { closeStreamTracks, createConstraints } from "./cameraUtils";
@@ -53,6 +54,7 @@ export class Camera {
   store = createStore<CameraState>()(subscribeWithSelector(() => initialCameraState));
 
   #subscribers = new Set<() => void>();
+  #captureHooks = nativeCaptureHooks;
 
   /** The device info. */
   get deviceInfo(): InputDeviceInfo {
@@ -213,7 +215,7 @@ export class Camera {
     this.populateCapabilities(stream);
     this.store.setState({ activeStream: stream });
 
-    const videoTrack = stream.getVideoTracks()[0];
+    const videoTrack = this.#captureHooks.getVideoTracks(stream)[0];
 
     // Happens when camera device disconnects
     videoTrack.onended = () => {
@@ -239,7 +241,7 @@ export class Camera {
     try {
       const constraints = createConstraints(resolution, this.facingMode, this.deviceInfo.deviceId);
 
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
+      const stream = await this.#captureHooks.getUserMedia(navigator.mediaDevices, constraints);
 
       // can throw if device is currently in use by another process
       return stream;
@@ -267,7 +269,7 @@ export class Camera {
    * @param stream - The stream to populate the capabilities from.
    */
   private populateCapabilities(stream: MediaStream) {
-    const streamCapabilities = stream.getVideoTracks()[0].getCapabilities();
+    const streamCapabilities = this.#captureHooks.getVideoTracks(stream)[0].getCapabilities();
 
     if ("getCapabilities" in this.deviceInfo) {
       // not implemented in iOS Safari and Firefox at the time of writing
@@ -282,7 +284,7 @@ export class Camera {
       this.store.setState({ streamCapabilities });
     }
 
-    const videoTrack = stream.getVideoTracks()[0];
+    const videoTrack = this.#captureHooks.getVideoTracks(stream)[0];
     const trackSettings = videoTrack.getSettings();
 
     if (!trackSettings.width || !trackSettings.height) {
@@ -388,6 +390,15 @@ export class Camera {
   }
 
   /**
+   * Installs optional hooks for subsequent stream acquisition.
+   *
+   * @internal
+   */
+  setCaptureHooks(hooks: CameraCaptureHooks): void {
+    this.#captureHooks = hooks;
+  }
+
+  /**
    * Gets the video track on the camera.
    *
    * @returns The video track.
@@ -398,7 +409,7 @@ export class Camera {
       return;
     }
 
-    return this.activeStream.getVideoTracks()[0];
+    return this.#captureHooks.getVideoTracks(this.activeStream)[0];
   }
 }
 

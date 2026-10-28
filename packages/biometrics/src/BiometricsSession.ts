@@ -8,6 +8,7 @@ import {
   type BiometricsDiagnosticCallback,
   type FaceCaptureResult,
 } from "@microblink/biometrics-core";
+import type { CameraCaptureHooks } from "@microblink/camera-manager/core";
 
 import type { BiometricsAnalytics } from "./BiometricsAnalytics";
 import type {
@@ -60,6 +61,7 @@ export class BiometricsSessionImpl implements BiometricsSession {
     private readonly analytics?: BiometricsAnalytics,
     private readonly subscribeDiagnostic: (listener: BiometricsDiagnosticCallback) => () => void = () => () =>
       undefined,
+    private readonly cameraCaptureHooks?: () => CameraCaptureHooks,
   ) {
     void this.#beginCaptureSession();
   }
@@ -91,6 +93,10 @@ export class BiometricsSessionImpl implements BiometricsSession {
   setCameraSource(videoElement: HTMLVideoElement | undefined, track: MediaStreamTrack | undefined): void {
     this.#cameraSource = videoElement && track ? { videoElement, track } : undefined;
     this.#captureSession?.setCameraSource(videoElement, track);
+  }
+
+  getCameraCaptureHooks() {
+    return this.cameraCaptureHooks?.();
   }
 
   setCaptureTimeoutPaused(paused: boolean): void {

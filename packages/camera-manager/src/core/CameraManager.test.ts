@@ -5,8 +5,10 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest";
 
 import { createMockInputDeviceInfo } from "../media-mock/createInputDeviceInfo";
 import { VideoResolutionName } from "./Camera";
+import { nativeCaptureHooks, type CameraCaptureHooks } from "./CameraCaptureHooks";
 import { CameraManager, defaultCameraManagerOptions } from "./CameraManager";
 import { cameraManagerStore as store, resetCameraManagerStore } from "./cameraManagerStore";
+import { isBufferDetached } from "./VideoFrameProcessor";
 
 const { getImageDataMock } = vi.hoisted(() => ({
   getImageDataMock: vi.fn(),
@@ -19,10 +21,20 @@ vi.mock("./VideoFrameProcessor", () => ({
       getImageData = getImageDataMock;
       reattachArrayBuffer = vi.fn();
       getCurrentImageData = vi.fn();
+      setCaptureHooks = vi.fn();
     },
   ),
   isBufferDetached: vi.fn().mockReturnValue(false),
 }));
+
+function createHooks() {
+  return {
+    ...nativeCaptureHooks,
+    getUserMedia: vi.fn<CameraCaptureHooks["getUserMedia"]>((devices, constraints) =>
+      devices.getUserMedia(constraints),
+    ),
+  };
+}
 
 describe("CameraManager - Camera Devices", () => {
   beforeEach(() => {
@@ -55,6 +67,70 @@ describe("CameraManager - Camera Devices", () => {
     firstManager.setExcludedCameraNamePatterns([]);
 
     expect((await secondManager.getCameraDevices()).map((camera) => camera.name)).toEqual(allNames);
+  });
+
+  test("uses the browser again after a reset", async () => {
+    const hooks = createHooks();
+    const browserGetUserMedia = vi.spyOn(navigator.mediaDevices, "getUserMedia").mockResolvedValue(new MediaStream());
+    const manager = new CameraManager();
+
+    await manager.setCaptureHooks(hooks);
+    manager.reset();
+    await manager.refreshCameraDevices();
+
+    expect(hooks.getUserMedia).not.toHaveBeenCalled();
+    expect(browserGetUserMedia).toHaveBeenCalled();
+  });
+
+  test("applies hooks to cameras discovered before installation", async () => {
+    const hooks = createHooks();
+    const manager = new CameraManager();
+    const [camera] = await manager.getCameraDevices();
+
+    hooks.getUserMedia.mockRejectedValue(new Error("hooked"));
+    await manager.setCaptureHooks(hooks);
+
+    await expect(camera.startStream("1080p")).rejects.toThrow();
+
+    expect(hooks.getUserMedia).toHaveBeenCalled();
+  });
+
+  test.each([
+    { playbackState: "idle", resumes: "startCameraStream" },
+    { playbackState: "playback", resumes: "startPlayback" },
+    { playbackState: "capturing", resumes: "startFrameCapture" },
+  ] as const)(
+    "reacquires an active $playbackState stream through new hooks and resumes its state",
+    async ({ playbackState, resumes }) => {
+      const manager = new CameraManager();
+      const stopStream = vi.fn();
+      const startCameraStream = vi.spyOn(manager, "startCameraStream").mockResolvedValue();
+      const startPlayback = vi.spyOn(manager, "startPlayback").mockResolvedValue();
+      const startFrameCapture = vi.spyOn(manager, "startFrameCapture").mockResolvedValue();
+
+      const selectedCamera = { activeStream: new MediaStream(), stopStream, setCaptureHooks: vi.fn() };
+
+      store.setState({ playbackState, selectedCamera: selectedCamera as never });
+
+      await manager.setCaptureHooks(createHooks());
+
+      expect(stopStream).toHaveBeenCalledOnce();
+      expect(startCameraStream).toHaveBeenCalledTimes(resumes === "startCameraStream" ? 1 : 0);
+      expect(startPlayback).toHaveBeenCalledTimes(resumes === "startPlayback" ? 1 : 0);
+      expect(startFrameCapture).toHaveBeenCalledTimes(resumes === "startFrameCapture" ? 1 : 0);
+    },
+  );
+
+  test("applies hooks to a selected camera that a device refresh removed from the camera list", async () => {
+    const manager = new CameraManager();
+    const hooks = createHooks();
+    const selectedCamera = { setCaptureHooks: vi.fn() };
+
+    store.setState({ cameras: [], selectedCamera: selectedCamera as never });
+
+    await manager.setCaptureHooks(hooks);
+
+    expect(selectedCamera.setCaptureHooks).toHaveBeenCalledWith(hooks);
   });
 });
 
@@ -302,6 +378,52 @@ describe("CameraManager - Headless Frame Capture", () => {
     });
     expect(cameraManager.extractionArea).toBeUndefined();
     expect(getImageDataMock).toHaveBeenCalledWith(videoElement, undefined);
+
+    cameraManager.stopFrameCapture();
+    videoElement.remove();
+  });
+
+  test("extracts a fresh frame through hooks after a callback detaches the buffer", async () => {
+    const cameraManager = new CameraManager();
+    const firstFrame = new ImageData(2, 2);
+    const secondFrame = new ImageData(2, 2);
+    const firstCallback = vi.fn().mockResolvedValue(new ArrayBuffer(16));
+    const secondCallback = vi.fn();
+    const videoElement = document.createElement("video");
+    let queuedFrameCallback: Parameters<HTMLVideoElement["requestVideoFrameCallback"]>[0] | undefined;
+
+    document.body.appendChild(videoElement);
+    cameraManager.initVideoElement(videoElement);
+    await cameraManager.setCaptureHooks(createHooks());
+
+    getImageDataMock.mockReturnValueOnce(firstFrame).mockReturnValueOnce(secondFrame);
+    vi.mocked(isBufferDetached).mockReturnValueOnce(false).mockReturnValueOnce(true);
+
+    vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue(undefined);
+    vi.spyOn(videoElement, "requestVideoFrameCallback").mockImplementation((callback) => {
+      queuedFrameCallback = callback;
+      return 1;
+    });
+    vi.spyOn(videoElement, "cancelVideoFrameCallback").mockImplementation(() => undefined);
+
+    store.setState({
+      selectedCamera: {
+        activeStream: new MediaStream(),
+        facingMode: "back",
+        stopStream: vi.fn(),
+      } as never,
+    });
+    cameraManager.addFrameCaptureCallback(firstCallback);
+    cameraManager.addFrameCaptureCallback(secondCallback);
+
+    await cameraManager.startFrameCapture();
+    queuedFrameCallback?.(performance.now(), {} as VideoFrameCallbackMetadata);
+
+    await vi.waitFor(() => {
+      expect(secondCallback).toHaveBeenCalledWith(secondFrame);
+    });
+
+    expect(firstCallback).toHaveBeenCalledWith(firstFrame);
 
     cameraManager.stopFrameCapture();
     videoElement.remove();

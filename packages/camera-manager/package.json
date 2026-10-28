@@ -1,6 +1,6 @@
 {
   "name": "@microblink/camera-manager",
-  "version": "8.1.0",
+  "version": "8.2.0",
   "description": "Manages cameras and stream, provides both a headless component and a UI component",
   "keywords": [],
   "license": "ISC",

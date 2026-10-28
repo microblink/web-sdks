@@ -1,5 +1,11 @@
 # @microblink/biometrics-core
 
+## 1000.0.4
+
+### Patch Changes
+
+- Improved capture lifecycle hooks.
+
 ## 1000.0.3
 
 ### Patch Changes
