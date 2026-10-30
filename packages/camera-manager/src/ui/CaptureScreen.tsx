@@ -9,6 +9,7 @@ import { Portal } from "solid-js/web";
 
 import { CameraErrorModal } from "./CameraErrorModal";
 import { useCameraUiStore } from "./CameraUiStoreContext";
+import { bindCompanionCameraPreview, needsCompanionCameraPreview } from "./companionCameraPreview";
 import { MOUNT_POINT_ID } from "./createCameraManagerUi";
 import { determineFitMode, FitMode } from "./determineFitMode";
 import { getVisibleVideoArea } from "./getVisibleVideoArea";
@@ -26,9 +27,16 @@ const CAPTURE_SCREEN_SHADOW_ROOT_HOST_ID = "capture-screen-host";
 
 /** The CaptureScreen component. */
 export const CaptureScreen: Component = () => {
-  const { cameraManager, mountTarget, showCameraErrorModal } = useCameraUiStore();
+  const { cameraManager, cameraManagerSolidStore, mountTarget, showCameraErrorModal } = useCameraUiStore();
+  const isMirrored = cameraManagerSolidStore((state) => state.mirrorX);
 
   const [videoRef, setVideoRef] = createSignal<HTMLVideoElement>();
+  const [previewRef, setPreviewRef] = createSignal<HTMLVideoElement>();
+  let releaseCompanionPreview: (() => void) | undefined;
+
+  onCleanup(() => {
+    releaseCompanionPreview?.();
+  });
   // Reference to the feedback layer, using signals because of 1 tick rendering
   // delay due to attaching shadow root
   const [feedbackRef, setFeedbackRef] = createSignal<HTMLDivElement>();
@@ -136,10 +144,30 @@ export const CaptureScreen: Component = () => {
   });
 
   createEffect(() => {
+    const fit = fitMode();
     const video = videoRef();
+    const preview = previewRef();
 
     if (video) {
-      video.style.objectFit = fitMode();
+      video.style.objectFit = fit;
+    }
+
+    if (preview) {
+      preview.style.objectFit = fit;
+    }
+  });
+
+  createEffect(() => {
+    const preview = previewRef();
+
+    if (!preview) {
+      return;
+    }
+
+    if (isMirrored()) {
+      preview.style.scale = "-1 1";
+    } else {
+      preview.style.removeProperty("scale");
     }
   });
 
@@ -185,6 +213,23 @@ export const CaptureScreen: Component = () => {
             video.tabIndex = -1;
             placeholder.replaceWith(video);
             setVideoRef(video);
+
+            if (!needsCompanionCameraPreview(navigator.userAgent)) {
+              return;
+            }
+
+            // On Safari 27 / iPadOS 27 the element sampled for recognition can stay black while its
+            // frames remain readable. A second element on the same stream paints; recognition keeps
+            // using the original element, and this one is shown only after it starts playing.
+            const preview = document.createElement("video");
+            preview.setAttribute("part", "video-element-part video-preview-part");
+            preview.className = "block absolute top-0 left-0 size-full";
+            preview.setAttribute("aria-hidden", "true");
+            preview.tabIndex = -1;
+            video.after(preview);
+            releaseCompanionPreview?.();
+            releaseCompanionPreview = bindCompanionCameraPreview(video, preview);
+            setPreviewRef(preview);
           }}
         />
 

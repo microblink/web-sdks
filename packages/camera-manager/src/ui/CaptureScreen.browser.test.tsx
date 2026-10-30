@@ -31,6 +31,32 @@ describe("CaptureScreenPortalled", () => {
 
     expect(previewVideo).toBeInstanceOf(HTMLVideoElement);
     expect(createdVideos).toContain(previewVideo);
+    expect(shadowRoot?.querySelector("[part~='video-preview-part']")).toBeNull();
+  });
+
+  it("adds an unsampled companion preview on Safari 27", async () => {
+    vi.spyOn(window.navigator, "userAgent", "get").mockReturnValue(
+      "Mozilla/5.0 (iPad; CPU OS 27_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.0.1 Mobile/15E148 Safari/604.1",
+    );
+
+    const manager = new CameraManager();
+    cameraUi = await createCameraManagerUi(manager);
+
+    const shadowRoot = document.querySelector<HTMLElement>("#mb-camera-host")?.shadowRoot;
+    const videos = [...(shadowRoot?.querySelectorAll("video") ?? [])];
+    const companion = shadowRoot?.querySelector<HTMLVideoElement>("[part~='video-preview-part']");
+
+    expect(videos).toHaveLength(2);
+    expect(companion).toBe(videos[1]);
+    expect(manager.getState().videoElement).toBe(videos[0]);
+    expect(companion?.style.opacity).toBe("0");
+    expect(companion?.style.objectFit).toBe("contain");
+    expect(companion?.muted).toBe(true);
+    expect(companion?.playsInline).toBe(true);
+
+    manager.setCameraMirrorX(true);
+
+    await vi.waitFor(() => expect(companion?.style.scale).toBe("-1 1"));
   });
 
   it("focuses the dialog content when opened", async () => {

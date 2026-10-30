@@ -241,7 +241,9 @@ export class VideoFrameProcessor {
       const drawImage = operations.drawImage ?? context.drawImage.bind(context);
       const getImageData = operations.getImageData ?? context.getImageData.bind(context);
 
-      drawImage(source, x, y, w, h);
+      // The five-argument form is destination-only: it scales the entire source into (x, y, w, h).
+      // Crop the requested source rectangle into the output bitmap instead.
+      drawImage(source, x, y, w, h, 0, 0, w, h);
 
       return getImageData(0, 0, w, h);
     });
@@ -318,9 +320,10 @@ export class VideoFrameProcessor {
         this.#requiredPackAlignment = 1;
         gl.pixelStorei(gl.PACK_ALIGNMENT, 1);
 
-        // Create fresh buffer since the previous one may be in an undefined state
+        // Create fresh buffer since the previous one may be in an undefined state.
+        // Keep the same source rectangle; restarting at the origin would drop the crop.
         const newBuffer = new Uint8ClampedArray(requiredSize);
-        readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, newBuffer);
+        readPixels(x, y, w, h, gl.RGBA, gl.UNSIGNED_BYTE, newBuffer);
 
         // Use the new buffer
         this.#buffer = newBuffer;
