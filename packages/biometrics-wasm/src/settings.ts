@@ -21,14 +21,9 @@ export interface LightingThresholds {
 export interface LandmarkStabilityThresholds {
   maxCaptures?: number;
   differenceThreshold?: number;
-  sharpnessWeight?: number;
 }
 
-export type ResolvedFacePositionThresholds = Required<FacePositionThresholds>;
-export type ResolvedLightingThresholds = Required<LightingThresholds>;
-export type ResolvedLandmarkStabilityThresholds = Required<LandmarkStabilityThresholds>;
-
-/** Settings for creating a face analysis session. */
+/** Settings for creating a face analysis session. Omit a threshold to use the engine default. */
 export interface FaceAnalysisSessionSettings {
   maximumInputLongEdge?: number;
   maximumInputShortEdge?: number;
@@ -45,33 +40,18 @@ export interface FaceAnalysisSessionSettings {
 export interface ResolvedFaceAnalysisSessionSettings {
   maximumInputLongEdge: number;
   maximumInputShortEdge: number;
-  facePositionThresholds: ResolvedFacePositionThresholds;
-  lightingThresholds: ResolvedLightingThresholds;
-  landmarkStabilityThresholds: ResolvedLandmarkStabilityThresholds;
+  facePositionThresholds: FacePositionThresholds;
+  lightingThresholds: LightingThresholds;
+  landmarkStabilityThresholds: LandmarkStabilityThresholds;
   livenessFramesCount?: number;
 }
 
 export const defaultFaceAnalysisSessionSettings: ResolvedFaceAnalysisSessionSettings = {
   maximumInputLongEdge: 1920,
   maximumInputShortEdge: 1080,
-  facePositionThresholds: {
-    minEyeDistance: 0.2,
-    maxEyeDistance: 0.35,
-    closeToBorderMargin: 0.04,
-    maxPitchUpAngle: 28,
-    maxPitchDownAngle: 35,
-    maxRollAngle: 15,
-    maxYawAngle: 30,
-  },
-  lightingThresholds: {
-    tooDarkThreshold: 0.99,
-    tooBrightThreshold: 0.99,
-  },
-  landmarkStabilityThresholds: {
-    maxCaptures: 4,
-    differenceThreshold: 0.13,
-    sharpnessWeight: 0,
-  },
+  facePositionThresholds: {},
+  lightingThresholds: {},
+  landmarkStabilityThresholds: {},
 };
 
 const MAXIMUM_INPUT_EDGE = 65_535;

@@ -94,6 +94,7 @@ overrides:
   "vite-plugin-mkcert>undici": 8.11.2
   "vite-plugin-solid-svg>svgo": 3.3.5
   "write-package@7.1.0>deepmerge-ts": 8.0.2
+  "zod@4": 4.6.7
 minimumReleaseAgeExclude:
   # Renovate security update: browserslist@4.28.7
   - browserslist@4.28.7

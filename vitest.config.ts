@@ -4,13 +4,20 @@ import { defineConfig, type TestProjectConfiguration } from "vitest/config";
 
 const exclude = ["**/node_modules/**", "**/.git/**", "**/dist/**", "**/repo/**"];
 const hookTimeout = 30_000;
+// BlinkID Verify Wasm loads its module in beforeAll. CI runners can exceed 30s.
+const blinkIdVerifyWasmHookTimeout = 60_000;
 
-function project(name: string, root: string, configFile?: string): TestProjectConfiguration {
+function project(
+  name: string,
+  root: string,
+  configFile?: string,
+  projectHookTimeout = hookTimeout,
+): TestProjectConfiguration {
   return {
     ...(configFile ? { extends: `${root}/${configFile}` } : {}),
     root,
     test: {
-      hookTimeout,
+      hookTimeout: projectHookTimeout,
       name,
       exclude,
     },
@@ -44,7 +51,12 @@ export default defineConfig({
       project("@microblink/blinkid-verify", "packages/blinkid-verify", "vite.config.mts"),
       project("@microblink/blinkid-verify-core", "packages/blinkid-verify-core", "vitest.config.ts"),
       project("@microblink/blinkid-verify-ux-manager", "packages/blinkid-verify-ux-manager", "vite.config.mts"),
-      project("@microblink/blinkid-verify-wasm", "packages/blinkid-verify-wasm", "vite.config.mts"),
+      project(
+        "@microblink/blinkid-verify-wasm",
+        "packages/blinkid-verify-wasm",
+        "vite.config.mts",
+        blinkIdVerifyWasmHookTimeout,
+      ),
       project("@microblink/blinkid-worker", "packages/blinkid-worker", "vite.config.mts"),
       project("@microblink/camera-manager", "packages/camera-manager", "vitest.config.ts"),
       project("@microblink/core-common", "packages/core-common", "vitest.config.ts"),

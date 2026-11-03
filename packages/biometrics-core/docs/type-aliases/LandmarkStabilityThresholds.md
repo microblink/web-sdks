@@ -19,9 +19,3 @@
 ### maxCaptures?
 
 > `optional` **maxCaptures?**: `number`
-
-***
-
-### sharpnessWeight?
-
-> `optional` **sharpnessWeight?**: `number`
