@@ -1259,7 +1259,7 @@ importers:
     dependencies:
       '@ark-ui/solid':
         specifier: catalog:ui
-        version: 5.38.1(solid-js@1.9.15)
+        version: 5.38.1(solid-js@1.9.14)
       '@microblink/analytics':
         specifier: workspace:*
         version: link:../analytics
@@ -1277,7 +1277,7 @@ importers:
         version: link:../ux-common
       '@solid-primitives/keyed':
         specifier: catalog:ui
-        version: 1.5.3(solid-js@1.9.15)
+        version: 1.5.3(solid-js@1.9.14)
       merge-anything:
         specifier: 'catalog:'
         version: 6.0.6
@@ -1286,10 +1286,10 @@ importers:
         version: 2.1.0
       solid-js:
         specifier: catalog:ui
-        version: 1.9.15
+        version: 1.9.14
       solid-zustand:
         specifier: catalog:ui
-        version: 2.0.0(solid-js@1.9.15)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
+        version: 2.0.0(solid-js@1.9.14)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
     devDependencies:
       '@arethetypeswrong/cli':
         specifier: catalog:publish
@@ -1359,10 +1359,10 @@ importers:
         version: 1.0.1
       vite-plugin-solid:
         specifier: catalog:vite
-        version: 2.11.14(solid-js@1.9.15)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vite-plugin-solid-svg:
         specifier: catalog:vite
-        version: 0.8.1(solid-js@1.9.15)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 0.8.1(solid-js@1.9.14)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vitest:
         specifier: catalog:test
         version: 5.0.5(@types/node@25.9.9)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@20.11.2)(jsdom@25.0.1(supports-color@10.2.2))(msw@2.7.3(@types/node@25.9.9)(@typescript/typescript6@6.0.2))(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
@@ -1636,7 +1636,7 @@ importers:
     dependencies:
       '@ark-ui/solid':
         specifier: catalog:ui
-        version: 5.38.1(solid-js@1.9.15)
+        version: 5.38.1(solid-js@1.9.14)
       '@microblink/blinkcard-core':
         specifier: workspace:^
         version: link:../blinkcard-core
@@ -1648,7 +1648,7 @@ importers:
         version: link:../ux-common
       '@solid-primitives/keyed':
         specifier: catalog:ui
-        version: 1.5.3(solid-js@1.9.15)
+        version: 1.5.3(solid-js@1.9.14)
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
@@ -1660,13 +1660,13 @@ importers:
         version: 2.1.0
       solid-js:
         specifier: catalog:ui
-        version: 1.9.15
+        version: 1.9.14
       solid-motionone:
         specifier: catalog:ui
-        version: 1.0.4(solid-js@1.9.15)
+        version: 1.0.4(solid-js@1.9.14)
       solid-zustand:
         specifier: catalog:ui
-        version: 2.0.0(solid-js@1.9.15)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
+        version: 2.0.0(solid-js@1.9.14)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
       ts-pattern:
         specifier: 'catalog:'
         version: 5.6.2
@@ -1745,10 +1745,10 @@ importers:
         version: 1.0.1
       vite-plugin-solid:
         specifier: catalog:vite
-        version: 2.11.14(solid-js@1.9.15)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vite-plugin-solid-svg:
         specifier: catalog:vite
-        version: 0.8.1(solid-js@1.9.15)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 0.8.1(solid-js@1.9.14)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vitest:
         specifier: catalog:test
         version: 5.0.5(@types/node@25.9.9)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@20.11.2)(jsdom@25.0.1(supports-color@10.2.2))(msw@2.7.3(@types/node@25.9.9)(@typescript/typescript6@6.0.2))(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
@@ -2039,7 +2039,7 @@ importers:
     dependencies:
       '@ark-ui/solid':
         specifier: catalog:ui
-        version: 5.38.1(solid-js@1.9.15)
+        version: 5.38.1(solid-js@1.9.14)
       '@microblink/blinkid-core':
         specifier: workspace:^
         version: link:../blinkid-core
@@ -2051,7 +2051,7 @@ importers:
         version: link:../ux-common
       '@solid-primitives/keyed':
         specifier: catalog:ui
-        version: 1.5.3(solid-js@1.9.15)
+        version: 1.5.3(solid-js@1.9.14)
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
@@ -2063,13 +2063,13 @@ importers:
         version: 2.1.0
       solid-js:
         specifier: catalog:ui
-        version: 1.9.15
+        version: 1.9.14
       solid-motionone:
         specifier: catalog:ui
-        version: 1.0.4(solid-js@1.9.15)
+        version: 1.0.4(solid-js@1.9.14)
       solid-zustand:
         specifier: catalog:ui
-        version: 2.0.0(solid-js@1.9.15)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
+        version: 2.0.0(solid-js@1.9.14)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
       ts-pattern:
         specifier: 'catalog:'
         version: 5.6.2
@@ -2148,10 +2148,10 @@ importers:
         version: 1.0.1
       vite-plugin-solid:
         specifier: catalog:vite
-        version: 2.11.14(solid-js@1.9.15)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vite-plugin-solid-svg:
         specifier: catalog:vite
-        version: 0.8.1(solid-js@1.9.15)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 0.8.1(solid-js@1.9.14)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vitest:
         specifier: catalog:test
         version: 5.0.5(@types/node@25.9.9)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@20.11.2)(jsdom@25.0.1(supports-color@10.2.2))(msw@2.7.3(@types/node@25.9.9)(@typescript/typescript6@6.0.2))(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
@@ -2330,7 +2330,7 @@ importers:
     dependencies:
       '@ark-ui/solid':
         specifier: catalog:ui
-        version: 5.38.1(solid-js@1.9.15)
+        version: 5.38.1(solid-js@1.9.14)
       '@microblink/blinkid-verify-core':
         specifier: workspace:^
         version: link:../blinkid-verify-core
@@ -2339,7 +2339,7 @@ importers:
         version: link:../camera-manager
       '@solid-primitives/keyed':
         specifier: catalog:ui
-        version: 1.5.3(solid-js@1.9.15)
+        version: 1.5.3(solid-js@1.9.14)
       clsx:
         specifier: 'catalog:'
         version: 2.1.1
@@ -2351,13 +2351,13 @@ importers:
         version: 2.1.0
       solid-js:
         specifier: catalog:ui
-        version: 1.9.15
+        version: 1.9.14
       solid-motionone:
         specifier: catalog:ui
-        version: 1.0.4(solid-js@1.9.15)
+        version: 1.0.4(solid-js@1.9.14)
       solid-zustand:
         specifier: catalog:ui
-        version: 2.0.0(solid-js@1.9.15)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
+        version: 2.0.0(solid-js@1.9.14)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
       ts-pattern:
         specifier: 'catalog:'
         version: 5.6.2
@@ -2439,10 +2439,10 @@ importers:
         version: 1.0.1
       vite-plugin-solid:
         specifier: catalog:vite
-        version: 2.11.14(solid-js@1.9.15)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vite-plugin-solid-svg:
         specifier: catalog:vite
-        version: 0.8.1(solid-js@1.9.15)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 0.8.1(solid-js@1.9.14)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vitest:
         specifier: catalog:test
         version: 5.0.5(@types/node@25.9.9)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@20.11.2)(jsdom@25.0.1(supports-color@10.2.2))(msw@2.7.3(@types/node@25.9.9)(@typescript/typescript6@6.0.2))(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
@@ -2688,16 +2688,16 @@ importers:
     dependencies:
       '@ark-ui/solid':
         specifier: catalog:ui
-        version: 5.38.1(solid-js@1.9.15)
+        version: 5.38.1(solid-js@1.9.14)
       '@csstools/normalize.css':
         specifier: ^12.1.1
         version: 12.1.1
       '@solid-primitives/keyed':
         specifier: catalog:ui
-        version: 1.5.3(solid-js@1.9.15)
+        version: 1.5.3(solid-js@1.9.14)
       '@solid-primitives/resize-observer':
         specifier: catalog:ui
-        version: 2.2.0(solid-js@1.9.15)
+        version: 2.2.0(solid-js@1.9.14)
       '@wessberg/connection-observer':
         specifier: ^1.0.5
         version: 1.0.5
@@ -2715,10 +2715,10 @@ importers:
         version: 1.0.7
       solid-js:
         specifier: catalog:ui
-        version: 1.9.15
+        version: 1.9.14
       solid-zustand:
         specifier: catalog:ui
-        version: 2.0.0(solid-js@1.9.15)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
+        version: 2.0.0(solid-js@1.9.14)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0)))
       type-fest:
         specifier: 'catalog:'
         version: 4.35.0
@@ -2809,10 +2809,10 @@ importers:
         version: 1.0.1
       vite-plugin-solid:
         specifier: catalog:vite
-        version: 2.11.14(solid-js@1.9.15)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 2.11.14(solid-js@1.9.14)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vite-plugin-solid-svg:
         specifier: catalog:vite
-        version: 0.8.1(solid-js@1.9.15)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
+        version: 0.8.1(solid-js@1.9.14)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
       vitest:
         specifier: catalog:test
         version: 5.0.5(@types/node@25.9.9)(@vitest/browser-playwright@5.0.5)(@vitest/coverage-v8@5.0.5)(@vitest/ui@5.0.5)(happy-dom@20.11.2)(jsdom@25.0.1(supports-color@10.2.2))(msw@2.7.3(@types/node@25.9.9)(@typescript/typescript6@6.0.2))(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
@@ -7620,9 +7620,6 @@ packages:
   solid-js@1.9.14:
     resolution: {integrity: sha512-sAEXC0Kk0S1EDg+8ysEWJDbYhA3RRoEjwuySUGlKIemeo0I5YZfOyumNjNs9Sv3y2nmhD+0rW66ag2HsMuQiGQ==}
 
-  solid-js@1.9.15:
-    resolution: {integrity: sha512-EeiY2xfpZJqPLjXspVEKjAII4yv8NyG//NxZ3IpOFHdUNnnTyL0uJOeS9LWGvA7cFCz5y94cjFwYlmw5Luncsg==}
-
   solid-motionone@1.0.4:
     resolution: {integrity: sha512-aqEjgecoO9raDFznu/dEci7ORSmA26Kjj9J4Cn1Gyr0GZuOVdvsNxdxClTL9J40Aq/uYFx4GLwC8n70fMLHiuA==}
     peerDependencies:
@@ -8447,77 +8444,6 @@ snapshots:
       '@zag-js/types': 1.43.0
       '@zag-js/utils': 1.43.0
       solid-js: 1.9.14
-
-  '@ark-ui/solid@5.38.1(solid-js@1.9.15)':
-    dependencies:
-      '@internationalized/date': 3.12.2
-      '@zag-js/accordion': 1.43.0
-      '@zag-js/anatomy': 1.43.0
-      '@zag-js/angle-slider': 1.43.0
-      '@zag-js/async-list': 1.43.0
-      '@zag-js/auto-resize': 1.43.0
-      '@zag-js/avatar': 1.43.0
-      '@zag-js/carousel': 1.43.0
-      '@zag-js/cascade-select': 1.43.0
-      '@zag-js/checkbox': 1.43.0
-      '@zag-js/clipboard': 1.43.0
-      '@zag-js/collapsible': 1.43.0
-      '@zag-js/collection': 1.43.0
-      '@zag-js/color-picker': 1.43.0
-      '@zag-js/color-utils': 1.43.0
-      '@zag-js/combobox': 1.43.0
-      '@zag-js/core': 1.43.0
-      '@zag-js/date-input': 1.43.0(@internationalized/date@3.12.2)
-      '@zag-js/date-picker': 1.43.0(@internationalized/date@3.12.2)
-      '@zag-js/date-utils': 1.43.0(@internationalized/date@3.12.2)
-      '@zag-js/dialog': 1.43.0
-      '@zag-js/dom-query': 1.43.0
-      '@zag-js/drawer': 1.43.0
-      '@zag-js/editable': 1.43.0
-      '@zag-js/file-upload': 1.43.0
-      '@zag-js/file-utils': 1.43.0
-      '@zag-js/floating-panel': 1.43.0
-      '@zag-js/focus-trap': 1.43.0
-      '@zag-js/focus-visible': 1.43.0
-      '@zag-js/highlight-word': 1.43.0
-      '@zag-js/hover-card': 1.43.0
-      '@zag-js/i18n-utils': 1.43.0
-      '@zag-js/image-cropper': 1.43.0
-      '@zag-js/json-tree-utils': 1.43.0
-      '@zag-js/listbox': 1.43.0
-      '@zag-js/marquee': 1.43.0
-      '@zag-js/menu': 1.43.0
-      '@zag-js/navigation-menu': 1.43.0
-      '@zag-js/number-input': 1.43.0
-      '@zag-js/pagination': 1.43.0
-      '@zag-js/password-input': 1.43.0
-      '@zag-js/pin-input': 1.43.0
-      '@zag-js/popover': 1.43.0
-      '@zag-js/presence': 1.43.0
-      '@zag-js/progress': 1.43.0
-      '@zag-js/qr-code': 1.43.0
-      '@zag-js/radio-group': 1.43.0
-      '@zag-js/rating-group': 1.43.0
-      '@zag-js/scroll-area': 1.43.0
-      '@zag-js/select': 1.43.0
-      '@zag-js/signature-pad': 1.43.0
-      '@zag-js/slider': 1.43.0
-      '@zag-js/solid': 1.43.0(solid-js@1.9.15)
-      '@zag-js/splitter': 1.43.0
-      '@zag-js/steps': 1.43.0
-      '@zag-js/switch': 1.43.0
-      '@zag-js/tabs': 1.43.0
-      '@zag-js/tags-input': 1.43.0
-      '@zag-js/timer': 1.43.0
-      '@zag-js/toast': 1.43.0
-      '@zag-js/toggle': 1.43.0
-      '@zag-js/toggle-group': 1.43.0
-      '@zag-js/tooltip': 1.43.0
-      '@zag-js/tour': 1.43.0
-      '@zag-js/tree-view': 1.43.0
-      '@zag-js/types': 1.43.0
-      '@zag-js/utils': 1.43.0
-      solid-js: 1.9.15
 
   '@ark/schema@0.56.0':
     dependencies:
@@ -9910,28 +9836,19 @@ snapshots:
       '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
       solid-js: 1.9.14
 
-  '@solid-primitives/event-listener@2.4.6(solid-js@1.9.15)':
-    dependencies:
-      '@solid-primitives/utils': 6.4.1(solid-js@1.9.15)
-      solid-js: 1.9.15
-
   '@solid-primitives/keyed@1.5.3(solid-js@1.9.14)':
     dependencies:
       solid-js: 1.9.14
 
-  '@solid-primitives/keyed@1.5.3(solid-js@1.9.15)':
+  '@solid-primitives/props@3.1.11(solid-js@1.9.14)':
     dependencies:
-      solid-js: 1.9.15
+      '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
+      solid-js: 1.9.14
 
-  '@solid-primitives/props@3.1.11(solid-js@1.9.15)':
+  '@solid-primitives/refs@1.0.8(solid-js@1.9.14)':
     dependencies:
-      '@solid-primitives/utils': 6.4.1(solid-js@1.9.15)
-      solid-js: 1.9.15
-
-  '@solid-primitives/refs@1.0.8(solid-js@1.9.15)':
-    dependencies:
-      '@solid-primitives/utils': 6.4.1(solid-js@1.9.15)
-      solid-js: 1.9.15
+      '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
+      solid-js: 1.9.14
 
   '@solid-primitives/resize-observer@2.2.0(solid-js@1.9.14)':
     dependencies:
@@ -9941,45 +9858,23 @@ snapshots:
       '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
       solid-js: 1.9.14
 
-  '@solid-primitives/resize-observer@2.2.0(solid-js@1.9.15)':
-    dependencies:
-      '@solid-primitives/event-listener': 2.4.6(solid-js@1.9.15)
-      '@solid-primitives/rootless': 1.5.4(solid-js@1.9.15)
-      '@solid-primitives/static-store': 0.1.4(solid-js@1.9.15)
-      '@solid-primitives/utils': 6.4.1(solid-js@1.9.15)
-      solid-js: 1.9.15
-
   '@solid-primitives/rootless@1.5.4(solid-js@1.9.14)':
     dependencies:
       '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
       solid-js: 1.9.14
-
-  '@solid-primitives/rootless@1.5.4(solid-js@1.9.15)':
-    dependencies:
-      '@solid-primitives/utils': 6.4.1(solid-js@1.9.15)
-      solid-js: 1.9.15
 
   '@solid-primitives/static-store@0.1.4(solid-js@1.9.14)':
     dependencies:
       '@solid-primitives/utils': 6.4.1(solid-js@1.9.14)
       solid-js: 1.9.14
 
-  '@solid-primitives/static-store@0.1.4(solid-js@1.9.15)':
+  '@solid-primitives/transition-group@1.0.5(solid-js@1.9.14)':
     dependencies:
-      '@solid-primitives/utils': 6.4.1(solid-js@1.9.15)
-      solid-js: 1.9.15
-
-  '@solid-primitives/transition-group@1.0.5(solid-js@1.9.15)':
-    dependencies:
-      solid-js: 1.9.15
+      solid-js: 1.9.14
 
   '@solid-primitives/utils@6.4.1(solid-js@1.9.14)':
     dependencies:
       solid-js: 1.9.14
-
-  '@solid-primitives/utils@6.4.1(solid-js@1.9.15)':
-    dependencies:
-      solid-js: 1.9.15
 
   '@stylistic/eslint-plugin@2.13.0(@typescript/typescript6@6.0.2)(eslint@8.57.0(supports-color@10.2.2))(supports-color@10.2.2)':
     dependencies:
@@ -10978,15 +10873,6 @@ snapshots:
       '@zag-js/types': 1.43.0
       '@zag-js/utils': 1.43.0
       solid-js: 1.9.14
-
-  '@zag-js/solid@1.43.0(solid-js@1.9.15)':
-    dependencies:
-      '@solid-primitives/keyed': 1.5.3(solid-js@1.9.15)
-      '@zag-js/core': 1.43.0
-      '@zag-js/store': 1.43.0
-      '@zag-js/types': 1.43.0
-      '@zag-js/utils': 1.43.0
-      solid-js: 1.9.15
 
   '@zag-js/splitter@1.43.0':
     dependencies:
@@ -13101,21 +12987,15 @@ snapshots:
       seroval: 1.6.3
       seroval-plugins: 1.5.6(seroval@1.6.3)
 
-  solid-js@1.9.15:
-    dependencies:
-      csstype: 3.2.3
-      seroval: 1.6.3
-      seroval-plugins: 1.5.6(seroval@1.6.3)
-
-  solid-motionone@1.0.4(solid-js@1.9.15):
+  solid-motionone@1.0.4(solid-js@1.9.14):
     dependencies:
       '@motionone/dom': 10.18.0
       '@motionone/utils': 10.18.0
-      '@solid-primitives/props': 3.1.11(solid-js@1.9.15)
-      '@solid-primitives/refs': 1.0.8(solid-js@1.9.15)
-      '@solid-primitives/transition-group': 1.0.5(solid-js@1.9.15)
+      '@solid-primitives/props': 3.1.11(solid-js@1.9.14)
+      '@solid-primitives/refs': 1.0.8(solid-js@1.9.14)
+      '@solid-primitives/transition-group': 1.0.5(solid-js@1.9.14)
       csstype: 3.2.3
-      solid-js: 1.9.15
+      solid-js: 1.9.14
 
   solid-refresh@0.6.3(solid-js@1.9.14)(supports-color@10.2.2):
     dependencies:
@@ -13126,23 +13006,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  solid-refresh@0.6.3(solid-js@1.9.15)(supports-color@10.2.2):
-    dependencies:
-      '@babel/generator': 7.29.7
-      '@babel/helper-module-imports': 7.29.7(supports-color@10.2.2)
-      '@babel/types': 7.29.7
-      solid-js: 1.9.15
-    transitivePeerDependencies:
-      - supports-color
-
   solid-zustand@2.0.0(solid-js@1.9.14)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0))):
     dependencies:
       solid-js: 1.9.14
-      zustand: 5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0))
-
-  solid-zustand@2.0.0(solid-js@1.9.15)(zustand@5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0))):
-    dependencies:
-      solid-js: 1.9.15
       zustand: 5.0.14(react@18.2.0)(use-sync-external-store@1.2.2(react@18.2.0))
 
   sort-keys@5.1.0:
@@ -13572,9 +13438,9 @@ snapshots:
       uqr: 0.1.3
       vite: 8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0)
 
-  vite-plugin-solid-svg@0.8.1(solid-js@1.9.15)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0)):
+  vite-plugin-solid-svg@0.8.1(solid-js@1.9.14)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0)):
     dependencies:
-      solid-js: 1.9.15
+      solid-js: 1.9.14
       svgo: 3.3.5
       vite: 8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0)
 
@@ -13586,19 +13452,6 @@ snapshots:
       merge-anything: 5.1.7
       solid-js: 1.9.14
       solid-refresh: 0.6.3(solid-js@1.9.14)(supports-color@10.2.2)
-      vite: 8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0)
-      vitefu: 1.0.4(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
-    transitivePeerDependencies:
-      - supports-color
-
-  vite-plugin-solid@2.11.14(solid-js@1.9.15)(supports-color@10.2.2)(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0)):
-    dependencies:
-      '@babel/core': 7.29.7(supports-color@10.2.2)
-      '@types/babel__core': 7.20.5
-      babel-preset-solid: 1.8.18(@babel/core@7.29.7(supports-color@10.2.2))
-      merge-anything: 5.1.7
-      solid-js: 1.9.15
-      solid-refresh: 0.6.3(solid-js@1.9.15)(supports-color@10.2.2)
       vite: 8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0)
       vitefu: 1.0.4(vite@8.2.4(@types/node@25.9.9)(esbuild@0.28.1)(jiti@2.7.0)(sass@1.85.0)(terser@5.49.0)(tsx@4.21.0)(yaml@2.9.0))
     transitivePeerDependencies:
