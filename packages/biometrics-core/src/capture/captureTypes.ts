@@ -46,7 +46,6 @@ export type LightingThresholds = {
 export type LandmarkStabilityThresholds = {
   maxCaptures?: number;
   differenceThreshold?: number;
-  sharpnessWeight?: number;
 };
 
 export type FaceAnalysisSessionSettings = {

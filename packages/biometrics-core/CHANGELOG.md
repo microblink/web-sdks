@@ -1,5 +1,11 @@
 # @microblink/biometrics-core
 
+## 1000.0.5
+
+### Patch Changes
+
+- Removed SDK defaults that override engine defaults.
+
 ## 1000.0.4
 
 ### Patch Changes

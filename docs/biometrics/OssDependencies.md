@@ -105,8 +105,8 @@ This report includes:
 | comlink | 4.4.2 | Apache-2.0 | Surma | [Link](https://github.com/GoogleChromeLabs/comlink#readme) |
 | common-tags | 1.8.2 | MIT | Declan de Wet | [Link](https://github.com/zspecza/common-tags) |
 | csstype | 3.2.3 | MIT | Fredrik Nicol | [Link](https://github.com/frenic/csstype#readme) |
-| is-what | 5.0.2 | MIT | Luca Ban - Mesqueeb | [Link](https://github.com/mesqueeb/is-what#readme) |
-| merge-anything | 6.0.3 | MIT | Luca Ban - Mesqueeb | [Link](https://github.com/mesqueeb/merge-anything#readme) |
+| is-what | 5.5.0 | MIT | Luca Ban - Mesqueeb | [Link](https://github.com/mesqueeb/is-what#readme) |
+| merge-anything | 6.0.6 | MIT | Luca Ban - Mesqueeb | [Link](https://github.com/mesqueeb/merge-anything#readme) |
 | nanoid | 5.1.16 | MIT | Andrey Sitnik | [Link](https://github.com/ai/nanoid#readme) |
 | perfect-debounce | 2.1.0 | MIT | N/A | [Link](https://github.com/unjs/perfect-debounce#readme) |
 | perfect-freehand | 1.2.3 | MIT | Steve Ruiz | [Link](https://github.com/steveruizok/perfect-freehand#readme) |

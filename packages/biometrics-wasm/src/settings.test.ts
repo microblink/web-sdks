@@ -43,6 +43,18 @@ describe("resolveFaceAnalysisSessionSettings", () => {
     expect(resolveFaceAnalysisSessionSettings()).not.toHaveProperty("livenessFramesCount");
   });
 
+  it("leaves thresholds that are not set to the engine", () => {
+    const { facePositionThresholds, lightingThresholds, landmarkStabilityThresholds } =
+      resolveFaceAnalysisSessionSettings();
+
+    expect(facePositionThresholds).toEqual({});
+    expect(lightingThresholds).toEqual({});
+    expect(landmarkStabilityThresholds).toEqual({});
+    expect(
+      resolveFaceAnalysisSessionSettings({ lightingThresholds: { tooBrightThreshold: 0.7 } }).lightingThresholds,
+    ).toEqual({ tooBrightThreshold: 0.7 });
+  });
+
   it.each([0, 1.5, 13])("rejects invalid liveness frames count %s", (livenessFramesCount) => {
     expect(() => resolveFaceAnalysisSessionSettings({ livenessFramesCount })).toThrow();
   });

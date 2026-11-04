@@ -32,9 +32,6 @@ export type {
   LandmarkStabilityThresholds,
   LightingThresholds,
   ResolvedFaceAnalysisSessionSettings,
-  ResolvedFacePositionThresholds,
-  ResolvedLandmarkStabilityThresholds,
-  ResolvedLightingThresholds,
 } from "./settings.js";
 
 export { defaultFaceAnalysisSessionSettings, resolveFaceAnalysisSessionSettings } from "./settings.js";
