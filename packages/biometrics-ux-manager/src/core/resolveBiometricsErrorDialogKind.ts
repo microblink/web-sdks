@@ -25,7 +25,7 @@ export function resolveBiometricsErrorDialogKind(
     return undefined;
   }
 
-  if (phase === "capture" && code === "CAPTURE_TIMEOUT") {
+  if (phase === "capture" && (code === "CAPTURE_TIMEOUT" || code === "CAPTURE_INACTIVITY_TIMEOUT")) {
     return "scanningUnsuccessful";
   }
 

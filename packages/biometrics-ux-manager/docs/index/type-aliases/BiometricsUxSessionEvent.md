@@ -6,4 +6,4 @@
 
 # Type Alias: BiometricsUxSessionEvent
 
-> **BiometricsUxSessionEvent** = \{ `feedback`: `UnifiedFeedback`; `kind`: `"faceGuidance"`; \} \| \{ `data`: [`BiometricsCaptureTechnicalData`](BiometricsCaptureTechnicalData.md); `kind`: `"captureTechnicalData"`; \} \| \{ `kind`: `"captureFinished"`; `result`: `FaceCaptureResult`; \} \| \{ `kind`: `"captureTimeout"`; \}
+> **BiometricsUxSessionEvent** = \{ `feedback`: `UnifiedFeedback`; `kind`: `"faceGuidance"`; \} \| \{ `data`: [`BiometricsCaptureTechnicalData`](BiometricsCaptureTechnicalData.md); `kind`: `"captureTechnicalData"`; \} \| \{ `kind`: `"captureFinished"`; `result`: `FaceCaptureResult`; \} \| \{ `kind`: `"captureTimeout"`; `reason`: `CaptureTimeoutReason`; \}

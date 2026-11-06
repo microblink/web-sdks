@@ -54,6 +54,21 @@ Capture timeout in milliseconds. Set to `null` to disable.
 
 ***
 
+### inactivityTimeoutMs?
+
+> `optional` **inactivityTimeoutMs?**: `number` \| `null`
+
+Inactivity timeout in milliseconds. The timer restarts when the face guidance or capture state changes. Set to
+`null` to disable.
+
+#### Default
+
+```ts
+10000
+```
+
+***
+
 ### initializationTimeoutMs?
 
 > `optional` **initializationTimeoutMs?**: `number`

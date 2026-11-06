@@ -6,7 +6,7 @@
 
 # Function: selectWasmVariant()
 
-> **selectWasmVariant**(`capabilities`): [`WasmVariant`](../type-aliases/WasmVariant.md) \| `undefined`
+> **selectWasmVariant**(`capabilities`): `"simd"` \| `"simd-threads"` \| `"simd-relaxed"` \| `"simd-relaxed-threads"` \| `undefined`
 
 Selects the fastest supported runtime, or no runtime when SIMD is unavailable.
 
@@ -18,4 +18,4 @@ Selects the fastest supported runtime, or no runtime when SIMD is unavailable.
 
 ## Returns
 
-[`WasmVariant`](../type-aliases/WasmVariant.md) \| `undefined`
+`"simd"` \| `"simd-threads"` \| `"simd-relaxed"` \| `"simd-relaxed-threads"` \| `undefined`

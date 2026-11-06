@@ -1,5 +1,15 @@
 # @microblink/biometrics-core
 
+## 1000.1.0
+
+### Minor Changes
+
+- Added inactivity timer with a default of 10 seconds, configurable via `inactivityTimeoutMs`.
+
+### Patch Changes
+
+- Lowered default liveness frame count to 2
+
 ## 1000.0.5
 
 ### Patch Changes

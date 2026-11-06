@@ -148,13 +148,18 @@ manager.close();
 
 Factory callbacks stay registered for the manager's lifetime and are released by `manager.close()`.
 
-### Configuring and Subscribing to the Capture Timeout
+### Configuring and Subscribing to the Capture Timeouts
 
-The supplied Biometrics session owns the capture timeout. When using `@microblink/biometrics`, configure it while
-starting the session. The default is 60 seconds; set it to `null` to disable it:
+The supplied Biometrics session owns two capture timeouts:
+
+- `captureTimeoutMs` sets the maximum capture duration. The default is 60 seconds.
+- `inactivityTimeoutMs` sets the maximum time without a change in face guidance or capture state. Each change restarts
+  this timer. The default is 10 seconds.
+
+Configure them when you start the session. Set a value to `null` to disable that timeout:
 
 ```ts
-const session = sdk.startSession({ captureTimeoutMs: 60_000 });
+const session = sdk.startSession({ captureTimeoutMs: 60_000, inactivityTimeoutMs: 10_000 });
 ```
 
 Register timeout-specific handling through `onEvent` or `onError` when creating the manager:
@@ -163,19 +168,21 @@ Register timeout-specific handling through `onEvent` or `onError` when creating 
 const manager = await createBiometricsUxManager(cameraManager, session, {
   onEvent(event) {
     if (event.kind === "captureTimeout") {
-      handleCaptureTimeoutEvent();
+      handleCaptureTimeoutEvent(event.reason);
     }
   },
   onError(error) {
-    if (error.code === "CAPTURE_TIMEOUT") {
+    if (error.code === "CAPTURE_TIMEOUT" || error.code === "CAPTURE_INACTIVITY_TIMEOUT") {
       handleCaptureTimeoutError(error);
     }
   },
 });
 ```
 
-The `captureTimeout` event reports that the timer expired. The `CAPTURE_TIMEOUT` error reports the resulting retryable
-capture failure. Help pauses the active timer, and closing Help resumes it after frame capture restarts.
+The `captureTimeout` event reports that a timer expired. Its `reason` is `"maxDuration"` or `"inactivity"`. The
+`CAPTURE_TIMEOUT` and `CAPTURE_INACTIVITY_TIMEOUT` errors report the resulting retryable capture failure. Help pauses
+both timers. When Help closes and frame capture restarts, the capture timer continues and the inactivity timer starts
+again from zero.
 
 `showHelpButton` defaults to `true`. Set it to `false` to hide both the help
 button and its automatic tooltip nudge.

@@ -246,7 +246,7 @@ export function createBiometricsAnalytics(
               schemaName: "ping.sdk.ux.event",
               schemaVersion: "1.3.0",
               sessionNumber: context.sessionNumber,
-              data: { eventType: "StepTimeout" },
+              data: { eventType: event.reason === "inactivity" ? "InactivityTimeout" : "StepTimeout" },
             });
             await safeSendPinglets(transport);
 

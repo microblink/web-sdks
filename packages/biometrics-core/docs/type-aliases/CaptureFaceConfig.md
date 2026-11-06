@@ -26,6 +26,20 @@ false
 
 ***
 
+### inactivityTimeoutMs?
+
+> `optional` **inactivityTimeoutMs?**: `number` \| `null`
+
+Maximum duration in milliseconds without a feedback or capture state change. Set to `null` to disable.
+
+#### Default
+
+```ts
+10000
+```
+
+***
+
 ### initialDelayMs?
 
 > `optional` **initialDelayMs?**: `number`
@@ -132,9 +146,15 @@ Called when the capture session state changes.
 
 ### onTimeout?
 
-> `optional` **onTimeout?**: () => `void`
+> `optional` **onTimeout?**: (`reason`) => `void`
 
 Called when capture times out.
+
+#### Parameters
+
+##### reason
+
+[`CaptureTimeoutReason`](CaptureTimeoutReason.md)
 
 #### Returns
 

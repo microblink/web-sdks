@@ -197,6 +197,27 @@ describe("Analytics", () => {
     );
   });
 
+  it("reports inactivity timeout alerts", () => {
+    const capturing = uxState("capturing");
+    const { analytics, pings } = createAnalytics(capturing);
+    const error = uxState("error", {
+      errorDialogKind: "scanningUnsuccessful",
+      error: new BiometricsError({
+        message: "inactive",
+        code: "CAPTURE_INACTIVITY_TIMEOUT",
+        stage: "capture",
+        component: "sdk",
+        isRetryable: true,
+      }),
+    });
+
+    analytics.stateChanged(capturing, error);
+
+    expect(uxEvents(pings)).toContainEqual(
+      expect.objectContaining({ data: { eventType: "AlertDisplayed", alertType: "InactivityTimeout" } }),
+    );
+  });
+
   it("reports configured alert types for custom error dialogs", () => {
     const capturing = uxState("capturing");
     const { analytics, pings } = createAnalytics(capturing, { networkError: "NetworkError" });

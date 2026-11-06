@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@microblink/tsconfig": "workspace:*",
+    "@microblink/wasm-common": "workspace:*",
     "@typescript/native": "catalog:typescript",
     "oxfmt": "catalog:oxc",
     "oxlint": "catalog:oxc",

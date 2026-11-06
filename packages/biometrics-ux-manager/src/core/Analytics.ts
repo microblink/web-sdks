@@ -101,7 +101,9 @@ export class Analytics {
       }
 
       if (kind === "scanningUnsuccessful") {
-        void this.#analytics.logAlertDisplayedEvent("StepTimeout");
+        const isInactivityTimeout =
+          next.error instanceof BiometricsError && next.error.code === "CAPTURE_INACTIVITY_TIMEOUT";
+        void this.#analytics.logAlertDisplayedEvent(isInactivityTimeout ? "InactivityTimeout" : "StepTimeout");
         return;
       }
 

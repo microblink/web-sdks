@@ -90,6 +90,7 @@ export async function createBiometricsUi(options: BiometricsUiOptions): Promise<
   try {
     session = sdk.startSession({
       captureTimeoutMs: options.captureTimeoutMs,
+      inactivityTimeoutMs: options.inactivityTimeoutMs,
       captureFace: options.captureFace,
     });
   } catch (error) {

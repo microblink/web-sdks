@@ -6,7 +6,7 @@
 
 # Function: isWasmVariant()
 
-> **isWasmVariant**(`value`): `value is WasmVariant`
+> **isWasmVariant**(`value`): value is "simd" \| "simd-threads" \| "simd-relaxed" \| "simd-relaxed-threads"
 
 Checks whether a value names a shipped Wasm variant.
 
@@ -18,4 +18,4 @@ Checks whether a value names a shipped Wasm variant.
 
 ## Returns
 
-`value is WasmVariant`
+value is "simd" \| "simd-threads" \| "simd-relaxed" \| "simd-relaxed-threads"

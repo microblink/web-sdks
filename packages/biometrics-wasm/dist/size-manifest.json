@@ -1,14 +1,14 @@
 {
   "wasm": {
-    "simd": 1125311,
-    "simd-threads": 1151573,
-    "simd-relaxed": 1118172,
-    "simd-relaxed-threads": 1144448
+    "simd": 1170139,
+    "simd-threads": 1194250,
+    "simd-relaxed": 1162938,
+    "simd-relaxed-threads": 1187048
   },
   "data": {
-    "simd": 198569,
-    "simd-threads": 198569,
-    "simd-relaxed": 198569,
-    "simd-relaxed-threads": 198569
+    "simd": 198557,
+    "simd-threads": 198557,
+    "simd-relaxed": 198557,
+    "simd-relaxed-threads": 198557
   }
 }

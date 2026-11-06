@@ -65,6 +65,7 @@ describe("createBiometricsUi", () => {
       resourcesLocation: "/assets/",
       capture: { logLevel: "debug" },
       captureTimeoutMs: 42_000,
+      inactivityTimeoutMs: 7_000,
       captureFace: { debugMode: true },
     });
 
@@ -82,6 +83,7 @@ describe("createBiometricsUi", () => {
     );
     expect(sdk.startSession).toHaveBeenCalledWith({
       captureTimeoutMs: 42_000,
+      inactivityTimeoutMs: 7_000,
       captureFace: { debugMode: true },
     });
   });

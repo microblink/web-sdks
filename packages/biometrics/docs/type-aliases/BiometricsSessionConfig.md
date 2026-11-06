@@ -14,7 +14,7 @@ Per-session face capture options.
 
 ### captureFace?
 
-> `optional` **captureFace?**: `Omit`\<[`CaptureFaceConfig`](CaptureFaceConfig.md), `"timeoutMs"` \| `"onFeedbackChange"` \| `"onStateChange"` \| `"onCapture"` \| `"onTimeout"` \| `"onError"` \| `"onAnalysisResult"`\> & `object`
+> `optional` **captureFace?**: `Omit`\<[`CaptureFaceConfig`](CaptureFaceConfig.md), `"timeoutMs"` \| `"inactivityTimeoutMs"` \| `"onFeedbackChange"` \| `"onStateChange"` \| `"onCapture"` \| `"onTimeout"` \| `"onError"` \| `"onAnalysisResult"`\> & `object`
 
 Additional capture session and attempt options.
 
@@ -38,4 +38,19 @@ Capture timeout in milliseconds. Set to `null` to disable.
 
 ```ts
 60000
+```
+
+***
+
+### inactivityTimeoutMs?
+
+> `optional` **inactivityTimeoutMs?**: `number` \| `null`
+
+Inactivity timeout in milliseconds. The timer restarts when the face guidance or capture state changes. Set to
+`null` to disable.
+
+#### Default
+
+```ts
+10000
 ```

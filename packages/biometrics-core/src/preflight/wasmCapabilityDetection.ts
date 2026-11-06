@@ -1,7 +1,9 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { WasmCapabilities } from "@microblink/biometrics-common";
+import { isSafari } from "@microblink/worker-common/isSafari";
 import { detectRelaxedSimdSupport, detectWasmFeatures } from "@microblink/worker-common/wasm-feature-detect";
+import { isThreadedWasmVariant } from "@microblink/worker-common/wasmVariant";
 
 type DetectWasmFeatures = typeof detectWasmFeatures;
 type DetectRelaxedSimdSupport = typeof detectRelaxedSimdSupport;
@@ -14,12 +16,6 @@ function supportsSharedMemory(): boolean {
   }
 }
 
-function isSafari(): boolean {
-  const userAgent = globalThis.navigator?.userAgent?.toLowerCase() ?? "";
-
-  return userAgent.includes("safari") && !userAgent.includes("chrome");
-}
-
 export async function detectMainThreadWasmCapabilities(
   detectFeatures: DetectWasmFeatures = detectWasmFeatures,
   detectRelaxedSimd: DetectRelaxedSimdSupport = detectRelaxedSimdSupport,
@@ -28,7 +24,7 @@ export async function detectMainThreadWasmCapabilities(
   let threads = false;
 
   try {
-    threads = (await detectFeatures()).endsWith("-threads");
+    threads = isThreadedWasmVariant(await detectFeatures());
   } catch (error) {
     if (error instanceof Error && error.message === "Not implemented") {
       threads = true;
