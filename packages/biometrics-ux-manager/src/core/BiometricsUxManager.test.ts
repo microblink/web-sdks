@@ -290,7 +290,7 @@ describe("BiometricsUxManager", () => {
       name: "onboardingClosed",
     });
 
-    const event = { kind: "captureTimeout" } as const;
+    const event = { kind: "captureTimeout", reason: "maxDuration" } as const;
 
     session.emitEvent(event);
     expect(onEvent).toHaveBeenCalledWith(event);
@@ -855,7 +855,7 @@ describe("BiometricsUxManager", () => {
       onResult: throwConsumer,
     });
 
-    expect(() => session.emitEvent({ kind: "captureTimeout" })).not.toThrow();
+    expect(() => session.emitEvent({ kind: "captureTimeout", reason: "maxDuration" })).not.toThrow();
     expect(() =>
       session.emitDiagnostic({
         phase: "capture",

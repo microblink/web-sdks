@@ -225,6 +225,7 @@ export class BiometricsSessionImpl implements BiometricsSession {
       result = await captureSession.capture({
         ...captureFace,
         timeoutMs: this.config.captureTimeoutMs,
+        inactivityTimeoutMs: this.config.inactivityTimeoutMs,
         onStateChange: (sessionState) => {
           if (sessionState !== "COMPLETE" && this.#isCaptureActive(token, attempt)) {
             this.#updateCapture({ sessionState });
@@ -236,9 +237,9 @@ export class BiometricsSessionImpl implements BiometricsSession {
             this.#emit({ kind: "faceGuidance", feedback });
           }
         },
-        onTimeout: () => {
+        onTimeout: (reason) => {
           if (this.#isCaptureActive(token, attempt)) {
-            this.#emit({ kind: "captureTimeout" });
+            this.#emit({ kind: "captureTimeout", reason });
           }
         },
         onAnalysisResult: (analysis) => {

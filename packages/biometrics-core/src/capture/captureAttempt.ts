@@ -16,10 +16,18 @@ import { ConfigurationError, SessionError } from "../error";
 import type { CaptureSessionState } from "../session/session";
 import { createFaceCaptureResult } from "./captureResult";
 import type { createCaptureStore } from "./captureStore";
-import type { CaptureAnalysisResult, CaptureFaceConfig, CaptureMode, CaptureSessionContext } from "./captureTypes";
+import type {
+  CaptureAnalysisResult,
+  CaptureFaceConfig,
+  CaptureMode,
+  CaptureSessionContext,
+  CaptureTimeoutReason,
+} from "./captureTypes";
+import { PausableTimeout } from "./pausableTimeout";
 
 const DEFAULT_INITIAL_DELAY_MS = 1_000;
 const DEFAULT_CAPTURE_TIMEOUT_MS = 60_000;
+const DEFAULT_INACTIVITY_TIMEOUT_MS = 10_000;
 const INITIAL_FEEDBACK: UnifiedFeedback = "FACE_NOT_FOUND";
 
 const ALLOWED_STATE_TRANSITIONS: Readonly<Record<CaptureSessionState, ReadonlySet<CaptureSessionState>>> = {
@@ -32,15 +40,19 @@ const ALLOWED_STATE_TRANSITIONS: Readonly<Record<CaptureSessionState, ReadonlySe
   ERROR: new Set(["IDLE"]),
 };
 
-function resolveCaptureTimeout(timeoutMs: number | null | undefined): number {
+function resolveTimeout(
+  name: "timeoutMs" | "inactivityTimeoutMs",
+  timeoutMs: number | null | undefined,
+  defaultMs: number,
+): number | null {
   if (timeoutMs === null) {
-    return 0;
+    return null;
   }
 
-  const resolved = timeoutMs ?? DEFAULT_CAPTURE_TIMEOUT_MS;
+  const resolved = timeoutMs ?? defaultMs;
 
   if (!Number.isFinite(resolved) || resolved <= 0) {
-    throw new ConfigurationError("timeoutMs must be a positive finite number or null.", "INVALID_CONFIGURATION");
+    throw new ConfigurationError(`${name} must be a positive finite number or null.`, "INVALID_CONFIGURATION");
   }
 
   return resolved;
@@ -87,9 +99,8 @@ export class CaptureAttempt {
   #lastEmittedFeedbackKey: UnifiedFeedback = INITIAL_FEEDBACK;
   #captureStartedAtMs = 0;
 
-  #captureTimeoutRemainingMs: number;
-  #captureTimeoutStartedAtMs?: number;
-  #captureTimeoutId: ReturnType<typeof setTimeout> | undefined;
+  readonly #captureTimeout?: PausableTimeout;
+  readonly #inactivityTimeout?: PausableTimeout;
   #isCaptureTimeoutPaused = false;
   #state: CaptureSessionState = "IDLE";
   #isRetired = false;
@@ -103,7 +114,23 @@ export class CaptureAttempt {
     this.#processor = dependencies.processor;
     this.#store = dependencies.store;
     this.#logger = dependencies.logger;
-    this.#captureTimeoutRemainingMs = resolveCaptureTimeout(config.timeoutMs);
+
+    const timeoutMs = resolveTimeout("timeoutMs", config.timeoutMs, DEFAULT_CAPTURE_TIMEOUT_MS);
+    const inactivityTimeoutMs = resolveTimeout(
+      "inactivityTimeoutMs",
+      config.inactivityTimeoutMs,
+      DEFAULT_INACTIVITY_TIMEOUT_MS,
+    );
+
+    if (timeoutMs !== null) {
+      this.#captureTimeout = new PausableTimeout(timeoutMs, () => this.#handleCaptureTimeout("maxDuration"));
+    }
+
+    if (inactivityTimeoutMs !== null) {
+      this.#inactivityTimeout = new PausableTimeout(inactivityTimeoutMs, () =>
+        this.#handleCaptureTimeout("inactivity"),
+      );
+    }
   }
 
   public start(): Promise<FaceCaptureResult> {
@@ -127,10 +154,11 @@ export class CaptureAttempt {
     this.#setSessionState("ANALYZING");
 
     this.#logger.debug("Capture attempt started", {
-      timeoutMs: this.#captureTimeoutRemainingMs,
+      timeoutMs: this.#captureTimeout?.durationMs ?? null,
+      inactivityTimeoutMs: this.#inactivityTimeout?.durationMs ?? null,
       debugMode: this.#config.debugMode ?? false,
     });
-    this.#scheduleCaptureTimeout();
+    this.#resumeCaptureTimeouts();
 
     return resultPromise;
   }
@@ -188,19 +216,13 @@ export class CaptureAttempt {
     this.#isCaptureTimeoutPaused = paused;
 
     if (paused) {
-      if (this.#captureTimeoutStartedAtMs !== undefined) {
-        this.#captureTimeoutRemainingMs = Math.max(
-          0,
-          this.#captureTimeoutRemainingMs - (performance.now() - this.#captureTimeoutStartedAtMs),
-        );
-      }
-
-      this.#clearCaptureTimeout();
+      this.#captureTimeout?.pause();
+      this.#inactivityTimeout?.pause();
 
       return;
     }
 
-    this.#scheduleCaptureTimeout();
+    this.#restartInactivityTimeout();
   }
 
   public releaseForSuccessor(): void | Promise<void> {
@@ -241,6 +263,7 @@ export class CaptureAttempt {
         this.#lastEmittedFeedbackKey = stabilizedState.key;
         this.#store.setState({ feedback: stabilizedState.key });
         this.#invokeCallback(() => this.#config.onFeedbackChange?.(stabilizedState.key));
+        this.#restartInactivityTimeout();
       }
 
       if (result.feedback !== "OK") {
@@ -254,6 +277,7 @@ export class CaptureAttempt {
       if (this.#state === "ANALYZING") {
         this.#logger.debug("Transitioning to CAPTURING");
         this.#setSessionState("CAPTURING");
+        this.#restartInactivityTimeout();
       }
 
       if (!result.isCaptureComplete || this.#config.debugMode) {
@@ -261,7 +285,7 @@ export class CaptureAttempt {
       }
 
       this.#setSessionState("PROCESSING");
-      this.#clearCaptureTimeout();
+      this.#stopCaptureTimeouts();
 
       const captureMode = this.#getCaptureMode();
       const completion = await this.#processor.finish();
@@ -342,55 +366,54 @@ export class CaptureAttempt {
     this.#invokeCallback(() => this.#config.onAnalysisResult?.(analysisResult));
   }
 
-  #handleCaptureTimeout(): void {
+  #handleCaptureTimeout(reason: CaptureTimeoutReason): void {
     if (!this.#pendingCaptureRejecter) {
       return;
     }
 
     const captureRejecter = this.#pendingCaptureRejecter;
 
-    this.#logger.debug("Capture timed out");
+    this.#logger.debug("Capture timed out", { reason });
     this.#processor.dispose();
-    this.#clearCaptureTimeout();
 
-    const timeoutError: BiometricsError = new SessionError("Capture timed out", "CAPTURE_TIMEOUT", {
-      isRetryable: true,
-    });
+    const timeoutError: BiometricsError =
+      reason === "inactivity"
+        ? new SessionError("Capture timed out due to inactivity", "CAPTURE_INACTIVITY_TIMEOUT", { isRetryable: true })
+        : new SessionError("Capture timed out", "CAPTURE_TIMEOUT", { isRetryable: true });
 
     this.#clearPendingCapture();
     this.#setSessionState("TIMEOUT");
     this.#store.setState({ error: timeoutError });
-    this.#invokeCallback(() => this.#config.onTimeout?.());
+    this.#invokeCallback(() => this.#config.onTimeout?.(reason));
 
     captureRejecter(timeoutError);
   }
 
-  #clearCaptureTimeout(): void {
-    if (this.#captureTimeoutId !== undefined) {
-      clearTimeout(this.#captureTimeoutId);
-      this.#captureTimeoutId = undefined;
+  #resumeCaptureTimeouts(): void {
+    if (this.#isCaptureTimeoutPaused || !this.#pendingCaptureRejecter) {
+      return;
     }
 
-    this.#captureTimeoutStartedAtMs = undefined;
+    if (this.#state !== "ANALYZING" && this.#state !== "CAPTURING") {
+      return;
+    }
+
+    this.#captureTimeout?.start();
+    this.#inactivityTimeout?.start();
   }
 
-  #scheduleCaptureTimeout(): void {
-    if (this.#config.timeoutMs === null) {
-      return;
-    }
+  #restartInactivityTimeout(): void {
+    this.#inactivityTimeout?.reset();
+    this.#resumeCaptureTimeouts();
+  }
 
-    if (this.#isCaptureTimeoutPaused || !this.#pendingCaptureRejecter || this.#captureTimeoutId !== undefined) {
-      return;
-    }
-
-    this.#captureTimeoutStartedAtMs = performance.now();
-    this.#captureTimeoutId = setTimeout(() => {
-      this.#handleCaptureTimeout();
-    }, this.#captureTimeoutRemainingMs);
+  #stopCaptureTimeouts(): void {
+    this.#captureTimeout?.reset();
+    this.#inactivityTimeout?.reset();
   }
 
   #clearPendingCapture(): void {
-    this.#clearCaptureTimeout();
+    this.#stopCaptureTimeouts();
     this.#pendingCaptureResolver = undefined;
     this.#pendingCaptureRejecter = undefined;
   }

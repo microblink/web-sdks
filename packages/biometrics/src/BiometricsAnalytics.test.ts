@@ -41,7 +41,7 @@ describe("BiometricsAnalytics", () => {
       sessionContext,
     );
 
-    await analytics.logSessionEvent({ kind: "captureTimeout" });
+    await analytics.logSessionEvent({ kind: "captureTimeout", reason: "maxDuration" });
 
     expect(pings).toHaveLength(2);
     expect(pings[0]).toMatchObject({
@@ -61,6 +61,17 @@ describe("BiometricsAnalytics", () => {
       data: { eventType: "StepTimeout" },
     });
     expect(transport.sendPinglets).toHaveBeenCalledOnce();
+  });
+
+  it("reports inactivity timeouts", async () => {
+    const { pings, transport } = createTransport();
+    const analytics = createBiometricsAnalytics({ enabled: true, userId: "user-id" }, transport).forSession(
+      sessionContext,
+    );
+
+    await analytics.logSessionEvent({ kind: "captureTimeout", reason: "inactivity" });
+
+    expect(pings[1]).toMatchObject({ data: { eventType: "InactivityTimeout" } });
   });
 
   it("adds native session correlation to externally constructed analytics events", async () => {
@@ -246,7 +257,7 @@ describe("BiometricsAnalytics", () => {
 
     await analytics.logInitStarted();
     await analytics.logCaptureStarted();
-    await analytics.logSessionEvent({ kind: "captureTimeout" });
+    await analytics.logSessionEvent({ kind: "captureTimeout", reason: "maxDuration" });
     await analytics.logNonFatal("sdk.capture", new Error("boom"));
     await analytics.logDiagnostic({
       phase: "initialization",

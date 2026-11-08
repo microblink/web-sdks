@@ -54,6 +54,7 @@
 - [CaptureSignature](type-aliases/CaptureSignature.md)
 - [CaptureStore](type-aliases/CaptureStore.md)
 - [CaptureSubscribe](type-aliases/CaptureSubscribe.md)
+- [CaptureTimeoutReason](type-aliases/CaptureTimeoutReason.md)
 - [CheckBiometricsSupportOptions](type-aliases/CheckBiometricsSupportOptions.md)
 - [DerivedDeviceInfo](type-aliases/DerivedDeviceInfo.md)
 - [DeviceInfo](type-aliases/DeviceInfo.md)

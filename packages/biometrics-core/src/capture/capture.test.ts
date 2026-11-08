@@ -155,6 +155,17 @@ describe("BiometricsCapture", () => {
     };
   };
 
+  const advanceFramesUntilFeedbackChange = async (
+    capture: BiometricsCaptureSession,
+    advanceCaptureTime: (durationMs: number) => Promise<void>,
+    onFeedbackChange: ReturnType<typeof vi.fn>,
+  ) => {
+    while (onFeedbackChange.mock.calls.length === 0) {
+      await advanceCaptureTime(100);
+      await capture.processFrame(new ImageData(2, 2));
+    }
+  };
+
   it("forwards the WASM variant to analyzer initialization", async () => {
     const initialize = vi.spyOn(WasmFaceAnalyzer.prototype, "initialize");
 
@@ -778,7 +789,7 @@ describe("BiometricsCapture", () => {
     const advanceCaptureTime = useControllableCaptureTime();
     const onTimeout = vi.fn();
     const capture = await createCapture();
-    const resultPromise = capture.capture({ onTimeout });
+    const resultPromise = capture.capture({ inactivityTimeoutMs: null, onTimeout });
     const rejection = expect(resultPromise).rejects.toThrow("Capture timed out");
 
     await vi.advanceTimersByTimeAsync(0);
@@ -797,7 +808,7 @@ describe("BiometricsCapture", () => {
     const advanceCaptureTime = useControllableCaptureTime();
     const onTimeout = vi.fn();
     const capture = await createCapture();
-    const resultPromise = capture.capture({ timeoutMs: null, onTimeout });
+    const resultPromise = capture.capture({ timeoutMs: null, inactivityTimeoutMs: null, onTimeout });
 
     await vi.advanceTimersByTimeAsync(0);
     await advanceCaptureTime(120_000);
@@ -806,6 +817,106 @@ describe("BiometricsCapture", () => {
 
     const rejection = expect(resultPromise).rejects.toThrow("Capture session was closed");
     await capture.close();
+    await rejection;
+  });
+
+  it("times out after the default inactivity duration", async () => {
+    const advanceCaptureTime = useControllableCaptureTime();
+    const onTimeout = vi.fn();
+    const capture = await createCapture();
+    const resultPromise = capture.capture({ onTimeout });
+    const rejection = expect(resultPromise).rejects.toMatchObject({ code: "CAPTURE_INACTIVITY_TIMEOUT" });
+
+    await vi.advanceTimersByTimeAsync(0);
+    await advanceCaptureTime(9_999);
+
+    expect(onTimeout).not.toHaveBeenCalled();
+
+    await advanceCaptureTime(1);
+    await rejection;
+
+    expect(onTimeout).toHaveBeenCalledExactlyOnceWith("inactivity");
+    expect(capture.getState().sessionState).toBe("TIMEOUT");
+  });
+
+  it("restarts the inactivity timeout when the stabilized feedback changes", async () => {
+    const advanceCaptureTime = useControllableCaptureTime();
+    const onFeedbackChange = vi.fn();
+    processor.analyze.mockImplementation((image) => Promise.resolve(okResult(image, { feedback: "TOO_FAR" })));
+    const capture = await createCapture();
+    const resultPromise = startSingleCapture(capture, {
+      timeoutMs: null,
+      inactivityTimeoutMs: 5_000,
+      onFeedbackChange,
+    });
+    const rejection = expect(resultPromise).rejects.toMatchObject({ code: "CAPTURE_INACTIVITY_TIMEOUT" });
+
+    await vi.advanceTimersByTimeAsync(0);
+    await advanceFramesUntilFeedbackChange(capture, advanceCaptureTime, onFeedbackChange);
+    await advanceCaptureTime(4_999);
+
+    expect(capture.getState().sessionState).toBe("ANALYZING");
+
+    await advanceCaptureTime(1);
+    await rejection;
+  });
+
+  it("restarts the inactivity timeout when capturing starts", async () => {
+    const advanceCaptureTime = useControllableCaptureTime();
+    processor.analyze.mockImplementation((image) => Promise.resolve(okResult(image, { isCaptureComplete: false })));
+    const capture = await createCapture();
+    const resultPromise = startSingleCapture(capture, { timeoutMs: null, inactivityTimeoutMs: 100 });
+    const rejection = expect(resultPromise).rejects.toMatchObject({ code: "CAPTURE_INACTIVITY_TIMEOUT" });
+
+    await vi.advanceTimersByTimeAsync(0);
+    await advanceCaptureTime(80);
+    await capture.processFrame(new ImageData(2, 2));
+    await advanceCaptureTime(99);
+
+    expect(capture.getState().sessionState).toBe("CAPTURING");
+
+    await advanceCaptureTime(1);
+    await rejection;
+  });
+
+  it("times out after the maximum duration while feedback keeps changing", async () => {
+    const advanceCaptureTime = useControllableCaptureTime();
+    const onTimeout = vi.fn();
+    const onFeedbackChange = vi.fn();
+    processor.analyze.mockImplementation((image) => Promise.resolve(okResult(image, { feedback: "TOO_FAR" })));
+    const capture = await createCapture();
+    const resultPromise = startSingleCapture(capture, {
+      timeoutMs: 4_000,
+      inactivityTimeoutMs: 3_000,
+      onFeedbackChange,
+      onTimeout,
+    });
+    const rejection = expect(resultPromise).rejects.toMatchObject({ code: "CAPTURE_TIMEOUT" });
+
+    await vi.advanceTimersByTimeAsync(0);
+    await advanceFramesUntilFeedbackChange(capture, advanceCaptureTime, onFeedbackChange);
+    await advanceCaptureTime(2_000);
+    await rejection;
+
+    expect(onTimeout).toHaveBeenCalledExactlyOnceWith("maxDuration");
+  });
+
+  it("restarts the inactivity timeout after a pause", async () => {
+    const advanceCaptureTime = useControllableCaptureTime();
+    const capture = await createCapture();
+    const resultPromise = capture.capture({ timeoutMs: null, inactivityTimeoutMs: 100 });
+    const rejection = expect(resultPromise).rejects.toMatchObject({ code: "CAPTURE_INACTIVITY_TIMEOUT" });
+
+    await vi.advanceTimersByTimeAsync(0);
+    await advanceCaptureTime(40);
+    capture.setCaptureTimeoutPaused(true);
+    await advanceCaptureTime(5_000);
+    capture.setCaptureTimeoutPaused(false);
+    await advanceCaptureTime(99);
+
+    expect(capture.getState().sessionState).toBe("ANALYZING");
+
+    await advanceCaptureTime(1);
     await rejection;
   });
 

@@ -150,14 +150,16 @@ describe("BiometricsSession", () => {
     });
     const session = new BiometricsSessionImpl(
       () => Promise.resolve(capture as unknown as BiometricsCaptureSession),
-      { captureTimeoutMs: 42_000, captureFace: { debugMode: true } },
+      { captureTimeoutMs: 42_000, inactivityTimeoutMs: 7_000, captureFace: { debugMode: true } },
       analytics(),
     );
     session.onEvent((event) => events.push(event));
 
     await expect(session.run()).resolves.toBe(result);
 
-    expect(capture.capture).toHaveBeenCalledWith(expect.objectContaining({ timeoutMs: 42_000, debugMode: true }));
+    expect(capture.capture).toHaveBeenCalledWith(
+      expect.objectContaining({ timeoutMs: 42_000, inactivityTimeoutMs: 7_000, debugMode: true }),
+    );
     expect(events.map((event) => event.kind)).toEqual(["faceGuidance", "captureTechnicalData", "captureFinished"]);
     expect(session.getState()).toEqual({ phase: "succeeded", result });
     expect(capture.close).toHaveBeenCalledOnce();

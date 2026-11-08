@@ -99,6 +99,7 @@ const options: BiometricsUiOptions = {
   resourcesLocation: window.location.origin,
   targetNode: document.getElementById("biometrics-root") ?? undefined,
   captureTimeoutMs: 60_000,
+  inactivityTimeoutMs: 10_000,
   feedbackUiOptions: {
     showOnboardingGuide: true,
     showHelpButton: true,
@@ -111,7 +112,7 @@ const options: BiometricsUiOptions = {
   },
   onEvent(event) {
     if (event.kind === "captureTimeout") {
-      console.log("The user did not complete capture in time");
+      console.log("Capture timed out", event.reason);
     }
   },
 };

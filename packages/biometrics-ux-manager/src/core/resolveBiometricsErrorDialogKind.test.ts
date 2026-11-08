@@ -11,6 +11,7 @@ function errorWithCode(code: string): Error & { code: string } {
 describe("resolveBiometricsErrorDialogKind", () => {
   it.each([
     ["CAPTURE_TIMEOUT", "capture", "scanningUnsuccessful"],
+    ["CAPTURE_INACTIVITY_TIMEOUT", "capture", "scanningUnsuccessful"],
     ["FRAME_PROCESSING_FAILED", "capture", "scanningNotAvailable"],
     ["CAPTURE_TIMEOUT", "processing", "scanningNotAvailable"],
     ["CAPTURE_TIMEOUT", "runtime", "scanningNotAvailable"],

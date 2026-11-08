@@ -6,4 +6,8 @@ export const wasmVariants = ["simd", "simd-threads", "simd-relaxed", "simd-relax
 
 export type ResourceFileType = (typeof resourceFileTypes)[number];
 export type WasmBuildType = (typeof wasmBuildTypes)[number];
+/**
+ * Native WebAssembly runtime variants. `simd*` variants use fixed-width SIMD only; `simd-relaxed*` variants
+ * additionally use relaxed SIMD instructions. `*-threads` variants use pthreads and require shared memory.
+ */
 export type WasmVariant = (typeof wasmVariants)[number];

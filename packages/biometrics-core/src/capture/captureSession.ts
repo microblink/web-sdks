@@ -164,7 +164,10 @@ export class BiometricsCaptureSessionImpl implements BiometricsCaptureSession {
         emitBiometricsDiagnostic(this.#config.onDiagnostic, {
           phase: "capture",
           component: "sdk",
-          status: normalized.code === "CAPTURE_TIMEOUT" ? "timed-out" : "failed",
+          status:
+            normalized.code === "CAPTURE_TIMEOUT" || normalized.code === "CAPTURE_INACTIVITY_TIMEOUT"
+              ? "timed-out"
+              : "failed",
           timestamp: new Date().toISOString(),
           durationMs: performance.now() - startedAt,
           errorCode: normalized.code,

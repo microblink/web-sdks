@@ -37,6 +37,7 @@ export type {
   CaptureMode,
   CaptureSubscribe,
   CaptureSessionContext,
+  CaptureTimeoutReason,
   FaceAnalysisSessionSettings,
   FacePositionThresholds,
   ImageOrigin,

@@ -5,6 +5,7 @@ import type {
   CaptureFaceConfig,
   CaptureLogLevel,
   CaptureSessionState,
+  CaptureTimeoutReason,
   FaceAnalysisSessionSettings,
   ImageOrigin,
   UnifiedFeedback,
@@ -76,10 +77,22 @@ export type BiometricsSettings = {
 export type BiometricsSessionConfig = {
   /** Capture timeout in milliseconds. Set to `null` to disable. @default 60000 */
   captureTimeoutMs?: number | null;
+  /**
+   * Inactivity timeout in milliseconds. The timer restarts when the face guidance or capture state changes. Set to
+   * `null` to disable. @default 10000
+   */
+  inactivityTimeoutMs?: number | null;
   /** Additional capture session and attempt options. */
   captureFace?: Omit<
     CaptureFaceConfig,
-    "timeoutMs" | "onFeedbackChange" | "onStateChange" | "onCapture" | "onTimeout" | "onError" | "onAnalysisResult"
+    | "timeoutMs"
+    | "inactivityTimeoutMs"
+    | "onFeedbackChange"
+    | "onStateChange"
+    | "onCapture"
+    | "onTimeout"
+    | "onError"
+    | "onAnalysisResult"
   > & {
     /** Native quality thresholds fixed for this session and reused by every capture attempt. */
     thresholds?: FaceAnalysisSessionSettings;
@@ -91,7 +104,7 @@ export type BiometricsSessionEvent =
   | { kind: "faceGuidance"; feedback: UnifiedFeedback }
   | { kind: "captureTechnicalData"; data: CaptureTechnicalData }
   | { kind: "captureFinished"; result: FaceCaptureResult }
-  | { kind: "captureTimeout" };
+  | { kind: "captureTimeout"; reason: CaptureTimeoutReason };
 
 export type BiometricsUiEvent =
   | BiometricsSessionEvent
@@ -172,6 +185,11 @@ export type BiometricsUiOptions = {
   analytics?: BiometricsAnalyticsSettings;
   /** Capture timeout in milliseconds. Set to `null` to disable. @default 60000 */
   captureTimeoutMs?: number | null;
+  /**
+   * Inactivity timeout in milliseconds. The timer restarts when the face guidance or capture state changes. Set to
+   * `null` to disable. @default 10000
+   */
+  inactivityTimeoutMs?: number | null;
   captureFace?: BiometricsSessionConfig["captureFace"];
   feedbackUiOptions?: BiometricsFeedbackUiOptions;
   onEvent?: (event: BiometricsUiEvent) => void;

@@ -1,18 +1,22 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
-/**
- * Native WebAssembly runtime variants shipped with Biometrics. `simd*` variants use fixed-width SIMD only;
- * `simd-relaxed*` variants additionally use relaxed SIMD instructions. `*-threads` variants use pthreads and require
- * shared memory.
- */
-export type WasmVariant = "simd" | "simd-threads" | "simd-relaxed" | "simd-relaxed-threads";
+import type { WasmVariant } from "@microblink/wasm-common";
+
+export type { WasmVariant } from "@microblink/wasm-common";
+
+const wasmVariantNames: Record<WasmVariant, true> = {
+  simd: true,
+  "simd-threads": true,
+  "simd-relaxed": true,
+  "simd-relaxed-threads": true,
+};
 
 /** Every Wasm variant shipped with Biometrics. */
-export const WASM_VARIANTS: readonly WasmVariant[] = ["simd", "simd-threads", "simd-relaxed", "simd-relaxed-threads"];
+export const WASM_VARIANTS: readonly WasmVariant[] = Object.keys(wasmVariantNames).filter(isWasmVariant);
 
 /** Checks whether a value names a shipped Wasm variant. */
 export function isWasmVariant(value: unknown): value is WasmVariant {
-  return typeof value === "string" && (WASM_VARIANTS as readonly string[]).includes(value);
+  return typeof value === "string" && Object.hasOwn(wasmVariantNames, value);
 }
 
 /** Browser capabilities used by the Biometrics variant selection policy. */

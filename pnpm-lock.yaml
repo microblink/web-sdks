@@ -1135,6 +1135,9 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@microblink/wasm-common':
+        specifier: workspace:*
+        version: link:../wasm-common
       '@typescript/native':
         specifier: catalog:typescript
         version: typescript@7.0.2
@@ -1208,6 +1211,9 @@ importers:
       '@microblink/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@microblink/wasm-common':
+        specifier: workspace:*
+        version: link:../wasm-common
       '@typescript/native':
         specifier: catalog:typescript
         version: typescript@7.0.2

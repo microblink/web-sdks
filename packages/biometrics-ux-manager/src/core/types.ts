@@ -1,7 +1,12 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
 import type { Ping, PingUxEventData } from "@microblink/analytics/ping";
-import type { BoundingBox, CaptureSessionState, UnifiedFeedback } from "@microblink/biometrics-core";
+import type {
+  BoundingBox,
+  CaptureSessionState,
+  CaptureTimeoutReason,
+  UnifiedFeedback,
+} from "@microblink/biometrics-core";
 import type {
   BiometricsDiagnosticEvent,
   BiometricsError,
@@ -29,7 +34,7 @@ export type BiometricsUxSessionEvent =
       data: BiometricsCaptureTechnicalData;
     }
   | { kind: "captureFinished"; result: FaceCaptureResult }
-  | { kind: "captureTimeout" };
+  | { kind: "captureTimeout"; reason: CaptureTimeoutReason };
 
 /** Session stage that failed. `processing` covers work the session performs after capture completes. */
 export type BiometricsUxFailureStage = "capture" | "processing";

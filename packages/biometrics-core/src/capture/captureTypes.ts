@@ -89,6 +89,12 @@ export type CaptureConfig = {
   onDownloadProgress?: ProgressStatusCallback;
 };
 
+/**
+ * Cause of a capture timeout: no feedback or state change for `inactivityTimeoutMs`, or capture longer than
+ * `timeoutMs`.
+ */
+export type CaptureTimeoutReason = "inactivity" | "maxDuration";
+
 /** Configuration options for one face capture attempt. */
 export type CaptureFaceConfig = {
   /**
@@ -126,8 +132,14 @@ export type CaptureFaceConfig = {
    * @default 60000
    */
   timeoutMs?: number | null;
+  /**
+   * Maximum duration in milliseconds without a feedback or capture state change. Set to `null` to disable.
+   *
+   * @default 10000
+   */
+  inactivityTimeoutMs?: number | null;
   /** Called when capture times out. */
-  onTimeout?: () => void;
+  onTimeout?: (reason: CaptureTimeoutReason) => void;
   /** Called when capture fails. */
   onError?: (error: BiometricsError) => void;
 };
