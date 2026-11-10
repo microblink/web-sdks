@@ -282,6 +282,23 @@ The SDK reports failures as `BiometricsError`. Use `code` to identify the failur
 
 Analytics are queued and sent through the native WASM PingV3 transport. Use `analytics.userId` and `analytics.pingProxyUrl` to configure the transport. Set `analytics.enabled` to `false` to disable top-level capture metadata events.
 
+### Telemetry from wrapper products
+
+Products that wrap the SDK can queue their own pinglets, for example to link SDK telemetry to their transaction:
+
+```ts
+const ui = await createBiometricsUi({ licenseKey: "<license-key>" });
+
+await ui.biometricsSdk.reportPinglet({
+  schemaName: "ping.sdk.wrapper.product",
+  schemaVersion: "1.0.0",
+  sessionNumber: 0,
+  data: { wrapperProduct: "IdentityVerification", correlationId: transactionId },
+});
+```
+
+With `createBiometrics`, call `reportPinglet` on the returned SDK. Pinglets are sent with the SDK's next batch; call `sendPinglets()` to send them immediately. Nothing is queued when `analytics.enabled` is `false`.
+
 ## Development
 
 ```sh
