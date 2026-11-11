@@ -1,5 +1,7 @@
 # @microblink/biometrics-core
 
+## 1000.2.0
+
 ## 1000.1.0
 
 ### Minor Changes

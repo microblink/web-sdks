@@ -1,6 +1,6 @@
 {
   "name": "@microblink/biometrics-ux-manager",
-  "version": "1000.1.0",
+  "version": "1000.2.0",
   "description": "Biometrics guided capture UX manager for Web",
   "keywords": [
     "biometrics",
@@ -63,7 +63,7 @@
     "watch": "pnpm run --no-bail \"/^watch:(js|types)$/\"",
     "watch:js": "pnpm run build:js --watch --mode development",
     "watch:types": "pnpm run build:types --watch",
-    "typecheck": "tsc -p tsconfig.build.json --emitDeclarationOnly false --noEmit"
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@microblink/analytics": "workspace:*",

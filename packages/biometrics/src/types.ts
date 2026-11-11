@@ -161,6 +161,10 @@ export type BiometricsSession = {
 export type BiometricsSdk = {
   /** Creates a face capture session. */
   startSession(config?: BiometricsSessionConfig): BiometricsSession;
+  /** Queues a pinglet to be sent with the SDK's next pinglet batch. */
+  reportPinglet(ping: Ping): Promise<void>;
+  /** Sends all queued pinglets. */
+  sendPinglets(): Promise<void>;
   close(): Promise<void>;
 };
 
@@ -199,5 +203,7 @@ export type BiometricsUiOptions = {
 };
 
 export type BiometricsUi = {
+  /** The Biometrics SDK instance. */
+  biometricsSdk: BiometricsSdk;
   destroy(): Promise<void>;
 };

@@ -131,6 +131,41 @@ describe("createBiometrics", () => {
     expect(fixture.client.close).toHaveBeenCalledOnce();
   });
 
+  it("queues and sends pinglets reported by the integrator", async () => {
+    const fixture = captureClient();
+    createBiometricsCaptureMock.mockResolvedValue(fixture.client);
+    const sdk = await createBiometrics({ licenseKey: "license" });
+    const ping: Ping = {
+      schemaName: "ping.sdk.wrapper.product",
+      schemaVersion: "1.0.0",
+      sessionNumber: 0,
+      data: { wrapperProduct: "IdentityVerification", correlationId: "idv-transaction-id" },
+    };
+
+    await sdk.reportPinglet(ping);
+    await sdk.sendPinglets();
+
+    expect(fixture.client.ping).toHaveBeenCalledWith(ping);
+    expect(fixture.client.sendPinglets).toHaveBeenCalledOnce();
+  });
+
+  it("drops pinglets reported by the integrator when analytics are disabled", async () => {
+    const fixture = captureClient();
+    createBiometricsCaptureMock.mockResolvedValue(fixture.client);
+    const sdk = await createBiometrics({ licenseKey: "license", analytics: { enabled: false } });
+
+    await sdk.reportPinglet({
+      schemaName: "ping.sdk.wrapper.product",
+      schemaVersion: "1.0.0",
+      sessionNumber: 0,
+      data: { wrapperProduct: "IdentityVerification" },
+    });
+    await sdk.sendPinglets();
+
+    expect(fixture.client.ping).not.toHaveBeenCalled();
+    expect(fixture.client.sendPinglets).not.toHaveBeenCalled();
+  });
+
   it("closes the capture SDK once", async () => {
     const fixture = captureClient();
     createBiometricsCaptureMock.mockResolvedValue(fixture.client);

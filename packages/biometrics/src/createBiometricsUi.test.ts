@@ -118,6 +118,12 @@ describe("createBiometricsUi", () => {
     expect(cameraUi.dismount).toHaveBeenCalledOnce();
   });
 
+  it("exposes the initialized SDK", async () => {
+    const ui = await createBiometricsUi({ licenseKey: "license" });
+
+    expect(ui.biometricsSdk).toBe(sdk);
+  });
+
   it("destroys capture, UX, camera, and SDK resources once", async () => {
     const ui = await createBiometricsUi({ licenseKey: "license" });
 

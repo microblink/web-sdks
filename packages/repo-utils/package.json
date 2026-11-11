@@ -16,7 +16,7 @@
     "lint:browserslist": "tsx browser-support.mts",
     "test": "vitest run --silent",
     "test:watch": "vitest --silent",
-    "typecheck": "tsc --noEmit --skipLibCheck"
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "catalog:",

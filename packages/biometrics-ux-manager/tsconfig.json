@@ -1,9 +1,9 @@
 {
   "extends": "@microblink/tsconfig/base.json",
   "compilerOptions": {
-    "emitDeclarationOnly": true,
-    "declarationDir": "types",
-    "rootDir": "src",
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
     "jsx": "preserve",
     "moduleResolution": "Bundler",
     "jsxImportSource": "solid-js",
@@ -12,5 +12,5 @@
       "@microblink/biometrics-ux-manager/core": ["./src/core.ts"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "test"]
 }

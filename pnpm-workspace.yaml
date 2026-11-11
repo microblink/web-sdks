@@ -98,3 +98,5 @@ overrides:
 minimumReleaseAgeExclude:
   # Renovate security update: browserslist@4.28.7
   - browserslist@4.28.7
+  # Microblink package, released on 2026-11-05
+  - tsc-staged@1.0.0

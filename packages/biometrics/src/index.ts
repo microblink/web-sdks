@@ -32,6 +32,7 @@ export type {
   BiometricsSettings,
   ProgressStatusCallback,
 } from "./types";
+export type * from "@microblink/analytics/ping";
 
 export type {
   BiometricsResourceKind as CaptureBiometricsResourceKind,

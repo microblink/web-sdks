@@ -48,7 +48,7 @@ Session-scoped access to the native analytics transport.
 
 ##### event
 
-`Omit`\<`PingBrowserDeviceInfo`, `"sessionNumber"`\> \| `Omit`\<`PingError`, `"sessionNumber"`\> \| `Omit`\<`PingCameraHardwareInfo`, `"sessionNumber"`\> \| `Omit`\<`PingLog`, `"sessionNumber"`\> \| `Omit`\<`PingCameraInputInfo`, `"sessionNumber"`\> \| `Omit`\<`PingCameraPermission`, `"sessionNumber"`\> \| `Omit`\<`PingSdkInitStart`, `"sessionNumber"`\> \| `Omit`\<`PingScanningConditions`, `"sessionNumber"`\> \| `Omit`\<`PingUpload`, `"sessionNumber"`\> \| `Omit`\<`PingUxEvent`, `"sessionNumber"`\> \| `Omit`\<`PingWrapperProductInfo`, `"sessionNumber"`\>
+`Omit`\<[`PingBrowserDeviceInfo`](PingBrowserDeviceInfo.md), `"sessionNumber"`\> \| `Omit`\<[`PingError`](PingError.md), `"sessionNumber"`\> \| `Omit`\<[`PingCameraHardwareInfo`](PingCameraHardwareInfo.md), `"sessionNumber"`\> \| `Omit`\<[`PingLog`](PingLog.md), `"sessionNumber"`\> \| `Omit`\<[`PingCameraInputInfo`](PingCameraInputInfo.md), `"sessionNumber"`\> \| `Omit`\<[`PingCameraPermission`](PingCameraPermission.md), `"sessionNumber"`\> \| `Omit`\<[`PingSdkInitStart`](PingSdkInitStart.md), `"sessionNumber"`\> \| `Omit`\<[`PingScanningConditions`](PingScanningConditions.md), `"sessionNumber"`\> \| `Omit`\<[`PingUpload`](PingUpload.md), `"sessionNumber"`\> \| `Omit`\<[`PingUxEvent`](PingUxEvent.md), `"sessionNumber"`\> \| `Omit`\<[`PingWrapperProductInfo`](PingWrapperProductInfo.md), `"sessionNumber"`\>
 
 #### Returns
 

@@ -14,6 +14,7 @@
 
 ## Interfaces
 
+- [PingBase](interfaces/PingBase.md)
 - [UADataValues](interfaces/UADataValues.md)
 
 ## Type Aliases
@@ -68,7 +69,31 @@
 - [LocaleRecord](type-aliases/LocaleRecord.md)
 - [LocalizationStrings](type-aliases/LocalizationStrings.md)
 - [PartialLocalizationStrings](type-aliases/PartialLocalizationStrings.md)
+- [Ping](type-aliases/Ping.md)
+- [PingBrowserDeviceInfo](type-aliases/PingBrowserDeviceInfo.md)
+- [PingBrowserDeviceInfoData](type-aliases/PingBrowserDeviceInfoData.md)
+- [PingCameraHardwareInfo](type-aliases/PingCameraHardwareInfo.md)
+- [PingCameraHardwareInfoData](type-aliases/PingCameraHardwareInfoData.md)
+- [PingCameraInputInfo](type-aliases/PingCameraInputInfo.md)
+- [PingCameraInputInfoData](type-aliases/PingCameraInputInfoData.md)
+- [PingCameraPermission](type-aliases/PingCameraPermission.md)
+- [PingCameraPermissionData](type-aliases/PingCameraPermissionData.md)
+- [PingError](type-aliases/PingError.md)
+- [PingErrorData](type-aliases/PingErrorData.md)
+- [PingLog](type-aliases/PingLog.md)
+- [PingLogData](type-aliases/PingLogData.md)
+- [PingScanningConditions](type-aliases/PingScanningConditions.md)
+- [PingScanningConditionsData](type-aliases/PingScanningConditionsData.md)
+- [PingSdkInitStart](type-aliases/PingSdkInitStart.md)
+- [PingSdkInitStartData](type-aliases/PingSdkInitStartData.md)
+- [PingUpload](type-aliases/PingUpload.md)
+- [PingUploadData](type-aliases/PingUploadData.md)
+- [PingUxEvent](type-aliases/PingUxEvent.md)
+- [PingUxEventData](type-aliases/PingUxEventData.md)
+- [PingWrapperProductInfo](type-aliases/PingWrapperProductInfo.md)
+- [PingWrapperProductInfoData](type-aliases/PingWrapperProductInfoData.md)
 - [ProgressStatusCallback](type-aliases/ProgressStatusCallback.md)
+- [SchemaName](type-aliases/SchemaName.md)
 - [UnifiedFeedback](type-aliases/UnifiedFeedback.md)
 - [WasmVariant](type-aliases/WasmVariant.md)
 

@@ -1,5 +1,17 @@
 # @microblink/biometrics
 
+## 1000.2.0
+
+### Minor Changes
+
+- Added `reportPinglet` and `sendPinglets` so wrapper products can send their own pinglets
+
+### Patch Changes
+
+- Updated dependencies
+  - @microblink/biometrics-core@1000.2.0
+  - @microblink/biometrics-ux-manager@1000.2.0
+
 ## 1000.1.0
 
 ### Minor Changes

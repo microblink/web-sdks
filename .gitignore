@@ -175,7 +175,7 @@ web_modules/
 
 # TypeScript cache
 *.tsbuildinfo
-.tsconfig.staged-*.json
+.tsconfig.tsc-staged-*.json
 
 # Optional npm cache directory
 .npm
