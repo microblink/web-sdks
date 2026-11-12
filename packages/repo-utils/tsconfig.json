@@ -2,6 +2,7 @@
 {
   "compilerOptions": {
     "noEmit": true,
+    "skipLibCheck": true,
     "target": "esnext",
     "module": "nodenext",
     "noImplicitAny": false,

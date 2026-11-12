@@ -1,5 +1,5 @@
 export default {
-  "{apps,packages}/**/*.{ts,tsx,mts,cts}": "node packages/repo-utils/staged-typecheck.mts",
+  "{apps,packages}/**/*.{ts,tsx,mts,cts}": "tsc-staged",
   "{apps,packages}/**/*.{js,cjs,mjs,jsx,ts,mts,cts,tsx}": "pnpm lint --max-warnings=0",
   "apps/**/*.{js,cjs,mjs,jsx,ts,mts,cts,tsx,css,md}": "pnpm exec oxfmt --check --no-error-on-unmatched-pattern",
   "packages/*/src/**/*.{js,cjs,mjs,jsx,ts,mts,cts,tsx,css,md}":

@@ -8,6 +8,14 @@
 
 > **BiometricsUi** = `object`
 
+## Properties
+
+### biometricsSdk
+
+> **biometricsSdk**: [`BiometricsSdk`](BiometricsSdk.md)
+
+The Biometrics SDK instance.
+
 ## Methods
 
 ### destroy()

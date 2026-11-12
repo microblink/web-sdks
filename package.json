@@ -56,6 +56,7 @@
     "oxlint-plugin-oxfmt": "0.1.0",
     "oxlint-tsgolint": "catalog:oxc",
     "rimraf": "catalog:utils",
+    "tsc-staged": "~1.0.0",
     "turbo": "^2.8.10",
     "typescript": "catalog:typescript",
     "vitest": "catalog:test",

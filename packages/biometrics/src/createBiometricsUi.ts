@@ -307,7 +307,7 @@ export async function createBiometricsUi(options: BiometricsUiOptions): Promise<
 
     initialization.complete();
 
-    return { destroy: () => destroy("Sdk") };
+    return { biometricsSdk: sdk, destroy: () => destroy("Sdk") };
   } catch (error) {
     const normalized = initialization.reportError(error);
     initialization.fail(normalized);

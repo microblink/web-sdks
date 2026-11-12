@@ -1,5 +1,6 @@
 /** Copyright (c) 2026 Microblink Ltd. All rights reserved. */
 
+import type { Ping } from "@microblink/analytics/ping";
 import { createBiometricsCapture } from "@microblink/biometrics-core";
 import type { BiometricsCaptureClient } from "@microblink/biometrics-core";
 import type { BiometricsDiagnosticEvent } from "@microblink/biometrics-core";
@@ -48,6 +49,14 @@ class BiometricsSdkImpl implements BiometricsSdk {
       this.subscribeDiagnostic,
       () => this.#capture.getCameraCaptureHooks(),
     );
+  }
+
+  reportPinglet(ping: Ping): Promise<void> {
+    return this.#analytics.ping(ping);
+  }
+
+  sendPinglets(): Promise<void> {
+    return this.#analytics.sendPinglets();
   }
 
   close(): Promise<void> {

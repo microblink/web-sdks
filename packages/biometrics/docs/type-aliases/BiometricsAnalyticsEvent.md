@@ -6,4 +6,4 @@
 
 # Type Alias: BiometricsAnalyticsEvent
 
-> **BiometricsAnalyticsEvent** = `Ping` *extends* infer Event ? `Event` *extends* `object` ? `Omit`\<`Event`, `"sessionNumber"`\> : `never` : `never`
+> **BiometricsAnalyticsEvent** = [`Ping`](Ping.md) *extends* infer Event ? `Event` *extends* `object` ? `Omit`\<`Event`, `"sessionNumber"`\> : `never` : `never`
