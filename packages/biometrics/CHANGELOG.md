@@ -1,5 +1,14 @@
 # @microblink/biometrics
 
+## 1000.2.1
+
+### Patch Changes
+
+- Fixed explicit pinglet calls being dropped when analytics are disabled.
+- Updated dependencies
+  - @microblink/biometrics-core@1000.2.1
+  - @microblink/biometrics-ux-manager@1000.2.1
+
 ## 1000.2.0
 
 ### Minor Changes
