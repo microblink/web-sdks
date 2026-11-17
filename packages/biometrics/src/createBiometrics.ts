@@ -52,11 +52,11 @@ class BiometricsSdkImpl implements BiometricsSdk {
   }
 
   reportPinglet(ping: Ping): Promise<void> {
-    return this.#analytics.ping(ping);
+    return this.#capture.ping(ping);
   }
 
   sendPinglets(): Promise<void> {
-    return this.#analytics.sendPinglets();
+    return this.#capture.sendPinglets();
   }
 
   close(): Promise<void> {
