@@ -116,7 +116,7 @@ export const App: Component = () => {
   /** Loads the SDK once and reuses it for every capture. */
   const getSdk = (): Promise<BiometricsSdk> => {
     sdkPromise ??= createBiometrics({
-      licenseKey: import.meta.env.VITE_LICENCE_KEY,
+      licenseKey: import.meta.env.VITE_BIOMETRICS_LICENCE_KEY,
       onDownloadProgress: (progress) => setDownloadProgress(progress.progress),
       // analytics: { enabled: false },
       // wasmVariant: "simd",

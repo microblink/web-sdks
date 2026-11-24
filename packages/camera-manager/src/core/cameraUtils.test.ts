@@ -236,6 +236,18 @@ describe("findIdealCamera", () => {
     expect(result).toBe(cameras[2]);
   });
 
+  test("selects the previous front camera when the last one does not start", async () => {
+    const cameras = [
+      new MockCamera("Integrated Webcam"),
+      new MockCamera("OBS Virtual Camera", {
+        startStreamFn: () => Promise.reject(new DOMException("Could not start video source", "NotReadableError")),
+      }),
+    ];
+
+    const result = await findIdealCamera(cameras, "1080p", "front");
+    expect(result).toBe(cameras[0]);
+  });
+
   test("prioritizes cameras with better capabilities when facing mode matches", async () => {
     const cameras = [
       new MockCamera("Basic Back Camera", { facingMode: "back" }),

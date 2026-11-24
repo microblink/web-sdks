@@ -335,7 +335,7 @@ class BlinkCardCustomUiExample {
 
     this.#coreLoad ??= loadBlinkCardCore(
       {
-        licenseKey: import.meta.env.VITE_LICENCE_KEY,
+        licenseKey: import.meta.env.VITE_BLINKCARD_LICENCE_KEY,
       },
       (progress) => {
         if (this.#isSdkCurrent(sdkRunId)) {

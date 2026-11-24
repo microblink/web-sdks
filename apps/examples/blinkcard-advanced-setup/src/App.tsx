@@ -43,7 +43,7 @@ export const App: Component = () => {
     setResult(undefined);
 
     const blinkCardCore = await loadBlinkCardCore({
-      licenseKey: import.meta.env.VITE_LICENCE_KEY,
+      licenseKey: import.meta.env.VITE_BLINKCARD_LICENCE_KEY,
     });
 
     const session = await blinkCardCore.createScanningSession({

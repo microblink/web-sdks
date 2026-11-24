@@ -10,9 +10,9 @@ Production consumer bundle sizes for `@microblink/camera-manager`:
 
 | Entrypoint | Minified | Gzip     |
 | ---------- | -------- | -------- |
-| `root`     | 97.83 kB | 28.39 kB |
-| `/core`    | 43.84 kB | 13.30 kB |
-| `/ui`      | 63.13 kB | 18.15 kB |
+| `root`     | 97.82 kB | 28.58 kB |
+| `/core`    | 43.50 kB | 13.37 kB |
+| `/ui`      | 63.46 kB | 18.25 kB |
 
 External packages and runtime assets such as workers, WASM, and models are excluded. Shared code is included in each entrypoint that loads it.
 

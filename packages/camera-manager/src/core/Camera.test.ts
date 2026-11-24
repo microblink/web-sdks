@@ -181,6 +181,19 @@ describe("Camera resolution fallback", () => {
     await expect(camera.startStream("720p")).rejects.toThrow("Failed to get camera stream");
   });
 
+  test("should not try lower resolutions when the camera cannot start", async () => {
+    const cameraBusy = new DOMException("Could not start video source", "NotReadableError");
+    mockGetUserMedia.mockRejectedValue(cameraBusy);
+
+    const camera = new Camera(createMockInputDeviceInfo({ label: "OBS Virtual Camera" }));
+
+    await expect(camera.startStream("1080p")).rejects.toMatchObject({
+      message: "Failed to get camera stream",
+      cause: cameraBusy,
+    });
+    expect(mockGetUserMedia).toHaveBeenCalledTimes(1);
+  });
+
   test("should use maxSupportedResolution when available", async () => {
     const mockStream = createMockMediaStream();
     mockGetUserMedia.mockResolvedValue(mockStream);

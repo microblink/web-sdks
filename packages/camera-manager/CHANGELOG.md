@@ -1,5 +1,12 @@
 # @microblink/camera-manager
 
+## 8.2.1
+
+### Patch Changes
+
+- Fixed cropped frame extraction in 2D mode to return the requested source region without scaling or added black borders.
+- Fixed front camera capture failing when the selected camera can't start, such as an inactive virtual camera. The next available camera is now used instead.
+
 ## 8.2.0
 
 ### Minor Changes

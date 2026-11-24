@@ -44,7 +44,7 @@ export const App: Component = () => {
   const createSession = async () => {
     try {
       const blinkId = await loadBlinkIdCore({
-        licenseKey: import.meta.env.VITE_LICENCE_KEY,
+        licenseKey: import.meta.env.VITE_BLINKID_LICENCE_KEY,
       });
 
       const session = await blinkId.createScanningSession();

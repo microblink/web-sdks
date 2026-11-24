@@ -23,6 +23,6 @@ The application performs the following actions:
 
 ## How to Run
 
-Copy `.env.example` to `.env.local`. Set `VITE_LICENCE_KEY`, and set `VERIFY_API_URL` to the https origin of your Verify API. `VERIFY_API_KEY` is optional. When set, it is sent as the `Authorization` value. The example leaves `verifyApiBaseUrl` unset, so the SDK posts to `/api/v3/verify` on this dev server.
+Copy `.env.example` to `.env.local`. Set `VITE_BLINKID_VERIFY_LICENCE_KEY`, and set `VERIFY_API_URL` to the https origin of your Verify API. `VERIFY_API_KEY` is optional. When set, it is sent as the `Authorization` value. The example leaves `verifyApiBaseUrl` unset, so the SDK posts to `/api/v3/verify` on this dev server.
 
 For install and start commands, see the [examples README](./../README.md).

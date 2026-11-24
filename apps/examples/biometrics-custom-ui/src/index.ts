@@ -99,7 +99,7 @@ class BiometricsCustomUiExample {
   async initialize(): Promise<void> {
     try {
       const sdk = await createBiometrics({
-        licenseKey: import.meta.env.VITE_LICENCE_KEY,
+        licenseKey: import.meta.env.VITE_BIOMETRICS_LICENCE_KEY,
         onDownloadProgress(progress) {
           statusElement.textContent = `Loading SDK resources… ${progress.progress}%`;
         },

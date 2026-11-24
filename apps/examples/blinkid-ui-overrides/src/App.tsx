@@ -122,7 +122,7 @@ export const App: Component = () => {
     clearAllErrors();
 
     try {
-      const licenseKey = import.meta.env.VITE_LICENCE_KEY;
+      const licenseKey = import.meta.env.VITE_BLINKID_LICENCE_KEY;
 
       if (!licenseKey) {
         throw new Error("License key is not configured. Please check your environment variables.");

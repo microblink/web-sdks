@@ -9,7 +9,7 @@ import { createBlinkCard } from "@microblink/blinkcard";
  * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkcard/docs/functions/createBlinkCard.md
  */
 const blinkcard = await createBlinkCard({
-  licenseKey: import.meta.env.VITE_LICENCE_KEY,
+  licenseKey: import.meta.env.VITE_BLINKCARD_LICENCE_KEY,
 });
 
 /**

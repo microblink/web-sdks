@@ -7,8 +7,8 @@ import { VideoFrameProcessor } from "./VideoFrameProcessor";
 
 function sourceCanvas(): HTMLCanvasElement {
   const source = document.createElement("canvas");
-  source.width = 2;
-  source.height = 2;
+  source.width = 320;
+  source.height = 200;
 
   const context = source.getContext("2d");
 
@@ -16,13 +16,43 @@ function sourceCanvas(): HTMLCanvasElement {
     throw new Error("2D context unavailable");
   }
 
-  context.fillStyle = "rgb(12, 34, 56)";
-  context.fillRect(0, 0, 2, 2);
+  const pixels = context.createImageData(source.width, source.height);
+
+  for (let y = 0; y < source.height; y++) {
+    for (let x = 0; x < source.width; x++) {
+      pixels.data.set([(12 + x) % 256, (34 + y) % 256, (56 + x + y) % 256, 255], (y * source.width + x) * 4);
+    }
+  }
+
+  context.putImageData(pixels, 0, 0);
 
   return source;
 }
 
 describe.each(["2d", "webgl2"] as const)("%s frame extraction", (canvasRenderingMode) => {
+  it.each([
+    { name: "full frame", area: undefined },
+    { name: "explicit full frame", area: { x: 0, y: 0, width: 320, height: 200 } },
+    { name: "both offsets", area: { x: 40, y: 30, width: 160, height: 100 } },
+    { name: "horizontal offset", area: { x: 40, y: 0, width: 240, height: 200 } },
+    { name: "vertical offset", area: { x: 0, y: 30, width: 320, height: 140 } },
+    { name: "zero offsets", area: { x: 0, y: 0, width: 160, height: 100 } },
+  ])("returns the exact source pixels for $name", ({ area }) => {
+    const processor = new VideoFrameProcessor({ canvasRenderingMode, fallbackWebGlTo2d: false });
+    const source = sourceCanvas();
+    const { x, y, width, height } = area ?? { x: 0, y: 0, width: source.width, height: source.height };
+    const expected = source.getContext("2d")!.getImageData(x, y, width, height);
+
+    try {
+      const frame = processor.getImageData(source, area);
+
+      expect([frame.width, frame.height]).toEqual([width, height]);
+      expect(frame.data).toEqual(expected.data);
+    } finally {
+      processor.dispose();
+    }
+  });
+
   it("extracts frames without instrumentation", () => {
     const processor = new VideoFrameProcessor({ canvasRenderingMode, fallbackWebGlTo2d: false });
 

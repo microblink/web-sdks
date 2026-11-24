@@ -55,7 +55,7 @@ export const App: Component = () => {
      *
      */
     const blinkIdVerifyCore = await loadBlinkIdVerifyCore({
-      licenseKey: import.meta.env.VITE_LICENCE_KEY,
+      licenseKey: import.meta.env.VITE_BLINKID_VERIFY_LICENCE_KEY,
     });
 
     /*

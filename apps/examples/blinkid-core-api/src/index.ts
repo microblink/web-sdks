@@ -19,7 +19,7 @@ const progressCallback: ProgressStatusCallback = (progress) => {
 
 const blinkIdCore = await loadBlinkIdCore(
   {
-    licenseKey: import.meta.env.VITE_LICENCE_KEY,
+    licenseKey: import.meta.env.VITE_BLINKID_LICENCE_KEY,
   },
   progressCallback,
 );
