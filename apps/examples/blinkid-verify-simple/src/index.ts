@@ -7,7 +7,7 @@ import { createBlinkIdVerify } from "@microblink/blinkid-verify";
  * look at the createBlinkIdVerify function.
  */
 const blinkIdVerify = await createBlinkIdVerify({
-  licenseKey: import.meta.env.VITE_LICENCE_KEY,
+  licenseKey: import.meta.env.VITE_BLINKID_VERIFY_LICENCE_KEY,
   cameraManagerUiOptions: {
     showMirrorCameraButton: false,
   },

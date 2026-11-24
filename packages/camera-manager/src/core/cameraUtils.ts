@@ -186,11 +186,21 @@ export const findIdealCamera = async (
     }
   }
 
-  // if we're looking for a front camera, return the last one in the pool
+  // if we're looking for a front camera, return the last one in the pool that starts
   if (requestedFacing === "front") {
-    const lastCamera = cameraPool[cameraPool.length - 1];
-    await lastCamera.startStream(resolution);
-    return lastCamera;
+    let lastError: unknown;
+
+    for (const camera of [...cameraPool].reverse()) {
+      try {
+        await camera.startStream(resolution);
+        return camera;
+      } catch (error) {
+        console.warn(`Failed to start camera ${camera.name}:`, error);
+        lastError = error;
+      }
+    }
+
+    throw lastError;
   }
 
   // Score and test each camera

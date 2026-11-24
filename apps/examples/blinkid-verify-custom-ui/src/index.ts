@@ -410,7 +410,7 @@ class BlinkIdVerifyCustomUiExample {
 
     this.#coreLoad ??= loadBlinkIdVerifyCore(
       {
-        licenseKey: import.meta.env.VITE_LICENCE_KEY,
+        licenseKey: import.meta.env.VITE_BLINKID_VERIFY_LICENCE_KEY,
       },
       (progress) => {
         if (this.#isSdkCurrent(sdkRunId)) {

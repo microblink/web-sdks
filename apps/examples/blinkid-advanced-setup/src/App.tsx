@@ -54,7 +54,7 @@ export const App: Component = () => {
      * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid-core/docs/type-aliases/BlinkIdInitSettings.md
      */
     const blinkIdCore = await loadBlinkIdCore({
-      licenseKey: import.meta.env.VITE_LICENCE_KEY,
+      licenseKey: import.meta.env.VITE_BLINKID_LICENCE_KEY,
     });
 
     console.log("creating new session");

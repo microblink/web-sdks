@@ -241,7 +241,7 @@ export class VideoFrameProcessor {
       const drawImage = operations.drawImage ?? context.drawImage.bind(context);
       const getImageData = operations.getImageData ?? context.getImageData.bind(context);
 
-      drawImage(source, x, y, w, h);
+      drawImage(source, x, y, w, h, 0, 0, w, h);
 
       return getImageData(0, 0, w, h);
     });

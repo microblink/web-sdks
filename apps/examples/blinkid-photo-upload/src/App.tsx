@@ -89,7 +89,7 @@ const App: Component = () => {
       await cleanupSession();
 
       blinkIdCore ??= await loadBlinkIdCore({
-        licenseKey: import.meta.env.VITE_LICENCE_KEY,
+        licenseKey: import.meta.env.VITE_BLINKID_LICENCE_KEY,
       });
 
       session = await blinkIdCore.createScanningSession({

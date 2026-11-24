@@ -7,7 +7,7 @@ import { createBiometricsUi } from "@microblink/biometrics";
  * guidance, and handles help, retry, and close. See `BiometricsUiOptions` for additional configuration.
  */
 const ui = await createBiometricsUi({
-  licenseKey: import.meta.env.VITE_LICENCE_KEY,
+  licenseKey: import.meta.env.VITE_BIOMETRICS_LICENCE_KEY,
   onResult(result) {
     console.log("Result:", result);
     void ui.destroy();

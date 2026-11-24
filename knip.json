@@ -6,7 +6,7 @@
   "ignoreWorkspaces": [
     // ".",
     "apps/examples/*",
-    "apps/tests/*",
+    "apps/internal/*",
     "packages/tsconfig"
   ],
   "workspaces": {

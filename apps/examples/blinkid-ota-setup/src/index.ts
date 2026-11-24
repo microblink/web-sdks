@@ -9,7 +9,7 @@ import { createBlinkId } from "@microblink/blinkid";
  * @see https://github.com/microblink/web-sdks/blob/main/packages/blinkid/docs/functions/createBlinkId.md
  */
 const blinkid = await createBlinkId({
-  licenseKey: import.meta.env.VITE_LICENCE_KEY,
+  licenseKey: import.meta.env.VITE_BLINKID_LICENCE_KEY,
 
   // Maximum time any Wasm, data, or OTA request may make no progress. The timer resets whenever data arrives.
   resourceDownloadTimeoutMs: 60_000,

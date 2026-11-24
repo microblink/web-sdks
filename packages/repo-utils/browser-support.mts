@@ -33,7 +33,7 @@ const browserCompatTargetNames = {
   iOS: "safari_ios",
 };
 
-const workspacePackageGlobs = ["packages/*", "packages/utils/*", "apps/examples/*", "apps/tests/*", "github"];
+const workspacePackageGlobs = ["packages/*", "packages/utils/*", "apps/examples/*", "apps/internal/*", "github"];
 
 const browserSupportHeadingPattern = /^## Browser Support(?:\s|$)/m;
 const runtimeSourceExtensions = [".ts", ".tsx", ".mts", ".js", ".jsx", ".mjs"];

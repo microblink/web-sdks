@@ -66,7 +66,7 @@ BlinkID, BlinkCard, BlinkID Verify, and Biometrics example applications require 
 After obtaining the license key, create a `.env.local` file in the root of the specific example application you want to run (e.g., `apps/examples/blinkid-simple/.env.local`) and add the following line:
 
 ```env
-VITE_LICENCE_KEY=your-license-key
+VITE_<PRODUCT>_LICENCE_KEY=your-license-key
 ```
 
 Replace `your-license-key` with the actual license key you obtained.
@@ -80,7 +80,7 @@ The [simple](./blinkid-verify-simple/) and [advanced](./blinkid-verify-advanced-
 In the same `.env.local` file, set:
 
 ```env
-VITE_LICENCE_KEY=
+VITE_<PRODUCT>_LICENCE_KEY=
 VERIFY_API_URL=https://your-verify-api.example.com
 VERIFY_API_KEY=
 ```

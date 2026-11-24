@@ -44,6 +44,9 @@ const initialCameraState: CameraState = {
   error: undefined,
 } as CameraState;
 
+/** Errors where the camera is busy or access is denied. A lower resolution does not fix them. */
+const resolutionIndependentErrors = new Set(["NotAllowedError", "NotReadableError"]);
+
 /**
  * Represents a camera device and its active stream.
  *
@@ -251,9 +254,10 @@ export class Camera {
       console.warn(`Can't get camera stream for ${this.name} at ${resolution}`, error);
 
       const currentResolutionIndex = Object.keys(videoResolutions).indexOf(resolution);
+      const lowerResolutionCanHelp = !(error instanceof DOMException && resolutionIndependentErrors.has(error.name));
 
-      if (currentResolutionIndex === 0) {
-        throw new Error("Failed to get camera stream");
+      if (currentResolutionIndex === 0 || !lowerResolutionCanHelp) {
+        throw new Error("Failed to get camera stream", { cause: error });
       }
 
       // try a lower index
